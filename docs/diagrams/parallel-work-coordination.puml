@@ -1,0 +1,186 @@
+@startuml Parallel Work Coordination Flow
+!theme cerulean-outline
+skinparam backgroundColor #FEFEFE
+
+title Parallel Work Coordination - Task Claim to Completion
+
+actor "Worker\nAlice" as Alice
+actor "Worker\nBob" as Bob
+participant "Worker\nRegistry" as Registry
+participant "Task\nOrchestrator" as Orchestrator
+participant "Lock\nManager" as LockMgr
+participant "Git\nWorktree" as Worktree
+participant "Claude Code\nTask Tool" as TaskTool
+participant "GitHub\nProjects V2" as Projects
+
+== Worker Registration ==
+Alice -> Registry: register(name: "Alice", type: "human")
+activate Registry
+Registry --> Alice: workerId: "worker-001"
+deactivate Registry
+
+Bob -> Registry: register(name: "Bob", type: "ai_agent")
+activate Registry
+Registry --> Bob: workerId: "worker-002"
+deactivate Registry
+
+== Task Discovery ==
+Alice -> Orchestrator: getAvailableTasks()
+activate Orchestrator
+Orchestrator -> Projects: fetchTasks()
+activate Projects
+Projects --> Orchestrator: [Task-001, Task-002, Task-003]
+deactivate Projects
+Orchestrator --> Alice: Available: Task-001 (fix/auth)
+deactivate Orchestrator
+
+Bob -> Orchestrator: getAvailableTasks()
+activate Orchestrator
+Orchestrator --> Bob: Available: Task-002 (feat/oauth)
+deactivate Orchestrator
+
+== Task Claim (Alice) ==
+Alice -> Orchestrator: claimTask(taskId: "task-001")
+activate Orchestrator
+
+Orchestrator -> LockMgr: checkConflicts(task-001)
+activate LockMgr
+LockMgr -> LockMgr: Check file locks
+LockMgr --> Orchestrator: No conflicts
+deactivate LockMgr
+
+Orchestrator -> LockMgr: acquireLock(task-001, worker-001)
+activate LockMgr
+LockMgr -> LockMgr: Create lock file\n.task-locks/task-001.lock
+LockMgr --> Orchestrator: Lock acquired
+deactivate LockMgr
+
+Orchestrator -> Worktree: setupWorktree(task-001)
+activate Worktree
+Worktree -> Worktree: git worktree add\n.worktrees/task-001
+Worktree --> Orchestrator: Worktree ready
+deactivate Worktree
+
+Orchestrator -> Projects: updateStatus(task-001, "claimed")
+activate Projects
+Projects --> Orchestrator: Updated
+deactivate Projects
+
+Orchestrator --> Alice: Task claimed\nWorktree: .worktrees/task-001
+deactivate Orchestrator
+
+== Task Claim (Bob - Parallel) ==
+Bob -> Orchestrator: claimTask(taskId: "task-002")
+activate Orchestrator
+
+Orchestrator -> LockMgr: checkConflicts(task-002)
+activate LockMgr
+LockMgr --> Orchestrator: No conflicts
+deactivate LockMgr
+
+Orchestrator -> LockMgr: acquireLock(task-002, worker-002)
+activate LockMgr
+LockMgr --> Orchestrator: Lock acquired
+deactivate LockMgr
+
+Orchestrator -> Worktree: setupWorktree(task-002)
+activate Worktree
+Worktree --> Orchestrator: Worktree ready
+deactivate Worktree
+
+Orchestrator --> Bob: Task claimed
+deactivate Orchestrator
+
+== Task Execution (Parallel) ==
+par Alice's Task
+  Alice -> TaskTool: executeTask(task-001)
+  activate TaskTool
+  TaskTool -> TaskTool: Fix auth bug\n(src/auth/login.ts)
+  TaskTool -> Projects: updateProgress(70%)
+  activate Projects
+  Projects --> TaskTool: Updated
+  deactivate Projects
+  TaskTool --> Alice: Task completed
+  deactivate TaskTool
+else Bob's Task
+  Bob -> TaskTool: executeTask(task-002)
+  activate TaskTool
+  TaskTool -> TaskTool: Add OAuth feature\n(src/auth/oauth.ts)
+  TaskTool -> Projects: updateProgress(60%)
+  activate Projects
+  Projects --> TaskTool: Updated
+  deactivate Projects
+  TaskTool --> Bob: Task completed
+  deactivate TaskTool
+end
+
+== Task Completion (Alice) ==
+Alice -> Orchestrator: completeTask(task-001)
+activate Orchestrator
+
+Orchestrator -> Worktree: runTests()
+activate Worktree
+Worktree --> Orchestrator: Tests passed ✓
+deactivate Worktree
+
+Orchestrator -> Worktree: createPullRequest()
+activate Worktree
+Worktree --> Orchestrator: PR #1234 created
+deactivate Worktree
+
+Orchestrator -> LockMgr: releaseLock(task-001)
+activate LockMgr
+LockMgr -> LockMgr: Delete lock file
+LockMgr --> Orchestrator: Lock released
+deactivate LockMgr
+
+Orchestrator -> Worktree: cleanup()
+activate Worktree
+Worktree -> Worktree: git worktree remove
+Worktree --> Orchestrator: Cleaned up
+deactivate Worktree
+
+Orchestrator -> Projects: updateStatus(task-001, "completed")
+activate Projects
+Projects --> Orchestrator: Updated
+deactivate Projects
+
+Orchestrator --> Alice: Task completed\nPR #1234 ready
+deactivate Orchestrator
+
+== Task Completion (Bob) ==
+Bob -> Orchestrator: completeTask(task-002)
+activate Orchestrator
+Orchestrator -> Worktree: runTests()
+activate Worktree
+Worktree --> Orchestrator: Tests passed ✓
+deactivate Worktree
+Orchestrator -> Worktree: createPullRequest()
+activate Worktree
+Worktree --> Orchestrator: PR #1235 created
+deactivate Worktree
+Orchestrator -> LockMgr: releaseLock(task-002)
+activate LockMgr
+LockMgr --> Orchestrator: Lock released
+deactivate LockMgr
+Orchestrator -> Projects: updateStatus(task-002, "completed")
+activate Projects
+Projects --> Orchestrator: Updated
+deactivate Projects
+Orchestrator --> Bob: Task completed\nPR #1235 ready
+deactivate Orchestrator
+
+note over Alice, Projects
+  **Parallel Work Complete**
+
+  Alice: Issue #456 fixed → PR #1234
+  Bob: OAuth feature added → PR #1235
+
+  Total Time: ~10 minutes (parallel)
+  Sequential would be: ~20 minutes
+  Time Saved: 50%
+
+  No conflicts, no merge issues ✓
+end note
+
+@enduml

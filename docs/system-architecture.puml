@@ -1,0 +1,315 @@
+@startuml Agentic OS - System Architecture
+!define RECTANGLE class
+
+skinparam backgroundColor #1a1a1a
+skinparam defaultTextAlignment center
+skinparam shadowing false
+
+skinparam component {
+  BackgroundColor #2d2d2d
+  BorderColor #00D9FF
+  FontColor #FFFFFF
+  FontSize 12
+  ArrowColor #00D9FF
+}
+
+skinparam package {
+  BackgroundColor #252525
+  BorderColor #FF79C6
+  FontColor #FFFFFF
+  FontSize 14
+}
+
+skinparam note {
+  BackgroundColor #3d3d3d
+  BorderColor #FFB800
+  FontColor #FFFFFF
+}
+
+title Agentic OS v2.0 - Complete System Architecture\n<size:11>GitHub as Operating System + Autonomous Agent Framework</size>
+
+' ============================================================================
+' GitHub as Operating System Layer
+' ============================================================================
+
+package "GitHub as Operating System" #252525 {
+
+  ' User Space Layer
+  package "User Space" #2d2d2d {
+    component "Issues\n(Processes)" as issues #00FF88
+    component "Pull Requests\n(Patches)" as prs #00FF88
+    component "Discussions\n(Message Queue)" as discussions #00FF88
+    component "Gists\n(Shared Memory)" as gists #00FF88
+
+    note right of issues
+      Process Control
+      - Task definitions
+      - State transitions
+      - Priority management
+    end note
+  }
+
+  ' Kernel Space Layer
+  package "Kernel Space" #2d2d2d {
+    component "GitHub Actions\n(Scheduler)" as actions #8B88FF
+    component "Webhooks\n(Event Bus)" as webhooks #8B88FF
+    component "Projects V2\n(Database)" as projects #8B88FF
+    component "GraphQL/REST API\n(System Calls)" as api #8B88FF
+
+    note right of actions
+      Execution Engine
+      - Workflow orchestration
+      - Parallel execution
+      - Resource allocation
+    end note
+  }
+
+  ' Hardware/Infrastructure Layer
+  package "Hardware Layer" #2d2d2d {
+    component "GitHub Runners\n(CPU)" as runners #FF4444
+    component "GitHub Packages\n(Storage)" as packages #FF4444
+    component "GitHub Pages\n(Display)" as pages #FF4444
+    component "GitHub Secrets\n(HSM)" as secrets #FF4444
+
+    note right of runners
+      Compute Resources
+      - Linux/macOS/Windows
+      - Self-hosted options
+      - Concurrent jobs
+    end note
+  }
+
+  ' Security Layer
+  package "Security Layer" #2d2d2d {
+    component "Branch Protection\n(Firewall)" as protection #FFB800
+    component "CodeQL\n(Antivirus)" as codeql #FFB800
+    component "Dependabot\n(Auto-update)" as dependabot #FFB800
+    component "Secret Scanning\n(DLP)" as scanning #FFB800
+
+    note right of protection
+      Security Controls
+      - Access control
+      - Code scanning
+      - Vulnerability detection
+    end note
+  }
+}
+
+' ============================================================================
+' Autonomous Agent System
+' ============================================================================
+
+package "Autonomous Agent System" #252525 {
+
+  ' Agent Layer
+  package "Agent Layer" #2d2d2d {
+    component "CoordinatorAgent\n(Orchestrator)" as coordinator #FF79C6
+    component "CodeGenAgent\n(Developer)" as codegen #00D9FF
+    component "ReviewAgent\n(QA)" as review #00FF88
+    component "IssueAgent\n(Analyst)" as issue #8B88FF
+    component "PRAgent\n(Integrator)" as pr #FF79C6
+    component "DeploymentAgent\n(Ops)" as deployment #FF4444
+
+    note right of coordinator
+      Task Orchestration
+      - Dependency resolution
+      - Parallel execution
+      - Resource management
+    end note
+  }
+
+  ' Core Infrastructure
+  package "Core Infrastructure" #2d2d2d {
+    component "BaseAgent\n(Base Class)" as base #FFFFFF
+    component "Rich CLI Output\n(UI System)" as richcli #00FF88
+    component "Type System\n(TypeScript)" as types #8B88FF
+    component "LDD Logger\n(Observability)" as ldd #FFB800
+
+    note right of base
+      Core Functionality
+      - Escalation mechanism
+      - Metrics recording
+      - Error handling
+      - Lifecycle management
+    end note
+  }
+
+  ' Integration Layer
+  package "Integration Layer" #2d2d2d {
+    component "Claude Code\n(AI Engine)" as claude #FF79C6
+    component "MCP Servers (5)\n(Extensions)" as mcp #00D9FF
+    component "GitHub API SDK\n(System Interface)" as sdk #8B88FF
+    component "Task Tool\n(Execution)" as task #00FF88
+
+    note right of mcp
+      MCP Servers:
+      - IDE Integration
+      - GitHub Enhanced
+      - Project Context
+      - Filesystem
+      - Context Engineering
+    end note
+  }
+}
+
+' ============================================================================
+' Governance & Economics
+' ============================================================================
+
+package "Governance & Economics" #252525 {
+  component "WORKFLOW_RULES.md\n(Constitution)" as rules #F1FA8C
+  component "BUDGET.yml\n(Economic System)" as budget #FFB800
+  component "Guardian System\n(Human Oversight)" as guardian #FF4444
+  component "Circuit Breaker\n(Safety)" as breaker #FF4444
+
+  note right of rules
+    Three Commandments:
+    1. Issue-Driven Development
+    2. Log-Driven Development
+    3. Zero Surprise Principle
+  end note
+}
+
+' ============================================================================
+' External Systems
+' ============================================================================
+
+package "External Systems" #252525 {
+  component "Anthropic API\n(Claude AI)" as anthropic #FF79C6
+  component "Firebase\n(Deployment)" as firebase #FFB800
+  component "npm Registry\n(Packages)" as npm #FF4444
+  component "Git\n(Version Control)" as git #8B88FF
+}
+
+' ============================================================================
+' Connections: GitHub OS Internal
+' ============================================================================
+
+issues --> actions : "triggers"
+prs --> actions : "triggers"
+actions --> webhooks : "emits events"
+webhooks --> projects : "updates"
+projects --> api : "queries"
+api --> runners : "schedules"
+runners --> packages : "reads/writes"
+runners --> pages : "deploys"
+runners --> secrets : "reads"
+
+protection --> prs : "enforces rules"
+codeql --> actions : "scans code"
+dependabot --> issues : "creates"
+scanning --> actions : "detects secrets"
+
+' ============================================================================
+' Connections: Agent System Internal
+' ============================================================================
+
+coordinator --> codegen : "assigns tasks"
+coordinator --> review : "assigns tasks"
+coordinator --> issue : "assigns tasks"
+coordinator --> pr : "assigns tasks"
+coordinator --> deployment : "assigns tasks"
+
+codegen --> base : "extends"
+review --> base : "extends"
+issue --> base : "extends"
+pr --> base : "extends"
+deployment --> base : "extends"
+coordinator --> base : "extends"
+
+base --> richcli : "uses"
+base --> types : "uses"
+base --> ldd : "logs to"
+
+claude --> task : "executes via"
+task --> coordinator : "invokes"
+mcp --> claude : "extends"
+sdk --> api : "wraps"
+
+' ============================================================================
+' Connections: Cross-Layer Integration
+' ============================================================================
+
+coordinator --> issues : "reads/updates"
+coordinator --> projects : "queries"
+coordinator --> api : "calls"
+
+codegen --> prs : "creates"
+review --> prs : "reviews"
+pr --> prs : "manages"
+deployment --> actions : "triggers"
+
+issue --> issues : "analyzes"
+issue --> discussions : "creates"
+
+claude --> anthropic : "API calls"
+deployment --> firebase : "deploys"
+actions --> git : "uses"
+packages --> npm : "publishes"
+
+' ============================================================================
+' Connections: Governance
+' ============================================================================
+
+rules --> coordinator : "governs"
+rules --> actions : "enforces"
+budget --> breaker : "monitors"
+breaker --> guardian : "escalates"
+guardian --> issues : "intervenes"
+
+' ============================================================================
+' Data Flow Notes
+' ============================================================================
+
+note top of issues
+  <b>Entry Point</b>
+  Everything starts with an Issue
+  (Prime Directive)
+end note
+
+note bottom of projects
+  <b>Data Persistence</b>
+  - Agent execution history
+  - KPI metrics
+  - Task states
+  - Cost tracking
+end note
+
+note bottom of pages
+  <b>Visualization</b>
+  - Real-time dashboard
+  - Agent status monitor
+  - Cost tracking charts
+  - Performance metrics
+end note
+
+note left of guardian
+  <b>Escalation Targets</b>
+  - TechLead (architecture)
+  - CISO (security)
+  - PO (business)
+  - CTO (infrastructure)
+  - DevOps (deployment)
+end note
+
+' ============================================================================
+' Legend
+' ============================================================================
+
+legend bottom
+  <b>Layer Colors:</b>
+  <#00FF88> User Space (Green) </color>
+  <#8B88FF> Kernel Space (Purple) </color>
+  <#FF4444> Hardware Layer (Red) </color>
+  <#FFB800> Security Layer (Orange) </color>
+  <#FF79C6> Agent Layer (Pink) </color>
+  <#00D9FF> Integration Layer (Cyan) </color>
+  <#F1FA8C> Governance (Yellow) </color>
+
+  <b>Component Status:</b>
+  ✅ Fully Implemented
+  ⚠️ Partially Implemented
+  ⏳ Planned (Issue #5, #6)
+end legend
+
+@enduml

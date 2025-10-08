@@ -883,6 +883,7 @@ ai-course-content-generator-v.0.0.1:
 
 | ドキュメント | 説明 |
 |-------------|------|
+| [docs/system-architecture.puml](docs/system-architecture.puml) | 🎨 **システムアーキテクチャ図** (PlantUML) |
 | [OSS_DEVELOPMENT_SYSTEM.md](OSS_DEVELOPMENT_SYSTEM.md) | 🔄 継続開発システム設計 |
 | [docs/AUTONOMOUS_WORKFLOW_INTEGRATION.md](docs/AUTONOMOUS_WORKFLOW_INTEGRATION.md) | ⚙️ ワークフロー統合ガイド |
 | [docs/REPOSITORY_OVERVIEW.md](docs/REPOSITORY_OVERVIEW.md) | 📁 リポジトリ構造解説 |

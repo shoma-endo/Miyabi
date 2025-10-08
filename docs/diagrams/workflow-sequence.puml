@@ -1,0 +1,174 @@
+@startuml Agentic OS - Autonomous Workflow Sequence
+!theme cerulean-outline
+skinparam backgroundColor #FEFEFE
+skinparam sequenceMessageAlign center
+
+title Agentic OS - Autonomous Workflow Sequence\nFrom Issue Creation to Deployment
+
+actor "Developer" as Dev
+participant "GitHub\nIssues" as Issues
+participant "Coordinator\nAgent" as Coord
+participant "CodeGen\nAgent" as CodeGen
+participant "Review\nAgent" as Review
+participant "GitHub\nActions" as Actions
+participant "Projects\nV2" as Projects
+participant "Claude\nLLM" as Claude
+
+== Issue Creation ==
+Dev -> Issues: Create Issue\n"Add user authentication"
+activate Issues
+Issues -> Projects: Add to Project Board
+activate Projects
+Projects --> Issues: Item Created
+deactivate Projects
+Issues --> Dev: Issue #123 Created
+deactivate Issues
+
+== Automatic Analysis ==
+Issues -> Coord: Webhook Trigger
+activate Coord
+Coord -> Claude: Analyze Issue Context
+activate Claude
+Claude --> Coord: Understanding & Requirements
+deactivate Claude
+
+Coord -> Coord: Task Decomposition
+note right
+  **Decomposed Tasks:**
+  1. Create auth models
+  2. Implement JWT service
+  3. Add login endpoint
+  4. Write unit tests
+end note
+
+Coord -> Coord: Build DAG\n(Dependency Graph)
+Coord -> Projects: Update Status\n"In Progress"
+activate Projects
+Projects --> Coord: Updated
+deactivate Projects
+
+== Parallel Code Generation ==
+par Parallel Execution
+  Coord -> CodeGen: Generate auth models
+  activate CodeGen
+  CodeGen -> Claude: Generate code\n(models)
+  activate Claude
+  Claude --> CodeGen: Code + Tests
+  deactivate Claude
+  CodeGen -> CodeGen: Create Branch\nfeature/issue-123-models
+  CodeGen --> Coord: Task Complete
+  deactivate CodeGen
+else
+  Coord -> CodeGen: Generate JWT service
+  activate CodeGen
+  CodeGen -> Claude: Generate code\n(service)
+  activate Claude
+  Claude --> CodeGen: Code + Tests
+  deactivate Claude
+  CodeGen -> CodeGen: Create Branch\nfeature/issue-123-jwt
+  CodeGen --> Coord: Task Complete
+  deactivate CodeGen
+else
+  Coord -> CodeGen: Generate login endpoint
+  activate CodeGen
+  CodeGen -> Claude: Generate code\n(endpoint)
+  activate Claude
+  Claude --> CodeGen: Code + Tests
+  deactivate Claude
+  CodeGen -> CodeGen: Create Branch\nfeature/issue-123-login
+  CodeGen --> Coord: Task Complete
+  deactivate CodeGen
+end
+
+== Quality Assurance ==
+Coord -> Review: Review All Changes
+activate Review
+Review -> Claude: Analyze Code Quality
+activate Claude
+Claude --> Review: Review Results
+deactivate Claude
+
+alt All Checks Pass
+  Review -> Review: ✓ TypeScript Types\n✓ ESLint\n✓ Security Scan\n✓ Test Coverage
+  Review --> Coord: Approved
+  deactivate Review
+else Issues Found
+  Review --> Coord: Fixes Required
+  deactivate Review
+  Coord -> CodeGen: Apply Fixes
+  activate CodeGen
+  CodeGen --> Coord: Fixed
+  deactivate CodeGen
+end
+
+== Pull Request Creation ==
+Coord -> Issues: Create Draft PR
+activate Issues
+Issues --> Coord: PR #456 Created
+deactivate Issues
+
+Coord -> Actions: Trigger CI Pipeline
+activate Actions
+Actions -> Actions: Run Tests\nBuild Project\nSecurity Scan
+
+alt CI Success
+  Actions --> Coord: ✓ All Checks Passed
+  deactivate Actions
+  Coord -> Projects: Update Status\n"Ready for Review"
+  activate Projects
+  Projects --> Coord: Updated
+  deactivate Projects
+
+  Coord -> Issues: Add PR Comment\n"Ready for review"
+  activate Issues
+  Issues --> Dev: Notification
+  deactivate Issues
+else CI Failure
+  Actions --> Coord: ✗ Tests Failed
+  deactivate Actions
+  Coord -> Projects: Update Status\n"Needs Attention"
+  activate Projects
+  Projects --> Coord: Updated
+  deactivate Projects
+end
+
+== Human Review ==
+Dev -> Issues: Review PR
+activate Issues
+Issues --> Dev: Code & Tests Displayed
+Dev -> Issues: Approve PR
+Issues --> Dev: Approved
+deactivate Issues
+
+== Deployment ==
+Dev -> Issues: Merge PR
+activate Issues
+Issues -> Actions: Trigger Deploy
+activate Actions
+Actions -> Actions: Deploy to Production
+Actions --> Issues: Deployed ✓
+deactivate Actions
+
+Issues -> Projects: Update Status\n"Done"
+activate Projects
+Projects --> Issues: Updated
+deactivate Projects
+
+Issues -> Issues: Close Issue #123
+Issues --> Dev: Issue Closed
+deactivate Issues
+
+Dev -> Dev: ⏱️ Total Time:\n5-10 minutes
+
+note over Dev, Claude
+  **Autonomous Operation Complete**
+
+  Human Involvement: ~2 minutes (review & approve)
+  AI Agents Work: ~8 minutes (parallel)
+  Total Time: ~10 minutes
+
+  Traditional Process: Days to weeks
+  Time Saved: 95%+ automation
+end note
+
+@enduml

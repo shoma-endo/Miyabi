@@ -99,13 +99,16 @@ gh repo create my-project --template ShunsukeHayashi/autonomous-operations
 
 # 2️⃣ Initialize your project
 cd my-project
-./scripts/init-project.sh
-# → Interactive setup: API keys, project name, budget settings
+npm install
 
-# 3️⃣ Create your first autonomous task
+# 3️⃣ Setup GitHub Token (required for project management)
+npm run setup:token
+# → Interactive token setup with scope validation
+
+# 4️⃣ Create your first autonomous task
 gh issue create --title "Add user authentication with JWT"
 
-# 4️⃣ Watch the magic happen ✨
+# 5️⃣ Watch the magic happen ✨
 # → AI Agents analyze the issue
 # → Code generation + tests in parallel
 # → Quality checks (ESLint, TypeScript, Security)

@@ -1,0 +1,666 @@
+{
+  "report_metadata": {
+    "generated_at": "2025-10-08T00:00:00Z",
+    "source_repository": "ai-course-content-generator-v.0.0.1",
+    "target_framework": "Autonomous-Operations Agentic OS",
+    "analysis_scope": "Complete documentation review (8 core documents + 5 supplementary)",
+    "total_concepts_extracted": 47
+  },
+
+  "executive_summary": {
+    "overview": "The ai-course-content-generator project demonstrates a mature, production-ready agentic system with 24/7 autonomous operations, parallel agent execution, and comprehensive monitoring. Key innovations include: (1) Claude Code parallel task execution achieving 83% time reduction, (2) Shikigaku Theory-based responsibility framework for agent coordination, (3) Knowledge persistence with vector database for agent learning, (4) Complete security automation with HashiCorp Vault integration.",
+    "high_priority_integrations": [
+      "Parallel Agent Execution System (6-agent coordination)",
+      "DAG-based Dependency Resolution",
+      "Knowledge Persistence Layer with Vector DB",
+      "Shikigaku Theory Operations Framework",
+      "Real-time Dashboard with tmux",
+      "Automated Security with Vault + OIDC"
+    ],
+    "estimated_total_effort_hours": 312,
+    "roi_potential": "10x efficiency gain in multi-task operations, 95%+ automation success rate"
+  },
+
+  "categories": {
+    "1_agentic_operations_patterns": {
+      "description": "Unique agent coordination, parallel execution, and autonomous operation patterns",
+      "concepts": [
+        {
+          "concept_name": "6-Agent Type System",
+          "source_document": "AGENTIC_OPERATIONS.md",
+          "description": "Specialized agent types with clear responsibilities: CodeGenAgent (implementation), ReviewAgent (quality checks with 80+ score requirement), IssueAgent (triage & labeling), PRAgent (automated PR creation), AutoFixAgent (error recovery), DeploymentAgent (CI/CD). Each agent has defined escalation paths and completion criteria based on Shikigaku Theory principles.",
+          "value": "Clear separation of concerns prevents agent conflicts and enables true parallel execution. The 80-point quality threshold with automatic AutoFixAgent triggering ensures consistent output quality without human intervention.",
+          "how_to_integrate": "1. Create agent type enum in Agentic OS core\n2. Implement base agent class with common interfaces (execute(), validate(), escalate())\n3. Define agent-specific prompts in .ai/prompts/agents/\n4. Set up GitHub Actions workflows for automatic agent triggering based on labels\n5. Implement quality scoring system (ReviewAgent standard)\n6. Create escalation routing logic (Severity → Guardian mapping)",
+          "priority": "Critical",
+          "estimated_effort_hours": 24,
+          "dependencies": [],
+          "integration_risks": "Low - well-documented pattern with proven production use",
+          "validation_metrics": [
+            "Agent task completion rate > 90%",
+            "Average quality score > 85",
+            "Escalation rate < 10%"
+          ]
+        },
+        {
+          "concept_name": "Parallel Task Execution via Claude Code Task Tool",
+          "source_document": "AGENTS_PARALLEL_EXECUTION.md, CLAUDE_CODE_PARALLEL_EXECUTION_ENVIRONMENT.md",
+          "description": "Single-message multi-task invocation pattern where Claude Code executes multiple independent agents simultaneously using Promise.all() internally. Achieved 9 tasks (30 days of work) in 2-3 hours. Key: all Task tool calls must be in ONE message block to trigger parallel execution.",
+          "value": "Reduces execution time from N × task_duration to max(task_duration). Real-world result: 240 minutes → 40 minutes (83% reduction). Critical for large-scale automation scenarios.",
+          "how_to_integrate": "1. Ensure Agentic OS uses Claude Code as execution engine\n2. Implement task detector that identifies independent tasks (no file conflicts)\n3. Create task prompt generator that bundles multiple tasks into single Claude message\n4. Structure prompts with clear: (a) implementation requirements, (b) acceptance criteria, (c) final report format\n5. Implement result aggregator to collect all agent outputs\n6. Add conflict detection: same file edits = sequential, different files = parallel",
+          "priority": "Critical",
+          "estimated_effort_hours": 16,
+          "dependencies": ["Claude Code CLI", "GitHub Issue API"],
+          "integration_risks": "Medium - requires careful task independence validation to prevent file conflicts",
+          "validation_metrics": [
+            "Parallel execution success rate > 95%",
+            "Time reduction > 70% vs sequential",
+            "File conflict rate < 5%"
+          ]
+        },
+        {
+          "concept_name": "DAG-Based Dependency Resolution",
+          "source_document": "AGENTS_PARALLEL_EXECUTION.md, PARALLEL-SYSTEM-COMPLETE-GUIDE.md",
+          "description": "Automatic dependency graph construction by parsing Issue bodies for #number references. Implements topological sort for execution ordering, cyclic dependency detection, and level-based parallel execution (tasks at same DAG level run in parallel).",
+          "value": "Eliminates manual task scheduling. Ensures prerequisites complete before dependent tasks start. Maximizes parallelism by executing all tasks at same dependency level simultaneously.",
+          "how_to_integrate": "1. Implement dependency extractor: regex pattern /\\#(\\d+)/g on issue bodies\n2. Build adjacency list representation of task graph\n3. Implement Kahn's algorithm for topological sort\n4. Add cycle detection with clear error messages\n5. Calculate DAG levels (BFS from root nodes)\n6. Execute level 0 tasks → wait for completion → level 1 → etc.\n7. Store dependency metadata in .ai/task-graph.json",
+          "priority": "High",
+          "estimated_effort_hours": 12,
+          "dependencies": ["GitHub Issue API", "Task detection system"],
+          "integration_risks": "Low - standard algorithm with clear implementation",
+          "validation_metrics": [
+            "Cycle detection accuracy = 100%",
+            "Correct execution order = 100%",
+            "Level-wise parallelism utilization > 80%"
+          ]
+        },
+        {
+          "concept_name": "Device-Aware Multi-Agent Execution",
+          "source_document": "AGENTS_PARALLEL_EXECUTION.md, AUTONOMOUS-24-7-SYSTEM.md",
+          "description": "DEVICE_IDENTIFIER environment variable tracks which device (Pixel 9 Pro XL, MacBook Pro, iPad Pro) executes each task. Enables distributed execution across multiple devices with centralized reporting.",
+          "value": "Horizontal scaling across heterogeneous hardware. Session reports include device attribution for debugging. Supports true 24/7 operation by distributing load.",
+          "how_to_integrate": "1. Add DEVICE_IDENTIFIER to environment variables\n2. Include device ID in all execution logs and reports\n3. Create device registry in .ai/devices.json with capabilities (CPU cores, memory)\n4. Implement device selection algorithm based on current load\n5. Store execution reports per device: .ai/parallel-reports/agents-parallel-{device}-{timestamp}.json\n6. Create device health monitoring dashboard",
+          "priority": "Medium",
+          "estimated_effort_hours": 8,
+          "dependencies": ["Execution reporting system"],
+          "integration_risks": "Low - simple metadata tracking",
+          "validation_metrics": [
+            "Device attribution accuracy = 100%",
+            "Load distribution fairness (Gini coefficient < 0.3)"
+          ]
+        },
+        {
+          "concept_name": "Autonomous 24/7 System with tmux Dashboard",
+          "source_document": "AUTONOMOUS-24-7-SYSTEM.md, PARALLEL-SYSTEM-COMPLETE-GUIDE.md",
+          "description": "Complete hands-off operation using tmux 4-pane dashboard: (1) Orchestrator auto-loop (30s cycle), (2) Main Claude Code agent for oversight, (3) Task Queue monitor, (4) Real-time metrics. User inputs 'parallel execution start' once, system runs indefinitely until Ctrl+C.",
+          "value": "Zero human intervention after initial trigger. Continuous task processing 24/7. Real-time visibility into all operations. Tmux detach allows background execution while maintaining full observability.",
+          "how_to_integrate": "1. Install tmux and create session template: scripts/start-parallel-system.sh\n2. Implement 4-pane layout:\n   - Pane 0 (top-left): Orchestrator loop\n   - Pane 1 (top-right): Main agent Claude Code session\n   - Pane 2 (bottom-left): watch -n 2 'gh issue list --label=02.開発中'\n   - Pane 3 (bottom-right): watch -n 2 'cat .ai/autonomous-state.json | jq'\n3. Create orchestrator script with infinite loop:\n   while true; do\n     detect_tasks\n     assign_agents\n     monitor_completion\n     sleep 30\n   done\n4. Implement hook: on 'parallel execution start', launch tmux session\n5. Add state persistence: .ai/autonomous-state.json with current status\n6. Create recovery mechanism: detect crashed agents and restart",
+          "priority": "High",
+          "estimated_effort_hours": 20,
+          "dependencies": ["tmux", "jq", "GitHub CLI"],
+          "integration_risks": "Medium - requires careful state management for long-running processes",
+          "validation_metrics": [
+            "Uptime > 99.9%",
+            "Mean time to detect failure < 1 minute",
+            "Auto-recovery success rate > 95%"
+          ]
+        },
+        {
+          "concept_name": "Shikigaku Theory 5-Principle Operations Framework",
+          "source_document": "AGENTIC_OPERATIONS.md, OPERATION_LOGIC_PLAN.md",
+          "description": "Japanese management philosophy (識学 = Shikigaku) applied to agentic systems: (1) Clear Responsibility - every task has ONE assignee, (2) Results-Oriented - 80-point quality threshold, (3) Hierarchy Clarity - defined escalation paths, (4) Eliminate Ambiguity - numbered status codes (00-99), (5) Data-Driven Judgment - objective metrics only.",
+          "value": "Eliminates 'bystander effect' in multi-agent systems. Measurable success criteria prevent endless iteration. Clear escalation prevents bottlenecks. Removes subjective decision-making.",
+          "how_to_integrate": "1. Enforce single assignee per task (CODEOWNERS integration)\n2. Implement 80-point quality gate: ReviewAgent scoring\n3. Define escalation matrix:\n   - Sev.1-Critical → PO + Tech Lead + CISO\n   - Sev.2-High → Tech Lead\n   - Security issues → CISO\n4. Use numbered status codes: 00.未着手, 01.準備完了, 02.開発中, 03.レビュー中, 04.承認待ち, 05.完了, 99.中断\n5. Store all decisions with data backing in .ai/decisions/\n6. Create KPI dashboard tracking 5 principles:\n   - 責任明確化率 (assignee rate = 100%)\n   - 客観評価率 (quality score present rate = 100%)\n   - 階層遵守率 (correct escalation rate > 95%)\n   - 完了条件明示率 (acceptance criteria present = 100%)\n   - データ駆動判定率 (decision with data backing > 95%)",
+          "priority": "Critical",
+          "estimated_effort_hours": 24,
+          "dependencies": ["GitHub API", "Label management system"],
+          "integration_risks": "Low - clear principles with measurable KPIs",
+          "validation_metrics": [
+            "All 5 principle KPIs > 95%",
+            "Decision reversal rate < 5% (indicates good data-driven choices)"
+          ]
+        }
+      ]
+    },
+
+    "2_system_architecture": {
+      "description": "Novel architectural decisions, integration patterns, or infrastructure designs",
+      "concepts": [
+        {
+          "concept_name": "MCP (Model Context Protocol) Server Architecture",
+          "source_document": "CLAUDE_CODE_PARALLEL_EXECUTION_ENVIRONMENT.md, OPERATION_LOGIC_PLAN.md",
+          "description": "MCP server (Gururik) acts as bridge between Claude Code agents and external APIs (GitHub, Lark Base). Implements stdio transport for Claude Code integration. Provides tools like gururik_create_task (trigger GitHub Actions workflows) and gururik_status (check workflow runs).",
+          "value": "Decouples agent logic from API specifics. Single source of truth for API credentials (MCP server .env). Enables rapid tool addition without modifying agent prompts. Built-in retry logic and error handling.",
+          "how_to_integrate": "1. Create MCP server package: tools/agentic-os-mcp/\n2. Implement @modelcontextprotocol/sdk server with stdio transport\n3. Define tools:\n   - agentic_create_task(issue_number, priority)\n   - agentic_status(workflow_name)\n   - agentic_escalate(issue_number, guardian)\n4. Configure Claude Code config.json:\n   mcpServers:\n     agentic-os:\n       command: node\n       args: [tools/agentic-os-mcp/dist/index.js]\n       env:\n         GITHUB_TOKEN: ${GITHUB_TOKEN}\n5. Implement tool handlers with @octokit/rest for GitHub API\n6. Add comprehensive error handling and logging\n7. Test with: node dist/index.js (should output 'MCP Server started')",
+          "priority": "High",
+          "estimated_effort_hours": 16,
+          "dependencies": ["@modelcontextprotocol/sdk", "@octokit/rest", "Node.js"],
+          "integration_risks": "Medium - MCP protocol is relatively new, documentation evolving",
+          "validation_metrics": [
+            "Tool success rate > 99%",
+            "Average tool execution time < 2s",
+            "Error handling coverage = 100%"
+          ]
+        },
+        {
+          "concept_name": "Lark Base as Operational Database",
+          "source_document": "OPERATION_LOGIC_PLAN.md, LARK_BASE_MCP_INTEGRATION.md",
+          "description": "Lark Base (Bitable) serves as real-time project management database synced bidirectionally with GitHub Issues. Structure: Issue番号, タイトル, ステータス, 優先度, 担当者, 作成日, 期限, Agent種類, 実行ステータス, 品質スコア, etc. Provides multiple views: 全体, 緊急対応, 担当者別, Agent実行中, 完了済み.",
+          "value": "Non-technical stakeholders get real-time visibility without GitHub access. Lark notifications in group chat provide instant updates. Rich views enable filtering by any dimension. Audit trail for all state changes.",
+          "how_to_integrate": "1. Create Lark app with bitable permissions\n2. Design Bitable schema (see OPERATION_LOGIC_PLAN.md lines 149-168)\n3. Create 5 views: 全体, 緊急, 担当者別, Agent実行中, 完了\n4. Implement bidirectional sync:\n   - GitHub Issue created → Lark record created\n   - GitHub Issue updated → Lark record updated\n   - Lark record updated → GitHub Issue comment added\n5. GitHub Actions workflow: issue-to-lark-sync.yml\n   Trigger: issues.opened, issues.edited, issues.labeled\n   Steps:\n     - Get issue data\n     - Query Lark Bitable for existing record (by Issue番号)\n     - If exists: lark_update_bitable_record\n     - If not: lark_create_bitable_record\n     - Send Lark group chat notification with @mention\n6. Implement MCP tools: lark_create_bitable_record, lark_update_bitable_record, lark_list_bitable_records\n7. Configure retry logic: 3 attempts with exponential backoff",
+          "priority": "Medium",
+          "estimated_effort_hours": 20,
+          "dependencies": ["Lark OpenAPI", "MCP server", "GitHub Actions"],
+          "integration_risks": "Medium - Lark API rate limits (60 req/min), requires careful batching",
+          "validation_metrics": [
+            "Sync latency < 30s (GitHub event → Lark update)",
+            "Sync success rate > 99%",
+            "Data consistency (GitHub vs Lark) = 100%"
+          ]
+        },
+        {
+          "concept_name": "Resource-Based Dynamic Concurrency Adjustment",
+          "source_document": "PARALLEL-SYSTEM-COMPLETE-GUIDE.md",
+          "description": "Monitors CPU/memory every 2 seconds. Adjusts parallel agent count dynamically: CPU < 50% & Memory < 60% → increase concurrency by 2; CPU > 70% → reduce by 30%; Memory > 80% → reduce by 50% (min 2). Prevents system overload while maximizing throughput.",
+          "value": "Self-regulating system prevents crashes from over-parallelization. Automatically scales up when resources available. Maintains minimum 2 agents even under load.",
+          "how_to_integrate": "1. Implement resource monitor:\n   const os = require('os');\n   const cpuUsage = os.loadavg()[0] / os.cpus().length * 100;\n   const memUsage = (1 - os.freemem() / os.totalmem()) * 100;\n2. Create concurrency controller:\n   class ConcurrencyController {\n     private currentConcurrency: number = 3;\n     private maxConcurrency: number = 8;\n     private minConcurrency: number = 2;\n     \n     adjust(cpuUsage: number, memUsage: number): number {\n       if (cpuUsage < 50 && memUsage < 60) {\n         this.currentConcurrency = Math.min(\n           this.currentConcurrency + 2,\n           this.maxConcurrency\n         );\n       } else if (cpuUsage > 70) {\n         this.currentConcurrency = Math.max(\n           Math.floor(this.currentConcurrency * 0.7),\n           this.minConcurrency\n         );\n       } else if (memUsage > 80) {\n         this.currentConcurrency = Math.max(\n           Math.floor(this.currentConcurrency * 0.5),\n           this.minConcurrency\n         );\n       }\n       return this.currentConcurrency;\n     }\n   }\n3. Integrate into orchestrator loop:\n   setInterval(() => {\n     const newConcurrency = controller.adjust(cpuUsage, memUsage);\n     updateDashboard({ concurrency: newConcurrency });\n   }, 2000);\n4. Display in dashboard: 'Concurrency: 6/8 (CPU: 45%, Mem: 58%)'",
+          "priority": "High",
+          "estimated_effort_hours": 8,
+          "dependencies": ["Node.js os module"],
+          "integration_risks": "Low - straightforward system metrics",
+          "validation_metrics": [
+            "System crash rate = 0",
+            "Average CPU utilization 50-70% (sweet spot)",
+            "Concurrency adjustment latency < 5s"
+          ]
+        },
+        {
+          "concept_name": "Visual ASCII Dashboard with Real-time Updates",
+          "source_document": "PARALLEL-SYSTEM-COMPLETE-GUIDE.md, AUTONOMOUS-24-7-SYSTEM.md",
+          "description": "ASCII progress bars for CPU/memory, color-coded task statistics, live agent list, and recent log tail. Updates every 2 seconds. Uses ANSI color codes for visual hierarchy: green (healthy), yellow (warning), red (critical). Box-drawing characters for clean borders.",
+          "value": "Instant situational awareness without leaving terminal. No web browser required. Tmux-friendly for remote SSH sessions. Low resource overhead (<1% CPU).",
+          "how_to_integrate": "1. Install dependencies: chalk (colors), cli-progress (bars)\n2. Create dashboard renderer:\n   function renderDashboard(state: SystemState) {\n     console.clear();\n     \n     // Header\n     console.log(chalk.bold('🚀 Agentic OS Dashboard - Real-time Monitor'));\n     console.log('═'.repeat(60));\n     \n     // System resources\n     const cpuBar = createProgressBar(state.cpuUsage, 50);\n     console.log(`CPU:    ${cpuBar} ${state.cpuUsage.toFixed(1)}%`);\n     \n     const memBar = createProgressBar(state.memUsage, 60);\n     console.log(`Memory: ${memBar} ${state.memUsage.toFixed(1)}%`);\n     \n     // Task statistics\n     console.log('\\n📈 Task Execution Statistics');\n     console.log(`  Completed: ${chalk.green(state.completed)} ✅`);\n     console.log(`  Failed:    ${chalk.red(state.failed)} ❌`);\n     console.log(`  Success Rate: ${createProgressBar(state.successRate, state.successRate)} ${state.successRate.toFixed(1)}%`);\n     \n     // Active agents\n     console.log('\\n🤖 Active Agents');\n     state.agents.forEach(agent => {\n       console.log(`  Agent #${agent.id} │ ● Running │ Issue #${agent.issueNumber}`);\n     });\n     \n     // Recent logs\n     console.log('\\n📜 Recent Logs');\n     state.logs.slice(-5).forEach(log => {\n       console.log(`  [${log.time}] ${log.level} ${log.message}`);\n     });\n   }\n   \n   function createProgressBar(value: number, threshold: number): string {\n     const barLength = 30;\n     const filled = Math.floor((value / 100) * barLength);\n     const bar = '█'.repeat(filled) + '━'.repeat(barLength - filled);\n     const color = value > threshold ? chalk.red : value > threshold * 0.8 ? chalk.yellow : chalk.green;\n     return color(`[${bar}]`);\n   }\n3. Update loop:\n   setInterval(() => {\n     const state = collectSystemState();\n     renderDashboard(state);\n   }, 2000);\n4. Run in tmux pane 0 for persistent display",
+          "priority": "Medium",
+          "estimated_effort_hours": 6,
+          "dependencies": ["chalk", "cli-progress"],
+          "integration_risks": "Low - cosmetic feature",
+          "validation_metrics": [
+            "Rendering latency < 100ms",
+            "CPU overhead < 1%"
+          ]
+        }
+      ]
+    },
+
+    "3_automation_devops": {
+      "description": "CI/CD, monitoring, alerting, or operational automation approaches",
+      "concepts": [
+        {
+          "concept_name": "Auto-Recovery with Exponential Backoff Retry",
+          "source_document": "PARALLEL-SYSTEM-COMPLETE-GUIDE.md, AUTONOMOUS-24-7-SYSTEM.md",
+          "description": "Failed tasks automatically retry up to 3 times with increasing delays (5s, 10s, 15s). After 3 failures, escalates to Guardian with detailed error report. Tracks retry count per task in state JSON.",
+          "value": "Transient failures (network glitches, API rate limits) resolve automatically. Reduces false positive alerts. 95%+ auto-recovery success rate eliminates most manual intervention.",
+          "how_to_integrate": "1. Add retry metadata to task type:\n   interface Task {\n     id: string;\n     retryCount: number;\n     maxRetries: number;\n     lastError?: Error;\n     nextRetryAt?: Date;\n   }\n2. Implement retry logic:\n   async function executeWithRetry(task: Task): Promise<void> {\n     while (task.retryCount < task.maxRetries) {\n       try {\n         await executeTask(task);\n         return; // Success\n       } catch (error) {\n         task.retryCount++;\n         task.lastError = error;\n         \n         if (task.retryCount >= task.maxRetries) {\n           await escalateToGuardian(task, error);\n           throw error;\n         }\n         \n         const delayMs = 5000 * task.retryCount; // Exponential\n         task.nextRetryAt = new Date(Date.now() + delayMs);\n         await sleep(delayMs);\n       }\n     }\n   }\n3. Display in dashboard:\n   Task #123 │ ⚠️ Retrying (2/3) │ Next attempt in 10s\n4. Log all retry attempts to .ai/autonomous-logs/retries.log",
+          "priority": "High",
+          "estimated_effort_hours": 6,
+          "dependencies": [],
+          "integration_risks": "Low - standard pattern",
+          "validation_metrics": [
+            "Auto-recovery success rate > 95%",
+            "False escalation rate < 2%",
+            "Average retry count < 1.5 (most tasks succeed first try)"
+          ]
+        },
+        {
+          "concept_name": "Scheduled Task Execution with Cron Workflows",
+          "source_document": "AGENTIC_OPERATIONS.md, SLA_MONITORING_SYSTEM.md",
+          "description": "GitHub Actions cron schedules for recurring tasks: KPI collection (every 6 hours), daily reports (9:00 JST), weekly reports (Monday 9:00), monthly reports (1st 9:00), SLA metric collection (every 5 minutes). Uses Asia/Tokyo timezone for consistent scheduling.",
+          "value": "Fully automated operational tasks. No manual triggers required. Consistent execution timing. Built-in retry via GitHub Actions.",
+          "how_to_integrate": "1. Create cron workflows in .github/workflows/:\n   # kpi-collection.yml\n   on:\n     schedule:\n       - cron: '0 */6 * * *'  # Every 6 hours\n   jobs:\n     collect:\n       runs-on: ubuntu-latest\n       steps:\n         - uses: actions/checkout@v4\n         - run: npm run metrics:collect\n         - run: git add .ai/metrics/\n         - run: git commit -m \"chore: update KPIs $(date +%Y-%m-%d)\"\n         - run: git push\n\n   # daily-report.yml\n   on:\n     schedule:\n       - cron: '0 0 * * *'  # Daily at 9:00 JST (0:00 UTC)\n     workflow_dispatch:  # Manual trigger\n   \n2. Implement metric collectors:\n   scripts/collect-kpi.ts:\n     - Query GitHub Issues API for task statistics\n     - Calculate success rates, average times\n     - Store in .ai/metrics/YYYY-MM-DD.json\n3. Create report generators:\n   scripts/generate-report.ts:\n     - Aggregate metrics from past N days\n     - Generate markdown summary\n     - Post to Lark group chat / GitHub Issue\n4. Add timezone configuration:\n   jobs:\n     collect:\n       runs-on: ubuntu-latest\n       env:\n         TZ: Asia/Tokyo\n5. Monitor cron execution:\n   gh run list --workflow=kpi-collection.yml",
+          "priority": "Medium",
+          "estimated_effort_hours": 12,
+          "dependencies": ["GitHub Actions"],
+          "integration_risks": "Low - standard GitHub Actions feature",
+          "validation_metrics": [
+            "Cron execution reliability > 99.5%",
+            "Average delay from scheduled time < 2 minutes"
+          ]
+        },
+        {
+          "concept_name": "Multi-Environment CI/CD Pipeline",
+          "source_document": "ARCHITECTURE.md",
+          "description": "Three-tier deployment: Development, Staging, Production. Each environment has separate Firebase project. CI pipeline: Build → ESLint → TypeScript Check → Unit Tests → E2E Tests. CD triggers: dev on any push, staging on PR to main, prod on main merge. Automated rollback on critical errors.",
+          "value": "Safe deployment progression. Staging catches issues before production. Automated quality gates prevent bad deployments. Rollback mechanism minimizes downtime.",
+          "how_to_integrate": "1. Set up three environments:\n   - Development: agentic-os-dev\n   - Staging: agentic-os-staging\n   - Production: agentic-os-prod\n2. Create CI workflow: .github/workflows/ci.yml\n   on: [push, pull_request]\n   jobs:\n     quality:\n       steps:\n         - run: npm run build\n         - run: npm run lint\n         - run: npx tsc --noEmit\n         - run: npm run test:unit\n         - run: npm run test:e2e\n3. Create CD workflows:\n   # deploy-dev.yml (auto-deploy all branches)\n   on:\n     push:\n       branches: ['**']\n   jobs:\n     deploy:\n       runs-on: ubuntu-latest\n       steps:\n         - run: npm run build\n         - uses: w9jds/firebase-action@master\n           with:\n             args: deploy --only hosting\n           env:\n             FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN_DEV }}\n   \n   # deploy-staging.yml (PR to main)\n   on:\n     pull_request:\n       branches: [main]\n   \n   # deploy-prod.yml (main merge)\n   on:\n     push:\n       branches: [main]\n4. Implement health checks post-deployment:\n   - HTTP 200 check on /.well-known/health\n   - If fails: automatic rollback via Firebase Hosting version revert\n5. Set up notifications:\n   - Slack: deployment success/failure\n   - PagerDuty: production deployment alerts",
+          "priority": "Medium",
+          "estimated_effort_hours": 16,
+          "dependencies": ["GitHub Actions", "Multiple deployment environments"],
+          "integration_risks": "Medium - requires careful environment separation",
+          "validation_metrics": [
+            "Deployment success rate > 99%",
+            "Rollback time < 5 minutes",
+            "Quality gate false positive rate < 1%"
+          ]
+        }
+      ]
+    },
+
+    "4_knowledge_management": {
+      "description": "How knowledge is persisted, shared, and evolved",
+      "concepts": [
+        {
+          "concept_name": "Vector Database Knowledge Persistence",
+          "source_document": "KNOWLEDGE_PERSISTENCE.md",
+          "description": "Separate GitHub repository (ai-course-gen-knowledge) stores markdown documents: incidents/, postmortems/, rfcs/, solutions/. On every commit, GitHub Actions automatically chunks markdown (500 tokens), generates embeddings (text-embedding-3-large), and upserts to Pinecone vector DB. Agents query knowledge base before executing tasks to find similar past cases.",
+          "value": "System learns from history - same mistakes never repeated. New agents benefit from institutional knowledge immediately. Semantic search finds relevant cases even with different terminology. Faster problem resolution via solution library.",
+          "how_to_integrate": "1. Create knowledge repository: {org}/agentic-os-knowledge\n   Structure:\n     incidents/\n       YYYY-MM-DD-{title}.md\n     postmortems/\n       YYYY-MM-DD-{title}.md\n     rfcs/\n       rfc-{number}-{title}.md\n     solutions/\n       {problem-category}-{title}.md\n2. Set up Pinecone:\n   - Create index: agentic-os-knowledge\n   - Dimension: 3072 (text-embedding-3-large)\n   - Metric: cosine\n3. Create embedding pipeline: .github/workflows/knowledge-embedding.yml\n   on:\n     push:\n       paths: ['incidents/**', 'postmortems/**', 'rfcs/**', 'solutions/**']\n   jobs:\n     embed:\n       steps:\n         - name: Extract changed files\n           run: git diff --name-only HEAD^ HEAD > changed.txt\n         - name: Chunk and embed\n           run: |\n             python scripts/embed-knowledge.py \\\n               --files changed.txt \\\n               --chunk-size 500 \\\n               --chunk-overlap 50\n         - name: Upsert to Pinecone\n           env:\n             PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}\n             OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}\n           run: python scripts/upsert-pinecone.py\n4. Implement BaseAgent.searchKnowledgeBase():\n   async searchKnowledgeBase(query: string, topK: number = 5): Promise<KnowledgeEntry[]> {\n     // Generate embedding\n     const embedding = await openai.embeddings.create({\n       model: 'text-embedding-3-large',\n       input: query\n     });\n     \n     // Query Pinecone\n     const results = await pinecone.index('agentic-os-knowledge').query({\n       vector: embedding.data[0].embedding,\n       topK,\n       includeMetadata: true\n     });\n     \n     return results.matches.map(m => ({\n       content: m.metadata.content,\n       source: m.metadata.source,\n       score: m.score\n     }));\n   }\n5. Integrate into agent execution:\n   async execute(task: Task): Promise<void> {\n     const knowledge = await this.searchKnowledgeBase(\n       `${task.title}\\n${task.description}`\n     );\n     \n     console.log(`📚 Found ${knowledge.length} similar cases`);\n     knowledge.forEach(k => {\n       console.log(`  - ${k.source} (score: ${k.score.toFixed(3)})`);\n     });\n     \n     // Include knowledge in agent prompt\n     const prompt = `\n       Task: ${task.description}\n       \n       Similar past cases:\n       ${knowledge.map(k => `- ${k.source}: ${k.content.substring(0, 200)}...`).join('\\n')}\n       \n       Use the above knowledge to inform your implementation.\n     `;\n     \n     // Execute with enhanced context\n   }\n6. Create knowledge templates:\n   - Incident: .ai/templates/incident-template.md\n   - Postmortem: .ai/templates/postmortem-template.md (5 Whys framework)\n   - RFC: .ai/templates/rfc-template.md\n   - Solution: .ai/templates/solution-template.md\n7. Automate knowledge creation:\n   - On issue close with error: generate incident report\n   - On Sev.1-2 incident: require postmortem\n   - On architecture decision: create RFC",
+          "priority": "Critical",
+          "estimated_effort_hours": 32,
+          "dependencies": ["Pinecone", "OpenAI API", "Python"],
+          "integration_risks": "Medium - requires careful chunking strategy to maintain context",
+          "validation_metrics": [
+            "Knowledge retrieval relevance (score > 0.8) > 60%",
+            "Resolution time reduction: 30% for repeat issues",
+            "Knowledge coverage: 90% of incidents documented"
+          ]
+        },
+        {
+          "concept_name": "5 Whys Root Cause Analysis Template",
+          "source_document": "KNOWLEDGE_PERSISTENCE.md",
+          "description": "Structured postmortem template that mandates 5 Whys analysis for all Sev.1-2 incidents. Example flow: Why did outage occur? → Database crashed. Why? → Ran out of memory. Why? → No connection pooling. Why? → Not in architecture review. Why? → No checklist for database services.",
+          "value": "Discovers systemic root causes beyond immediate symptoms. Prevents surface-level fixes that don't address underlying issues. Creates actionable improvements at process level.",
+          "how_to_integrate": "1. Create postmortem template: .ai/templates/postmortem-template.md\n## Root Cause Analysis (5 Whys)\n1. **Why did the failure occur?**\n   Answer: [Immediate cause]\n\n2. **Why did that condition exist?**\n   Answer: [Contributing factor]\n\n3. **Why wasn't that prevented?**\n   Answer: [Gap in process/tooling]\n\n4. **Why does that gap exist?**\n   Answer: [Organizational/systemic issue]\n\n5. **Why hasn't this been addressed?**\n   Answer: [Root cause - usually process/culture]\n\n## Corrective Actions\nFor each \"Why\" level, define specific action:\n\n1. **Immediate Fix**: [What was done to restore service]\n   - Owner: [Name]\n   - Due: [Date]\n   - Tracked in: [Issue link]\n\n2. **Short-term Prevention**: [Monitoring/alerting added]\n   - Owner: [Name]\n   - Due: [Date]\n   - Tracked in: [Issue link]\n\n3. **Medium-term Improvement**: [Architecture/process change]\n   - Owner: [Name]\n   - Due: [Date]\n   - Tracked in: [Issue link]\n\n4. **Long-term Systemic Fix**: [Organizational change]\n   - Owner: [Name]\n   - Due: [Date]\n   - Tracked in: [Issue link]\n\n5. **Culture/Process Evolution**: [How we prevent class of issues]\n   - Owner: [Name]\n   - Due: [Date]\n   - Tracked in: [Issue link]\n2. Enforce via GitHub Actions:\n   on:\n     issues:\n       types: [closed]\n   jobs:\n     check-postmortem:\n       if: contains(github.event.issue.labels.*.name, 'Sev.1-Critical') || contains(github.event.issue.labels.*.name, 'Sev.2-High')\n       steps:\n         - name: Check for postmortem\n           run: |\n             # Search knowledge repo for matching postmortem\n             if ! ls knowledge/postmortems/*${{ github.event.issue.number }}*.md 1> /dev/null 2>&1; then\n               gh issue comment ${{ github.event.issue.number }} \\\n                 --body \"⚠️ Postmortem required for Sev.1-2 incidents. Please create in knowledge repository using template.\"\n               exit 1\n             fi\n3. Create postmortem agent:\n   PostmortemAgent generates draft postmortem by:\n   - Analyzing issue comments for timeline\n   - Extracting error messages/logs\n   - Drafting initial 5 Whys based on technical details\n   - Human reviews and refines, especially level 4-5\n4. Link postmortems to actions:\n   - Each corrective action creates GitHub issue\n   - Issues tagged with 'postmortem-action'\n   - Dashboard tracks action completion rate",
+          "priority": "High",
+          "estimated_effort_hours": 8,
+          "dependencies": ["Knowledge repository"],
+          "integration_risks": "Low - template-based approach",
+          "validation_metrics": [
+            "Postmortem creation rate = 100% for Sev.1-2",
+            "Action completion rate > 80%",
+            "Incident recurrence rate < 5%"
+          ]
+        },
+        {
+          "concept_name": "RFC-Driven Architecture Decisions",
+          "source_document": "KNOWLEDGE_PERSISTENCE.md",
+          "description": "All significant technical decisions documented as RFCs (Request for Comments) in knowledge repository. RFC template includes: Status, Context, Decision, Alternatives Considered (with pros/cons), Consequences, Implementation Plan. RFCs reviewed in GitHub PRs before merging.",
+          "value": "Institutional memory of 'why' behind architecture. Prevents relitigating past decisions. Alternatives documented for future reference if context changes. Clear decision-making audit trail.",
+          "how_to_integrate": "1. Create RFC template: knowledge/rfcs/rfc-000-template.md\n# RFC-{NUMBER}: {Title}\n\n## Status\n- **State**: [Draft | Review | Approved | Rejected | Superseded]\n- **Author**: @username\n- **Proposed**: YYYY-MM-DD\n- **Approved**: YYYY-MM-DD\n- **Supersedes**: RFC-XXX (if applicable)\n\n## Context\n[What problem are we solving? What is the current state?]\n\n## Decision\n[What approach are we taking? Be specific.]\n\n## Alternatives Considered\n\n### Alternative 1: {Name}\n**Description**: [What is this approach?]\n**Pros**:\n- Pro 1\n- Pro 2\n**Cons**:\n- Con 1\n- Con 2\n**Decision**: Rejected because [reason]\n\n### Alternative 2: {Name}\n[Same structure]\n\n## Consequences\n**Positive**:\n- Benefit 1\n- Benefit 2\n\n**Negative**:\n- Tradeoff 1\n- Tradeoff 2\n\n**Risks**:\n- Risk 1 (Mitigation: [plan])\n- Risk 2 (Mitigation: [plan])\n\n## Implementation Plan\n- [ ] Phase 1: [Description] (Due: YYYY-MM-DD, Owner: @user)\n- [ ] Phase 2: [Description] (Due: YYYY-MM-DD, Owner: @user)\n- [ ] Phase 3: [Description] (Due: YYYY-MM-DD, Owner: @user)\n\n## References\n- [Related RFC-XXX]\n- [External documentation]\n- [Benchmark results]\n2. RFC numbering:\n   - Sequential: RFC-001, RFC-002, etc.\n   - Maintain RFC index: knowledge/rfcs/INDEX.md\n3. RFC review process:\n   - Create PR to knowledge repo\n   - Request reviews from relevant stakeholders\n   - Discussion in PR comments\n   - Approval requires 2+ approvals from tech leads\n   - Merge PR = RFC approved\n4. Implement RFC agent:\n   RFCAgent assists by:\n   - Searching existing RFCs for similar decisions\n   - Generating alternatives section based on web research\n   - Populating implementation plan template\n   - Suggesting reviewers based on affected systems\n5. Link RFCs to implementation:\n   - Implementation issues reference RFC number\n   - Code comments: // See RFC-042 for design rationale\n6. Periodic RFC review:\n   - Monthly: review open Draft RFCs, push to decision\n   - Quarterly: review Approved RFCs, check if context changed",
+          "priority": "Medium",
+          "estimated_effort_hours": 12,
+          "dependencies": ["Knowledge repository"],
+          "integration_risks": "Low - process change, not technical",
+          "validation_metrics": [
+            "Major decisions documented as RFCs: > 90%",
+            "RFC review time < 1 week",
+            "Decision reversal rate < 5%"
+          ]
+        }
+      ]
+    },
+
+    "5_developer_experience": {
+      "description": "Tooling, workflows, or processes that improve DX",
+      "concepts": [
+        {
+          "concept_name": "Context Engineering Service",
+          "source_document": "ARCHITECTURE.md",
+          "description": "Extracts structured content from URLs or raw text to provide rich context for AI generation. Uses Gemini AI to parse unstructured input into JSON schema. Enables 'smart' content generation by understanding domain context beyond simple prompts.",
+          "value": "Agents work with high-fidelity context, not just user prompts. Reduces hallucination by grounding in actual source material. Supports URL-based workflows (e.g., 'generate based on this doc').",
+          "how_to_integrate": "1. Create ContextEngineering service:\n   class ContextEngineeringService {\n     async extractContext(input: {\n       url?: string;\n       text?: string;\n       schema: object;\n     }): Promise<object> {\n       let content: string;\n       \n       if (input.url) {\n         // Fetch and extract text from URL\n         const response = await fetch(input.url);\n         const html = await response.text();\n         content = htmlToText(html); // Strip HTML tags\n       } else {\n         content = input.text;\n       }\n       \n       // Use Gemini to extract structured data\n       const prompt = `\n         Extract the following information from the content:\n         Schema: ${JSON.stringify(input.schema, null, 2)}\n         \n         Content:\n         ${content}\n         \n         Return only valid JSON matching the schema.\n       `;\n       \n       const result = await gemini.generateContent({\n         contents: [{ role: 'user', parts: [{ text: prompt }] }]\n       });\n       \n       return JSON.parse(result.response.text());\n     }\n   }\n2. Define context schemas:\n   const COURSE_CONTEXT_SCHEMA = {\n     topic: 'string',\n     target_audience: 'string',\n     prerequisites: 'string[]',\n     key_concepts: 'string[]',\n     learning_objectives: 'string[]'\n   };\n3. Integrate into agent prompts:\n   const context = await contextService.extractContext({\n     url: 'https://example.com/tutorial',\n     schema: COURSE_CONTEXT_SCHEMA\n   });\n   \n   const agentPrompt = `\n     Create a course based on this source material.\n     \n     Extracted Context:\n     ${JSON.stringify(context, null, 2)}\n     \n     Ensure the course covers all key_concepts and meets learning_objectives.\n   `;\n4. Add to Claude Code custom commands:\n   /extract-context <url> - Extract structured context from URL\n5. Cache extracted contexts:\n   .ai/contexts/{url-hash}.json",
+          "priority": "Medium",
+          "estimated_effort_hours": 12,
+          "dependencies": ["Gemini AI", "html-to-text"],
+          "integration_risks": "Low - optional enhancement",
+          "validation_metrics": [
+            "Context extraction success rate > 95%",
+            "Schema adherence = 100%",
+            "Extraction time < 5s"
+          ]
+        },
+        {
+          "concept_name": "Custom Claude Code Commands",
+          "source_document": "CLAUDE_CODE_CUSTOM_COMMANDS.md (inferred)",
+          "description": "Custom slash commands in .claude/commands/ directory. Commands are markdown files that expand to full prompts. Example: /extract-context expands to detailed context extraction instructions. Enables reusable prompt templates.",
+          "value": "Consistent agent behavior across sessions. Reduces typing for common operations. Encodes best practices in commands. Easy to share and version control.",
+          "how_to_integrate": "1. Create .claude/commands/ directory\n2. Create command files (markdown):\n   # extract-context.md\n   ---\n   description: Extract structured context from URL or text\n   args:\n     - url: URL to extract from (optional)\n     - text: Raw text to extract from (optional)\n     - schema: JSON schema for extraction\n   ---\n   \n   You are a context extraction specialist. Extract structured information according to the provided schema.\n   \n   Steps:\n   1. Fetch content from URL (if provided) or use provided text\n   2. Analyze content for information matching schema fields\n   3. Return only valid JSON matching the exact schema structure\n   4. If information is missing, use null values\n   5. Ensure all required fields are present\n   \n   Quality checks:\n   - JSON must be valid (use jsonlint)\n   - Schema must be fully satisfied\n   - Extracted information must be accurate to source\n   \n   Usage: /extract-context url=https://example.com schema='{\"topic\":\"string\"}'\n3. Create commands for common operations:\n   - /parallel-tasks: Bundle multiple tasks for parallel execution\n   - /quality-check: Run ReviewAgent quality checks\n   - /escalate: Create escalation issue\n   - /postmortem: Generate postmortem from incident\n   - /rfc: Create RFC from decision notes\n4. Document commands:\n   .claude/commands/README.md: List all commands with examples\n5. Share commands:\n   - Check into git\n   - Team members automatically get latest commands on pull\n6. Test commands:\n   $ claude\n   > /extract-context url=https://docs.example.com",
+          "priority": "Low",
+          "estimated_effort_hours": 4,
+          "dependencies": ["Claude Code CLI"],
+          "integration_risks": "None - optional feature",
+          "validation_metrics": [
+            "Command usage frequency (tracks adoption)",
+            "User satisfaction (survey)"
+          ]
+        },
+        {
+          "concept_name": "Onboarding Analytics Service",
+          "source_document": "KPI_MONITORING.md",
+          "description": "Tracks user journey through onboarding with Google Analytics 4 events: onboarding_started, onboarding_step_completed (per step), onboarding_completed, onboarding_skipped. Calculates funnel metrics: completion rate, step-wise drop-off, average time. Goal: 60%+ completion rate, <5 min average time.",
+          "value": "Data-driven onboarding optimization. Identifies friction points (high drop-off steps). Measures impact of UX changes. Enables A/B testing.",
+          "how_to_integrate": "1. Create analytics service:\n   class OnboardingAnalyticsService {\n     private ga4MeasurementId: string;\n     \n     trackOnboardingStarted(entryPoint: string) {\n       this.sendEvent('onboarding_started', {\n         entry_point: entryPoint,\n         timestamp: Date.now()\n       });\n     }\n     \n     trackStepCompleted(stepId: string, timeSpentSeconds: number) {\n       this.sendEvent('onboarding_step_completed', {\n         step_id: stepId,\n         time_spent: timeSpentSeconds\n       });\n     }\n     \n     trackOnboardingCompleted(totalSteps: number, totalTimeSeconds: number) {\n       this.sendEvent('onboarding_completed', {\n         total_steps: totalSteps,\n         time_spent: totalTimeSeconds\n       });\n     }\n     \n     private sendEvent(eventName: string, params: object) {\n       if (typeof gtag !== 'undefined') {\n         gtag('event', eventName, params);\n       }\n     }\n   }\n2. Integrate into onboarding flow:\n   useEffect(() => {\n     analytics.trackOnboardingStarted('/welcome');\n   }, []);\n   \n   const handleStepComplete = (stepId: string) => {\n     const timeSpent = (Date.now() - stepStartTime) / 1000;\n     analytics.trackStepCompleted(stepId, timeSpent);\n   };\n3. Create GA4 funnel report:\n   - Navigate to GA4 → Explore → Funnel Exploration\n   - Add steps:\n     1. onboarding_started\n     2. onboarding_step_completed (step_id = welcome)\n     3. onboarding_step_completed (step_id = features)\n     4. ...\n     7. onboarding_completed\n   - Set conversion window: 7 days\n4. Set up alerts:\n   - Completion rate drops below 50% → Slack notification\n   - Average time exceeds 7 minutes → Investigation issue\n5. A/B testing:\n   - Split traffic 50/50 to variant onboarding flows\n   - Compare completion rates\n   - Winner becomes default\n6. Implement this pattern for all critical user journeys:\n   - Course generation flow\n   - Subscription signup\n   - First course publish",
+          "priority": "Low",
+          "estimated_effort_hours": 8,
+          "dependencies": ["Google Analytics 4"],
+          "integration_risks": "Low - analytics only",
+          "validation_metrics": [
+            "Event tracking accuracy > 99%",
+            "Analytics load time impact < 100ms"
+          ]
+        }
+      ]
+    },
+
+    "6_security_governance": {
+      "description": "Security practices, access control, or governance models",
+      "concepts": [
+        {
+          "concept_name": "HashiCorp Vault Dynamic Secrets with OIDC",
+          "source_document": "AUTOMATION_SECURITY.md",
+          "description": "GitHub Actions authenticates to Vault using OIDC (JWT tokens from GitHub's token.actions.githubusercontent.com). Vault issues short-lived secrets (15-minute TTL) specific to workflow + repository. Eliminates static secrets in GitHub Secrets. All secret access logged in Vault audit log.",
+          "value": "Zero standing credentials - secrets exist only during workflow execution. Automatic expiration prevents leaked secret abuse. Full audit trail of all secret access. Principle of least privilege via Vault policies.",
+          "how_to_integrate": "1. Deploy HashiCorp Vault:\n   # Docker Compose for dev\n   version: '3.8'\n   services:\n     vault:\n       image: hashicorp/vault:latest\n       ports:\n         - \"8200:8200\"\n       environment:\n         VAULT_DEV_ROOT_TOKEN_ID: myroot\n       cap_add:\n         - IPC_LOCK\n   \n   # Production: HCP Vault or self-hosted with HA\n2. Configure GitHub OIDC authentication:\n   export VAULT_ADDR='https://vault.example.com'\n   export VAULT_TOKEN='root-token'\n   \n   vault auth enable jwt\n   \n   vault write auth/jwt/config \\\n     oidc_discovery_url=\"https://token.actions.githubusercontent.com\" \\\n     bound_issuer=\"https://token.actions.githubusercontent.com\"\n   \n   # Create role per repository\n   vault write auth/jwt/role/agentic-os \\\n     role_type=\"jwt\" \\\n     bound_audiences=\"https://github.com/{org}\" \\\n     bound_subject=\"repo:{org}/agentic-os:*\" \\\n     user_claim=\"sub\" \\\n     policies=\"agentic-os-policy\" \\\n     ttl=15m\n3. Create Vault policies:\n   # agentic-os-policy.hcl\n   path \"secret/agentic-os/*\" {\n     capabilities = [\"read\"]\n   }\n   \n   vault policy write agentic-os-policy agentic-os-policy.hcl\n4. Store secrets in Vault:\n   vault kv put secret/agentic-os/github \\\n     token=\"ghp_...\" \\\n     ttl=15m\n   \n   vault kv put secret/agentic-os/anthropic \\\n     api_key=\"sk-ant-...\" \\\n     ttl=15m\n5. Update GitHub Actions workflows:\n   jobs:\n     deploy:\n       runs-on: ubuntu-latest\n       permissions:\n         id-token: write  # Required for OIDC\n         contents: read\n       \n       steps:\n         - uses: actions/checkout@v4\n         \n         - name: Authenticate to Vault\n           id: vault\n           uses: hashicorp/vault-action@v2\n           with:\n             url: ${{ secrets.VAULT_ADDR }}\n             method: jwt\n             role: agentic-os\n             secrets: |\n               secret/agentic-os/github token | GITHUB_TOKEN ;\n               secret/agentic-os/anthropic api_key | ANTHROPIC_API_KEY\n         \n         - name: Use secrets\n           env:\n             GITHUB_TOKEN: ${{ steps.vault.outputs.GITHUB_TOKEN }}\n             ANTHROPIC_API_KEY: ${{ steps.vault.outputs.ANTHROPIC_API_KEY }}\n           run: |\n             # Secrets auto-expire in 15 minutes\n             echo \"Using dynamic secrets with TTL\"\n6. Implement AuditAgent:\n   - Query Vault audit logs every hour\n   - Detect anomalies:\n     * Unusual access times (2-6 AM)\n     * High frequency (>10 req/min)\n     * Unauthorized repo access\n   - Alert on anomalies:\n     * Critical → GitHub Issue + PagerDuty\n     * High → Slack notification\n7. Rotate Vault root token:\n   vault token renew\n   vault token revoke <old-token>",
+          "priority": "Critical",
+          "estimated_effort_hours": 24,
+          "dependencies": ["HashiCorp Vault", "GitHub Actions OIDC"],
+          "integration_risks": "High - critical security infrastructure, requires careful setup",
+          "validation_metrics": [
+            "Static secret count = 0",
+            "Secret TTL compliance = 100% (all ≤ 15min)",
+            "Audit log completeness = 100%",
+            "Anomaly detection false positive rate < 5%"
+          ]
+        },
+        {
+          "concept_name": "Firestore Security Rules with Role-Based Access",
+          "source_document": "ARCHITECTURE.md, FIRESTORE_SECURITY_RULES.md (inferred)",
+          "description": "Granular Firestore rules using custom claims (admin, partner, user). Users can only access their own documents (userId == request.auth.uid). Subscription/credit documents are read-only from client (Cloud Functions only). Admin role gates access to partners/, leads/, security_events/ collections.",
+          "value": "Defense in depth - client-side security enforced at database level. Prevents privilege escalation even if client code compromised. Audit trail via Firestore query logs.",
+          "how_to_integrate": "1. Define custom claims in Firebase Auth:\n   # Using Firebase Admin SDK\n   admin.auth().setCustomUserClaims(uid, { admin: true });\n   admin.auth().setCustomUserClaims(uid, { partner: true, partnerLevel: 'gold' });\n2. Create comprehensive security rules: firestore.rules\n   rules_version = '2';\n   service cloud.firestore {\n     match /databases/{database}/documents {\n       \n       // Helper functions\n       function isAuthenticated() {\n         return request.auth != null;\n       }\n       \n       function isAdmin() {\n         return isAuthenticated() && request.auth.token.admin == true;\n       }\n       \n       function isPartner() {\n         return isAuthenticated() && request.auth.token.partner == true;\n       }\n       \n       function isOwner(userId) {\n         return isAuthenticated() && request.auth.uid == userId;\n       }\n       \n       // User profile\n       match /users/{userId} {\n         allow read: if isOwner(userId) || isAdmin();\n         allow write: if isOwner(userId);\n         \n         // Subscription (read-only from client)\n         match /subscription/{doc} {\n           allow read: if isOwner(userId);\n           allow write: if false;  // Cloud Functions only\n         }\n         \n         // Credits (read-only from client)\n         match /credits/{doc} {\n           allow read: if isOwner(userId);\n           allow write: if false;  // Cloud Functions only\n         }\n       }\n       \n       // Courses\n       match /courses/{courseId} {\n         allow read: if isOwner(resource.data.userId) || isAdmin();\n         allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;\n         allow update, delete: if isOwner(resource.data.userId);\n       }\n       \n       // Partners (admin only)\n       match /partners/{partnerId} {\n         allow read: if isPartner() || isAdmin();\n         allow write: if isAdmin();\n       }\n       \n       // Leads (admin only)\n       match /leads/{leadId} {\n         allow read, write: if isAdmin();\n       }\n       \n       // Security events (admin only)\n       match /security_events/{eventId} {\n         allow read: if isAdmin();\n         allow write: if false;  // Cloud Functions only\n       }\n       \n       // Knowledge base (public read, admin write)\n       match /knowledge/{docId} {\n         allow read: if isAuthenticated();\n         allow write: if isAdmin();\n       }\n     }\n   }\n3. Deploy rules:\n   firebase deploy --only firestore:rules\n4. Test rules:\n   # Firebase Emulator Suite\n   firebase emulators:start --only firestore\n   \n   # Run test suite\n   npm run test:firestore-rules\n5. Monitor rule violations:\n   - Enable Firestore audit logs in GCP\n   - Alert on permission denied errors\n   - Review logs weekly for access patterns\n6. Implement least privilege:\n   - Default deny all\n   - Explicitly allow only necessary operations\n   - Use read-only for derived data (subscription status)\n7. Regular security audits:\n   - Quarterly review of all rules\n   - Penetration testing of client-side exploits\n   - Update rules for new features",
+          "priority": "Critical",
+          "estimated_effort_hours": 12,
+          "dependencies": ["Firebase Admin SDK", "Firestore"],
+          "integration_risks": "High - incorrect rules can expose sensitive data",
+          "validation_metrics": [
+            "Unauthorized access attempts = 0",
+            "Rule coverage = 100% (all collections have rules)",
+            "Test coverage = 100% (all rules tested)"
+          ]
+        },
+        {
+          "concept_name": "Input Sanitization & Rate Limiting",
+          "source_document": "ARCHITECTURE.md",
+          "description": "All user input sanitized to prevent XSS/injection: strip <script> tags, remove javascript: URLs, length limits (10,000 chars). Rate limiting: max 10 requests per user per minute. Security event logging for blocked attempts.",
+          "value": "Prevents XSS attacks. Mitigates DoS via rate limiting. Creates audit trail of malicious activity for pattern detection.",
+          "how_to_integrate": "1. Create security utilities: utils/securityUtils.ts\n   export const sanitizeInput = (input: string): string => {\n     return input\n       .replace(/[<>]/g, '')  // Remove < and >\n       .replace(/javascript:/gi, '')  // Remove javascript: URLs\n       .replace(/on\\w+=/gi, '')  // Remove event handlers (onclick=, etc.)\n       .trim()\n       .substring(0, 10000);  // Max length\n   };\n   \n   export const sanitizeHTML = (html: string): string => {\n     // Use DOMPurify for rich text\n     return DOMPurify.sanitize(html, {\n       ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'ul', 'ol', 'li'],\n       ALLOWED_ATTR: []\n     });\n   };\n   \n   export const validateURL = (url: string): boolean => {\n     try {\n       const parsed = new URL(url);\n       return ['http:', 'https:'].includes(parsed.protocol);\n     } catch {\n       return false;\n     }\n   };\n   \n   class RateLimiter {\n     private requests = new Map<string, number[]>();\n     private maxRequests: number = 10;\n     private windowMs: number = 60000;  // 1 minute\n     \n     isAllowed(userId: string): boolean {\n       const now = Date.now();\n       const userRequests = this.requests.get(userId) || [];\n       \n       // Remove old requests outside window\n       const validRequests = userRequests.filter(ts => now - ts < this.windowMs);\n       \n       if (validRequests.length >= this.maxRequests) {\n         logSecurityEvent({\n           type: 'rate_limit',\n           userId,\n           severity: 'medium',\n           details: { requests: validRequests.length }\n         });\n         return false;\n       }\n       \n       validRequests.push(now);\n       this.requests.set(userId, validRequests);\n       return true;\n     }\n   }\n   \n   export const apiRateLimiter = new RateLimiter();\n   \n   export const logSecurityEvent = (event: {\n     type: 'rate_limit' | 'invalid_input' | 'unauthorized_access' | 'xss_attempt';\n     userId?: string;\n     severity: 'low' | 'medium' | 'high' | 'critical';\n     details: any;\n   }) => {\n     console.warn(`[SECURITY] ${event.type}:`, event.details);\n     \n     // Send to Sentry for critical/high\n     if (['critical', 'high'].includes(event.severity)) {\n       Sentry.captureMessage(`Security Event: ${event.type}`, {\n         level: event.severity === 'critical' ? 'error' : 'warning',\n         extra: event.details\n       });\n     }\n     \n     // Log to Firestore\n     if (event.userId) {\n       db.collection('security_events').add({\n         ...event,\n         timestamp: new Date()\n       });\n     }\n   };\n2. Apply sanitization everywhere:\n   // Course generation\n   const generateCourse = async (userPrompt: string) => {\n     const sanitized = sanitizeInput(userPrompt);\n     \n     if (sanitized !== userPrompt) {\n       logSecurityEvent({\n         type: 'xss_attempt',\n         severity: 'high',\n         details: { original: userPrompt.substring(0, 100) }\n       });\n     }\n     \n     // Continue with sanitized input\n   };\n3. Apply rate limiting:\n   const handleAPIRequest = async (userId: string) => {\n     if (!apiRateLimiter.isAllowed(userId)) {\n       throw new Error('Rate limit exceeded. Please try again later.');\n     }\n     \n     // Process request\n   };\n4. Add security headers:\n   # Firebase Hosting firebase.json\n   {\n     \"headers\": [\n       {\n         \"source\": \"**\",\n         \"headers\": [\n           {\n             \"key\": \"Content-Security-Policy\",\n             \"value\": \"default-src 'self'; script-src 'self' 'unsafe-inline' https://apis.google.com; style-src 'self' 'unsafe-inline';\"\n           },\n           {\n             \"key\": \"X-Frame-Options\",\n             \"value\": \"DENY\"\n           },\n           {\n             \"key\": \"X-Content-Type-Options\",\n             \"value\": \"nosniff\"\n           },\n           {\n             \"key\": \"Referrer-Policy\",\n             \"value\": \"strict-origin-when-cross-origin\"\n           }\n         ]\n       }\n     ]\n   }\n5. Security dashboard:\n   - Real-time count of blocked attempts\n   - Top offending IPs\n   - Most common attack vectors\n   - Automatic IP blocking after 10 attempts",
+          "priority": "Critical",
+          "estimated_effort_hours": 16,
+          "dependencies": ["DOMPurify", "Sentry"],
+          "integration_risks": "Medium - overly aggressive sanitization may break legitimate use cases",
+          "validation_metrics": [
+            "XSS vulnerability count = 0 (penetration testing)",
+            "Rate limit effectiveness (DDoS mitigation) = 100%",
+            "False positive rate (legitimate requests blocked) < 0.1%"
+          ]
+        }
+      ]
+    },
+
+    "7_integration_patterns": {
+      "description": "How external services (Lark, GitHub, Firebase, Stripe, etc.) are integrated",
+      "concepts": [
+        {
+          "concept_name": "Stripe Subscription Webhook Automation",
+          "source_document": "ARCHITECTURE.md",
+          "description": "Stripe webhooks (checkout.session.completed, customer.subscription.created/updated/deleted, invoice.paid) trigger Firebase Cloud Functions. Functions atomically update Firestore (user subscription status, credit allocation) and send confirmation emails. Implements idempotency via event ID tracking to prevent duplicate processing.",
+          "value": "Real-time subscription sync (no polling). Atomic updates prevent inconsistent state. Idempotency prevents double-charging. Automatic credit allocation reduces manual work.",
+          "how_to_integrate": "1. Create Stripe webhook endpoint: functions/stripeWebhook.ts\n   import Stripe from 'stripe';\n   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);\n   \n   export const stripeWebhook = onRequest(\n     { region: 'asia-northeast1', maxInstances: 10 },\n     async (req, res) => {\n       const sig = req.headers['stripe-signature'];\n       let event: Stripe.Event;\n       \n       try {\n         event = stripe.webhooks.constructEvent(\n           req.rawBody,\n           sig,\n           process.env.STRIPE_WEBHOOK_SECRET\n         );\n       } catch (err) {\n         console.error('Webhook signature verification failed');\n         return res.status(400).send('Invalid signature');\n       }\n       \n       // Idempotency check\n       const eventId = event.id;\n       const eventRef = admin.firestore()\n         .collection('stripe_events')\n         .doc(eventId);\n       \n       const eventDoc = await eventRef.get();\n       if (eventDoc.exists) {\n         console.log(`Event ${eventId} already processed`);\n         return res.status(200).send('OK (duplicate)');\n       }\n       \n       // Mark event as processing\n       await eventRef.set({ processed: true, timestamp: new Date() });\n       \n       // Route to handler\n       switch (event.type) {\n         case 'checkout.session.completed':\n           await handleCheckoutCompleted(event.data.object);\n           break;\n         \n         case 'customer.subscription.created':\n         case 'customer.subscription.updated':\n           await handleSubscriptionChange(event.data.object);\n           break;\n         \n         case 'customer.subscription.deleted':\n           await handleSubscriptionDeleted(event.data.object);\n           break;\n         \n         case 'invoice.paid':\n           await handleInvoicePaid(event.data.object);\n           break;\n         \n         default:\n           console.log(`Unhandled event type: ${event.type}`);\n       }\n       \n       res.status(200).send('OK');\n     }\n   );\n   \n   async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {\n     const userId = session.client_reference_id;\n     const customerId = session.customer as string;\n     \n     // Save Stripe customer ID\n     await admin.firestore()\n       .collection('users')\n       .doc(userId)\n       .update({ stripeCustomerId: customerId });\n   }\n   \n   async function handleSubscriptionChange(subscription: Stripe.Subscription) {\n     const customerId = subscription.customer as string;\n     \n     // Find user by Stripe customer ID\n     const userSnapshot = await admin.firestore()\n       .collection('users')\n       .where('stripeCustomerId', '==', customerId)\n       .limit(1)\n       .get();\n     \n     if (userSnapshot.empty) {\n       console.error(`User not found for customer ${customerId}`);\n       return;\n     }\n     \n     const userId = userSnapshot.docs[0].id;\n     const planId = subscription.items.data[0].price.id;\n     \n     // Map price ID to plan tier\n     const planMap: Record<string, string> = {\n       'price_starter': 'starter',\n       'price_growth': 'growth',\n       'price_scale': 'scale',\n       'price_enterprise': 'enterprise'\n     };\n     const planTier = planMap[planId];\n     \n     // Update subscription status\n     await admin.firestore()\n       .collection('users')\n       .doc(userId)\n       .collection('subscription')\n       .doc('current')\n       .set({\n         stripeSubscriptionId: subscription.id,\n         planId: planTier,\n         status: subscription.status,\n         currentPeriodStart: new Date(subscription.current_period_start * 1000),\n         currentPeriodEnd: new Date(subscription.current_period_end * 1000),\n         cancelAtPeriodEnd: subscription.cancel_at_period_end\n       });\n     \n     // Allocate credits based on plan\n     const creditQuotas: Record<string, number> = {\n       starter: 100,\n       growth: 500,\n       scale: 2000,\n       enterprise: 10000\n     };\n     \n     await admin.firestore()\n       .collection('users')\n       .doc(userId)\n       .collection('credits')\n       .doc('balance')\n       .set({\n         balance: creditQuotas[planTier],\n         monthlyQuota: creditQuotas[planTier],\n         periodStart: new Date(subscription.current_period_start * 1000),\n         periodEnd: new Date(subscription.current_period_end * 1000)\n       });\n   }\n2. Configure Stripe webhook in dashboard:\n   - Endpoint URL: https://asia-northeast1-{project}.cloudfunctions.net/stripeWebhook\n   - Events to send:\n     * checkout.session.completed\n     * customer.subscription.created\n     * customer.subscription.updated\n     * customer.subscription.deleted\n     * invoice.paid\n     * invoice.payment_failed\n   - Copy webhook signing secret to Firebase Functions config\n3. Deploy function:\n   firebase deploy --only functions:stripeWebhook\n4. Test webhook:\n   stripe trigger checkout.session.completed\n5. Monitor webhook deliveries:\n   - Stripe Dashboard → Developers → Webhooks\n   - Check delivery success rate (should be >99%)\n   - Review failed deliveries and retry",
+          "priority": "High",
+          "estimated_effort_hours": 16,
+          "dependencies": ["Stripe", "Firebase Functions"],
+          "integration_risks": "Medium - webhook reliability critical for billing",
+          "validation_metrics": [
+            "Webhook delivery success rate > 99%",
+            "Subscription sync latency < 5 seconds",
+            "Duplicate event processing rate = 0%"
+          ]
+        },
+        {
+          "concept_name": "Google Sheets Integration for Quote Calculator",
+          "source_document": "PARALLEL_AGENT_EXECUTION_GUIDE.md (Issue #52)",
+          "description": "Quote calculator exports pricing data to Google Sheets for sales team. Uses Google Sheets API v4 with service account authentication. Automatically creates new sheet per quote, applies formatting (currency, borders), and shares with stakeholders.",
+          "value": "Sales team familiar with Sheets. Real-time collaboration on quotes. Version history and audit trail. Easy import to CRM systems.",
+          "how_to_integrate": "1. Set up Google Cloud Project:\n   - Enable Google Sheets API\n   - Create service account\n   - Download service account JSON key\n   - Save key to Firebase Functions config\n2. Install dependencies:\n   npm install googleapis\n3. Create Google Sheets service:\n   import { google } from 'googleapis';\n   \n   class GoogleSheetsService {\n     private sheets: any;\n     \n     constructor() {\n       const auth = new google.auth.GoogleAuth({\n         credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY),\n         scopes: ['https://www.googleapis.com/auth/spreadsheets']\n       });\n       this.sheets = google.sheets({ version: 'v4', auth });\n     }\n     \n     async exportQuote(quote: Quote): Promise<string> {\n       // Create new spreadsheet\n       const createResponse = await this.sheets.spreadsheets.create({\n         resource: {\n           properties: {\n             title: `Quote ${quote.id} - ${quote.clientName}`\n           },\n           sheets: [{\n             properties: { title: 'Quote Details' }\n           }]\n         }\n       });\n       \n       const spreadsheetId = createResponse.data.spreadsheetId;\n       const sheetId = createResponse.data.sheets[0].properties.sheetId;\n       \n       // Populate data\n       const values = [\n         ['AI Course Generator - Quote'],\n         [],\n         ['Client', quote.clientName],\n         ['Date', new Date().toLocaleDateString()],\n         ['Valid Until', quote.validUntil],\n         [],\n         ['Item', 'Quantity', 'Unit Price', 'Total'],\n         ...quote.lineItems.map(item => [\n           item.description,\n           item.quantity,\n           item.unitPrice,\n           item.total\n         ]),\n         [],\n         ['Subtotal', '', '', quote.subtotal],\n         ['Discount', '', '', `-${quote.discount}`],\n         ['Tax', '', '', quote.tax],\n         ['Total', '', '', quote.total]\n       ];\n       \n       await this.sheets.spreadsheets.values.update({\n         spreadsheetId,\n         range: 'A1',\n         valueInputOption: 'RAW',\n         resource: { values }\n       });\n       \n       // Apply formatting\n       await this.sheets.spreadsheets.batchUpdate({\n         spreadsheetId,\n         resource: {\n           requests: [\n             // Header row bold\n             {\n               repeatCell: {\n                 range: {\n                   sheetId,\n                   startRowIndex: 6,\n                   endRowIndex: 7\n                 },\n                 cell: {\n                   userEnteredFormat: {\n                     textFormat: { bold: true },\n                     backgroundColor: { red: 0.9, green: 0.9, blue: 0.9 }\n                   }\n                 },\n                 fields: 'userEnteredFormat(textFormat,backgroundColor)'\n               }\n             },\n             // Currency format for prices\n             {\n               repeatCell: {\n                 range: {\n                   sheetId,\n                   startRowIndex: 7,\n                   startColumnIndex: 2,\n                   endColumnIndex: 4\n                 },\n                 cell: {\n                   userEnteredFormat: {\n                     numberFormat: {\n                       type: 'CURRENCY',\n                       pattern: '$#,##0.00'\n                     }\n                   }\n                 },\n                 fields: 'userEnteredFormat.numberFormat'\n               }\n             }\n           ]\n         }\n       });\n       \n       // Share with stakeholders\n       const drive = google.drive({ version: 'v3', auth: this.sheets.auth });\n       await drive.permissions.create({\n         fileId: spreadsheetId,\n         requestBody: {\n           type: 'user',\n           role: 'writer',\n           emailAddress: quote.salesRepEmail\n         }\n       });\n       \n       return `https://docs.google.com/spreadsheets/d/${spreadsheetId}`;\n     }\n   }\n4. Integrate into quote flow:\n   const handleExportToSheets = async () => {\n     setLoading(true);\n     \n     try {\n       const url = await googleSheetsService.exportQuote(quote);\n       \n       setSuccessMessage(`Exported to Google Sheets: ${url}`);\n       \n       // Open in new tab\n       window.open(url, '_blank');\n     } catch (error) {\n       setError(`Export failed: ${error.message}`);\n     } finally {\n       setLoading(false);\n     }\n   };\n5. Add export button to quote UI:\n   <Button onClick={handleExportToSheets}>\n     📊 Export to Google Sheets\n   </Button>",
+          "priority": "Low",
+          "estimated_effort_hours": 12,
+          "dependencies": ["Google Sheets API", "Service Account"],
+          "integration_risks": "Low - non-critical feature",
+          "validation_metrics": [
+            "Export success rate > 98%",
+            "Export time < 3 seconds",
+            "Formatting accuracy = 100%"
+          ]
+        }
+      ]
+    },
+
+    "8_monitoring_observability": {
+      "description": "KPI tracking, SLA monitoring, error handling",
+      "concepts": [
+        {
+          "concept_name": "SLA Monitoring with Firebase Functions",
+          "source_document": "SLA_MONITORING_SYSTEM.md",
+          "description": "Tracks 6 SLA metrics: uptime (99.9% target), response time (<2s), course generation time (<5min), support response time (<24h), API availability (99.9%), error rate (<1%). Firebase Functions collect metrics every 5 minutes, detect violations, and send alerts (email/Slack/SMS). Generates daily/weekly/monthly reports with PDF export.",
+          "value": "Proactive issue detection before user reports. Data-driven capacity planning. SLA compliance proof for enterprise customers. Automatic escalation for critical violations.",
+          "how_to_integrate": "1. Define SLA metrics: src/types/sla.ts\n   interface SLAMetric {\n     id: string;\n     metricType: 'uptime' | 'response_time' | 'course_generation_time' | \n                  'support_response_time' | 'api_availability' | 'error_rate';\n     timestamp: Date;\n     value: number;\n     unit: string;  // '%', 'ms', 'minutes', 'hours'\n     status: 'healthy' | 'warning' | 'violation' | 'critical';\n     metadata?: {\n       endpoint?: string;\n       userId?: string;\n       region?: string;\n     };\n   }\n   \n   interface SLAViolation {\n     id: string;\n     metricType: string;\n     detectedAt: Date;\n     resolvedAt?: Date;\n     severity: 'low' | 'medium' | 'high' | 'critical';\n     actualValue: number;\n     expectedValue: number;\n     duration?: number;  // milliseconds\n     affectedUsers?: number;\n     description: string;\n     status: 'open' | 'investigating' | 'resolved' | 'false_positive';\n   }\n2. Implement metric collection: functions/slaMonitoring.ts\n   export const collectSLAMetrics = onSchedule(\n     {\n       schedule: 'every 5 minutes',\n       timeZone: 'Asia/Tokyo',\n       region: 'asia-northeast1'\n     },\n     async () => {\n       // Collect uptime\n       const uptimeMetric = await measureUptime();\n       await saveSLAMetric(uptimeMetric);\n       \n       // Collect response times (sample recent requests)\n       const responseMetric = await measureResponseTime();\n       await saveSLAMetric(responseMetric);\n       \n       // Check for violations\n       const violations = await detectViolations([uptimeMetric, responseMetric]);\n       \n       for (const violation of violations) {\n         await handleViolation(violation);\n       }\n     }\n   );\n   \n   async function measureUptime(): Promise<SLAMetric> {\n     // Check critical endpoints\n     const endpoints = [\n       'https://api.example.com/health',\n       'https://api.example.com/v1/courses',\n       'https://api.example.com/v1/users/me'\n     ];\n     \n     let successCount = 0;\n     for (const endpoint of endpoints) {\n       try {\n         const response = await fetch(endpoint, { timeout: 5000 });\n         if (response.ok) successCount++;\n       } catch {\n         // Endpoint down\n       }\n     }\n     \n     const uptime = (successCount / endpoints.length) * 100;\n     \n     return {\n       id: `uptime-${Date.now()}`,\n       metricType: 'uptime',\n       timestamp: new Date(),\n       value: uptime,\n       unit: '%',\n       status: uptime >= 99.9 ? 'healthy' : uptime >= 99.0 ? 'warning' : 'violation'\n     };\n   }\n   \n   async function detectViolations(metrics: SLAMetric[]): Promise<SLAViolation[]> {\n     const violations: SLAViolation[] = [];\n     \n     const thresholds: Record<string, number> = {\n       uptime: 99.9,\n       response_time: 2000,\n       course_generation_time: 300000,  // 5 minutes\n       error_rate: 1.0\n     };\n     \n     for (const metric of metrics) {\n       const threshold = thresholds[metric.metricType];\n       if (!threshold) continue;\n       \n       const violated = metric.metricType === 'uptime' || metric.metricType === 'error_rate'\n         ? metric.value < threshold  // Lower is worse\n         : metric.value > threshold;  // Higher is worse\n       \n       if (violated) {\n         violations.push({\n           id: `violation-${Date.now()}`,\n           metricType: metric.metricType,\n           detectedAt: new Date(),\n           severity: calculateSeverity(metric),\n           actualValue: metric.value,\n           expectedValue: threshold,\n           description: `${metric.metricType} SLA violation: ${metric.value}${metric.unit} (expected: ${threshold}${metric.unit})`,\n           status: 'open'\n         });\n       }\n     }\n     \n     return violations;\n   }\n   \n   async function handleViolation(violation: SLAViolation) {\n     // Save to Firestore\n     await admin.firestore()\n       .collection('sla_violations')\n       .add(violation);\n     \n     // Send alerts based on severity\n     if (violation.severity === 'critical' || violation.severity === 'high') {\n       await sendSlackAlert(violation);\n       await sendEmailAlert(violation);\n       \n       if (violation.severity === 'critical') {\n         await sendSMSAlert(violation);  // PagerDuty/Twilio\n       }\n     }\n     \n     // Create GitHub issue for tracking\n     await octokit.issues.create({\n       owner: 'org',\n       repo: 'agentic-os',\n       title: `SLA Violation: ${violation.description}`,\n       labels: ['sla-violation', `severity-${violation.severity}`],\n       body: `\n         ## SLA Violation Detected\n         \n         - **Metric**: ${violation.metricType}\n         - **Severity**: ${violation.severity}\n         - **Actual**: ${violation.actualValue}\n         - **Expected**: ${violation.expectedValue}\n         - **Detected**: ${violation.detectedAt}\n         \n         ## Actions\n         - [ ] Investigate root cause\n         - [ ] Implement fix\n         - [ ] Verify resolution\n         - [ ] Update postmortem\n       `\n     });\n   }\n3. Implement report generation:\n   export const generateDailySLAReport = onSchedule(\n     {\n       schedule: '0 9 * * *',  // 9:00 JST daily\n       timeZone: 'Asia/Tokyo'\n     },\n     async () => {\n       const report = await generateSLAReport('daily', \n         new Date(Date.now() - 24*60*60*1000),\n         new Date()\n       );\n       \n       // Save to Firestore\n       await admin.firestore()\n         .collection('sla_reports')\n         .add(report);\n       \n       // Send to stakeholders\n       await sendReportEmail(report);\n     }\n   );\n4. Create dashboard component:\n   const SLADashboard: React.FC = () => {\n     const [metrics, setMetrics] = useState<SLAMetric[]>([]);\n     const [violations, setViolations] = useState<SLAViolation[]>([]);\n     \n     useEffect(() => {\n       const unsubscribe = onSnapshot(\n         query(\n           collection(db, 'sla_metrics'),\n           orderBy('timestamp', 'desc'),\n           limit(100)\n         ),\n         (snapshot) => {\n           setMetrics(snapshot.docs.map(doc => doc.data() as SLAMetric));\n         }\n       );\n       \n       return unsubscribe;\n     }, []);\n     \n     return (\n       <div className=\"sla-dashboard\">\n         <h1>SLA Monitoring Dashboard</h1>\n         \n         <div className=\"metrics-grid\">\n           {['uptime', 'response_time', 'error_rate'].map(type => (\n             <MetricCard key={type} type={type} metrics={metrics.filter(m => m.metricType === type)} />\n           ))}\n         </div>\n         \n         <ViolationList violations={violations} />\n       </div>\n     );\n   };",
+          "priority": "High",
+          "estimated_effort_hours": 32,
+          "dependencies": ["Firebase Functions", "SendGrid", "Twilio"],
+          "integration_risks": "Medium - alert fatigue if thresholds too sensitive",
+          "validation_metrics": [
+            "Metric collection reliability > 99.9%",
+            "False positive alert rate < 5%",
+            "Mean time to detect (MTTD) < 10 minutes"
+          ]
+        },
+        {
+          "concept_name": "Comprehensive KPI Collection & Dashboard",
+          "source_document": "AGENTIC_OPERATIONS.md, KPI_MONITORING.md",
+          "description": "Collects 15+ KPIs every 6 hours via GitHub Actions: AI task count, success rate, average close time, human intervention rate, quality score average, test coverage, Shikigaku 5-principle metrics (責任明確化率, 客観評価率, etc.). Stores in .ai/metrics/YYYY-MM-DD.json. Dashboard at .ai/dashboard.md with weekly review meeting template.",
+          "value": "Data-driven decision making. Tracks automation effectiveness over time. Identifies bottlenecks and improvement areas. Weekly review ensures continuous optimization.",
+          "how_to_integrate": "1. Define KPI structure:\n   interface KPISnapshot {\n     timestamp: Date;\n     efficiency: {\n       ai_task_count: number;\n       ai_task_success_rate: number;  // %\n       avg_close_time_hours: number;\n       human_intervention_rate: number;  // %\n     };\n     quality: {\n       avg_quality_score: number;  // 0-100\n       test_coverage: number;  // %\n       avg_execution_time_minutes: number;\n     };\n     shikigaku_principles: {\n       responsibility_clarity_rate: number;  // assignee present %\n       objective_evaluation_rate: number;  // quality score present %\n       hierarchy_compliance_rate: number;  // correct escalation %\n       completion_criteria_rate: number;  // acceptance criteria present %\n       data_driven_decision_rate: number;  // decisions with data %\n     };\n   }\n2. Implement KPI collection: scripts/collect-kpi.ts\n   import { Octokit } from '@octokit/rest';\n   \n   const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });\n   \n   async function collectKPIs(): Promise<KPISnapshot> {\n     const past24h = new Date(Date.now() - 24*60*60*1000);\n     \n     // Get all issues updated in past 24h\n     const { data: issues } = await octokit.issues.listForRepo({\n       owner: 'org',\n       repo: 'agentic-os',\n       state: 'all',\n       since: past24h.toISOString()\n     });\n     \n     // Filter AI tasks\n     const aiTasks = issues.filter(issue => \n       issue.labels.some(label => \n         typeof label === 'object' && label.name.includes('AI Agent')\n       )\n     );\n     \n     // Calculate metrics\n     const ai_task_count = aiTasks.length;\n     \n     const completedTasks = aiTasks.filter(issue => issue.state === 'closed');\n     const ai_task_success_rate = (completedTasks.length / ai_task_count) * 100;\n     \n     const closeTimes = completedTasks\n       .filter(issue => issue.closed_at)\n       .map(issue => {\n         const created = new Date(issue.created_at).getTime();\n         const closed = new Date(issue.closed_at!).getTime();\n         return (closed - created) / (1000 * 60 * 60);  // hours\n       });\n     const avg_close_time_hours = closeTimes.reduce((a, b) => a + b, 0) / closeTimes.length;\n     \n     // Human intervention rate (count of human comments / total tasks)\n     let humanInterventions = 0;\n     for (const issue of aiTasks) {\n       const { data: comments } = await octokit.issues.listComments({\n         owner: 'org',\n         repo: 'agentic-os',\n         issue_number: issue.number\n       });\n       \n       const hasHumanComment = comments.some(comment => \n         !comment.user?.login.includes('bot') &&\n         !comment.user?.login.includes('github-actions')\n       );\n       \n       if (hasHumanComment) humanInterventions++;\n     }\n     const human_intervention_rate = (humanInterventions / ai_task_count) * 100;\n     \n     // Quality metrics (extract from issue bodies / comments)\n     const qualityScores: number[] = [];\n     for (const issue of completedTasks) {\n       const scoreMatch = issue.body?.match(/Quality Score: (\\d+)/i);\n       if (scoreMatch) {\n         qualityScores.push(parseInt(scoreMatch[1]));\n       }\n     }\n     const avg_quality_score = qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length;\n     \n     // Shikigaku principles\n     const responsibility_clarity_rate = \n       (aiTasks.filter(issue => issue.assignee).length / ai_task_count) * 100;\n     \n     const objective_evaluation_rate = \n       (aiTasks.filter(issue => issue.body?.includes('Quality Score')).length / ai_task_count) * 100;\n     \n     // ... calculate other principles\n     \n     return {\n       timestamp: new Date(),\n       efficiency: {\n         ai_task_count,\n         ai_task_success_rate,\n         avg_close_time_hours,\n         human_intervention_rate\n       },\n       quality: {\n         avg_quality_score,\n         test_coverage: 0,  // TODO: integrate coverage tool\n         avg_execution_time_minutes: 0  // TODO: parse from agent logs\n       },\n       shikigaku_principles: {\n         responsibility_clarity_rate,\n         objective_evaluation_rate,\n         hierarchy_compliance_rate: 0,  // TODO\n         completion_criteria_rate: 0,  // TODO\n         data_driven_decision_rate: 0  // TODO\n       }\n     };\n   }\n   \n   async function main() {\n     const kpis = await collectKPIs();\n     \n     // Save to file\n     const date = new Date().toISOString().split('T')[0];\n     const filePath = `.ai/metrics/${date}.json`;\n     \n     await fs.writeFile(filePath, JSON.stringify(kpis, null, 2));\n     \n     console.log(`KPIs saved to ${filePath}`);\n     \n     // Update dashboard\n     await generateDashboard(kpis);\n   }\n3. Create GitHub Actions workflow: .github/workflows/kpi-collection.yml\n   name: KPI Collection\n   \n   on:\n     schedule:\n       - cron: '0 */6 * * *'  # Every 6 hours\n     workflow_dispatch:\n   \n   jobs:\n     collect:\n       runs-on: ubuntu-latest\n       steps:\n         - uses: actions/checkout@v4\n         \n         - uses: actions/setup-node@v4\n           with:\n             node-version: '20'\n         \n         - run: npm install\n         \n         - name: Collect KPIs\n           env:\n             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n           run: npx ts-node scripts/collect-kpi.ts\n         \n         - name: Commit metrics\n           run: |\n             git config user.name \"KPI Bot\"\n             git config user.email \"kpi-bot@example.com\"\n             git add .ai/metrics/\n             git add .ai/dashboard.md\n             git commit -m \"chore: update KPIs $(date +%Y-%m-%d)\" || echo \"No changes\"\n             git push\n4. Generate dashboard: scripts/generate-dashboard.ts\n   async function generateDashboard(kpis: KPISnapshot) {\n     const markdown = `\n# Agentic OS Dashboard\n\n**Last Updated**: ${kpis.timestamp.toISOString()}\n\n## 📊 Efficiency Metrics\n\n| Metric | Value | Target | Status |\n|--------|-------|--------|--------|\n| AI Task Count (24h) | ${kpis.efficiency.ai_task_count} | - | ✅ |\n| AI Task Success Rate | ${kpis.efficiency.ai_task_success_rate.toFixed(1)}% | >90% | ${kpis.efficiency.ai_task_success_rate >= 90 ? '✅' : '❌'} |\n| Avg Close Time | ${kpis.efficiency.avg_close_time_hours.toFixed(1)}h | <24h | ${kpis.efficiency.avg_close_time_hours <= 24 ? '✅' : '❌'} |\n| Human Intervention Rate | ${kpis.efficiency.human_intervention_rate.toFixed(1)}% | <10% | ${kpis.efficiency.human_intervention_rate <= 10 ? '✅' : '⚠️'} |\n\n## 🎯 Quality Metrics\n\n| Metric | Value | Target | Status |\n|--------|-------|--------|--------|\n| Avg Quality Score | ${kpis.quality.avg_quality_score.toFixed(1)} | >80 | ${kpis.quality.avg_quality_score >= 80 ? '✅' : '❌'} |\n| Test Coverage | ${kpis.quality.test_coverage.toFixed(1)}% | >75% | ${kpis.quality.test_coverage >= 75 ? '✅' : '⚠️'} |\n\n## 📚 Shikigaku 5 Principles\n\n| Principle | KPI | Value | Target | Status |\n|-----------|-----|-------|--------|--------|\n| 1. Responsibility Clarity | Assignee Rate | ${kpis.shikigaku_principles.responsibility_clarity_rate.toFixed(1)}% | 100% | ${kpis.shikigaku_principles.responsibility_clarity_rate === 100 ? '✅' : '⚠️'} |\n| 2. Results-Oriented | Success Rate | ${kpis.efficiency.ai_task_success_rate.toFixed(1)}% | >90% | ${kpis.efficiency.ai_task_success_rate >= 90 ? '✅' : '❌'} |\n| 3. Hierarchy Clarity | Escalation Accuracy | ${kpis.shikigaku_principles.hierarchy_compliance_rate.toFixed(1)}% | >95% | ${kpis.shikigaku_principles.hierarchy_compliance_rate >= 95 ? '✅' : '⚠️'} |\n| 4. Eliminate Ambiguity | Completion Criteria Rate | ${kpis.shikigaku_principles.completion_criteria_rate.toFixed(1)}% | 100% | ${kpis.shikigaku_principles.completion_criteria_rate === 100 ? '✅' : '⚠️'} |\n| 5. Data-Driven Judgment | Data-Backed Decision Rate | ${kpis.shikigaku_principles.data_driven_decision_rate.toFixed(1)}% | 100% | ${kpis.shikigaku_principles.data_driven_decision_rate === 100 ? '✅' : '⚠️'} |\n\n## 📈 Trends\n\n[Generate charts using past 30 days of metrics]\n     `;\n     \n     await fs.writeFile('.ai/dashboard.md', markdown);\n   }\n5. Weekly review meeting:\n   - Automated calendar invite every Monday 10:00\n   - Pre-populate meeting notes with dashboard data\n   - Template: .ai/templates/weekly-review.md\n   - Action items tracked as GitHub issues",
+          "priority": "High",
+          "estimated_effort_hours": 20,
+          "dependencies": ["GitHub Actions", "Octokit"],
+          "integration_risks": "Low - reporting system",
+          "validation_metrics": [
+            "KPI collection success rate > 99%",
+            "Dashboard generation time < 30 seconds",
+            "Data accuracy (spot checks) = 100%"
+          ]
+        }
+      ]
+    }
+  },
+
+  "implementation_roadmap": {
+    "phase_1_foundation": {
+      "duration_weeks": 4,
+      "estimated_hours": 96,
+      "priority_concepts": [
+        "6-Agent Type System",
+        "Shikigaku Theory Operations Framework",
+        "HashiCorp Vault Dynamic Secrets",
+        "Firestore Security Rules"
+      ],
+      "deliverables": [
+        "Agent type system with base classes",
+        "Shikigaku 5-principle implementation",
+        "Vault OIDC authentication",
+        "Firestore rules with RBAC"
+      ]
+    },
+    "phase_2_parallel_execution": {
+      "duration_weeks": 3,
+      "estimated_hours": 72,
+      "priority_concepts": [
+        "Parallel Task Execution via Claude Code",
+        "DAG-Based Dependency Resolution",
+        "Resource-Based Dynamic Concurrency",
+        "Auto-Recovery with Retry"
+      ],
+      "deliverables": [
+        "Parallel orchestrator with Claude Code integration",
+        "DAG builder with cycle detection",
+        "Concurrency controller",
+        "Retry mechanism"
+      ]
+    },
+    "phase_3_knowledge_persistence": {
+      "duration_weeks": 4,
+      "estimated_hours": 64,
+      "priority_concepts": [
+        "Vector Database Knowledge Persistence",
+        "5 Whys Root Cause Analysis",
+        "RFC-Driven Architecture Decisions"
+      ],
+      "deliverables": [
+        "Knowledge repository with Pinecone",
+        "Embedding pipeline",
+        "Postmortem templates with 5 Whys",
+        "RFC review process"
+      ]
+    },
+    "phase_4_monitoring_operations": {
+      "duration_weeks": 3,
+      "estimated_hours": 80,
+      "priority_concepts": [
+        "Autonomous 24/7 System with tmux",
+        "SLA Monitoring with Firebase Functions",
+        "Comprehensive KPI Collection",
+        "MCP Server Architecture"
+      ],
+      "deliverables": [
+        "tmux dashboard system",
+        "SLA monitoring functions",
+        "KPI collection pipeline",
+        "MCP server for tool integration"
+      ]
+    }
+  },
+
+  "risk_assessment": {
+    "high_risk_areas": [
+      {
+        "area": "HashiCorp Vault Integration",
+        "risk": "Critical security infrastructure - misconfiguration could expose all secrets",
+        "mitigation": "Start with dev environment, extensive testing, gradual rollout, security audit before production"
+      },
+      {
+        "area": "Parallel Execution File Conflicts",
+        "risk": "Multiple agents editing same files simultaneously causes merge conflicts",
+        "mitigation": "Implement conflict detection algorithm, force sequential execution for overlapping files, automated conflict resolution with git rerere"
+      },
+      {
+        "area": "Knowledge Base Embedding Quality",
+        "risk": "Poor chunking strategy leads to lost context in vector search",
+        "mitigation": "Experiment with chunk sizes (200, 500, 1000 tokens), implement overlap (50-100 tokens), validate with test queries"
+      }
+    ],
+    "medium_risk_areas": [
+      {
+        "area": "MCP Protocol Stability",
+        "risk": "MCP is relatively new protocol, breaking changes possible",
+        "mitigation": "Pin SDK versions, monitor changelog, have fallback to direct API calls"
+      },
+      {
+        "area": "Lark API Rate Limits",
+        "risk": "Lark limits 60 req/min, could block sync during high activity",
+        "mitigation": "Implement request batching, exponential backoff, queue system for burst handling"
+      }
+    ],
+    "low_risk_areas": [
+      "Dashboard aesthetics (ASCII art)",
+      "Google Sheets integration (non-critical)",
+      "Custom Claude Code commands (optional)"
+    ]
+  },
+
+  "success_metrics": {
+    "efficiency_gains": {
+      "parallel_execution_time_reduction": "> 70% vs sequential",
+      "agent_automation_rate": "> 90% (human intervention < 10%)",
+      "average_task_completion_time": "< 24 hours (vs 3-5 days manual)"
+    },
+    "quality_improvements": {
+      "average_quality_score": "> 85/100",
+      "test_coverage": "> 80%",
+      "incident_recurrence_rate": "< 5%"
+    },
+    "operational_excellence": {
+      "system_uptime": "> 99.9%",
+      "sla_compliance_rate": "> 99%",
+      "knowledge_retrieval_relevance": "> 60% (score > 0.8)"
+    },
+    "security_posture": {
+      "static_secret_count": "= 0",
+      "unauthorized_access_attempts": "= 0",
+      "secret_ttl_compliance": "= 100% (all ≤ 15min)"
+    }
+  },
+
+  "next_steps": {
+    "immediate_actions": [
+      "Review this report with technical leads",
+      "Prioritize concepts based on business value",
+      "Set up knowledge repository structure",
+      "Deploy HashiCorp Vault dev instance",
+      "Create agent type system base classes"
+    ],
+    "week_1_2": [
+      "Implement 6-agent type system",
+      "Set up Shikigaku framework (labels, status codes)",
+      "Configure Vault OIDC with GitHub Actions",
+      "Deploy Firestore security rules"
+    ],
+    "week_3_4": [
+      "Build parallel execution orchestrator",
+      "Implement DAG dependency resolution",
+      "Create tmux dashboard system",
+      "Set up MCP server skeleton"
+    ],
+    "month_2": [
+      "Deploy vector database and embedding pipeline",
+      "Implement knowledge search in agents",
+      "Create SLA monitoring functions",
+      "Launch KPI collection automation"
+    ],
+    "month_3": [
+      "Integrate all systems end-to-end",
+      "Conduct security audit",
+      "Performance optimization",
+      "Documentation and training"
+    ]
+  },
+
+  "appendix": {
+    "document_sources": [
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/AGENTIC_OPERATIONS.md",
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/AGENTS_PARALLEL_EXECUTION.md",
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/AUTONOMOUS-24-7-SYSTEM.md",
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/CLAUDE_CODE_PARALLEL_EXECUTION_ENVIRONMENT.md",
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/KNOWLEDGE_PERSISTENCE.md",
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/KPI_MONITORING.md",
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/SLA_MONITORING_SYSTEM.md",
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/OPERATION_LOGIC_PLAN.md",
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/PARALLEL_AGENT_EXECUTION_GUIDE.md",
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/PARALLEL-SYSTEM-COMPLETE-GUIDE.md",
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/AUTOMATION_SECURITY.md",
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/agentic/INTEGRATION_GUIDE.md",
+      "/Users/shunsuke/Dev/ai-course-content-generator-v.0.0.1/docs/ARCHITECTURE.md"
+    ],
+    "total_documentation_reviewed": "13 documents, approximately 25,000+ lines",
+    "analysis_duration": "Complete documentation review and synthesis",
+    "analyst": "Claude (Sonnet 4.5)",
+    "target_audience": "Autonomous-Operations Agentic OS development team"
+  }
+}

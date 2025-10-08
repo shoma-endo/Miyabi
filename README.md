@@ -1,22 +1,26 @@
 <div align="center">
 
-# 🌍 Autonomous-Operations
+# 🌍 Agentic OS
 
-### The Operating System for the Age of Agents
+### From Issue to Production — Autonomously, Safely, Transparently
 
-**GitHubをAgenticOSとして機能させ、人類とAgentが共存する未来を創る**
+**The first open-source, economically-governed, beginner-friendly autonomous development framework built on Issue-Driven Development**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8+-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
-[![Autonomous](https://img.shields.io/badge/Autonomous-95%25-brightgreen)](.github/AGENTS.md)
+[![Autonomous](https://img.shields.io/badge/Autonomous-90%25+-brightgreen)](.github/AGENTS.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![GitHub Stars](https://img.shields.io/github/stars/ShunsukeHayashi/Autonomous-Operations?style=social)](https://github.com/ShunsukeHayashi/Autonomous-Operations/stargazers)
 
-[🚀 Quick Start](#-quick-start) • [📖 Documentation](#-ドキュメント) • [🤝 Contributing](CONTRIBUTING.md) • [💬 Discussions](https://github.com/ShunsukeHayashi/autonomous-operations/discussions)
+[🚀 Quick Start](#-quick-start) • [📖 Documentation](#-documentation) • [🌟 Unique Features](#-what-makes-agentic-os-unique) • [🔥 Roadmap](docs/INTEGRATION_ROADMAP.md) • [💬 Discussions](https://github.com/ShunsukeHayashi/autonomous-operations/discussions)
 
-**v1.0.0** | Updated: 2025-10-08 | Powered by [AGENTS.md v5.0](.github/AGENTS.md)
+**v2.0.0** | Released: 2025-10-08 | Powered by [Claude Code Task Tool](docs/CLAUDE_CODE_TASK_TOOL.md)
 
 ---
+
+> **"必ず必ず必ず必ず、クロードコードのタスクツールを使ってタスクとして実行していきます"**
+> All work MUST use Claude Code Task Tool. No exceptions.
 
 </div>
 
@@ -61,6 +65,99 @@ Auto-generate Draft PR
 
 ---
 
+## 🌟 What Makes Agentic OS Unique
+
+<div align="center">
+
+### 🏆 No Competitor Has All These Features
+
+</div>
+
+<table>
+<tr>
+<th>Feature</th>
+<th>Agentic OS</th>
+<th>CrewAI</th>
+<th>Devin</th>
+<th>GitHub Copilot Agent</th>
+<th>OpenDevin</th>
+</tr>
+<tr>
+<td><b>Open Source</b></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><b>Beginner-Friendly</b><br/>(超初心者対応)</td>
+<td>✅</td>
+<td>❌</td>
+<td>⚠️</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><b>Economic Governance</b><br/>(Budget Control)</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><b>Issue-Driven Development</b><br/>(IDD)</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>⚠️</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><b>Parallel Execution</b><br/>(Multi-Agent)</td>
+<td>✅</td>
+<td>✅</td>
+<td>⚠️</td>
+<td>❌</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td><b>Template Support</b><br/>(New + Existing)</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><b>Knowledge Persistence</b><br/>(Vector DB)</td>
+<td>✅</td>
+<td>❌</td>
+<td>⚠️</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><b>Shikigaku Framework</b><br/>(識学理論)</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+</table>
+
+<div align="center">
+
+**🎯 Positioning**: First open-source, economically-governed, beginner-friendly autonomous development framework built on Issue-Driven Development
+
+**[📊 See Full Competitive Analysis →](docs/research/SIMILAR_PROJECTS_ANALYSIS.md)**
+
+</div>
+
+---
+
 ## 🎯 What is This?
 
 **Autonomous-Operations** は、世界初の **Agentic Operating System Template** です。
@@ -93,30 +190,69 @@ Webhooks   → Event Bus (イベントバス)
 
 </div>
 
+<table>
+<tr>
+<td width="50%">
+
+### 👶 For Absolute Beginners (超初心者向け)
+
 ```bash
-# 1️⃣ Use this template to create your repository
-gh repo create my-project --template ShunsukeHayashi/autonomous-operations
+# 1️⃣ Clone this repository
+git clone https://github.com/ShunsukeHayashi/\
+  Autonomous-Operations.git
+cd Autonomous-Operations
 
-# 2️⃣ Initialize your project
-cd my-project
-./scripts/init-project.sh
-# → Interactive setup: API keys, project name, budget settings
+# 2️⃣ Install dependencies
+npm install
 
-# 3️⃣ Create your first autonomous task
-gh issue create --title "Add user authentication with JWT"
-
-# 4️⃣ Watch the magic happen ✨
-# → AI Agents analyze the issue
-# → Code generation + tests in parallel
-# → Quality checks (ESLint, TypeScript, Security)
-# → Draft PR ready in 5-10 minutes
+# 3️⃣ Start interactive guide
+npm start
+# ✨ Answer 5 simple questions
+# → GitHub Issue auto-created!
+# → AI Agents start working!
 ```
+
+**💡 No coding knowledge required!**
+
+**[📖 Super Beginner Guide →](docs/GETTING_STARTED.md)**
+
+</td>
+<td width="50%">
+
+### 👨‍💻 For Developers
+
+```bash
+# 1️⃣ Use this template
+gh repo create my-project \
+  --template ShunsukeHayashi/\
+  autonomous-operations
+
+# 2️⃣ Setup wizard
+cd my-project
+npm run setup
+# → Interactive setup wizard
+# → Choose: New or Existing project
+
+# 3️⃣ Execute task
+npm run task -- --issue 123
+# → AI Agents work in parallel
+# → Draft PR ready in 5-10 min
+```
+
+**🎯 See demo first:**
+```bash
+npm run demo
+```
+
+**[⚡ Developer Quick Start →](docs/CLAUDE_CODE_TASK_TOOL.md)**
+
+</td>
+</tr>
+</table>
 
 <div align="center">
 
 ### 💡 No AI/Agent knowledge required — As simple as using an iPhone
-
-**[📖 Full Setup Guide →](GETTING_STARTED.md)** | **[⚡ 5-Minute Tutorial →](QUICKSTART.md)**
 
 </div>
 

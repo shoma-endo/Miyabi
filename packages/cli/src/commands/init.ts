@@ -61,6 +61,14 @@ export async function init(projectName: string, options: InitOptions = {}) {
     spinner.fail(chalk.red('リポジトリの作成に失敗しました'));
     if (error instanceof Error) {
       if (error.message.includes('already exists') || error.message.includes('name already exists')) {
+        console.log(chalk.yellow('\n💡 解決策:\n'));
+        console.log(chalk.white(`  1. 別の名前を試してください:`));
+        console.log(chalk.gray(`     npx miyabi init ${projectName}-2`));
+        console.log(chalk.gray(`     npx miyabi init ${projectName}-new\n`));
+        console.log(chalk.white(`  2. または、既存リポジトリを削除:`));
+        console.log(chalk.gray(`     gh repo delete ${projectName} --yes\n`));
+        console.log(chalk.white(`  3. GitHub で確認:`));
+        console.log(chalk.gray(`     https://github.com/settings/repositories\n`));
         throw new Error(`repository creation failed: リポジトリ名 "${projectName}" は既に存在しています`);
       }
       throw new Error(`repository creation failed: ${error.message}`);

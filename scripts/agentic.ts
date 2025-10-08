@@ -11,7 +11,6 @@
 
 import { logger, theme } from '../agents/ui/index.js';
 import { execSync } from 'child_process';
-import { existsSync, readFileSync } from 'fs';
 import * as readline from 'readline/promises';
 
 const rl = readline.createInterface({

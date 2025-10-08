@@ -32,13 +32,14 @@
   "devDependencies": {
     "@anthropic-ai/claude-code": "^2.0.9",
     "@types/figlet": "^1.5.8",
+    "@types/gradient-string": "^1.1.6",
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
     "eslint": "^8.54.0",
     "tsx": "^4.7.0",
     "typescript": "^5.8.3",
-    "vitest": "^1.0.0"
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",

@@ -10,13 +10,14 @@ import inquirer from 'inquirer';
 import { init } from './commands/init.js';
 import { install } from './commands/install.js';
 import { status } from './commands/status.js';
+import { config } from './commands/config.js';
 
 const program = new Command();
 
 program
   .name('miyabi')
   .description('✨ Miyabi - 一つのコマンドで全てが完結する自律型開発フレームワーク')
-  .version('0.1.3');
+  .version('0.2.0');
 
 // ============================================================================
 // Single Command Interface
@@ -36,6 +37,7 @@ program
           { name: '🆕 新しいプロジェクトを作成', value: 'init' },
           { name: '📦 既存プロジェクトに追加', value: 'install' },
           { name: '📊 ステータス確認', value: 'status' },
+          { name: '⚙️  設定', value: 'config' },
           { name: '❌ 終了', value: 'exit' },
         ],
       },
@@ -102,6 +104,11 @@ program
           ]);
 
           await status({ watch });
+          break;
+        }
+
+        case 'config': {
+          await config({});
           break;
         }
       }

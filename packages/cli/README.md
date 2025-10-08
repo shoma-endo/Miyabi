@@ -536,7 +536,6 @@ export GITHUB_TOKEN=ghp_xxx
 
 ### Local Development
 
-```bash
 # Clone repository
 git clone https://github.com/ShunsukeHayashi/Autonomous-Operations.git
 cd Autonomous-Operations/packages/cli

@@ -29,7 +29,14 @@ export async function deployWorkflows(
   const octokit = new Octokit({ auth: token });
 
   // Get workflow files from templates
-  const templatesDir = path.join(__dirname, '../templates/workflows');
+  // In dist, __dirname points to dist/setup, templates are in templates/workflows
+  // So we need to go up two levels: dist/setup -> dist -> project root -> templates
+  const templatesDir = path.join(__dirname, '../../templates/workflows');
+
+  if (!fs.existsSync(templatesDir)) {
+    throw new Error(`Templates directory not found: ${templatesDir}`);
+  }
+
   const workflowFiles = fs.readdirSync(templatesDir).filter((file) => file.endsWith('.yml'));
 
   let deployed = 0;

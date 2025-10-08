@@ -7,9 +7,14 @@
  * This ensures users get the full Miyabi experience immediately
  */
 
-const fs = require('fs');
-const path = require('path');
-const chalk = require('chalk');
+import fs from 'fs';
+import path from 'path';
+import chalk from 'chalk';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Colors fallback for older terminals
 const colors = {
@@ -50,13 +55,16 @@ function isFreshInstall() {
 /**
  * Create initialization marker
  */
-function createMarker() {
+async function createMarker() {
   const markerPath = path.join(process.cwd(), '.miyabi-initialized');
+  const packageJsonPath = path.join(__dirname, '../package.json');
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+
   fs.writeFileSync(
     markerPath,
     JSON.stringify({
       initializedAt: new Date().toISOString(),
-      miyabiVersion: require('../package.json').version,
+      miyabiVersion: packageJson.version,
     }, null, 2),
     'utf-8'
   );
@@ -83,11 +91,11 @@ async function runInitialSequence() {
   displayWelcome();
 
   // Step 2: Check environment
-  const envCheck = checkEnvironment();
+  const envCheck = await checkEnvironment();
   displayEnvironmentStatus(envCheck);
 
   // Step 3: Create marker to prevent re-running
-  createMarker();
+  await createMarker();
 
   // Step 4: Display next steps
   displayNextSteps(envCheck);
@@ -107,7 +115,7 @@ function displayWelcome() {
 /**
  * Check environment
  */
-function checkEnvironment() {
+async function checkEnvironment() {
   const checks = {
     node: false,
     git: false,
@@ -123,7 +131,8 @@ function checkEnvironment() {
 
   // Check if git is available
   try {
-    require('child_process').execSync('git --version', { stdio: 'ignore' });
+    const { execSync } = await import('child_process');
+    execSync('git --version', { stdio: 'ignore' });
     checks.git = true;
   } catch (error) {
     checks.git = false;

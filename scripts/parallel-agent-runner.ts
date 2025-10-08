@@ -92,7 +92,7 @@ export class ParallelAgentRunner {
   private healthCheckTimer?: NodeJS.Timeout;
 
   constructor(
-    private config: AgentConfig,
+    _config: AgentConfig,
     private poolConfig: WorkerPoolConfig,
     private distributionStrategy: TaskDistributionStrategy,
     private retryConfig: RetryConfig,

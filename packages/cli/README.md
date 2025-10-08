@@ -1,401 +1,608 @@
-# Miyabi (雅)
+<div align="center">
+
+# 🌸 Miyabi (雅)
 
 **一つのコマンドで全てが完結する自律型開発フレームワーク**
 
-Zero-learning-cost CLI for autonomous AI development. Designed for both humans and AI agents (Claude Code, Devin, etc.)
+[![npm version](https://img.shields.io/npm/v/miyabi.svg?style=for-the-badge&color=ff69b4)](https://www.npmjs.com/package/miyabi)
+[![npm downloads](https://img.shields.io/npm/dm/miyabi.svg?style=for-the-badge&color=ff69b4)](https://www.npmjs.com/package/miyabi)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18-brightgreen?style=for-the-badge&logo=node.js)](https://nodejs.org)
+
+[![GitHub stars](https://img.shields.io/github/stars/ShunsukeHayashi/Miyabi?style=social)](https://github.com/ShunsukeHayashi/Miyabi/stargazers)
+[![Twitter Follow](https://img.shields.io/twitter/follow/miyabi_dev?style=social)](https://twitter.com/miyabi_dev)
+
+**Zero-learning-cost CLI for autonomous AI development**
+
+Designed for both humans and AI agents (Claude Code, Devin, etc.)
+
+[🚀 Quick Start](#-quick-start) • [📖 Documentation](#-documentation) • [💡 Features](#-features) • [🤖 For AI Agents](#-ai-agent-integration)
+
+</div>
 
 ---
 
-## 🌸 プログラムが苦手な方へ
+## ✨ What is Miyabi?
 
-**プログラミングの知識がなくても大丈夫！**
+**Miyabi** (雅 - Japanese for "elegance") transforms your development workflow with **one command**.
 
-Claude Code（AIアシスタント）が全自動でセットアップしてくれます。
+```bash
+npx miyabi init my-project
+```
 
-### 👉 超簡単セットアップ（3ステップ）
+**That's it.** No configuration files. No complex setup. Just pure elegance.
 
-1. **Claude Codeをインストール**
-   - VS Code拡張機能、または
-   - https://claude.ai/code からダウンロード
+### 🎬 See it in Action
 
-2. **Claude Codeを起動して、この魔法の言葉を入力：**
-   ```
-   /setup-miyabi
+<div align="center">
 
-   Miyabiをセットアップしてください
-   ```
+**Before Miyabi:**
+```
+❌ Manual repo setup
+❌ Configure labels
+❌ Setup workflows
+❌ Create project boards
+❌ Write documentation
+❌ Configure CI/CD
+⏰ Time: 2-3 hours
+```
 
-3. **Claude Codeの質問に答えるだけ！**
-   - あとは全部AIがやってくれます
-   - 所要時間: 約10分
+**With Miyabi:**
+```bash
+npx miyabi init my-project
+✓ Repository created
+✓ 53 labels configured
+✓ 12 workflows deployed
+✓ Projects V2 linked
+✓ Documentation generated
+✓ CI/CD ready
+⏰ Time: 2 minutes
+```
 
-### 📖 詳しいガイド
+</div>
 
-👉 **[プログラムが苦手な方向けガイド](./FOR_NON_PROGRAMMERS.md)**
+### 🌟 Key Highlights
 
-- Claude Codeの使い方
-- 画面のスクリーンショット付き
-- よくある質問と回答
-- 成功事例
+<table>
+<tr>
+<td width="33%" align="center">
+<h3>🚀 Lightning Fast</h3>
+<p>Full project setup in <strong>under 2 minutes</strong></p>
+</td>
+<td width="33%" align="center">
+<h3>🤖 AI-Native</h3>
+<p>Built for <strong>Claude Code</strong> & autonomous agents</p>
+</td>
+<td width="33%" align="center">
+<h3>🌸 Zero Config</h3>
+<p>No learning curve. <strong>Just works™</strong></p>
+</td>
+</tr>
+<tr>
+<td width="33%" align="center">
+<h3>🔄 State Machine</h3>
+<p><strong>53 labels</strong> orchestrate your workflow</p>
+</td>
+<td width="33%" align="center">
+<h3>⚡ Auto-Deploy</h3>
+<p><strong>12+ workflows</strong> handle everything</p>
+</td>
+<td width="33%" align="center">
+<h3>🌍 i18n Ready</h3>
+<p>Full <strong>Japanese</strong> & English support</p>
+</td>
+</tr>
+</table>
 
 ---
 
 ## 🚀 Quick Start
 
-### 🌸 初めての方へ
+### For Humans 👨‍💻
 
-**プログラミング初心者でも大丈夫！**
-
-#### 自動セットアップ（v0.4.0+）
-```bash
-npm install miyabi
-# → 自動的にセットアップガイドが表示されます
-```
-
-インストール後、環境チェックと次のステップが自動表示されます。
-
-#### 詳細ガイド
-
-超丁寧なセットアップガイドを用意しました：
-
-📖 **[完全セットアップガイド（日本語）](./SETUP_GUIDE.md)**
-
-画像付きで一つ一つ解説しています。所要時間: **約5分**
-
-または、対話型セットアップウィザードを実行：
+#### Interactive Mode (Easiest)
 
 ```bash
 npx miyabi
-# → 「🌸 初めての方（セットアップガイド）」を選択
 ```
 
-### For Humans
+Then select from the menu:
+- 🌸 **Setup Guide** (for beginners)
+- 🆕 **Create New Project**
+- 📦 **Add to Existing Project**
+- 📊 **Check Status**
+
+#### Direct Commands (Fastest)
 
 ```bash
-# Interactive mode - just run miyabi
+# Create new project
+npx miyabi init my-awesome-project
+
+# Add to existing project
+cd existing-project
+npx miyabi install
+
+# Check agent status
+npx miyabi status --watch
+
+# Generate docs
+npx miyabi docs --input ./src --output ./docs/API.md
+```
+
+### For AI Agents (Claude Code, Devin) 🤖
+
+**v0.5.0+** Auto-detects Claude Code and shows CLI commands:
+
+```bash
 npx miyabi
-
-# Direct commands
-npx miyabi init my-project    # New project
-npx miyabi install            # Add to existing project
-npx miyabi status             # Check status
-npx miyabi config             # Configure settings
+# → 💡 Claude Code環境が検出されました
+#   利用可能なコマンド:
+#     npx miyabi init <project-name>
+#     npx miyabi install
+#     npx miyabi status
 ```
 
-### For AI Agents (Claude Code / Autonomous Systems)
+**Direct usage:**
 
 ```bash
-# AI mode with --ai flag (non-interactive)
-npx miyabi --ai init my-project --private
-npx miyabi --ai install --skip-confirm
-npx miyabi --ai status --json
-npx miyabi --ai config --token=ghp_xxx --auto-label --auto-review
+# Create project with all options
+npx miyabi init my-project --private
+
+# Install to existing repo
+npx miyabi install
+
+# Get status
+npx miyabi status
+
+# Configure
+npx miyabi config
 ```
 
-**Important for AI Agents:**
-- Always use `--ai` flag for non-interactive mode
-- Use `--json` for machine-readable output
-- Use `--skip-confirm` to bypass confirmations
-- Read AI_INSTRUCTIONS.md first for full context
+---
 
-## 📖 AI Instructions
+## 🌸 プログラムが苦手な方へ
 
-**If you are an AI agent (Claude Code, Devin, etc.), please read this section carefully:**
+<div align="center">
 
-### Overview
-Miyabi is a CLI tool that sets up complete autonomous development infrastructure with:
-- 53 GitHub labels (state machine)
-- 10+ GitHub Actions workflows
-- GitHub Projects V2 integration
-- AI-powered issue labeling
-- Webhook-based event routing
+### 👉 3ステップで完全自動セットアップ
 
-### Architecture
+</div>
+
+**プログラミングの知識がなくても大丈夫！** Claude Codeが全部やってくれます。
+
+#### ステップ1: Claude Codeをインストール
+
+- [VS Code拡張機能](https://marketplace.visualstudio.com/items?itemName=Anthropic.claude-code)
+- または [claude.ai/code](https://claude.ai/code)
+
+#### ステップ2: 魔法の言葉を入力
+
 ```
-User creates Issue
-  ↓
-[Webhook Router] → Detects event type
-  ↓
-[Label State Machine] → Manages state transitions
-  ↓
-[Agent Coordinator] → Assigns to appropriate agent
-  ↓
-[Specialized Agents] → Execute tasks
-  ↓
-PR created automatically
+/setup-miyabi
+
+Miyabiをセットアップしてください
 ```
 
-### Key Files to Read Before Using
-1. `/templates/labels.yml` - All 53 labels and their meanings
-2. `/templates/workflows/` - Available workflows
-3. `/src/config/loader.ts` - Configuration system
-4. `/src/auth/github-oauth.ts` - Authentication flow
+#### ステップ3: AIの質問に答えるだけ！
 
-### AI Mode Commands
-```bash
-# Setup new project (non-interactive)
-npx miyabi --ai init project-name \
-  --private \
-  --no-welcome-issue \
-  --skip-projects
+あとは全部自動です 🎉
 
-# Configure without prompts
-npx miyabi --ai config \
-  --token=$GITHUB_TOKEN \
-  --default-private=true \
-  --auto-label=true \
-  --auto-review=true \
-  --language=ja
+<div align="center">
 
-# Get status as JSON
-npx miyabi --ai status --json --format=compact
+📖 **詳細ガイド**: [プログラムが苦手な方向け完全ガイド](./FOR_NON_PROGRAMMERS.md)
 
-# Install to existing project
-npx miyabi --ai install \
-  --skip-confirm \
-  --merge-labels \
-  --backup-workflows
-```
+画面のスクリーンショット付き・所要時間: 約10分
 
-### Configuration File (.miyabi.yml)
-AI agents can read/write this file directly:
-
-```yaml
-github:
-  token: ghp_xxxxx
-  defaultPrivate: true
-  defaultOrg: my-org
-project:
-  defaultLanguage: typescript
-  defaultFramework: react
-  gitignoreTemplate: Node
-  licenseTemplate: mit
-workflows:
-  autoLabel: true
-  autoReview: true
-  autoSync: false
-cli:
-  language: ja
-  theme: default
-  verboseErrors: false
-```
-
-### Error Handling for AI
-When errors occur, Miyabi provides structured error messages:
-
-```json
-{
-  "error": {
-    "type": "authentication",
-    "message": "GITHUB_TOKEN not found",
-    "solutions": [
-      "Set GITHUB_TOKEN environment variable",
-      "Run: export GITHUB_TOKEN=ghp_your_token",
-      "Or use: npx miyabi config --token=ghp_xxx"
-    ]
-  }
-}
-```
-
-### Best Practices for AI Agents
-1. **Always read configuration first**: Check `.miyabi.yml` or use `miyabi config --show`
-2. **Use --ai mode**: Prevents interactive prompts
-3. **Parse JSON output**: Use `--json` flag for all status commands
-4. **Check token validity**: Before any GitHub operations
-5. **Handle rate limits**: GitHub API has rate limits, check remaining quota
-
-### Label State Machine
-Understanding labels is crucial for AI agents:
-
-**States:**
-- `📥 state:pending` → Initial state
-- `🔍 state:analyzing` → Agent analyzing
-- `🏗️ state:implementing` → Code being written
-- `👀 state:reviewing` → Under review
-- `✅ state:done` → Completed
-- `🚫 state:blocked` → Blocked
-- `⏸️ state:paused` → Paused
-
-**Types:**
-- `🐛 type:bug` → Bug fix
-- `✨ type:feature` → New feature
-- `📚 type:docs` → Documentation
-- `♻️ type:refactor` → Refactoring
-- `🧪 type:test` → Testing
-
-**Priority:**
-- `📊 priority:P0-Critical` → Critical
-- `⚠️ priority:P1-High` → High
-- `📊 priority:P2-Medium` → Medium
-- `📊 priority:P3-Low` → Low
-
-**Agents:**
-- `🤖 agent:coordinator` → Task coordination
-- `🤖 agent:codegen` → Code generation
-- `🤖 agent:review` → Code review
-- `🤖 agent:issue` → Issue management
-- `🤖 agent:pr` → PR management
-- `🤖 agent:deploy` → Deployment
-
-### Workflow Events
-AI agents can trigger these workflows:
-
-```yaml
-# Issue opened → Auto-label
-# PR opened → Auto-review
-# Label changed → State transition
-# Comment with /assign → Agent assignment
-# Push to main → Deploy
-```
+</div>
 
 ---
 
 ## 💡 Features
 
-### For Humans
-- **Interactive Mode**: Simple prompts, no configuration needed
-- **One Command**: `npx miyabi` does everything
-- **Japanese Support**: Full Japanese UI and messages
-- **Configuration Wizard**: Easy setup with guided prompts
+### 🎯 Core Features
 
-### For AI Agents
-- **Non-Interactive Mode**: `--ai` flag for automation
-- **JSON Output**: Machine-readable responses
-- **Programmatic API**: Import as module
-- **Environment Variables**: Full env var support
+<details open>
+<summary><strong>One-Command Setup</strong> - Everything in one command</summary>
 
-### Shared Features
-- **Zero Learning Cost**: No concepts to learn
-- **GitHub Integration**: Full GitHub API support
-- **State Machine**: Label-based workflow
-- **Webhook Router**: Event-driven automation
-
-## 📊 Commands
-
-### `init <project-name>`
-Create new project with full automation setup.
-
-**Human mode:**
 ```bash
 npx miyabi init my-project
-# → Interactive prompts for all options
 ```
 
-**AI mode:**
+What happens:
+- ✅ GitHub repository created
+- ✅ 53 labels configured (state machine)
+- ✅ 12+ GitHub Actions deployed
+- ✅ GitHub Projects V2 linked
+- ✅ Local npm project initialized
+- ✅ `.claude/` directory with 6 AI agents
+- ✅ Welcome issue created
+- ✅ Documentation generated
+
+**Time: ~2 minutes**
+</details>
+
+<details>
+<summary><strong>Label-Based State Machine</strong> - Orchestrate your workflow</summary>
+
+### 53 Labels Across 10 Categories
+
+**States** (7 labels):
+- `📥 state:pending` → `🔍 state:analyzing` → `🏗️ state:implementing` → `👀 state:reviewing` → `✅ state:done`
+
+**Types** (10 labels):
+- `🐛 type:bug` `✨ type:feature` `📚 type:docs` `♻️ type:refactor` `🧪 type:test`
+
+**Priority** (4 labels):
+- `📊 priority:P0-Critical` `⚠️ priority:P1-High` `📊 priority:P2-Medium` `📊 priority:P3-Low`
+
+**Agents** (6 labels):
+- `🤖 agent:coordinator` `🤖 agent:codegen` `🤖 agent:review` `🤖 agent:issue` `🤖 agent:pr` `🤖 agent:deploy`
+
+**Phase** (8 labels):
+- `🎯 phase:planning` `🏗️ phase:development` `🧪 phase:testing` `🚀 phase:deployment`
+
+[View all 53 labels →](./templates/labels.yml)
+</details>
+
+<details>
+<summary><strong>GitHub Actions Workflows</strong> - Complete automation</summary>
+
+### 12+ Workflows Included
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| **Autonomous Agent** | Issue opened | Auto-analyze & implement |
+| **Auto-Label** | Issue/PR opened | Intelligent labeling |
+| **State Machine** | Label changed | State transitions |
+| **Auto-Review** | PR opened | Code review |
+| **Deploy Pages** | Push to main | Docs deployment |
+| **Economic Circuit Breaker** | High API usage | Cost control |
+| **Weekly KPI Report** | Schedule | Progress tracking |
+| **Webhook Router** | All events | Event routing |
+
+[View all workflows →](./templates/workflows/)
+</details>
+
+<details>
+<summary><strong>Claude Code Integration</strong> - AI-first development</summary>
+
+### Full `.claude/` Directory Deployment
+
+**6 AI Agents:**
+- `CoordinatorAgent` - Task orchestration
+- `CodeGenAgent` - Code generation
+- `ReviewAgent` - Quality assurance
+- `IssueAgent` - Issue management
+- `PRAgent` - Pull request automation
+- `DeploymentAgent` - CI/CD
+
+**7 Custom Commands:**
+- `/agent-run` - Run autonomous agent
+- `/create-issue` - Smart issue creation
+- `/deploy` - Deploy to production
+- `/generate-docs` - Auto documentation
+- `/security-scan` - Security audit
+- `/test` - Run test suite
+- `/verify` - System health check
+
+**MCP Servers:**
+- `github-enhanced.js` - Enhanced GitHub integration
+- `ide-integration.js` - IDE bridging
+- `project-context.js` - Project awareness
+
+[Learn more about Claude Code →](https://claude.ai/code)
+</details>
+
+### 🎨 User Experience
+
+<table>
+<tr>
+<td width="50%">
+
+**For Humans:**
+- ✨ Interactive menus
+- 🇯🇵 Full Japanese support
+- 📊 Beautiful status displays
+- 🎯 Guided setup wizard
+- ❓ Contextual help
+
+</td>
+<td width="50%">
+
+**For AI Agents:**
+- 🤖 Non-interactive mode
+- 📋 JSON output
+- 🔧 Programmatic API
+- 🌐 Environment variables
+- 📖 Full context in README
+
+</td>
+</tr>
+</table>
+
+---
+
+## 📊 Commands Reference
+
+### `init <project-name>`
+
+Create a new project with full automation.
+
 ```bash
-npx miyabi --ai init my-project --private --no-welcome
+# Interactive
+npx miyabi init my-project
+
+# With options
+npx miyabi init my-project --private
+
+# Skip npm install
+npx miyabi init my-project --skip-install
 ```
 
-**What it does:**
-- ✅ Creates GitHub repository
-- ✅ Sets up 53 labels
-- ✅ Deploys workflows
-- ✅ Creates GitHub Projects V2
-- ✅ Initializes local npm project
-- ✅ Creates welcome Issue (optional)
+**Options:**
+- `-p, --private` - Create private repository
+- `--skip-install` - Skip npm install step
+
+**What it creates:**
+```
+my-project/
+├── .github/
+│   ├── workflows/        # 12+ GitHub Actions
+│   └── labels.yml        # 53 labels
+├── .claude/
+│   ├── agents/           # 6 AI agents
+│   ├── commands/         # 7 custom commands
+│   ├── hooks/            # Command hooks
+│   └── mcp-servers/      # 3 MCP servers
+├── src/
+├── package.json
+└── README.md
+```
+
+---
 
 ### `install`
-Add Miyabi to existing project.
 
-**Human mode:**
+Add Miyabi to an existing project.
+
 ```bash
-cd existing-project
+# Interactive
 npx miyabi install
-# → Interactive confirmation
-```
 
-**AI mode:**
-```bash
-npx miyabi --ai install --skip-confirm --merge-labels
+# Dry run (preview changes)
+npx miyabi install --dry-run
 ```
 
 **What it does:**
-- ✅ Analyzes project structure
+- ✅ Analyzes existing structure
 - ✅ Merges labels (non-destructive)
-- ✅ Auto-labels existing Issues
-- ✅ Deploys workflows (skips conflicts)
+- ✅ Auto-labels existing issues
+- ✅ Deploys missing workflows
 - ✅ Links to Projects V2
+- ✅ Creates `.claude/` directory
+
+**Smart merge:**
+- Existing labels are preserved
+- Workflows skip if already exist
+- Issues are auto-labeled intelligently
+
+---
 
 ### `status`
-Check agent status and activity.
 
-**Human mode:**
+Check agent activity and project status.
+
 ```bash
+# One-time check
 npx miyabi status
-# → Interactive table view
 
+# Watch mode (auto-refresh every 10s)
 npx miyabi status --watch
-# → Auto-refresh every 10s
 ```
 
-**AI mode:**
+**Output:**
+
+```
+┌──────────────┬────────┬─────────────┬──────────────┐
+│ Agent        │ Status │ Task        │ Last Update  │
+├──────────────┼────────┼─────────────┼──────────────┤
+│ Coordinator  │ ✅ Active │ #123      │ 2 mins ago   │
+│ CodeGen      │ 💤 Idle  │ -         │ -            │
+│ Review       │ ✅ Active │ #124      │ 30 secs ago  │
+│ Issue        │ ✅ Active │ #125      │ 1 min ago    │
+│ PR           │ 💤 Idle  │ -         │ -            │
+│ Deploy       │ ✅ Active │ main      │ 5 mins ago   │
+└──────────────┴────────┴─────────────┴──────────────┘
+
+📊 Summary:
+  ✅ 4 agents active
+  💤 2 agents idle
+  📥 12 pending issues
+  🚀 3 in progress
+```
+
+---
+
+### `docs`
+
+Generate documentation from code.
+
 ```bash
-npx miyabi --ai status --json
-# → JSON output for parsing
+# Interactive
+npx miyabi docs
+
+# Direct
+npx miyabi docs --input ./src --output ./docs/API.md
+
+# Watch mode
+npx miyabi docs --watch
+
+# Include training materials
+npx miyabi docs --training
 ```
 
-**Output (human):**
-```
-┌──────────────┬────────┬─────────────┐
-│ Agent        │ Status │ Current Task│
-├──────────────┼────────┼─────────────┤
-│ Coordinator  │ Active │ #123        │
-│ CodeGen      │ Idle   │ -           │
-│ Review       │ Active │ #124        │
-└──────────────┴────────┴─────────────┘
-```
+**Generates:**
+- API documentation
+- Type definitions
+- Usage examples
+- Training materials (optional)
 
-**Output (AI):**
-```json
-{
-  "agents": [
-    {"name": "coordinator", "status": "active", "task": "#123"},
-    {"name": "codegen", "status": "idle", "task": null},
-    {"name": "review", "status": "active", "task": "#124"}
-  ]
-}
-```
+---
 
 ### `config`
-Configure Miyabi settings.
 
-**Human mode:**
+Manage Miyabi configuration.
+
 ```bash
+# Interactive wizard
 npx miyabi config
-# → Interactive wizard
 
+# Show current config
 npx miyabi config --show
-# → Display current config
 
+# Reset to defaults
 npx miyabi config --reset
-# → Reset to defaults
 ```
 
-**AI mode:**
+**Configuration file** (`.miyabi.yml`):
+
+```yaml
+github:
+  defaultPrivate: true
+  token: ghp_xxxxx        # Or use GITHUB_TOKEN env var
+
+project:
+  defaultLanguage: typescript
+  defaultFramework: react
+  gitignoreTemplate: Node
+  licenseTemplate: mit
+
+workflows:
+  autoLabel: true
+  autoReview: true
+  autoSync: true
+
+cli:
+  language: ja            # ja or en
+  theme: default
+  verboseErrors: true
+```
+
+---
+
+### `setup`
+
+Interactive setup guide for beginners.
+
 ```bash
-npx miyabi --ai config \
-  --token=ghp_xxx \
-  --default-private=true \
-  --auto-label=true \
-  --language=ja
+npx miyabi setup
 ```
 
-## 🔧 Configuration
+**Guides through:**
+1. ✅ Environment check (Node.js, Git, gh CLI)
+2. ✅ GitHub authentication
+3. ✅ Token creation
+4. ✅ Configuration
+5. ✅ First project creation
+
+---
+
+## 🤖 AI Agent Integration
+
+### Claude Code Auto-Detection (v0.5.0+)
+
+Miyabi automatically detects Claude Code environment and provides CLI-friendly output:
+
+```bash
+$ npx miyabi
+
+✨ Miyabi
+一つのコマンドで全てが完結する自律型開発フレームワーク
+
+💡 Claude Code環境が検出されました
+
+利用可能なコマンド:
+  npx miyabi init <project-name>  - 新規プロジェクト作成
+  npx miyabi install            - 既存プロジェクトに追加
+  npx miyabi status             - ステータス確認
+  npx miyabi docs               - ドキュメント生成
+  npx miyabi config             - 設定管理
+  npx miyabi setup              - セットアップガイド
+
+詳細: npx miyabi --help
+```
+
+**Detection logic:**
+- `CLAUDE_CODE=true`
+- `ANTHROPIC_CLI=true`
+- `TERM_PROGRAM=Claude`
+- `ANTHROPIC_API_KEY` is set
+
+### Programmatic API
+
+```typescript
+import { init, install, status, config } from 'miyabi';
+
+// Initialize new project
+await init('my-project', {
+  private: true,
+  skipInstall: false,
+});
+
+// Install to existing project
+await install({
+  dryRun: false,
+});
+
+// Get status
+const statusData = await status({ watch: false });
+console.log(statusData);
+
+// Configure
+await config({
+  githubToken: process.env.GITHUB_TOKEN,
+  language: 'ja',
+});
+```
 
 ### Environment Variables
+
 ```bash
-# GitHub token (highest priority)
+# GitHub token (required)
 export GITHUB_TOKEN=ghp_your_token_here
+
+# Anthropic API key (for AI features)
+export ANTHROPIC_API_KEY=sk-ant-xxx
 
 # Webhook secret (for webhook router)
 export WEBHOOK_SECRET=your_secret
-
-# Anthropic API key (for AI labeling)
-export ANTHROPIC_API_KEY=sk-ant-xxx
 ```
 
-### Config File (.miyabi.yml)
-Created automatically by `miyabi config`:
+---
+
+## 🔧 Configuration
+
+### Priority Order
+
+1. **Command-line flags** (highest priority)
+   ```bash
+   npx miyabi config --token=ghp_xxx
+   ```
+
+2. **Environment variables**
+   ```bash
+   export GITHUB_TOKEN=ghp_xxx
+   ```
+
+3. **Config file** (`.miyabi.yml`)
+   ```yaml
+   github:
+     token: ghp_xxx
+   ```
+
+4. **Default values** (lowest priority)
+
+### Configuration File
 
 ```yaml
 github:
@@ -404,203 +611,343 @@ github:
   defaultOrg: my-org            # Default organization
 
 project:
-  defaultLanguage: typescript   # Default language
-  defaultFramework: react       # Default framework
-  gitignoreTemplate: Node       # .gitignore template
-  licenseTemplate: mit          # License template
+  defaultLanguage: typescript   # typescript, javascript, python, go, rust
+  defaultFramework: react       # react, vue, angular, next, express
+  gitignoreTemplate: Node       # Node, Python, Go, Rust, Java, etc.
+  licenseTemplate: mit          # mit, apache-2.0, gpl-3.0, etc.
 
 workflows:
   autoLabel: true               # Auto-label new issues
   autoReview: true              # Auto-review PRs
-  autoSync: false               # Auto-sync to Projects
+  autoSync: true                # Auto-sync to Projects
 
 cli:
-  language: ja                  # UI language (ja/en)
-  theme: default                # Theme (default/minimal)
-  verboseErrors: false          # Show verbose errors
+  language: ja                  # ja (日本語) or en (English)
+  theme: default                # default, minimal, colorful
+  verboseErrors: true           # Show detailed error messages
 ```
-
-### Priority Order
-1. Command-line flags (`--token=xxx`)
-2. Environment variables (`GITHUB_TOKEN`)
-3. Config file (`.miyabi.yml`)
-4. Default values
-
-## 🤖 AI Agent Integration
-
-### Using as a Module (Programmatic API)
-
-```typescript
-import { init, install, status, config } from 'miyabi';
-
-// Initialize new project
-await init('my-project', {
-  private: true,
-  skipWelcome: true,
-  token: process.env.GITHUB_TOKEN,
-});
-
-// Install to existing project
-await install({
-  skipConfirm: true,
-  mergeLabels: true,
-  token: process.env.GITHUB_TOKEN,
-});
-
-// Get status
-const statusData = await status({ json: true });
-console.log(statusData);
-
-// Configure
-await config({
-  token: 'ghp_xxx',
-  autoLabel: true,
-  autoReview: true,
-  language: 'ja',
-});
-```
-
-### Claude Code Specific Instructions
-
-If you are Claude Code:
-
-1. **Before first use**, read:
-   - This README.md (full context)
-   - `/templates/labels.yml` (label definitions)
-   - `/src/config/loader.ts` (config system)
-
-2. **When user says "setup miyabi"**:
-   ```bash
-   npx miyabi --ai init project-name --private --token=$GITHUB_TOKEN
-   ```
-
-3. **When user says "check status"**:
-   ```bash
-   npx miyabi --ai status --json
-   ```
-
-4. **When creating issues programmatically**:
-   - Use appropriate labels from `/templates/labels.yml`
-   - Set initial state to `📥 state:pending`
-   - Add phase label `🎯 phase:planning`
-   - Add priority (default `📊 priority:P2-Medium`)
-
-5. **Error handling**:
-   - If `GITHUB_TOKEN not found`, guide user to set it
-   - If rate limit hit, wait and retry
-   - If webhook fails, check `WEBHOOK_SECRET`
-
-## 📋 Requirements
-
-- **Node.js** >= 18.0.0
-- **git** CLI
-- **gh** CLI (GitHub CLI)
-- **GitHub** account
-
-## 🐛 Troubleshooting
-
-### GITHUB_TOKEN not found
-
-**Human:**
-```bash
-# Option 1: Use config command
-npx miyabi config
-
-# Option 2: Set environment variable
-export GITHUB_TOKEN=ghp_your_token
-```
-
-**AI:**
-```bash
-npx miyabi --ai config --token=ghp_xxx
-```
-
-### OAuth App not configured
-
-**Solution:** Use Personal Access Token instead
-1. Go to: https://github.com/settings/tokens/new
-2. Select scopes: `repo`, `workflow`, `write:packages`, `delete:packages`, `admin:org`, `project`
-3. Generate token
-4. Set in config: `npx miyabi config` (or `--ai config --token=xxx`)
-
-### Templates directory missing
-
-**Solution:** Reinstall miyabi
-```bash
-npm uninstall -g miyabi
-npx miyabi@latest
-```
-
-### Rate limit exceeded
-
-**Solution:** Wait or use authenticated requests
-```bash
-# Check rate limit
-gh api rate_limit
-
-# Use authenticated token
-export GITHUB_TOKEN=ghp_xxx
-```
-
-## 📝 Development
-
-### Local Development
-
-# Clone repository
-git clone https://github.com/ShunsukeHayashi/Autonomous-Operations.git
-cd Autonomous-Operations/packages/cli
-
-# Install dependencies
-npm install
-
-# Build
-npm run build
-
-# Test locally
-npm link
-miyabi --help
-```
-
-### Testing
-
-```bash
-# Run tests
-npm test
-
-# Run in dev mode
-npm run dev
-
-# Clean build artifacts
-npm run clean
-```
-
-## 📚 Documentation
-
-- [Getting Started Guide](../../docs/GETTING_STARTED.md)
-- [Agent Operations Manual](../../docs/AGENT_OPERATIONS_MANUAL.md)
-- [Webhook Event Bus](../../docs/WEBHOOK_EVENT_BUS.md)
-- [Testing Guide](../../docs/TESTING_GUIDE.md)
-
-## 🔗 Links
-
-- **GitHub**: https://github.com/ShunsukeHayashi/Autonomous-Operations
-- **npm**: https://www.npmjs.com/package/miyabi
-- **Issues**: https://github.com/ShunsukeHayashi/Autonomous-Operations/issues
-- **Discussions**: https://github.com/ShunsukeHayashi/Autonomous-Operations/discussions
-
-## 📄 License
-
-MIT © Shunsuke Hayashi
-
-## 🙏 Acknowledgments
-
-Built with:
-- [Commander.js](https://github.com/tj/commander.js) - CLI framework
-- [Inquirer.js](https://github.com/SBoudrias/Inquirer.js) - Interactive prompts
-- [Chalk](https://github.com/chalk/chalk) - Terminal styling
-- [Octokit](https://github.com/octokit/octokit.js) - GitHub API client
-- [@anthropic-ai/sdk](https://github.com/anthropics/anthropic-sdk-typescript) - Anthropic API
 
 ---
 
-**Note:** This README is AI-friendly. If you're an AI agent, all necessary context is provided above. Start by reading the "AI Instructions" section.
+## 📋 Requirements
+
+<table>
+<tr>
+<td width="20%" align="center">
+
+**Node.js**
+
+≥ 18.0.0
+
+<img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen?logo=node.js" />
+
+</td>
+<td width="20%" align="center">
+
+**Git**
+
+Latest
+
+<img src="https://img.shields.io/badge/git-required-orange?logo=git" />
+
+</td>
+<td width="20%" align="center">
+
+**GitHub CLI**
+
+Latest
+
+<img src="https://img.shields.io/badge/gh-cli-blue?logo=github" />
+
+</td>
+<td width="20%" align="center">
+
+**GitHub**
+
+Account
+
+<img src="https://img.shields.io/badge/github-account-black?logo=github" />
+
+</td>
+<td width="20%" align="center">
+
+**Token**
+
+PAT
+
+<img src="https://img.shields.io/badge/token-PAT-red?logo=github" />
+
+</td>
+</tr>
+</table>
+
+### Installation
+
+```bash
+# Check requirements
+node --version    # Should be >= 18.0.0
+git --version     # Any recent version
+gh --version      # Latest stable
+
+# Install miyabi (no installation needed for npx)
+npx miyabi@latest
+
+# Or install globally
+npm install -g miyabi
+```
+
+### GitHub Personal Access Token
+
+Create at: https://github.com/settings/tokens/new
+
+**Required scopes:**
+- ✅ `repo` - Full repository access
+- ✅ `workflow` - Update workflows
+- ✅ `write:packages` - Publish packages
+- ✅ `delete:packages` - Manage packages
+- ✅ `admin:org` - Organization management (for org repos)
+- ✅ `project` - Projects V2 access
+
+---
+
+## 🐛 Troubleshooting
+
+<details>
+<summary><strong>GITHUB_TOKEN not found</strong></summary>
+
+**Error:**
+```
+❌ GITHUB_TOKEN not found in environment
+
+💡 対処法:
+  1. 環境変数 GITHUB_TOKEN を設定してください
+  2. `export GITHUB_TOKEN=ghp_your_token`
+  3. もしくは miyabi config を実行して設定してください
+```
+
+**Solution:**
+
+Option 1: Environment variable
+```bash
+export GITHUB_TOKEN=ghp_your_token_here
+npx miyabi init my-project
+```
+
+Option 2: Config file
+```bash
+npx miyabi config
+# → Follow prompts to set token
+```
+
+Option 3: Manual config
+```bash
+echo "github:
+  token: ghp_your_token" > .miyabi.yml
+```
+</details>
+
+<details>
+<summary><strong>Repository already exists</strong></summary>
+
+**Error:**
+```
+❌ repository creation failed: リポジトリ名 "my-project" は既に存在しています
+
+💡 解決策:
+  1. 別の名前を試してください: npx miyabi init my-project-2
+  2. または、既存リポジトリを削除: gh repo delete my-project --yes
+  3. GitHub で確認: https://github.com/settings/repositories
+```
+
+**Solution:**
+
+Option 1: Different name
+```bash
+npx miyabi init my-project-new
+```
+
+Option 2: Delete existing (⚠️ careful!)
+```bash
+gh repo delete my-project --yes
+npx miyabi init my-project
+```
+
+Option 3: Install to existing
+```bash
+gh repo clone my-project
+cd my-project
+npx miyabi install
+```
+</details>
+
+<details>
+<summary><strong>Rate limit exceeded</strong></summary>
+
+**Error:**
+```
+❌ GitHub API rate limit exceeded
+```
+
+**Solution:**
+
+Check rate limit:
+```bash
+gh api rate_limit
+```
+
+Wait or use authenticated token:
+```bash
+export GITHUB_TOKEN=ghp_your_token
+```
+
+Rate limits:
+- **Unauthenticated**: 60 requests/hour
+- **Authenticated**: 5,000 requests/hour
+</details>
+
+<details>
+<summary><strong>Templates directory not found</strong></summary>
+
+**Error:**
+```
+❌ Claude template directory not found: /path/to/templates/claude-code
+```
+
+**Solution:**
+
+Reinstall miyabi:
+```bash
+npm uninstall -g miyabi
+npm cache clean --force
+npx miyabi@latest init my-project
+```
+
+Or use local installation:
+```bash
+git clone https://github.com/ShunsukeHayashi/Miyabi.git
+cd Miyabi/packages/cli
+npm install
+npm run build
+npm link
+miyabi init my-project
+```
+</details>
+
+<details>
+<summary><strong>Claude Code not detected</strong></summary>
+
+**Issue:** Running in Claude Code but interactive mode appears
+
+**Solution:**
+
+Manually set environment:
+```bash
+export CLAUDE_CODE=true
+npx miyabi
+```
+
+Or use direct commands:
+```bash
+npx miyabi init my-project
+npx miyabi status
+```
+</details>
+
+---
+
+## 📚 Documentation
+
+### Core Docs
+
+- 📖 [Getting Started Guide](./SETUP_GUIDE.md) - Step-by-step setup
+- 🌸 [For Non-Programmers](./FOR_NON_PROGRAMMERS.md) - Complete beginner guide
+- 📦 [Install to Existing Project](./INSTALL_TO_EXISTING_PROJECT.md) - Migration guide
+- 🧪 [Edge Case Tests](./EDGE_CASE_TESTS.md) - Testing scenarios
+
+### Agent Docs
+
+- 🤖 [Agent Operations Manual](../../docs/AGENT_OPERATIONS_MANUAL.md) - Agent system
+- 🔄 [Webhook Event Bus](../../docs/WEBHOOK_EVENT_BUS.md) - Event routing
+- 📋 [Testing Guide](../../docs/TESTING_GUIDE.md) - Test strategies
+
+### API Reference
+
+- 📝 [API Documentation](./docs/API.md) - Full API reference
+- 🔧 [Configuration Schema](./docs/CONFIG.md) - Config options
+- 🏷️ [Label Reference](./templates/labels.yml) - All 53 labels
+
+---
+
+## 🔗 Links
+
+<div align="center">
+
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github)](https://github.com/ShunsukeHayashi/Miyabi)
+[![npm](https://img.shields.io/badge/npm-Package-red?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/miyabi)
+[![Issues](https://img.shields.io/badge/Issues-Report-orange?style=for-the-badge&logo=github)](https://github.com/ShunsukeHayashi/Miyabi/issues)
+[![Discussions](https://img.shields.io/badge/Discussions-Chat-blue?style=for-the-badge&logo=github)](https://github.com/ShunsukeHayashi/Miyabi/discussions)
+
+</div>
+
+---
+
+## 🙏 Acknowledgments
+
+Built with love using:
+
+<table>
+<tr>
+<td align="center">
+<img src="https://img.shields.io/badge/Commander.js-CLI-green?logo=terminal" /><br/>
+<sub>CLI framework</sub>
+</td>
+<td align="center">
+<img src="https://img.shields.io/badge/Inquirer.js-Prompts-blue?logo=terminal" /><br/>
+<sub>Interactive prompts</sub>
+</td>
+<td align="center">
+<img src="https://img.shields.io/badge/Chalk-Colors-pink?logo=terminal" /><br/>
+<sub>Terminal styling</sub>
+</td>
+<td align="center">
+<img src="https://img.shields.io/badge/Octokit-GitHub-black?logo=github" /><br/>
+<sub>GitHub API client</sub>
+</td>
+</tr>
+<tr>
+<td align="center">
+<img src="https://img.shields.io/badge/Anthropic-AI-purple?logo=anthropic" /><br/>
+<sub>Claude integration</sub>
+</td>
+<td align="center">
+<img src="https://img.shields.io/badge/TypeScript-Type%20Safety-blue?logo=typescript" /><br/>
+<sub>Type-safe development</sub>
+</td>
+<td align="center">
+<img src="https://img.shields.io/badge/Vitest-Testing-yellow?logo=vitest" /><br/>
+<sub>Fast unit tests</sub>
+</td>
+<td align="center">
+<img src="https://img.shields.io/badge/ESM-Modules-orange?logo=javascript" /><br/>
+<sub>Modern JS</sub>
+</td>
+</tr>
+</table>
+
+---
+
+## 📄 License
+
+<div align="center">
+
+**MIT** © [Shunsuke Hayashi](https://github.com/ShunsukeHayashi)
+
+Open source with ❤️ from Tokyo 🗼
+
+---
+
+<sub>**Note for AI Agents:** This README contains full context. All features are documented above. Start by reading the [AI Agent Integration](#-ai-agent-integration) section.</sub>
+
+<sub>🌸 Made with elegance and precision • [Report Issues](https://github.com/ShunsukeHayashi/Miyabi/issues) • [Contribute](https://github.com/ShunsukeHayashi/Miyabi/pulls)</sub>
+
+</div>

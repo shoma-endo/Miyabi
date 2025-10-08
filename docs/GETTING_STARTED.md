@@ -39,6 +39,59 @@ git --version    # 任意のバージョン
 gh --version     # 任意のバージョン
 ```
 
+### GitHub Token の設定
+
+Agentic OSを使うには、適切な権限を持つGitHub Personal Access Tokenが必要です。
+
+#### 必要なスコープ
+
+| スコープ | 理由 |
+|---------|------|
+| `repo` | リポジトリへの読み書き |
+| `workflow` | GitHub Actionsの実行 |
+| `read:project` | ✨ **重要!** GitHub Projects V2の情報取得 |
+| `write:project` | Projects V2へのIssue/PR追加 |
+
+#### 設定手順
+
+1. **GitHub Settings にアクセス**
+   ```
+   https://github.com/settings/tokens
+   ```
+
+2. **新しいトークンを作成** (または既存のトークンを編集)
+   - "Generate new token" → "Generate new token (classic)" をクリック
+   - Note: `Agentic OS Development` など分かりやすい名前を入力
+
+3. **スコープを選択**
+   - ✅ `repo` (全て)
+   - ✅ `workflow`
+   - ✅ `read:project` ← **必須!**
+   - ✅ `write:project` ← **必須!**
+
+4. **トークンをコピー**
+   - "Generate token" をクリック
+   - 表示されたトークン (ghp_xxx...) をコピー
+   - ⚠️ **この画面を閉じると二度と表示されません!**
+
+5. **.env ファイルに保存**
+   ```bash
+   # プロジェクトルートに .env ファイルを作成
+   echo "GITHUB_TOKEN=ghp_あなたのトークン" > .env
+   ```
+
+6. **動作確認**
+   ```bash
+   # プロジェクト情報を取得してみる
+   npm run project:info
+   ```
+
+   ✅ 成功すると、プロジェクトの情報が表示されます
+
+   ❌ エラーが出る場合:
+   - トークンのスコープが正しいか確認
+   - `.env` ファイルが正しい場所にあるか確認
+
 ---
 
 ## 🚀 3ステップで始める

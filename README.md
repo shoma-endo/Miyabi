@@ -682,9 +682,26 @@ cp .env.example .env
 
 # .envを編集して以下を設定:
 # - GITHUB_TOKEN (https://github.com/settings/tokens から取得)
+#   必須スコープ: repo, workflow, read:project, write:project
 # - ANTHROPIC_API_KEY (https://console.anthropic.com/ から取得)
 # - REPOSITORY (owner/repo 形式)
 ```
+
+<details>
+<summary>📝 <b>GitHub Tokenのスコープについて</b></summary>
+
+Agentic OSを使うには、以下のスコープが必要です:
+
+| スコープ | 必要性 | 理由 |
+|---------|--------|------|
+| `repo` | 必須 | リポジトリへの読み書き |
+| `workflow` | 必須 | GitHub Actionsの実行 |
+| `read:project` | 必須 | GitHub Projects V2の情報取得 |
+| `write:project` | 推奨 | Projects V2へのIssue/PR追加 |
+
+**設定方法**: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md#github-token-の設定) を参照
+
+</details>
 
 #### 4. TypeScriptコンパイル確認
 

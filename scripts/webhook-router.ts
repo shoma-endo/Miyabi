@@ -295,8 +295,8 @@ async function main() {
   await router.route(payload);
 }
 
-// Run if executed directly
-if (require.main === module) {
+// Run if executed directly (ES module check)
+if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch((error) => {
     console.error('❌ Fatal error:', error);
     process.exit(1);

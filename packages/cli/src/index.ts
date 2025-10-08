@@ -106,7 +106,48 @@ program
         }
       }
     } catch (error) {
-      console.error(chalk.red.bold('\n❌ エラーが発生しました:'), error);
+      console.log(chalk.red.bold('\n❌ エラーが発生しました\n'));
+
+      if (error instanceof Error) {
+        console.log(chalk.red(`原因: ${error.message}\n`));
+
+        // エラーの種類に応じた対処法を表示
+        if (error.message.includes('authentication') || error.message.includes('OAuth')) {
+          console.log(chalk.yellow('💡 対処法:'));
+          console.log(chalk.white('  1. GitHubの認証をもう一度試してください'));
+          console.log(chalk.white('  2. ブラウザでコードを正しく入力したか確認してください'));
+          console.log(chalk.white('  3. 必要な権限（repo, workflow）が付与されているか確認してください\n'));
+        } else if (error.message.includes('repository') || error.message.includes('repo')) {
+          console.log(chalk.yellow('💡 対処法:'));
+          console.log(chalk.white('  1. リポジトリ名が既に存在していないか確認してください'));
+          console.log(chalk.white('  2. GitHubのアクセス権限を確認してください'));
+          console.log(chalk.white('  3. インターネット接続を確認してください\n'));
+        } else if (error.message.includes('git') || error.message.includes('Not a git repository')) {
+          console.log(chalk.yellow('💡 対処法:'));
+          console.log(chalk.white('  1. Gitリポジトリのディレクトリで実行してください'));
+          console.log(chalk.white('  2. `git init`でリポジトリを初期化してください'));
+          console.log(chalk.white('  3. リモートリポジトリが設定されているか確認してください\n'));
+        } else if (error.message.includes('GITHUB_TOKEN')) {
+          console.log(chalk.yellow('💡 対処法:'));
+          console.log(chalk.white('  1. 環境変数 GITHUB_TOKEN を設定してください'));
+          console.log(chalk.white('  2. `export GITHUB_TOKEN=ghp_your_token`'));
+          console.log(chalk.white('  3. もしくは miyabi を実行して認証してください\n'));
+        } else if (error.message.includes('network') || error.message.includes('fetch')) {
+          console.log(chalk.yellow('💡 対処法:'));
+          console.log(chalk.white('  1. インターネット接続を確認してください'));
+          console.log(chalk.white('  2. GitHubのステータスを確認してください: https://www.githubstatus.com'));
+          console.log(chalk.white('  3. プロキシ設定を確認してください\n'));
+        } else {
+          console.log(chalk.yellow('💡 対処法:'));
+          console.log(chalk.white('  1. インターネット接続を確認してください'));
+          console.log(chalk.white('  2. もう一度実行してみてください'));
+          console.log(chalk.white('  3. 問題が続く場合はイシューを作成してください:'));
+          console.log(chalk.cyan('     https://github.com/ShunsukeHayashi/Autonomous-Operations/issues\n'));
+        }
+      } else {
+        console.log(chalk.gray('予期しないエラーが発生しました\n'));
+      }
+
       process.exit(1);
     }
   });

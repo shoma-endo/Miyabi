@@ -43,8 +43,11 @@ export async function init(projectName: string, options: InitOptions = {}) {
     token = await githubOAuth();
     spinner.succeed(chalk.green('GitHub authentication complete'));
   } catch (error) {
-    spinner.fail(chalk.red('GitHub authentication failed'));
-    throw error;
+    spinner.fail(chalk.red('GitHub認証に失敗しました'));
+    if (error instanceof Error) {
+      throw new Error(`GitHub authentication failed: ${error.message}`);
+    }
+    throw new Error('GitHub authentication failed: Unknown error');
   }
 
   // Step 2: Create repository
@@ -55,8 +58,14 @@ export async function init(projectName: string, options: InitOptions = {}) {
     repo = await createRepository(projectName, token, options.private || false);
     spinner.succeed(chalk.green(`Repository created: ${chalk.cyan(repo.html_url)}`));
   } catch (error) {
-    spinner.fail(chalk.red('Repository creation failed'));
-    throw error;
+    spinner.fail(chalk.red('リポジトリの作成に失敗しました'));
+    if (error instanceof Error) {
+      if (error.message.includes('already exists') || error.message.includes('name already exists')) {
+        throw new Error(`repository creation failed: リポジトリ名 "${projectName}" は既に存在しています`);
+      }
+      throw new Error(`repository creation failed: ${error.message}`);
+    }
+    throw new Error('repository creation failed: Unknown error');
   }
 
   // Step 3: Setup labels
@@ -66,8 +75,11 @@ export async function init(projectName: string, options: InitOptions = {}) {
     await setupLabels(repo.owner.login, repo.name, token);
     spinner.succeed(chalk.green('Labels created successfully'));
   } catch (error) {
-    spinner.fail(chalk.red('Label creation failed'));
-    throw error;
+    spinner.fail(chalk.red('ラベルの作成に失敗しました'));
+    if (error instanceof Error) {
+      throw new Error(`Label setup failed: ${error.message}`);
+    }
+    throw new Error('Label setup failed: Unknown error');
   }
 
   // Step 4: Create Projects V2
@@ -77,8 +89,11 @@ export async function init(projectName: string, options: InitOptions = {}) {
     const project = await createProjectV2(repo.owner.login, repo.name, token);
     spinner.succeed(chalk.green(`Projects V2 created: ${chalk.cyan(project.url)}`));
   } catch (error) {
-    spinner.fail(chalk.red('Projects V2 creation failed'));
-    throw error;
+    spinner.fail(chalk.red('Projects V2の作成に失敗しました'));
+    if (error instanceof Error) {
+      throw new Error(`Projects V2 creation failed: ${error.message}`);
+    }
+    throw new Error('Projects V2 creation failed: Unknown error');
   }
 
   // Step 5: Deploy workflows
@@ -88,8 +103,11 @@ export async function init(projectName: string, options: InitOptions = {}) {
     const workflowCount = await deployWorkflows(repo.owner.login, repo.name, token);
     spinner.succeed(chalk.green(`${workflowCount} workflows deployed`));
   } catch (error) {
-    spinner.fail(chalk.red('Workflow deployment failed'));
-    throw error;
+    spinner.fail(chalk.red('ワークフローのデプロイに失敗しました'));
+    if (error instanceof Error) {
+      throw new Error(`Workflow deployment failed: ${error.message}`);
+    }
+    throw new Error('Workflow deployment failed: Unknown error');
   }
 
   // Step 6: Clone and setup locally
@@ -101,8 +119,14 @@ export async function init(projectName: string, options: InitOptions = {}) {
     });
     spinner.succeed(chalk.green('Local setup complete'));
   } catch (error) {
-    spinner.fail(chalk.red('Local setup failed'));
-    throw error;
+    spinner.fail(chalk.red('ローカルセットアップに失敗しました'));
+    if (error instanceof Error) {
+      if (error.message.includes('git')) {
+        throw new Error(`git clone failed: Gitがインストールされているか確認してください`);
+      }
+      throw new Error(`Local setup failed: ${error.message}`);
+    }
+    throw new Error('Local setup failed: Unknown error');
   }
 
   // Step 7: Create welcome Issue
@@ -112,8 +136,11 @@ export async function init(projectName: string, options: InitOptions = {}) {
     const issue = await createWelcomeIssue(repo.owner.login, repo.name, token);
     spinner.succeed(chalk.green(`Welcome Issue created: ${chalk.cyan(issue.html_url)}`));
   } catch (error) {
-    spinner.fail(chalk.red('Welcome Issue creation failed'));
-    throw error;
+    spinner.fail(chalk.red('ウェルカムIssueの作成に失敗しました'));
+    if (error instanceof Error) {
+      throw new Error(`Welcome Issue creation failed: ${error.message}`);
+    }
+    throw new Error('Welcome Issue creation failed: Unknown error');
   }
 
   // Success!

@@ -35,8 +35,17 @@ export async function install(options: InstallOptions = {}) {
     analysis = await analyzeProject();
     spinner.succeed(chalk.green('Project analysis complete'));
   } catch (error) {
-    spinner.fail(chalk.red('Project analysis failed'));
-    throw error;
+    spinner.fail(chalk.red('プロジェクトの解析に失敗しました'));
+    if (error instanceof Error) {
+      if (error.message.includes('Not a git repository')) {
+        throw new Error('git repository not found: このディレクトリはGitリポジトリではありません');
+      }
+      if (error.message.includes('no origin remote')) {
+        throw new Error('git remote not found: リモートリポジトリが設定されていません');
+      }
+      throw new Error(`Project analysis failed: ${error.message}`);
+    }
+    throw new Error('Project analysis failed: Unknown error');
   }
 
   // Display analysis results
@@ -80,8 +89,11 @@ export async function install(options: InstallOptions = {}) {
     token = await githubOAuth();
     spinner.succeed(chalk.green('GitHub authentication complete'));
   } catch (error) {
-    spinner.fail(chalk.red('GitHub authentication failed'));
-    throw error;
+    spinner.fail(chalk.red('GitHub認証に失敗しました'));
+    if (error instanceof Error) {
+      throw new Error(`GitHub authentication failed: ${error.message}`);
+    }
+    throw new Error('GitHub authentication failed: Unknown error');
   }
 
   // Step 3: Setup labels
@@ -95,8 +107,11 @@ export async function install(options: InstallOptions = {}) {
       chalk.green(`Labels setup complete (${result.created} created, ${result.updated} updated)`)
     );
   } catch (error) {
-    spinner.fail(chalk.red('Label setup failed'));
-    throw error;
+    spinner.fail(chalk.red('ラベルのセットアップに失敗しました'));
+    if (error instanceof Error) {
+      throw new Error(`Label setup failed: ${error.message}`);
+    }
+    throw new Error('Label setup failed: Unknown error');
   }
 
   // Step 4: Auto-label existing Issues
@@ -107,8 +122,11 @@ export async function install(options: InstallOptions = {}) {
       const labeled = await autoLabelIssues(analysis.owner, analysis.repo, token);
       spinner.succeed(chalk.green(`${labeled} Issues labeled successfully`));
     } catch (error) {
-      spinner.fail(chalk.red('Auto-labeling failed'));
-      throw error;
+      spinner.fail(chalk.red('自動ラベリングに失敗しました'));
+      if (error instanceof Error) {
+        throw new Error(`Auto-labeling failed: ${error.message}`);
+      }
+      throw new Error('Auto-labeling failed: Unknown error');
     }
   }
 
@@ -121,8 +139,11 @@ export async function install(options: InstallOptions = {}) {
     });
     spinner.succeed(chalk.green(`${workflowCount} workflows deployed`));
   } catch (error) {
-    spinner.fail(chalk.red('Workflow deployment failed'));
-    throw error;
+    spinner.fail(chalk.red('ワークフローのデプロイに失敗しました'));
+    if (error instanceof Error) {
+      throw new Error(`Workflow deployment failed: ${error.message}`);
+    }
+    throw new Error('Workflow deployment failed: Unknown error');
   }
 
   // Step 6: Link to Projects V2
@@ -132,8 +153,11 @@ export async function install(options: InstallOptions = {}) {
     await linkToProject(analysis.owner, analysis.repo, token);
     spinner.succeed(chalk.green('Projects V2 connected'));
   } catch (error) {
-    spinner.fail(chalk.red('Projects V2 connection failed'));
-    throw error;
+    spinner.fail(chalk.red('Projects V2の接続に失敗しました'));
+    if (error instanceof Error) {
+      throw new Error(`Projects V2 connection failed: ${error.message}`);
+    }
+    throw new Error('Projects V2 connection failed: Unknown error');
   }
 
   // Success!

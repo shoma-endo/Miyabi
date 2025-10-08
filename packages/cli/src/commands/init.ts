@@ -123,8 +123,14 @@ export async function init(projectName: string, options: InitOptions = {}) {
     console.log(chalk.gray('  ✓ .claude/ directory created'));
     console.log(chalk.gray('  ✓ CLAUDE.md context file created'));
   } catch (error) {
-    spinner.warn(chalk.yellow('Claude Code configuration skipped'));
-    console.log(chalk.gray('  You can add .claude/ manually later\n'));
+    spinner.fail(chalk.red('Claude Code configuration failed'));
+    if (error instanceof Error) {
+      console.error(chalk.red(`  Error: ${error.message}`));
+      if (error.stack) {
+        console.error(chalk.gray(`  Stack: ${error.stack.split('\n').slice(0, 3).join('\n')}`));
+      }
+    }
+    console.log(chalk.yellow('  You can add .claude/ manually later\n'));
   }
 
   // Step 6: Clone and setup locally

@@ -132,11 +132,18 @@ export async function deployClaudeConfigToGitHub(
     const claudeFiles = await collectDirectoryFiles(claudeTemplateDir, '.claude');
     filesToCommit.push(...claudeFiles);
     console.log(`[Claude Config] Collected ${claudeFiles.length} files from .claude/`);
+
+    if (claudeFiles.length === 0) {
+      throw new Error(`No files found in .claude/ template directory: ${claudeTemplateDir}`);
+    }
+
     // Log first few file paths for debugging
     claudeFiles.slice(0, 5).forEach(f => console.log(`  - ${f.path}`));
     if (claudeFiles.length > 5) {
       console.log(`  ... and ${claudeFiles.length - 5} more files`);
     }
+  } else {
+    throw new Error(`Claude template directory not found: ${claudeTemplateDir}`);
   }
 
   // 2. Generate CLAUDE.md from template
@@ -148,6 +155,8 @@ export async function deployClaudeConfigToGitHub(
       content: renderedContent,
     });
     console.log(`[Claude Config] Added CLAUDE.md`);
+  } else {
+    throw new Error(`CLAUDE.md template not found: ${claudeMdTemplate}`);
   }
 
   // 3. Commit all files to GitHub using Contents API

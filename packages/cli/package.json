@@ -1,6 +1,6 @@
 {
   "name": "miyabi",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Miyabi - 一つのコマンドで全てが完結する自律型開発フレームワーク",
   "type": "module",
   "bin": {
@@ -11,8 +11,7 @@
   "files": [
     "dist",
     "templates",
-    "README.md",
-    "LICENSE"
+    "README.md"
   ],
   "scripts": {
     "build": "tsc",

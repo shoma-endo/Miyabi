@@ -16,7 +16,7 @@ const program = new Command();
 program
   .name('miyabi')
   .description('✨ Miyabi - 一つのコマンドで全てが完結する自律型開発フレームワーク')
-  .version('0.1.1');
+  .version('0.1.2');
 
 // ============================================================================
 // Single Command Interface

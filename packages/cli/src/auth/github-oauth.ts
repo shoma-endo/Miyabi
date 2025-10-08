@@ -191,7 +191,11 @@ async function verifyToken(token: string): Promise<boolean> {
     const octokit = new Octokit({ auth: token });
     await octokit.users.getAuthenticated();
     return true;
-  } catch {
+  } catch (error) {
+    // Log why the token is invalid for debugging
+    if (error instanceof Error) {
+      console.log(chalk.gray(`トークン検証エラー: ${error.message}`));
+    }
     return false;
   }
 }
@@ -227,14 +231,32 @@ function loadTokenFromEnv(): string | null {
   const envPath = path.join(process.cwd(), '.env');
 
   if (!fs.existsSync(envPath)) {
+    console.log(chalk.gray(`.envファイルが見つかりません: ${envPath}`));
     return null;
   }
 
   try {
     const content = fs.readFileSync(envPath, 'utf-8');
     const match = content.match(/GITHUB_TOKEN=([^\n\r]+)/);
-    return match ? match[1].trim() : null;
-  } catch {
+
+    if (!match) {
+      console.log(chalk.yellow('⚠️  .envファイルにGITHUB_TOKENが見つかりません'));
+      return null;
+    }
+
+    const token = match[1].trim();
+    // Remove quotes if present
+    const cleanToken = token.replace(/^["']|["']$/g, '');
+
+    if (!cleanToken) {
+      console.log(chalk.yellow('⚠️  GITHUB_TOKENが空です'));
+      return null;
+    }
+
+    console.log(chalk.gray(`トークンを読み込みました (長さ: ${cleanToken.length}文字)`));
+    return cleanToken;
+  } catch (error) {
+    console.log(chalk.red(`.envファイルの読み込みに失敗: ${error}`));
     return null;
   }
 }

@@ -54,6 +54,7 @@ package "GitHub as Operating System" #252525 {
     component "GitHub Actions\n(Scheduler)" as actions #8B88FF
     component "Webhooks\n(Event Bus)" as webhooks #8B88FF
     component "Projects V2\n(Database)" as projects #8B88FF
+    component "Labels\n(State Machine)" as labels #8B88FF
     component "GraphQL/REST API\n(System Calls)" as api #8B88FF
 
     note right of actions
@@ -61,6 +62,22 @@ package "GitHub as Operating System" #252525 {
       - Workflow orchestration
       - Parallel execution
       - Resource allocation
+    end note
+
+    note right of labels
+      State Management ✨ NEW
+      - 53 labels, 10 categories
+      - 8-state lifecycle
+      - Auto state transitions
+      - Agent assignment
+    end note
+
+    note right of projects
+      Data Persistence ✨ NEW
+      - Agent metrics
+      - KPI tracking
+      - Weekly reports
+      - Custom fields
     end note
   }
 
@@ -124,6 +141,7 @@ package "Autonomous Agent System" #252525 {
     component "Rich CLI Output\n(UI System)" as richcli #00FF88
     component "Type System\n(TypeScript)" as types #8B88FF
     component "LDD Logger\n(Observability)" as ldd #FFB800
+    component "State Machine SDK\n(Label Manager)" as statemachine #8B88FF
 
     note right of base
       Core Functionality
@@ -131,6 +149,22 @@ package "Autonomous Agent System" #252525 {
       - Metrics recording
       - Error handling
       - Lifecycle management
+    end note
+
+    note right of richcli
+      Rich CLI ✨ NEW
+      - ~1,800 lines
+      - 4 phases complete
+      - Agent-specific colors
+      - Tables, boxes, progress
+    end note
+
+    note right of statemachine
+      State Machine ✨ NEW
+      - Label-based states
+      - Transition validation
+      - Agent assignment
+      - Auto-escalation
     end note
   }
 
@@ -185,6 +219,8 @@ package "External Systems" #252525 {
 ' Connections: GitHub OS Internal
 ' ============================================================================
 
+issues --> labels : "state managed by"
+labels --> actions : "triggers workflows"
 issues --> actions : "triggers"
 prs --> actions : "triggers"
 actions --> webhooks : "emits events"
@@ -194,6 +230,9 @@ api --> runners : "schedules"
 runners --> packages : "reads/writes"
 runners --> pages : "deploys"
 runners --> secrets : "reads"
+
+labels --> issues : "controls state"
+labels --> prs : "controls state"
 
 protection --> prs : "enforces rules"
 codeql --> actions : "scans code"
@@ -220,11 +259,16 @@ coordinator --> base : "extends"
 base --> richcli : "uses"
 base --> types : "uses"
 base --> ldd : "logs to"
+base --> statemachine : "manages state"
+
+statemachine --> labels : "updates"
+statemachine --> api : "queries"
 
 claude --> task : "executes via"
 task --> coordinator : "invokes"
 mcp --> claude : "extends"
 sdk --> api : "wraps"
+sdk --> projects : "queries GraphQL"
 
 ' ============================================================================
 ' Connections: Cross-Layer Integration
@@ -233,14 +277,19 @@ sdk --> api : "wraps"
 coordinator --> issues : "reads/updates"
 coordinator --> projects : "queries"
 coordinator --> api : "calls"
+coordinator --> labels : "checks state"
 
 codegen --> prs : "creates"
+codegen --> labels : "checks state"
 review --> prs : "reviews"
+review --> labels : "updates quality"
 pr --> prs : "manages"
+pr --> labels : "transitions state"
 deployment --> actions : "triggers"
 
 issue --> issues : "analyzes"
 issue --> discussions : "creates"
+issue --> labels : "sets priority"
 
 claude --> anthropic : "API calls"
 deployment --> firebase : "deploys"
@@ -268,11 +317,21 @@ note top of issues
 end note
 
 note bottom of projects
-  <b>Data Persistence</b>
+  <b>Data Persistence ✨ NEW</b>
   - Agent execution history
-  - KPI metrics
-  - Task states
-  - Cost tracking
+  - KPI metrics (quality, duration, cost)
+  - Weekly automated reports
+  - Custom fields (Agent, Duration, Cost, Quality)
+  - GraphQL API integration
+end note
+
+note bottom of labels
+  <b>State Machine ✨ NEW</b>
+  - 53 labels, 10 categories
+  - State: pending → analyzing → implementing → reviewing → done
+  - Agent assignment automation
+  - Priority/Severity tracking
+  - Blocked → Guardian escalation
 end note
 
 note bottom of pages
@@ -308,8 +367,15 @@ legend bottom
 
   <b>Component Status:</b>
   ✅ Fully Implemented
+  ✨ NEW - Recently added (v2.0)
   ⚠️ Partially Implemented
-  ⏳ Planned (Issue #5, #6)
+  ⏳ Planned (Issue #5 Phase B-E, #6)
+
+  <b>Recent Additions (v2.0):</b>
+  - Rich CLI Output System (~1,800 lines)
+  - Label-based State Machine (53 labels)
+  - Projects V2 Integration (GraphQL)
+  - Context Engineering MCP (5 total MCPs)
 end legend
 
 @enduml

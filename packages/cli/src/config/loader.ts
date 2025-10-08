@@ -51,7 +51,7 @@ export interface MiyabiConfig {
 /**
  * Load configuration from file
  */
-export function loadConfig(): MiyabiConfig {
+export function loadConfig(options: { silent?: boolean } = {}): MiyabiConfig {
   const configPaths = [
     path.join(process.cwd(), '.miyabi.yml'),
     path.join(process.cwd(), '.miyabirc'),
@@ -71,12 +71,16 @@ export function loadConfig(): MiyabiConfig {
           config = JSON.parse(content) as MiyabiConfig;
         }
 
-        console.log(`✓ 設定ファイルを読み込みました: ${configPath}`);
+        if (!options.silent) {
+          console.log(`✓ 設定ファイルを読み込みました: ${configPath}`);
+        }
         return config;
       } catch (error) {
-        console.warn(`⚠️  設定ファイルの読み込みに失敗: ${configPath}`);
-        if (error instanceof Error) {
-          console.warn(`   ${error.message}`);
+        if (!options.silent) {
+          console.warn(`⚠️  設定ファイルの読み込みに失敗: ${configPath}`);
+          if (error instanceof Error) {
+            console.warn(`   ${error.message}`);
+          }
         }
       }
     }
@@ -177,4 +181,15 @@ export function validateConfig(config: MiyabiConfig): { valid: boolean; errors: 
     valid: errors.length === 0,
     errors,
   };
+}
+
+/**
+ * Apply configuration to environment
+ * Sets environment variables from config file
+ */
+export function applyConfigToEnvironment(config: MiyabiConfig): void {
+  // Set GITHUB_TOKEN from config if not already set
+  if (config.github?.token && !process.env.GITHUB_TOKEN) {
+    process.env.GITHUB_TOKEN = config.github.token;
+  }
 }

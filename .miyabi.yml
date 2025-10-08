@@ -1,0 +1,15 @@
+github:
+  defaultPrivate: true
+  token: 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
+project:
+  gitignoreTemplate: Node
+  licenseTemplate: mit
+labels: {}
+workflows:
+  autoLabel: true
+  autoReview: true
+  autoSync: false
+cli:
+  language: ja
+  theme: default
+  verboseErrors: false

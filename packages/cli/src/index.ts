@@ -11,13 +11,23 @@ import { init } from './commands/init.js';
 import { install } from './commands/install.js';
 import { status } from './commands/status.js';
 import { config } from './commands/config.js';
+import { setup } from './commands/setup.js';
+import { loadConfig, applyConfigToEnvironment } from './config/loader.js';
+
+// Load and apply configuration at startup
+try {
+  const userConfig = loadConfig({ silent: true });
+  applyConfigToEnvironment(userConfig);
+} catch (error) {
+  // Silently fail if config doesn't exist - it's optional
+}
 
 const program = new Command();
 
 program
   .name('miyabi')
   .description('✨ Miyabi - 一つのコマンドで全てが完結する自律型開発フレームワーク')
-  .version('0.2.0');
+  .version('0.3.0');
 
 // ============================================================================
 // Single Command Interface
@@ -34,6 +44,7 @@ program
         name: 'action',
         message: '何をしますか？',
         choices: [
+          { name: '🌸 初めての方（セットアップガイド）', value: 'setup' },
           { name: '🆕 新しいプロジェクトを作成', value: 'init' },
           { name: '📦 既存プロジェクトに追加', value: 'install' },
           { name: '📊 ステータス確認', value: 'status' },
@@ -50,6 +61,11 @@ program
 
     try {
       switch (action) {
+        case 'setup': {
+          await setup({});
+          break;
+        }
+
         case 'init': {
           const { projectName, isPrivate } = await inquirer.prompt([
             {

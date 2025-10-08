@@ -1086,9 +1086,11 @@ MIT License
 
 ## 📞 連絡先
 
-- **AI Operations Lead**: ai-operations@example.com
-- **GitHub**: https://github.com/user/Autonomous-Operations
-- **Issues**: https://github.com/user/Autonomous-Operations/issues
+- **Guardian**: [@ShunsukeHayashi](https://github.com/ShunsukeHayashi)
+- **X (Twitter)**: [@The_AGI_WAY](https://x.com/The_AGI_WAY)
+- **GitHub**: https://github.com/ShunsukeHayashi/Autonomous-Operations
+- **Issues**: https://github.com/ShunsukeHayashi/Autonomous-Operations/issues
+- **Discussions**: https://github.com/ShunsukeHayashi/Autonomous-Operations/discussions
 
 ---
 

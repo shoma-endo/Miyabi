@@ -118,9 +118,14 @@ describe('github-oauth', () => {
     it('should save token to new .env file', () => {
       const envPath = path.join(process.cwd(), '.env');
 
-      // Clean up first
-      if (fs.existsSync(envPath)) {
+      // Clean up first (safe delete)
+      try {
         fs.unlinkSync(envPath);
+      } catch (error: any) {
+        // Ignore if file doesn't exist
+        if (error.code !== 'ENOENT') {
+          throw error;
+        }
       }
 
       // Simulate token save
@@ -132,7 +137,11 @@ describe('github-oauth', () => {
       expect(savedContent).toContain(`GITHUB_TOKEN=${mockToken}`);
 
       // Clean up
-      fs.unlinkSync(envPath);
+      try {
+        fs.unlinkSync(envPath);
+      } catch (error) {
+        // Ignore cleanup errors in tests
+      }
     });
 
     it('should update existing GITHUB_TOKEN in .env', () => {

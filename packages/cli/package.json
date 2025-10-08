@@ -12,6 +12,7 @@
     "dist",
     "templates",
     ".claude",
+    "CLAUDE.md",
     "README.md",
     "SETUP_GUIDE.md",
     "FOR_NON_PROGRAMMERS.md",

@@ -1,0 +1,138 @@
+@startuml Component Structure
+!theme cerulean-outline
+skinparam backgroundColor #FEFEFE
+skinparam componentStyle rectangle
+
+title Autonomous Operations - Component Structure
+
+package "agents/" {
+  package "ui/" {
+    component [logger.ts\n<Rich Logging>] as Logger
+    component [theme.ts\n<Color Scheme>] as Theme
+    component [spinner.ts\n<Loading UI>] as Spinner
+    component [box.ts\n<Boxed Output>] as Box
+    component [table.ts\n<Tabular Display>] as Table
+    component [progress.ts\n<Progress Bars>] as Progress
+  }
+
+  component [coordinator.ts\n<Orchestration>] as Coordinator
+  component [codegen.ts\n<Code Generation>] as CodeGen
+  component [review.ts\n<Quality Check>] as ReviewAgent
+}
+
+package "scripts/" {
+  component [agentic.ts\n<Main CLI>] as MainCLI
+  component [parallel-executor.ts\n<Multi-Worker>] as ParallelExec
+  component [project-manager.ts\n<Projects V2>] as ProjectMgr
+  component [setup-github-token.ts\n<Token Setup>] as TokenSetup
+  component [demo-rich-cli.ts\n<UI Demo>] as Demo
+  component [collect-kpi.ts\n<Analytics>] as KPI
+  component [generate-dashboard.ts\n<Reporting>] as Dashboard
+}
+
+package "tests/" {
+  component [coordinator.test.ts\n<Unit Tests>] as Tests
+}
+
+package "docs/" {
+  file [GITHUB_TOKEN_SETUP.md] as TokenDoc
+  file [PROJECTS_V2_INTEGRATION.md] as ProjectsDoc
+  file [UI_SYSTEM.md] as UIDoc
+
+  package "diagrams/" {
+    file [system-architecture.puml] as ArchDiag
+    file [workflow-sequence.puml] as SeqDiag
+    file [parallel-execution.puml] as ParallelDiag
+    file [component-structure.puml] as CompDiag
+  }
+}
+
+package ".github/" {
+  package "workflows/" {
+    file [project-automation.yml\n<Auto Add to Project>] as Workflow
+  }
+  file [AGENTS.md\n<Agent Manifest>] as AgentsMd
+}
+
+file [package.json\n<Dependencies & Scripts>] as PackageJson
+file [tsconfig.json\n<TypeScript Config>] as TSConfig
+file [.env\n<Environment Variables>] as EnvFile
+
+' UI System Dependencies
+Logger ..> Theme : uses
+Spinner ..> Theme : uses
+Box ..> Theme : uses
+Table ..> Theme : uses
+Progress ..> Theme : uses
+
+' Agent Dependencies
+Coordinator ..> Logger : logs to
+CodeGen ..> Logger : logs to
+ReviewAgent ..> Logger : logs to
+
+' Script Dependencies
+MainCLI ..> Logger : uses
+MainCLI ..> Theme : uses
+ParallelExec ..> Coordinator : orchestrates
+ParallelExec ..> Logger : logs to
+ProjectMgr ..> Logger : uses
+TokenSetup ..> Logger : uses
+TokenSetup ..> Theme : uses
+Demo ..> Logger : demonstrates
+Demo ..> Box : demonstrates
+Demo ..> Table : demonstrates
+Demo ..> Progress : demonstrates
+KPI ..> Dashboard : feeds data
+Dashboard ..> Table : renders
+
+' Test Dependencies
+Tests ..> Coordinator : tests
+
+' Configuration Dependencies
+MainCLI ..> PackageJson : reads scripts
+ParallelExec ..> PackageJson : version info
+ProjectMgr ..> EnvFile : reads GITHUB_TOKEN
+TokenSetup ..> EnvFile : writes GITHUB_TOKEN
+
+' Documentation Dependencies
+TokenDoc ..> TokenSetup : guides
+ProjectsDoc ..> ProjectMgr : guides
+UIDoc ..> Logger : documents
+UIDoc ..> Theme : documents
+
+' Workflow Dependencies
+Workflow ..> ProjectMgr : triggers
+
+note right of Coordinator
+  **Core Orchestration**
+  - Task decomposition
+  - DAG construction
+  - Dependency resolution
+  - State management
+end note
+
+note right of Logger
+  **Rich CLI Output**
+  - Colored output
+  - Spinners & progress
+  - Tables & boxes
+  - Gradients & ASCII art
+end note
+
+note right of ParallelExec
+  **Multi-Worker System**
+  - Concurrent execution
+  - Rate limit management
+  - Load balancing
+  - Error recovery
+end note
+
+note right of ProjectMgr
+  **GitHub Projects V2**
+  - GraphQL API integration
+  - Item management
+  - Status updates
+  - Custom fields
+end note
+
+@enduml

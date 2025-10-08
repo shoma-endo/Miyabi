@@ -1,0 +1,181 @@
+@startuml Parallel Task Execution Flow
+!theme cerulean-outline
+skinparam backgroundColor #FEFEFE
+
+title Parallel Task Execution - Multi-Agent Coordination
+
+actor "Developer" as Dev
+participant "Parallel\nExecutor" as Executor
+participant "Coordinator\nAgent" as Coord
+queue "Task Queue" as Queue
+participant "Worker 1" as W1
+participant "Worker 2" as W2
+participant "Worker 3" as W3
+participant "GitHub\nProjects" as Projects
+database "Results\nStorage" as Results
+
+== Initialization ==
+Dev -> Executor: npm run agents:parallel:issues\n--issues "1,2,3,4,5"
+activate Executor
+
+Executor -> Executor: Parse Configuration
+note right
+  **Config:**
+  - Max Workers: 3
+  - Rate Limit: 100/hour
+  - Timeout: 5 minutes
+end note
+
+Executor -> Projects: Fetch Issues
+activate Projects
+Projects --> Executor: 5 Issues Retrieved
+deactivate Projects
+
+== Task Decomposition ==
+Executor -> Coord: Decompose Issues
+activate Coord
+
+loop For Each Issue
+  Coord -> Coord: Analyze Issue
+  Coord -> Coord: Create Task DAG
+  Coord -> Queue: Enqueue Tasks
+  activate Queue
+end
+
+Coord --> Executor: Decomposition Complete
+deactivate Coord
+
+note over Queue
+  **Task Queue**
+  Total: 15 tasks
+  - Issue #1: 3 tasks
+  - Issue #2: 2 tasks
+  - Issue #3: 4 tasks
+  - Issue #4: 3 tasks
+  - Issue #5: 3 tasks
+end note
+
+== Parallel Execution ==
+Executor -> W1: Start Worker 1
+activate W1
+Executor -> W2: Start Worker 2
+activate W2
+Executor -> W3: Start Worker 3
+activate W3
+
+par Worker 1: Issue #1
+  W1 -> Queue: Dequeue Task
+  Queue --> W1: Task 1.1
+  deactivate Queue
+  W1 -> W1: Execute Task 1.1\n(Create models)
+  W1 -> Results: Store Result
+  activate Results
+  Results --> W1: Saved
+  deactivate Results
+  W1 -> Projects: Update Progress
+  activate Projects
+  Projects --> W1: Updated
+  deactivate Projects
+
+  W1 -> Queue: Dequeue Task
+  activate Queue
+  Queue --> W1: Task 1.2
+  deactivate Queue
+  W1 -> W1: Execute Task 1.2\n(Add service)
+  W1 -> Results: Store Result
+  activate Results
+  Results --> W1: Saved
+  deactivate Results
+else Worker 2: Issue #2
+  W2 -> Queue: Dequeue Task
+  activate Queue
+  Queue --> W2: Task 2.1
+  deactivate Queue
+  W2 -> W2: Execute Task 2.1\n(Fix bug)
+  W2 -> Results: Store Result
+  activate Results
+  Results --> W2: Saved
+  deactivate Results
+  W2 -> Projects: Update Progress
+  activate Projects
+  Projects --> W2: Updated
+  deactivate Projects
+
+  W2 -> Queue: Dequeue Task
+  activate Queue
+  Queue --> W2: Task 3.1
+  deactivate Queue
+  W2 -> W2: Execute Task 3.1\n(Add feature)
+else Worker 3: Issue #4
+  W3 -> Queue: Dequeue Task
+  activate Queue
+  Queue --> W3: Task 4.1
+  deactivate Queue
+  W3 -> W3: Execute Task 4.1\n(Refactor)
+  W3 -> Results: Store Result
+  activate Results
+  Results --> W3: Saved
+  deactivate Results
+  W3 -> Projects: Update Progress
+  activate Projects
+  Projects --> W3: Updated
+  deactivate Projects
+
+  W3 -> Queue: Dequeue Task
+  activate Queue
+  Queue --> W3: Task 5.1
+  deactivate Queue
+  W3 -> W3: Execute Task 5.1\n(Documentation)
+end
+
+note over W1, W3
+  Workers continue processing
+  tasks from the queue until
+  all tasks are completed
+end note
+
+W1 --> Executor: Worker 1 Complete
+deactivate W1
+W2 --> Executor: Worker 2 Complete
+deactivate W2
+W3 --> Executor: Worker 3 Complete
+deactivate W3
+
+== Results Aggregation ==
+Executor -> Results: Aggregate Results
+activate Results
+Results --> Executor: All Results
+deactivate Results
+
+Executor -> Executor: Generate Summary Report
+
+alt All Tasks Successful
+  Executor -> Projects: Update All Issues\n"Completed"
+  activate Projects
+  Projects --> Executor: Updated
+  deactivate Projects
+
+  Executor --> Dev: ✓ Success Report\n15/15 tasks completed
+  deactivate Executor
+else Some Tasks Failed
+  Executor -> Projects: Mark Failed Tasks
+  activate Projects
+  Projects --> Executor: Updated
+  deactivate Projects
+
+  Executor --> Dev: ⚠ Partial Success\n12/15 tasks completed
+  deactivate Executor
+end
+
+note over Dev, Projects
+  **Performance Metrics**
+
+  Sequential Execution: 75 minutes (15 tasks × 5 min)
+  Parallel Execution: 25 minutes (3 workers)
+  Time Saved: 67% faster
+
+  Throughput: 3x increase
+  Resource Utilization: Optimal
+end note
+
+@enduml

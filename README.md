@@ -1,22 +1,26 @@
 <div align="center">
 
-# 🌍 Autonomous-Operations
+# 🌍 Agentic OS
 
-### The Operating System for the Age of Agents
+### From Issue to Production — Autonomously, Safely, Transparently
 
-**GitHubをAgenticOSとして機能させ、人類とAgentが共存する未来を創る**
+**The first open-source, economically-governed, beginner-friendly autonomous development framework built on Issue-Driven Development**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8+-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
-[![Autonomous](https://img.shields.io/badge/Autonomous-95%25-brightgreen)](.github/AGENTS.md)
+[![Autonomous](https://img.shields.io/badge/Autonomous-90%25+-brightgreen)](.github/AGENTS.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![GitHub Stars](https://img.shields.io/github/stars/ShunsukeHayashi/Autonomous-Operations?style=social)](https://github.com/ShunsukeHayashi/Autonomous-Operations/stargazers)
 
-[🚀 Quick Start](#-quick-start) • [📖 Documentation](#-ドキュメント) • [🤝 Contributing](CONTRIBUTING.md) • [💬 Discussions](https://github.com/ShunsukeHayashi/autonomous-operations/discussions)
+[🚀 Quick Start](#-quick-start) • [📖 Documentation](#-documentation) • [🌟 Unique Features](#-what-makes-agentic-os-unique) • [🔥 Roadmap](docs/INTEGRATION_ROADMAP.md) • [💬 Discussions](https://github.com/ShunsukeHayashi/autonomous-operations/discussions)
 
-**v1.0.0** | Updated: 2025-10-08 | Powered by [AGENTS.md v5.0](.github/AGENTS.md)
+**v2.0.0** | Released: 2025-10-08 | Powered by [Claude Code Task Tool](docs/CLAUDE_CODE_TASK_TOOL.md)
 
 ---
+
+> **"必ず必ず必ず必ず、クロードコードのタスクツールを使ってタスクとして実行していきます"**
+> All work MUST use Claude Code Task Tool. No exceptions.
 
 </div>
 
@@ -61,6 +65,99 @@ Auto-generate Draft PR
 
 ---
 
+## 🌟 What Makes Agentic OS Unique
+
+<div align="center">
+
+### 🏆 No Competitor Has All These Features
+
+</div>
+
+<table>
+<tr>
+<th>Feature</th>
+<th>Agentic OS</th>
+<th>CrewAI</th>
+<th>Devin</th>
+<th>GitHub Copilot Agent</th>
+<th>OpenDevin</th>
+</tr>
+<tr>
+<td><b>Open Source</b></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><b>Beginner-Friendly</b><br/>(超初心者対応)</td>
+<td>✅</td>
+<td>❌</td>
+<td>⚠️</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><b>Economic Governance</b><br/>(Budget Control)</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><b>Issue-Driven Development</b><br/>(IDD)</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>⚠️</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><b>Parallel Execution</b><br/>(Multi-Agent)</td>
+<td>✅</td>
+<td>✅</td>
+<td>⚠️</td>
+<td>❌</td>
+<td>⚠️</td>
+</tr>
+<tr>
+<td><b>Template Support</b><br/>(New + Existing)</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><b>Knowledge Persistence</b><br/>(Vector DB)</td>
+<td>✅</td>
+<td>❌</td>
+<td>⚠️</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><b>Shikigaku Framework</b><br/>(識学理論)</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+</table>
+
+<div align="center">
+
+**🎯 Positioning**: First open-source, economically-governed, beginner-friendly autonomous development framework built on Issue-Driven Development
+
+**[📊 See Full Competitive Analysis →](docs/research/SIMILAR_PROJECTS_ANALYSIS.md)**
+
+</div>
+
+---
+
 ## 🎯 What is This?
 
 **Autonomous-Operations** は、世界初の **Agentic Operating System Template** です。
@@ -93,33 +190,76 @@ Webhooks   → Event Bus (イベントバス)
 
 </div>
 
-```bash
-# 1️⃣ Use this template to create your repository
-gh repo create my-project --template ShunsukeHayashi/autonomous-operations
+<table>
+<tr>
+<td width="50%">
 
-# 2️⃣ Initialize your project
-cd my-project
+### 👶 For Absolute Beginners (超初心者向け)
+
+```bash
+# 1️⃣ Clone this repository
+git clone https://github.com/ShunsukeHayashi/\
+  Autonomous-Operations.git
+cd Autonomous-Operations
+
+# 2️⃣ Install dependencies
 npm install
 
 # 3️⃣ Setup GitHub Token (required for project management)
 npm run setup:token
 # → Interactive token setup with scope validation
 
-# 4️⃣ Create your first autonomous task
-gh issue create --title "Add user authentication with JWT"
+# 4️⃣ Start interactive guide
+npm start
+# ✨ Answer 5 simple questions
+# → GitHub Issue auto-created!
+# → AI Agents start working!
 
 # 5️⃣ Watch the magic happen ✨
-# → AI Agents analyze the issue
-# → Code generation + tests in parallel
-# → Quality checks (ESLint, TypeScript, Security)
 # → Draft PR ready in 5-10 minutes
 ```
+
+**💡 No coding knowledge required!**
+
+**[📖 Super Beginner Guide →](docs/GETTING_STARTED.md)**
+
+</td>
+<td width="50%">
+
+### 👨‍💻 For Developers
+
+```bash
+# 1️⃣ Use this template
+gh repo create my-project \
+  --template ShunsukeHayashi/\
+  autonomous-operations
+
+# 2️⃣ Setup wizard
+cd my-project
+npm run setup
+# → Interactive setup wizard
+# → Choose: New or Existing project
+
+# 3️⃣ Execute task
+npm run task -- --issue 123
+# → AI Agents work in parallel
+# → Draft PR ready in 5-10 min
+```
+
+**🎯 See demo first:**
+```bash
+npm run demo
+```
+
+**[⚡ Developer Quick Start →](docs/CLAUDE_CODE_TASK_TOOL.md)**
+
+</td>
+</tr>
+</table>
 
 <div align="center">
 
 ### 💡 No AI/Agent knowledge required — As simple as using an iPhone
-
-**[📖 Full Setup Guide →](GETTING_STARTED.md)** | **[⚡ 5-Minute Tutorial →](QUICKSTART.md)**
 
 </div>
 
@@ -469,7 +609,12 @@ cost_breakdown:
 **Claude Code Integration**
 - 7 custom commands (`.claude/commands/`)
 - 6 agent definitions (`.claude/agents/`)
-- 3 MCP servers for enhanced IDE experience
+- 5 MCP servers for enhanced IDE experience:
+  - **IDE Integration**: VS Code diagnostics, Jupyter execution
+  - **GitHub Enhanced**: Issue/PR management
+  - **Project Context**: Dependency information
+  - **Filesystem**: File access
+  - **Context Engineering**: AI-powered context analysis & optimization
 - Pre-configured hooks and settings
 
 </td>
@@ -549,9 +694,26 @@ cp .env.example .env
 
 # .envを編集して以下を設定:
 # - GITHUB_TOKEN (https://github.com/settings/tokens から取得)
+#   必須スコープ: repo, workflow, read:project, write:project
 # - ANTHROPIC_API_KEY (https://console.anthropic.com/ から取得)
 # - REPOSITORY (owner/repo 形式)
 ```
+
+<details>
+<summary>📝 <b>GitHub Tokenのスコープについて</b></summary>
+
+Agentic OSを使うには、以下のスコープが必要です:
+
+| スコープ | 必要性 | 理由 |
+|---------|--------|------|
+| `repo` | 必須 | リポジトリへの読み書き |
+| `workflow` | 必須 | GitHub Actionsの実行 |
+| `read:project` | 必須 | GitHub Projects V2の情報取得 |
+| `write:project` | 推奨 | Projects V2へのIssue/PR追加 |
+
+**設定方法**: [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md#github-token-の設定) を参照
+
+</details>
 
 #### 4. TypeScriptコンパイル確認
 
@@ -628,6 +790,47 @@ npm test
 
 # ビルド
 npm run build
+```
+
+#### GitHub Projects V2 Integration
+
+```bash
+# Get project info and custom fields
+npm run project:info
+
+# List all project items
+npm run project:items
+
+# Calculate agent metrics
+npm run project:metrics
+
+# Generate project report (JSON)
+npm run project:report
+
+# Generate weekly report (Markdown)
+npm run report:weekly
+
+# Generate weekly report and create Issue
+npm run report:weekly:issue
+```
+
+#### Label-based State Machine
+
+```bash
+# Check current state of an issue
+npm run state:check -- --issue=123
+
+# Transition issue to new state
+npm run state:transition -- --issue=123 --to=implementing
+
+# Assign agent to issue
+npm run state:assign-agent -- --issue=123 --agent=codegen
+
+# Available states:
+# pending, analyzing, implementing, reviewing, done, blocked, failed, paused
+
+# Available agents:
+# coordinator, codegen, review, issue, pr, deployment
 ```
 
 ### GitHub Actions実行
@@ -728,6 +931,7 @@ ai-course-content-generator-v.0.0.1:
 
 | ドキュメント | 説明 |
 |-------------|------|
+| [docs/system-architecture.puml](docs/system-architecture.puml) | 🎨 **システムアーキテクチャ図** (PlantUML) |
 | [OSS_DEVELOPMENT_SYSTEM.md](OSS_DEVELOPMENT_SYSTEM.md) | 🔄 継続開発システム設計 |
 | [docs/AUTONOMOUS_WORKFLOW_INTEGRATION.md](docs/AUTONOMOUS_WORKFLOW_INTEGRATION.md) | ⚙️ ワークフロー統合ガイド |
 | [docs/REPOSITORY_OVERVIEW.md](docs/REPOSITORY_OVERVIEW.md) | 📁 リポジトリ構造解説 |
@@ -936,9 +1140,11 @@ MIT License
 
 ## 📞 連絡先
 
-- **AI Operations Lead**: ai-operations@example.com
-- **GitHub**: https://github.com/user/Autonomous-Operations
-- **Issues**: https://github.com/user/Autonomous-Operations/issues
+- **Guardian**: [@ShunsukeHayashi](https://github.com/ShunsukeHayashi)
+- **X (Twitter)**: [@The_AGI_WAY](https://x.com/The_AGI_WAY)
+- **GitHub**: https://github.com/ShunsukeHayashi/Autonomous-Operations
+- **Issues**: https://github.com/ShunsukeHayashi/Autonomous-Operations/issues
+- **Discussions**: https://github.com/ShunsukeHayashi/Autonomous-Operations/discussions
 
 ---
 

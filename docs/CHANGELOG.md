@@ -20,8 +20,16 @@ Complete transformation into production-ready autonomous development framework.
 - **New Module**: `agents/ui/` with theme system and RichLogger
   - `theme.ts` (315 lines) — Brand colors, symbols, borders, typography
   - `logger.ts` (370 lines) — RichLogger class with 20+ methods
+  - `table.ts` (336 lines) — Agent status & KPI table formatters
+  - `box.ts` (289 lines) — Success/Error/Warning/Agent boxes
+  - `progress.ts` (389 lines) — Multi-step progress, spinners, parallel task tracking
+  - `tree.ts` (332 lines) — Task tree & agent execution hierarchy rendering
   - `index.ts` — Unified exports
 - **New Script**: `scripts/demo-rich-cli.ts` — Complete demo of all capabilities
+- **Agent Integration**: BaseAgent now uses RichLogger throughout
+  - All 6 agent types (Coordinator, CodeGen, Review, Issue, PR, Deployment) automatically inherit rich UI
+  - Agent-specific colors: CoordinatorAgent (pink), CodeGenAgent (blue), ReviewAgent (green), etc.
+  - Backward compatible `log()` method preserved
 - **Features**:
   - Beautiful colored output with Agentic OS brand theme
   - Agent-specific styling (6 agent types with unique colors)
@@ -33,8 +41,13 @@ Complete transformation into production-ready autonomous development framework.
   - Key-value pairs and status indicators
   - Bullet lists with indentation support
   - Dividers (light, heavy, double)
+  - Tables (Agent status, KPIs, structured data)
+  - Trees (Task dependencies, agent execution hierarchy)
+  - Multi-step progress indicators
+  - Parallel task tracking
 - **npm Scripts**:
   - `npm run demo` — Run rich CLI demo
+- **Total**: ~1,800 lines of Rich CLI implementation across 4 phases
 
 #### GitHub as Operating System (Issue #5)
 - **New Workflow**: `.github/workflows/project-sync.yml` — Auto-add Issues/PRs to Projects V2
@@ -166,6 +179,10 @@ Complete transformation into production-ready autonomous development framework.
 - **Added**: `npm run task` — Execute specific task
 - **Added**: `npm run demo` — Show rich CLI demo
 
+### Fixed
+- **Security**: Upgraded Vitest from v1.0.0 to v3.2.4 (fixes esbuild vulnerability GHSA-67mh-4wv8-2f99)
+- **GitHub Token Documentation**: Added comprehensive GitHub Token setup guide with required scopes (`repo`, `workflow`, `read:project`, `write:project`) in `docs/GETTING_STARTED.md`
+
 ### Documentation
 
 #### New Guides
@@ -193,6 +210,20 @@ Complete transformation into production-ready autonomous development framework.
 - `scripts/execute-task.ts` — Task execution automation
 - `scripts/setup-agentic-os.ts` — Project setup wizard
 - `scripts/demo-rich-cli.ts` — Rich CLI demo
+
+#### MCP Servers Integration
+- **Context Engineering MCP** (git submodule: `external/context-engineering-mcp`)
+  - AI-powered context analysis and optimization
+  - Semantic search with Gemini AI
+  - 4 tools: `search_guides_with_gemini`, `analyze_guide`, `analyze_guide_url`, `compare_guides`
+  - Purpose: Information exploration when context is insufficient
+  - API Server: http://localhost:8888
+- **Total MCP Servers**: 5
+  - IDE Integration (VS Code diagnostics, Jupyter execution)
+  - GitHub Enhanced (Issue/PR management)
+  - Project Context (Dependency information)
+  - Filesystem (File access)
+  - Context Engineering (AI-powered context optimization)
 
 ---
 

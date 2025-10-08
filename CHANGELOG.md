@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.4] - 2025-10-08
+
+### Fixed
+- **Dynamic version loading**: Read version from package.json at runtime instead of hardcoded string
+- Prevents version mismatch between package.json and CLI output
+
+### Changed
+- CLI version display now uses `packageJson.version` from dynamic import
+
+## [0.4.3] - 2025-10-08
+
+### Fixed
+- **ES module compatibility**: Convert postinstall.js to ES modules syntax
+- Fixed import statements for better module resolution
+- Improved compatibility with modern Node.js environments
+
+## [0.4.2] - 2025-10-08
+
+### Added
+- **Claude Code auto-deployment**: Deploy .claude/ directory and CLAUDE.md directly to GitHub repository
+- Automatic setup of Claude Code configuration in new repositories
+- 6 AI agents, 7 commands, 3 MCP servers included in templates
+
+### Fixed
+- Remove non-existent @agentic-os/core dependency (#33)
+- Resolve TypeScript compilation errors (7 errors)
+
+## [0.4.1] - 2025-10-08
+
+### Fixed
+- **TypeScript compilation**: Resolve 7 compilation errors
+- Additional unused variable cleanup
+- Type safety improvements
+
+### Documentation
+- Update README with v0.4.0 features
+
 ## [0.4.0] - 2025-10-08
 
 ### Added
@@ -170,6 +207,10 @@ N/A (initial release)
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.4.4 | 2025-10-08 | Dynamic version loading from package.json |
+| 0.4.3 | 2025-10-08 | ES module compatibility for postinstall.js |
+| 0.4.2 | 2025-10-08 | Claude Code auto-deployment, dependency fixes |
+| 0.4.1 | 2025-10-08 | TypeScript compilation fixes (7 errors) |
 | 0.4.0 | 2025-10-08 | AI-Powered Documentation, Auto-Issue Reporting, TypeScript fixes (24 errors), Docker support |
 | 0.1.0 | 2025-10-08 | Initial public release |
 | 0.0.1 | 2025-10-06 | Internal development |

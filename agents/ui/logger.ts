@@ -51,7 +51,7 @@ export class RichLogger {
   header(text: string, useGradient: boolean = true): void {
     console.log('');
     if (useGradient) {
-      const gradientText = gradient(theme.colors.gradient)(text);
+      const gradientText = gradient(...theme.colors.gradient)(text);
       console.log(chalk.bold(gradientText));
     } else {
       console.log(chalk.hex(theme.colors.primary).bold(text));
@@ -231,7 +231,7 @@ export class RichLogger {
   /**
    * ASCII art banner
    */
-  banner(text: string, font: string = 'Standard'): void {
+  banner(text: string, font: string = 'Standard'): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       figlet.text(
         text,
@@ -245,7 +245,7 @@ export class RichLogger {
             reject(err);
             return;
           }
-          const gradientText = gradient(theme.colors.gradient)(data || '');
+          const gradientText = gradient(...theme.colors.gradient)(data || '');
           console.log(gradientText);
           resolve();
         }
@@ -257,7 +257,7 @@ export class RichLogger {
    * Gradient text
    */
   gradient(text: string): void {
-    const gradientText = gradient(theme.colors.gradient)(text);
+    const gradientText = gradient(...theme.colors.gradient)(text);
     console.log(gradientText);
   }
 

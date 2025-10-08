@@ -21,7 +21,7 @@ import { createProjectV2 } from '../setup/projects.js';
 import { deployWorkflows } from '../setup/workflows.js';
 import { cloneAndSetup } from '../setup/local.js';
 import { createWelcomeIssue } from '../setup/welcome.js';
-import { deployClaudeConfig, verifyClaudeConfig } from '../setup/claude-config.js';
+import { deployClaudeConfig, deployClaudeConfigToGitHub, verifyClaudeConfig } from '../setup/claude-config.js';
 
 export interface InitOptions {
   private?: boolean;
@@ -112,6 +112,19 @@ export async function init(projectName: string, options: InitOptions = {}) {
   } catch (error) {
     spinner.warn(chalk.yellow('Workflow deployment skipped'));
     console.log(chalk.gray('  You can add workflows manually later\n'));
+  }
+
+  // Step 5.5: Deploy Claude Code configuration to GitHub repository
+  spinner.start('Deploying Claude Code configuration to repository...');
+
+  try {
+    await deployClaudeConfigToGitHub(repo.owner.login, repo.name, projectName, token);
+    spinner.succeed(chalk.green('Claude Code configuration committed to repository'));
+    console.log(chalk.gray('  ✓ .claude/ directory created'));
+    console.log(chalk.gray('  ✓ CLAUDE.md context file created'));
+  } catch (error) {
+    spinner.warn(chalk.yellow('Claude Code configuration skipped'));
+    console.log(chalk.gray('  You can add .claude/ manually later\n'));
   }
 
   // Step 6: Clone and setup locally

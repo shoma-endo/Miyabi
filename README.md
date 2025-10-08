@@ -602,7 +602,12 @@ cost_breakdown:
 **Claude Code Integration**
 - 7 custom commands (`.claude/commands/`)
 - 6 agent definitions (`.claude/agents/`)
-- 3 MCP servers for enhanced IDE experience
+- 5 MCP servers for enhanced IDE experience:
+  - **IDE Integration**: VS Code diagnostics, Jupyter execution
+  - **GitHub Enhanced**: Issue/PR management
+  - **Project Context**: Dependency information
+  - **Filesystem**: File access
+  - **Context Engineering**: AI-powered context analysis & optimization
 - Pre-configured hooks and settings
 
 </td>

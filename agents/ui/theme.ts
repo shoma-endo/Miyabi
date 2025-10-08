@@ -33,6 +33,7 @@ export const theme = {
     muted: '#6B7280',        // Gray - Secondary text, comments
     border: '#3F3F46',       // Dark gray - Borders, dividers
     background: '#1E1E1E',   // Dark - Background (if needed)
+    white: '#FFFFFF',        // White - High contrast text
 
     // Special
     gradient: ['#00D9FF', '#8B88FF', '#FF79C6'], // Cyan → Purple → Pink

@@ -19,5 +19,11 @@ export { theme, agentColors, severityColors, phaseColors } from './theme.js';
 export type { Theme, AgentName, SeverityLevel, PhaseLevel } from './theme.js';
 export type { LogOptions, BoxOptions } from './logger.js';
 
+// Phase 2: Formatters
+export * from './table.js';
+export * from './box.js';
+export * from './progress.js';
+export * from './tree.js';
+
 // Re-export commonly used types from dependencies
 export type { Ora } from 'ora';

@@ -5,6 +5,76 @@ All notable changes to Miyabi will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.6] - 2025-10-08
+
+### Fixed
+- **Issue #36**: Enhanced error logging for `.claude/` directory deployment
+  - Added explicit error messages when templates not found
+  - Added validation for empty file collection
+  - Changed `spinner.warn` to `spinner.fail` for deployment errors
+  - Show error stack trace in init command (first 3 lines)
+  - Helps diagnose why `.claude/` deployment may fail
+
+### Changed
+- Improved error handling in `deployClaudeConfigToGitHub()`
+- Better error visibility for template-related issues
+
+## [0.4.5] - 2025-10-08
+
+### Fixed
+- **Issue #36**: Corrected `.claude/` directory deployment with POSIX path separator
+  - Changed `path.join()` to `path.posix.join()` in `collectDirectoryFiles()`
+  - Ensures consistent forward-slash paths for GitHub API across all platforms
+  - Fixes issue where `.claude/` contents were not properly deployed to GitHub
+  - Added debug logging to track file collection (shows collected file count and paths)
+
+### Changed
+- Cross-platform path handling for GitHub API interactions
+
+## [0.4.4] - 2025-10-08
+
+### Fixed
+- Converted postinstall.js to ES modules
+- Read version dynamically from package.json in postinstall script
+- Fixed ESM import issues in postinstall flow
+
+## [0.4.3] - 2025-10-08
+
+### Added
+- Comprehensive documentation files
+  - `FOR_NON_PROGRAMMERS.md` - Complete guide for programming beginners
+  - `INSTALL_TO_EXISTING_PROJECT.md` - Guide for adding Miyabi to existing projects
+  - `EDGE_CASE_TESTS.md` - Edge case testing scenarios
+
+### Fixed
+- TypeScript compilation errors (7 errors resolved)
+- Removed non-existent `@agentic-os/core` dependency (#33)
+
+## [0.4.0] - 2025-10-08
+
+### Added
+- **Claude Code Integration**: Full `.claude/` directory deployment
+  - 6 AI agents (CodeGenAgent, CoordinatorAgent, DeploymentAgent, IssueAgent, PRAgent, ReviewAgent)
+  - 7 custom commands (/agent-run, /create-issue, /deploy, /generate-docs, /security-scan, /test, /verify)
+  - MCP servers integration (github-enhanced, ide-integration, project-context)
+  - Command hooks (log-commands.sh)
+- `deployClaudeConfigToGitHub()` function for direct GitHub repository deployment
+- `CLAUDE.md` template with project context
+
+### Changed
+- `miyabi init` now deploys `.claude/` configuration to GitHub before local cloning
+- Enhanced setup flow with Claude Code configuration step
+
+## [0.3.3] - 2025-10-08
+
+### Added
+- Post-install welcome flow for first-time users
+- Environment checks (Node.js version, Git, GITHUB_TOKEN)
+- Contextual next steps based on project status
+
+### Changed
+- Improved user onboarding experience with interactive setup guidance
+
 ## [0.1.5] - 2025-10-08
 
 ### Added

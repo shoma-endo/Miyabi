@@ -268,42 +268,51 @@ const result = await taskToolWrapper.executeTask(
 
 **Branch Naming Convention:**
 ```
-worker/{worker-type}-{worker-name}/issue-{issue-number}
+<type>/issue-<number>/<description>
+
+type:
+  - feat: New feature
+  - fix: Bug fix
+  - docs: Documentation
+  - refactor: Code refactoring
+  - test: Tests
+  - chore: Maintenance
 
 Examples:
-- worker/human-shunsuke/issue-4
-- worker/agent-codegen-1/issue-5
-- worker/agent-review-1/issue-6
+- feat/issue-4/rich-cli-output
+- fix/issue-5/github-sync-error
+- docs/issue-6/parallel-work-guide
+- refactor/issue-7/agent-coordination
+
+Worker-specific (for parallel work coordination):
+- feat/issue-4/rich-cli-output-worker-codegen-1
+- feat/issue-5/github-integration-worker-human-shunsuke
 ```
 
 **Worktree Directory Structure:**
 ```
 /Users/shunsuke/Dev/Autonomous-Operations/     # Main repo
 /Users/shunsuke/Dev/Autonomous-Operations/.worktrees/
-  ├── human-shunsuke/                           # Human worker worktree
-  │   ├── issue-4/                              # Issue #4 work
-  │   └── issue-7/                              # Issue #7 work
-  ├── agent-codegen-1/                          # Agent worktree
-  │   └── issue-5/                              # Issue #5 work
-  └── agent-review-1/
-      └── issue-6/
+  ├── issue-4-worker-human/                    # Human worker on Issue #4
+  ├── issue-5-worker-codegen-1/                # CodeGen agent on Issue #5
+  └── issue-6-worker-review-1/                 # Review agent on Issue #6
 ```
 
 **Worktree Management:**
 ```bash
 # Create worktree for new task
-git worktree add .worktrees/agent-codegen-1/issue-5 \
-  -b worker/agent-codegen-1/issue-5
+git worktree add .worktrees/issue-5-worker-codegen-1 \
+  -b feat/issue-5/github-integration-worker-codegen-1
 
 # Work in isolation
-cd .worktrees/agent-codegen-1/issue-5
+cd .worktrees/issue-5-worker-codegen-1
 # Make changes, commit
 
 # When done, push to remote
-git push -u origin worker/agent-codegen-1/issue-5
+git push -u origin feat/issue-5/github-integration-worker-codegen-1
 
 # Clean up after merge
-git worktree remove .worktrees/agent-codegen-1/issue-5
+git worktree remove .worktrees/issue-5-worker-codegen-1
 ```
 
 **Conflict Prevention:**

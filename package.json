@@ -1,0 +1,43 @@
+{
+  "name": "autonomous-operations",
+  "version": "2.0.0",
+  "description": "Complete autonomous AI development operations platform",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "agents:parallel:exec": "tsx scripts/parallel-executor.ts",
+    "agents:parallel:issues": "npm run agents:parallel:exec --",
+    "agents:parallel:todos": "npm run agents:parallel:exec --",
+    "agents:status": "tsx scripts/check-status.ts",
+    "kpi:collect": "tsx scripts/collect-kpi.ts",
+    "dashboard:generate": "tsx scripts/generate-dashboard.ts",
+    "lint": "eslint . --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "build": "tsc"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "autonomous",
+    "operations",
+    "devops",
+    "automation"
+  ],
+  "author": "AI Operations Lead",
+  "license": "MIT",
+  "devDependencies": {
+    "@anthropic-ai/claude-code": "^2.0.9",
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.8.3",
+    "vitest": "^1.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "@octokit/rest": "^20.0.0"
+  }
+}

@@ -1,0 +1,25 @@
+# Memory Bank Template
+
+## Active Story / Task
+- タイトル:
+- ステータス:
+- 期間:
+
+## Key Decisions
+- YYYY-MM-DD: （意思決定内容 / 影響範囲 / 関係者）
+- 
+
+## Pending Questions / Blockers
+- [ ] 課題1 — 担当:
+- [ ] 課題2 — 担当:
+
+## Execution Notes
+- ログファイル: `.ai/logs/{date}-codex_prompt_chain.yaml`
+- 関連コミット/ブランチ:
+- 補足:
+
+## Next Review Window
+- 予定日:
+- レビュー担当:
+
+> 更新時は最新項目を上に追記し、履歴を保持してください。

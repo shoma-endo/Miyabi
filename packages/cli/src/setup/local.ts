@@ -64,9 +64,7 @@ async function generatePackageJson(projectPath: string, projectName: string): Pr
     keywords: ['agentic-os', 'autonomous'],
     author: '',
     license: 'MIT',
-    dependencies: {
-      '@agentic-os/core': '^0.1.0',
-    },
+    dependencies: {},
     devDependencies: {
       '@types/node': '^20.10.0',
       tsx: '^4.7.0',

@@ -152,6 +152,61 @@ Done          15     ✓ 完了
 - git CLI
 - gh CLI
 
+## トラブルシューティング
+
+### OAuth認証エラーが発生する
+
+```
+❌ エラーが発生しました: Error: Failed to request device code: Not Found
+```
+
+**原因**: OAuth Appが未設定のため、デバイスフロー認証が使えません。
+
+**解決方法**: GitHub Personal Access Tokenを使用してください。
+
+1. https://github.com/settings/tokens/new にアクセス
+2. 以下の権限を選択:
+   - `repo` - Full control of private repositories
+   - `workflow` - Update GitHub Action workflows
+   - `read:project`, `write:project` - Access projects
+3. トークンを生成してコピー
+4. プロジェクトのルートに `.env` ファイルを作成:
+   ```bash
+   echo "GITHUB_TOKEN=ghp_your_token_here" > .env
+   ```
+5. もう一度 `npx miyabi` を実行
+
+### 古いバージョンが実行される
+
+**解決方法**:
+
+```bash
+# グローバルインストールを削除
+npm uninstall -g miyabi
+
+# npxキャッシュをクリア
+rm -rf ~/.npm/_npx
+
+# 最新版を明示的に指定
+npx miyabi@latest
+```
+
+### トークンが無効と表示される
+
+```
+⚠️ トークンが無効です。再認証が必要です
+```
+
+**解決方法**: `.env` ファイルのトークンを削除または更新してください:
+
+```bash
+# 古いトークンを削除
+rm .env
+
+# 新しいトークンを作成（上記の手順に従う）
+echo "GITHUB_TOKEN=ghp_new_token" > .env
+```
+
 ## ライセンス
 
 MIT

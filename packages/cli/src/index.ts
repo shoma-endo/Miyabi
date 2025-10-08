@@ -37,6 +37,25 @@ try {
   // Silently fail if config doesn't exist - it's optional
 }
 
+/**
+ * Detect if running in Claude Code environment
+ */
+function isClaudeCodeEnvironment(): boolean {
+  return (
+    process.env.CLAUDE_CODE === 'true' ||
+    process.env.ANTHROPIC_CLI === 'true' ||
+    process.env.TERM_PROGRAM === 'Claude' ||
+    !!process.env.ANTHROPIC_API_KEY
+  );
+}
+
+/**
+ * Check if running in interactive terminal
+ */
+function isInteractiveTerminal(): boolean {
+  return process.stdin.isTTY && process.stdout.isTTY && !isClaudeCodeEnvironment();
+}
+
 const program = new Command();
 
 program
@@ -50,6 +69,29 @@ program
 
 program
   .action(async () => {
+    // Claude Code環境では引数なしの場合にヘルプを表示
+    if (isClaudeCodeEnvironment()) {
+      console.log(chalk.cyan.bold('\n✨ Miyabi\n'));
+      console.log(chalk.gray('一つのコマンドで全てが完結する自律型開発フレームワーク\n'));
+      console.log(chalk.yellow('💡 Claude Code環境が検出されました\n'));
+      console.log(chalk.white('利用可能なコマンド:\n'));
+      console.log(chalk.cyan('  npx miyabi init <project-name>') + chalk.gray('  - 新規プロジェクト作成'));
+      console.log(chalk.cyan('  npx miyabi install') + chalk.gray('            - 既存プロジェクトに追加'));
+      console.log(chalk.cyan('  npx miyabi status') + chalk.gray('             - ステータス確認'));
+      console.log(chalk.cyan('  npx miyabi docs') + chalk.gray('               - ドキュメント生成'));
+      console.log(chalk.cyan('  npx miyabi config') + chalk.gray('             - 設定管理'));
+      console.log(chalk.cyan('  npx miyabi setup') + chalk.gray('              - セットアップガイド\n'));
+      console.log(chalk.gray('詳細: npx miyabi --help\n'));
+      process.exit(0);
+    }
+
+    // 対話モード（通常のターミナル環境）
+    if (!isInteractiveTerminal()) {
+      console.log(chalk.yellow('⚠️  対話モードは対話型ターミナルでのみ利用可能です'));
+      console.log(chalk.white('\nコマンドを直接指定してください: miyabi --help\n'));
+      process.exit(1);
+    }
+
     console.log(chalk.cyan.bold('\n✨ Miyabi\n'));
     console.log(chalk.gray('一つのコマンドで全てが完結\n'));
 
@@ -224,6 +266,60 @@ program
 
       process.exit(1);
     }
+  });
+
+// ============================================================================
+// Direct Command Interface (for CLI mode)
+// ============================================================================
+
+program
+  .command('init <project-name>')
+  .description('新しいプロジェクトを作成')
+  .option('-p, --private', 'プライベートリポジトリとして作成')
+  .option('--skip-install', 'npm installをスキップ')
+  .action(async (projectName: string, options: { private?: boolean; skipInstall?: boolean }) => {
+    await init(projectName, options);
+  });
+
+program
+  .command('install')
+  .description('既存プロジェクトにMiyabiを追加')
+  .option('--dry-run', 'ドライラン（実際には変更しない）')
+  .action(async (options: { dryRun?: boolean }) => {
+    await install(options);
+  });
+
+program
+  .command('status')
+  .description('プロジェクトの状態を確認')
+  .option('-w, --watch', 'ウォッチモード（自動更新）')
+  .action(async (options: { watch?: boolean }) => {
+    await status(options);
+  });
+
+program
+  .command('docs')
+  .description('ドキュメントを生成')
+  .option('-i, --input <dir>', 'ソースディレクトリ', './scripts')
+  .option('-o, --output <file>', '出力ファイル', './docs/API.md')
+  .option('-w, --watch', 'ウォッチモード')
+  .option('-t, --training', 'トレーニング資料も生成')
+  .action(async (options: { input?: string; output?: string; watch?: boolean; training?: boolean }) => {
+    await docs(options);
+  });
+
+program
+  .command('config')
+  .description('設定を管理')
+  .action(async () => {
+    await config({});
+  });
+
+program
+  .command('setup')
+  .description('セットアップガイドを表示')
+  .action(async () => {
+    await setup({});
   });
 
 /**

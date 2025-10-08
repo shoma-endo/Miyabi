@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2025-10-08
+
+### Added
+
+**AI-Powered Documentation Generator**
+- `docs` command - AI-powered TypeScript/JavaScript documentation generation
+- Watch mode - Automatic documentation updates on file changes
+- Training materials generation for AI agents
+- Interactive documentation generation prompts
+
+**Auto-Issue Reporting System**
+- Automatic issue creation to Miyabi repository when errors occur
+- Context gathering (environment info, project state, user intent)
+- Duplicate issue detection to prevent spam
+- Error-specific troubleshooting guides (authentication, repository, git, network errors)
+
+**New Packages**
+- `@miyabi/doc-generator` - TypeScript/JavaScript documentation generation library
+- `@miyabi/miyabi-agent-sdk` - Agent development SDK (BaseAgent, AgentContext, types)
+
+**Post-install Auto-Setup**
+- Environment detection (Node.js, Git, GITHUB_TOKEN)
+- Project type detection (new vs existing)
+- Context-aware next steps guidance
+- `.miyabi-initialized` marker to prevent duplicate runs
+
+### Fixed
+
+**TypeScript Compilation (24 errors resolved)**
+- Removed duplicate export declarations (knowledge-base-sync.ts, workflow-orchestrator.ts)
+- Removed unused variables or prefixed with underscore (lock-manager.ts, task-orchestrator.ts, projects-v2.ts)
+- Added type assertions (generate-realtime-metrics.ts)
+- Prefixed unused parameters with underscore (workflow-orchestrator.ts - 4 occurrences)
+- Build now succeeds with 0 errors
+
+**Docker Support**
+- Multi-stage Dockerfile with Node.js 20 Alpine
+- .dockerignore for build context optimization
+- Non-root user execution for security
+
 ### Changed
 - **BREAKING**: Renamed from "Agentic OS" to "Miyabi" ✨
 - **BREAKING**: Package name changed from `@agentic-os/cli` to `miyabi`
@@ -14,6 +54,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simplified to single command interface (interactive menu)
 - Full Japanese UI support
 - Single command: `npx miyabi` for everything
+- CLI version updated to v0.4.0
+- Test files excluded from TypeScript build
+- ESM module syntax unified across all scripts
+- Enhanced type safety with strict mode compliance
+
+### Documentation
+- Updated command reference for `miyabi docs`
+- Added auto-issue reporting documentation to FOR_NON_PROGRAMMERS.md
+- CLAUDE.md updated with documentation generation context
+- 7 AI agents description (added CoordinatorAgent)
+
+### Technical Improvements
+- TypeScript strict mode: 100% compliance (0 errors)
+- CI/CD: Docker build support added
+- Build optimization: dist/ size reduced by excluding test files
+- Code quality: All unused variables and parameters addressed
 
 ## [0.1.0] - 2025-10-08
 
@@ -114,6 +170,7 @@ N/A (initial release)
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 0.4.0 | 2025-10-08 | AI-Powered Documentation, Auto-Issue Reporting, TypeScript fixes (24 errors), Docker support |
 | 0.1.0 | 2025-10-08 | Initial public release |
 | 0.0.1 | 2025-10-06 | Internal development |
 

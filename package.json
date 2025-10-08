@@ -5,6 +5,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "start": "tsx scripts/agentic.ts",
+    "task": "tsx scripts/execute-task.ts",
+    "demo": "tsx scripts/demo-rich-cli.ts",
     "agents:parallel:exec": "tsx scripts/parallel-executor.ts",
     "agents:parallel:issues": "npm run agents:parallel:exec --",
     "agents:parallel:todos": "npm run agents:parallel:exec --",
@@ -28,6 +31,7 @@
   "license": "MIT",
   "devDependencies": {
     "@anthropic-ai/claude-code": "^2.0.9",
+    "@types/figlet": "^1.5.8",
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
@@ -38,6 +42,16 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",
-    "@octokit/rest": "^20.0.0"
+    "@octokit/rest": "^20.0.0",
+    "ansi-escapes": "^7.0.0",
+    "boxen": "^7.1.1",
+    "chalk": "^5.3.0",
+    "cli-spinners": "^2.9.2",
+    "cli-table3": "^0.6.5",
+    "figlet": "^1.7.0",
+    "gradient-string": "^2.0.2",
+    "log-symbols": "^6.0.0",
+    "ora": "^8.0.1",
+    "terminal-link": "^3.0.0"
   }
 }

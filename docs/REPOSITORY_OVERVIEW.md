@@ -332,8 +332,14 @@ coding_standards:
 ### Git運用
 
 ```bash
-# ブランチ命名
-devin/{timestamp}-{feature-name}
+# ブランチ命名規則（一般的な規則に従う）
+<type>/issue-<number>/<description>
+
+# 例:
+# feat/issue-4/rich-cli-output
+# fix/issue-5/github-sync-error
+# docs/issue-6/parallel-work-guide
+# refactor/issue-7/agent-coordination
 
 # コミットメッセージ（Conventional Commits）
 feat(agents): CoordinatorAgent実装
@@ -605,8 +611,9 @@ gh issue create \
 ### PR作成
 
 ```bash
-# ブランチ作成
-git checkout -b devin/$(date +%s)-your-feature
+# ブランチ作成（一般的な命名規則）
+git checkout -b feat/issue-<number>/<description>
+# 例: git checkout -b feat/issue-4/rich-cli-output
 
 # 変更コミット
 git commit -m "feat(component): 変更内容"

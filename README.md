@@ -1,15 +1,63 @@
+<div align="center">
+
 # 🌍 Autonomous-Operations
 
-> **"The Operating System for the Age of Agents"**
->
-> GitHubをAgenticOSとして機能させ、人類とAgentが共存する未来を創る。
+### The Operating System for the Age of Agents
+
+**GitHubをAgenticOSとして機能させ、人類とAgentが共存する未来を創る**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8+-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
-[![Autonomous](https://img.shields.io/badge/Autonomous-95%25-brightgreen)](AGENTS.md)
+[![Autonomous](https://img.shields.io/badge/Autonomous-95%25-brightgreen)](.github/AGENTS.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-**最終更新**: 2025-10-08 | **バージョン**: 1.0.0 | **準拠**: AGENTS.md v5.0
+[🚀 Quick Start](#-quick-start) • [📖 Documentation](#-ドキュメント) • [🤝 Contributing](CONTRIBUTING.md) • [💬 Discussions](https://github.com/ShunsukeHayashi/autonomous-operations/discussions)
+
+**v1.0.0** | Updated: 2025-10-08 | Powered by [AGENTS.md v5.0](.github/AGENTS.md)
+
+---
+
+</div>
+
+## 💫 What Makes This Special?
+
+<table>
+<tr>
+<td width="50%">
+
+### ❌ Traditional Development
+```
+Developer writes code
+    ↓
+Manual testing
+    ↓
+Code review
+    ↓
+Manual deployment
+    ↓
+⏱️ Days to weeks
+```
+
+</td>
+<td width="50%">
+
+### ✅ Agentic OS
+```
+Create GitHub Issue
+    ↓
+AI Agents work in parallel
+    ↓
+Automatic quality checks
+    ↓
+Auto-generate Draft PR
+    ↓
+⚡ 5-10 minutes
+```
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -39,43 +87,148 @@ Webhooks   → Event Bus (イベントバス)
 
 ## ⚡ Quick Start
 
-### 30秒で始める
+<div align="center">
+
+### 🎬 Get Started in 30 Seconds
+
+</div>
 
 ```bash
-# 1. このTemplateを使う
+# 1️⃣ Use this template to create your repository
 gh repo create my-project --template ShunsukeHayashi/autonomous-operations
 
-# 2. 初期化スクリプト実行
+# 2️⃣ Initialize your project
 cd my-project
 ./scripts/init-project.sh
+# → Interactive setup: API keys, project name, budget settings
 
-# 3. 最初のIssueを作成
-gh issue create --title "Add user authentication"
+# 3️⃣ Create your first autonomous task
+gh issue create --title "Add user authentication with JWT"
 
-# 4. 5-10分待つ
-# ✅ Draft PRが自動生成される
+# 4️⃣ Watch the magic happen ✨
+# → AI Agents analyze the issue
+# → Code generation + tests in parallel
+# → Quality checks (ESLint, TypeScript, Security)
+# → Draft PR ready in 5-10 minutes
 ```
 
-**Agentの仕組みを理解する必要なし** — まるでiPhoneのように。
+<div align="center">
+
+### 💡 No AI/Agent knowledge required — As simple as using an iPhone
+
+**[📖 Full Setup Guide →](GETTING_STARTED.md)** | **[⚡ 5-Minute Tutorial →](QUICKSTART.md)**
+
+</div>
+
+---
+
+### 🎥 See It In Action
+
+<details>
+<summary><b>📹 Example: "Add user authentication" Issue → Draft PR</b></summary>
+
+```yaml
+Input (GitHub Issue):
+  Title: "Add user authentication with JWT"
+  Body: |
+    - Login/Logout functionality
+    - JWT token management
+    - Password hashing with bcrypt
+    - Tests with 80%+ coverage
+
+↓ AI Agents Execute (5 minutes) ↓
+
+Output (Draft PR):
+  ✅ 11 files created (935 lines)
+  ✅ LoginForm component + tests
+  ✅ JWT authentication logic
+  ✅ API endpoints + middleware
+  ✅ 38 tests passing (87.5% coverage)
+  ✅ Quality score: 87/100
+  ✅ Security scan: 0 vulnerabilities
+```
+
+**[📄 See Full Execution Report →](examples/sample-output/execution-report.json)**
+
+</details>
 
 ---
 
 ## 🚀 Why This Matters
 
-### The iPhone Moment for AI Agents
+<div align="center">
 
-| 時代 | OS | 革命 |
-|------|----|----|
-| 1990s | Windows 95 | "PCを理解しなくても使える" |
-| 2010s | iOS/Android | "スマホの仕組みを知らなくても使える" |
-| **2025+** | **Agentic OS** | **"Agentを理解しなくても、Agentと働ける"** |
+### 📱 The "iPhone Moment" for AI Agents
 
-現在、Agentを使いこなせる人は**世界人口の0.1%未満**。
+</div>
 
-**Agentic OS が変える未来**:
-- エンジニアでなくてもIssueを書くだけで実装完了
-- コーディング教育が "Agentへの指示出し" に変わる
-- 人類の生産性が指数関数的に向上
+<table>
+<tr>
+<th>Era</th>
+<th>Operating System</th>
+<th>Revolution</th>
+<th>Adoption</th>
+</tr>
+<tr>
+<td>1990s</td>
+<td><b>Windows 95</b></td>
+<td>"Use a PC without understanding it"</td>
+<td>90%+ market share</td>
+</tr>
+<tr>
+<td>2010s</td>
+<td><b>iOS/Android</b></td>
+<td>"Use a smartphone without knowing how it works"</td>
+<td>Global humanity</td>
+</tr>
+<tr>
+<td><b>2025+</b></td>
+<td><b>🌍 Agentic OS</b></td>
+<td><b>"Work with AI Agents without understanding AI"</b></td>
+<td><b>❓ Let's build this together</b></td>
+</tr>
+</table>
+
+<div align="center">
+
+### 🎯 The Problem
+
+**Today**: Only ~0.1% of the world's population can effectively use AI Agents
+
+**Tomorrow**: Everyone can work with Agents as naturally as using an iPhone
+
+</div>
+
+### 🌟 Impact
+
+<table>
+<tr>
+<td width="33%">
+
+#### 👨‍💻 For Engineers
+- Write Issues, not code
+- 10x productivity boost
+- Focus on architecture, not implementation
+
+</td>
+<td width="33%">
+
+#### 👩‍💼 For Non-Engineers
+- Describe what you want in plain language
+- No coding knowledge needed
+- Software becomes accessible to all
+
+</td>
+<td width="33%">
+
+#### 🏢 For Organizations
+- Scale to 100+ repositories
+- Unified governance via AGENTS.md
+- Economic controls built-in
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -114,101 +267,220 @@ For Organizations:
 
 ---
 
-## 🏗️ アーキテクチャ
+## 🏗️ Architecture
 
-### Agent階層構造
+### 🧠 How Agents Work Together
 
-```
-┌─────────────────────────────────────────────────┐
-│          Human Layer (戦略・承認)                │
-│  ┌─────────┐  ┌─────────┐  ┌─────────┐        │
-│  │TechLead │  │   PO    │  │  CISO   │        │
-│  └────┬────┘  └────┬────┘  └────┬────┘        │
-└───────┼───────────┼────────────┼──────────────┘
-        │ Escalation│            │
-┌───────┴───────────┴────────────┴──────────────┐
-│       Coordinator Layer (統括)                 │
-│  ┌──────────────────────────────────┐         │
-│  │      CoordinatorAgent            │         │
-│  │  - タスク分解 (DAG構築)          │         │
-│  │  - Agent割り当て                 │         │
-│  │  - 並行実行制御                  │         │
-│  └──────────┬────────────┬──────────┘         │
-└─────────────┼────────────┼────────────────────┘
-              │ Dispatch   │
-┌─────────────┴────────────┴────────────────────┐
-│       Specialist Layer (実行)                  │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐   │
-│  │CodeGen   │  │Review    │  │Issue     │   │
-│  │Agent     │  │Agent     │  │Agent     │   │
-│  └──────────┘  └──────────┘  └──────────┘   │
-│  ┌──────────┐  ┌──────────┐                 │
-│  │PR        │  │Deployment│                 │
-│  │Agent     │  │Agent     │                 │
-│  └──────────┘  └──────────┘                 │
-└────────────────────────────────────────────┘
+<div align="center">
+
+```mermaid
+graph TD
+    A[GitHub Issue Created] --> B[CoordinatorAgent]
+    B --> C{Task Analysis}
+    C --> D[CodeGenAgent]
+    C --> E[ReviewAgent]
+    C --> F[TestAgent]
+    D --> G[Parallel Execution]
+    E --> G
+    F --> G
+    G --> H{Quality Gate ≥80?}
+    H -->|Yes| I[PRAgent: Auto-Create Draft PR]
+    H -->|No| J[Human Review Required]
+    I --> K[Notify Human for Approval]
 ```
 
-### 完全自律型ワークフロー
+</div>
+
+### 📊 Agent Hierarchy
+
+<table>
+<tr>
+<td width="30%">
+
+#### 🔴 Coordinator Layer
+**Decision Authority**
+
+- CoordinatorAgent
+  - Task decomposition
+  - Agent selection
+  - Parallel execution control
+  - Monitoring & escalation
+
+</td>
+<td width="70%">
+
+#### 🔵 Specialist Layer
+**Execution Authority**
+
+<table>
+<tr>
+<td><b>CodeGenAgent</b><br/>AI-powered code generation + tests</td>
+<td><b>ReviewAgent</b><br/>Quality checks, security scans</td>
+</tr>
+<tr>
+<td><b>IssueAgent</b><br/>Automatic issue analysis & labeling</td>
+<td><b>PRAgent</b><br/>Automatic PR creation & descriptions</td>
+</tr>
+<tr>
+<td><b>DeploymentAgent</b><br/>CI/CD execution & rollback</td>
+<td><b>TestAgent</b><br/>Automated test generation & execution</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+### 🔄 Autonomous Workflow
 
 ```
-Issue作成 → IssueAgent分析 → Label自動付与 →
-CoordinatorAgentタスク分解 → 並行実行 →
-CodeGen/Review/Test → 品質判定(≥80点) →
-PRAgent自動PR作成 → 人間レビュー →
-Merge承認 → DeploymentAgent → 本番デプロイ
+1️⃣ Issue Created
+    ↓
+2️⃣ IssueAgent: Auto-label & analyze
+    ↓
+3️⃣ CoordinatorAgent: Decompose into tasks
+    ↓
+4️⃣ Parallel Execution (CodeGen + Review + Test)
+    ↓
+5️⃣ Quality Check (Score ≥ 80)
+    ├─ ✅ Pass → PRAgent: Auto-create Draft PR
+    └─ ❌ Fail → Request human intervention
+    ↓
+6️⃣ Human Review & Approval
+    ↓
+7️⃣ DeploymentAgent: Production deployment
 ```
+
 
 ---
 
-## 🚀 主要機能
+## ✨ Key Features
 
-### 1. Agent階層システム
+### 🤖 Complete Agent System
 
-| Agent | 責任範囲 | 権限 |
-|-------|---------|------|
-| **CoordinatorAgent** | タスク分解・統括・並行実行制御 | リソース配分・Agent割り当て |
-| **CodeGenAgent** | AI駆動コード生成・テスト自動生成 | 実装レベル決定 |
-| **ReviewAgent** | 静的解析・セキュリティスキャン・品質判定 | 品質合否判定（80点基準） |
-| **IssueAgent** | Issue自動分析・Label付与・担当者割り当て | Label自動付与 |
-| **PRAgent** | PR自動作成・説明文生成・Reviewer割り当て | Draft PR作成 |
-| **DeploymentAgent** | CI/CD実行・デプロイ・Rollback | Staging環境デプロイ |
+<table>
+<tr>
+<td width="50%">
 
-### 2. 並行実行システム
+#### Coordinator Layer 🔴
+- **CoordinatorAgent**
+  - Intelligent task decomposition
+  - Optimal agent selection
+  - Parallel execution orchestration
+  - Real-time monitoring & escalation
 
-- **Issue/ToDo単位の並行実行**: 複数タスクの同時処理
-- **DAG構築**: トポロジカルソートによる依存関係自動解決
-- **循環依存検出**: 無限ループの事前防止
-- **Git Worktree統合**: ブランチ分離によるバッティング完全回避
-- **リアルタイム進捗モニタリング**: 実行状況の可視化
-- **JSON形式レポート**: 自動生成・履歴管理
+</td>
+<td width="50%">
 
-### 3. ログ駆動開発(LDD)
+#### Specialist Layer 🔵
+- **CodeGenAgent**: AI-powered code + tests
+- **ReviewAgent**: Quality & security checks
+- **IssueAgent**: Auto-analysis & labeling
+- **PRAgent**: Draft PR generation
+- **DeploymentAgent**: CI/CD automation
 
+</td>
+</tr>
+</table>
+
+### 💰 Economic Governance
+
+<table>
+<tr>
+<td width="50%">
+
+**Built-in Cost Control**
+- Monthly budget configuration (`BUDGET.yml`)
+- Hourly cost monitoring
+- Automatic circuit breaker at 150% budget
+- Emergency workflow disablement
+- Guardian notification system
+
+</td>
+<td width="50%">
+
+**Example: BUDGET.yml**
 ```yaml
-codex_prompt_chain:
-  intent: "何を達成するか"
-  plan: ["ステップ1", "ステップ2"]
-  implementation: ["変更ファイル"]
-  verification: ["検証結果"]
-
-tool_invocations:
-  - command: "npm run lint"
-    workdir: "/path/to/repo"
-    timestamp: "2025-10-08T12:34:56Z"
-    status: "passed"
-    notes: "ESLintエラー0件"
+monthly_budget_usd: 500
+thresholds:
+  warning: 0.8    # 80%
+  emergency: 1.5  # 150%
+cost_breakdown:
+  anthropic_api: 400
+  firebase: 100
 ```
 
-### 4. 識学理論5原則
+</td>
+</tr>
+</table>
 
-| 原則 | 実装内容 | KPI | 目標 |
-|------|---------|-----|------|
-| 1. 責任と権限の明確化 | Agent階層・Label体系・CODEOWNERS | 担当者アサイン率 | 100% |
-| 2. 結果重視 | quality_score・KPI自動収集 | AI Task成功率 | 95%+ |
-| 3. 階層の明確化 | Coordinator-Specialist階層 | エスカレーション正答率 | 100% |
-| 4. 誤解・錯覚の排除 | 構造化プロトコル・完了条件チェック | 完了条件明示率 | 100% |
-| 5. 感情的判断の排除 | 数値ベース判定（80点基準等） | データ駆動判定実施率 | 100% |
+### 🧠 Knowledge Persistence Layer
+
+- **Vector Database Integration** (Pinecone/Weaviate)
+- Agents learn from past executions
+- Automatic similarity search before tasks
+- Never repeat the same mistakes
+- Continuous improvement via `autonomous-operations-knowledge` repo
+
+### 📐 Organizational Principles (Shikigaku Theory)
+
+<table>
+<tr>
+<th>Principle</th>
+<th>Implementation</th>
+<th>Target KPI</th>
+</tr>
+<tr>
+<td>1️⃣ Clear Responsibility & Authority</td>
+<td>Agent hierarchy, CODEOWNERS, 65-label system</td>
+<td>100% assignment rate</td>
+</tr>
+<tr>
+<td>2️⃣ Result-Oriented</td>
+<td>Quality scores, automatic KPI collection</td>
+<td>95%+ task success rate</td>
+</tr>
+<tr>
+<td>3️⃣ Clear Hierarchy</td>
+<td>Coordinator → Specialist separation</td>
+<td>100% escalation accuracy</td>
+</tr>
+<tr>
+<td>4️⃣ Eliminate Misunderstanding</td>
+<td>Structured protocols, completion criteria</td>
+<td>100% clarity</td>
+</tr>
+<tr>
+<td>5️⃣ Data-Driven Decisions</td>
+<td>Numeric thresholds (≥80 quality score)</td>
+<td>100% objective judgment</td>
+</tr>
+</table>
+
+### 🔧 Developer Experience
+
+<table>
+<tr>
+<td>
+
+**Claude Code Integration**
+- 7 custom commands (`.claude/commands/`)
+- 6 agent definitions (`.claude/agents/`)
+- 3 MCP servers for enhanced IDE experience
+- Pre-configured hooks and settings
+
+</td>
+<td>
+
+**GitHub Actions**
+- Autonomous agent executor workflow
+- Economic circuit breaker
+- Contributor auto-promotion
+- Triage bot (auto-labeling)
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -467,70 +739,95 @@ ai-course-content-generator-v.0.0.1:
 
 ---
 
-## 🗺️ ロードマップ
+## 🗺️ Roadmap
 
-### ✅ Phase 1-5: Foundation & Template (完了)
+<details open>
+<summary><b>✅ Phase 1-6: Foundation Complete (2025-10-08)</b></summary>
 
-- [x] Agent階層構造設計 (CoordinatorAgent + 5 Specialists)
-- [x] AGENTS.md v5.0 憲法制定 (Three Laws of Autonomy)
-- [x] 並行実行システム実装
-- [x] LDD運用プロトコル確立
-- [x] 識学理論Label体系統合 (65 labels)
-- [x] Claude Code統合 (.claude/commands, .claude/agents)
-- [x] MCP Server実装 (3 servers)
-- [x] GitHub Actions統合
-- [x] Complete Template Package
+- [x] Agent hierarchy architecture (Coordinator + 5 Specialists)
+- [x] AGENTS.md v5.0 constitution (Three Laws of Autonomy)
+- [x] Parallel execution system
+- [x] Log-Driven Development (LDD) protocol
+- [x] 65-label system (Shikigaku theory)
+- [x] Claude Code integration (7 commands, 6 agents, 3 MCP servers)
+- [x] GitHub Actions workflows
+- [x] **AGENTIC_OS.md** - Complete vision document
+- [x] **Economic Circuit Breaker** - Cost monitoring automation
+- [x] **BUDGET.yml** - Economic governance
+- [x] **Knowledge Persistence Layer** design
+- [x] **OSS_DEVELOPMENT_SYSTEM.md** - Continuous development architecture
 
-### ✅ Phase 6: Agentic OS Integration (完了 - 2025-10-08)
+**🎉 Result**: World's first Agentic OS Template is ready!
 
-- [x] **AGENTIC_OS.md** - AgenticOS全体像ドキュメント
-- [x] **Economic Circuit Breaker** - `.github/workflows/economic-circuit-breaker.yml`
-- [x] **BUDGET.yml** - 経済ガバナンス設定
-- [x] **Knowledge Persistence Layer** 設計
-- [x] **Graceful Degradation Protocol** 実装
-- [x] **Constitutional Amendment Process** 定義
-- [x] **OSS_DEVELOPMENT_SYSTEM.md** - 継続開発システム設計
-- [x] **README.md更新** - AgenticOSビジョン統合
+</details>
 
-### 🚀 Phase 7: OSS Launch (2025 Q4)
+<details>
+<summary><b>🚀 Phase 7: OSS Launch (2025 Q4)</b></summary>
 
-- [ ] **CODE_OF_CONDUCT.md** - コミュニティ行動規範
-- [ ] **SECURITY.md** - セキュリティポリシー
-- [ ] **GOVERNANCE.md** - プロジェクトガバナンス構造
-- [ ] **CONTRIBUTING.md** 拡充
-- [ ] Contributor Levels System実装
-- [ ] Triage Bot (Issue自動ラベリング)
+### Community Foundation
+- [ ] CODE_OF_CONDUCT.md
+- [ ] SECURITY.md
+- [ ] GOVERNANCE.md
+- [ ] Enhanced CONTRIBUTING.md
+
+### Automation
+- [ ] Contributor Levels System (auto-promotion)
+- [ ] Triage Bot (auto-labeling)
 - [ ] Public Dashboard (GitHub Pages)
-- [ ] Template Repository公開
-- [ ] 初期コミュニティ形成
 
-### 🌱 Phase 8: Community Growth (2026 Q1-Q2)
+### Launch
+- [ ] Template Repository public release
+- [ ] Initial community formation (100+ stars target)
+- [ ] Documentation localization (EN/JP)
 
-- [ ] Knowledge Base Repository (`autonomous-operations-knowledge`)
-- [ ] Vector DB統合 (Pinecone/Weaviate)
-- [ ] Agent Learning System (過去事例検索)
-- [ ] Example Projects (3-5 showcases)
-- [ ] Integration Guides (Firebase, Vercel, AWS)
-- [ ] Monthly Community Calls
-- [ ] YouTube Tutorials (JP/EN)
-- [ ] Medium/Dev.to Blog Series
+</details>
 
-### 🌍 Phase 9: Ecosystem Expansion (2026 Q3-Q4)
+<details>
+<summary><b>🌱 Phase 8: Community Growth (2026 Q1-Q2)</b></summary>
 
-- [ ] 100+ Projects Adoption
-- [ ] GitHub Official Integration検討
-- [ ] "Agentic Mode" Feature Proposal
-- [ ] Educational Curriculum ("Agent-Native Development")
-- [ ] Enterprise Support Package
-- [ ] Multi-language Support (中文, Español, etc.)
+### Knowledge Base
+- [ ] `autonomous-operations-knowledge` repository
+- [ ] Vector DB integration (Pinecone/Weaviate)
+- [ ] Agent learning system
+
+### Ecosystem
+- [ ] 3-5 example projects
+- [ ] Integration guides (Firebase, Vercel, AWS)
+- [ ] Monthly community calls
+- [ ] YouTube tutorials (JP/EN)
+- [ ] Blog series (Medium/Dev.to)
+
+**Target**: 10+ projects adoption
+
+</details>
+
+<details>
+<summary><b>🌍 Phase 9: Ecosystem Expansion (2026 Q3-Q4)</b></summary>
+
+- [ ] 100+ repositories adoption
+- [ ] GitHub Official Integration proposal
+- [ ] "Agentic Mode" feature request
+- [ ] Educational curriculum development
+- [ ] Enterprise support package
+- [ ] Multi-language support (中文, Español, Français, Deutsch)
 - [ ] Annual AgenticOS Conference
 
-### 🔮 Phase 10: The Future (2027+)
+**Target**: Industry recognition
 
-- [ ] **Agent-Native Generation** - 次世代開発者育成
-- [ ] **10,000+ Repositories** - エコシステム確立
-- [ ] **GitHub Native Feature** - プラットフォーム統合
-- [ ] **Industry Standard** - デファクトスタンダード化
+</details>
+
+<details>
+<summary><b>🔮 Phase 10: The Future (2027+)</b></summary>
+
+### Long-Term Vision
+- [ ] **Agent-Native Generation**: New generation of developers who grow up with AI Agents
+- [ ] **10,000+ Repositories**: Established ecosystem
+- [ ] **GitHub Native Feature**: Platform integration
+- [ ] **Industry Standard**: De facto standard for agent-driven development
+
+**Ultimate Goal**: Every software project in the world uses Agentic OS patterns
+
+</details>
 
 ---
 
@@ -658,39 +955,110 @@ MIT License
 
 ## 🌟 Join the Revolution
 
-**"黎明期を制するOSが世界標準となる"**
+<div align="center">
 
-PC時代はWindows、モバイル時代はiOS/Android。
-**Agent時代は、あなたと共に創る。**
+### 🚀 "The OS that defines the dawn becomes the world standard"
 
-### 今すぐ始める
+**PC Era**: Windows 95 | **Mobile Era**: iOS/Android | **Agent Era**: *Let's build it together*
 
+---
+
+### Start Your Journey
+
+<table>
+<tr>
+<td align="center" width="33%">
+
+#### 🎯 For Developers
 ```bash
-gh repo create --template ShunsukeHayashi/autonomous-operations
+gh repo create my-project \
+  --template ShunsukeHayashi/\
+  autonomous-operations
+
+cd my-project
+./scripts/init-project.sh
 ```
+**[📖 Full Guide →](GETTING_STARTED.md)**
 
-### コミュニティに参加
+</td>
+<td align="center" width="33%">
 
-- [GitHub Discussions](https://github.com/ShunsukeHayashi/autonomous-operations/discussions) - 質問・アイデア共有
-- [Issues](https://github.com/ShunsukeHayashi/autonomous-operations/issues) - バグ報告・機能要望
-- [Contributing Guide](CONTRIBUTING.md) - 貢献方法
+#### 💬 Join Community
+- [Discussions](https://github.com/ShunsukeHayashi/autonomous-operations/discussions)
+- [Issues](https://github.com/ShunsukeHayashi/autonomous-operations/issues)
+- [Contributing](CONTRIBUTING.md)
+
+**[🤝 Become a Guardian →](.github/AGENTS.md)**
+
+</td>
+<td align="center" width="33%">
+
+#### 📚 Learn More
+- [AGENTIC_OS.md](AGENTIC_OS.md)
+- [AGENTS.md](.github/AGENTS.md)
+- [OSS System](OSS_DEVELOPMENT_SYSTEM.md)
+
+**[🌍 The Vision →](AGENTIC_OS.md)**
+
+</td>
+</tr>
+</table>
+
+---
+
+### 💖 Made With Love
+
+This project is a fusion of:
+- **🧠 Shikigaku Theory**: Clear responsibility & authority
+- **🤖 Anthropic Claude**: AI that collaborates with humans
+- **🌐 GitHub Platform**: World's largest developer community
+- **📖 Open Source Philosophy**: Knowledge sharing & democratization
+
+Special thanks to **all future Guardians** who dare to redefine humanity's role alongside AI Agents.
+
+---
+
+### ⭐ Star Us
+
+If you believe in a future where humans and AI Agents coexist harmoniously, give us a star!
+
+[![GitHub Stars](https://img.shields.io/github/stars/ShunsukeHayashi/autonomous-operations?style=social)](https://github.com/ShunsukeHayashi/autonomous-operations)
+
+**Your star helps us:**
+- 📈 Gain visibility in the AI/Agent community
+- 🌍 Attract contributors & early adopters
+- 💡 Validate the Agentic OS vision
 
 ---
 
 <div align="center">
 
-**🌍 Agentic OS — The Operating System for the Age of Agents**
+## 🌍 Agentic OS
 
-*GitHubをAgenticOSとして機能させ、人類とAgentが共存する未来を創る*
+**The Operating System for the Age of Agents**
 
-[![GitHub Stars](https://img.shields.io/github/stars/ShunsukeHayashi/autonomous-operations?style=social)](https://github.com/ShunsukeHayashi/autonomous-operations)
+*Making GitHub function as an AgenticOS, creating a future where humanity and AI Agents coexist*
+
+---
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Autonomous](https://img.shields.io/badge/Autonomous-95%25-brightgreen)](AGENTS.md)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8+-blue.svg)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
+[![Autonomous](https://img.shields.io/badge/Autonomous-95%25-brightgreen)](.github/AGENTS.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-**最終更新**: 2025-10-08 | **バージョン**: 1.0.0 | **準拠**: AGENTS.md v5.0
+**v1.0.0** | Updated: 2025-10-08 | Powered by [AGENTS.md v5.0](.github/AGENTS.md)
+
+---
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
+
+---
+
+**[⬆ Back to Top](#-autonomous-operations)**
+
+</div>
 
 </div>

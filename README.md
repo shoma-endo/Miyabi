@@ -785,6 +785,28 @@ npm test
 npm run build
 ```
 
+#### GitHub Projects V2 Integration
+
+```bash
+# Get project info and custom fields
+npm run project:info
+
+# List all project items
+npm run project:items
+
+# Calculate agent metrics
+npm run project:metrics
+
+# Generate project report (JSON)
+npm run project:report
+
+# Generate weekly report (Markdown)
+npm run report:weekly
+
+# Generate weekly report and create Issue
+npm run report:weekly:issue
+```
+
 ### GitHub Actions実行
 
 #### 自動トリガー

@@ -807,6 +807,25 @@ npm run report:weekly
 npm run report:weekly:issue
 ```
 
+#### Label-based State Machine
+
+```bash
+# Check current state of an issue
+npm run state:check -- --issue=123
+
+# Transition issue to new state
+npm run state:transition -- --issue=123 --to=implementing
+
+# Assign agent to issue
+npm run state:assign-agent -- --issue=123 --agent=codegen
+
+# Available states:
+# pending, analyzing, implementing, reviewing, done, blocked, failed, paused
+
+# Available agents:
+# coordinator, codegen, review, issue, pr, deployment
+```
+
 ### GitHub Actions実行
 
 #### 自動トリガー

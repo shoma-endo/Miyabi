@@ -25,12 +25,15 @@
   "dependencies": {
     "@agentic-os/core": "workspace:*",
     "@octokit/rest": "^20.0.0",
+    "@octokit/graphql": "^7.0.2",
     "chalk": "^5.3.0",
+    "cli-table3": "^0.6.5",
     "commander": "^11.1.0",
     "inquirer": "^9.2.12",
     "ora": "^8.0.1",
     "open": "^10.0.3",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "yaml": "^2.3.4"
   },
   "devDependencies": {
     "@types/inquirer": "^9.0.7",

@@ -7,7 +7,7 @@
 import { Octokit } from '@octokit/rest';
 import * as fs from 'fs';
 import * as path from 'path';
-import yaml from 'yaml';
+import { parse as parseYaml } from 'yaml';
 
 interface Label {
   name: string;
@@ -94,9 +94,9 @@ async function loadLabelsFromTemplate(): Promise<Label[]> {
     }
 
     const content = fs.readFileSync(rootPath, 'utf-8');
-    return yaml.parse(content) as Label[];
+    return parseYaml(content) as Label[];
   }
 
   const content = fs.readFileSync(templatePath, 'utf-8');
-  return yaml.parse(content) as Label[];
+  return parseYaml(content) as Label[];
 }

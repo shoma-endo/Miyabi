@@ -22,6 +22,7 @@ import {
   CodexPromptChain,
   ToolInvocation,
 } from './types/index.js';
+import { logger, type AgentName } from './ui/index.js';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -35,6 +36,21 @@ export abstract class BaseAgent {
   constructor(agentType: AgentType, config: AgentConfig) {
     this.agentType = agentType;
     this.config = config;
+  }
+
+  /**
+   * Convert AgentType to AgentName for UI
+   */
+  private getAgentName(): AgentName {
+    const nameMap: Record<string, AgentName> = {
+      'CoordinatorAgent': 'CoordinatorAgent',
+      'CodeGenAgent': 'CodeGenAgent',
+      'ReviewAgent': 'ReviewAgent',
+      'IssueAgent': 'IssueAgent',
+      'PRAgent': 'PRAgent',
+      'DeploymentAgent': 'DeploymentAgent',
+    };
+    return nameMap[this.agentType] || 'CoordinatorAgent';
   }
 
   // ============================================================================
@@ -57,7 +73,8 @@ export abstract class BaseAgent {
     this.currentTask = task;
     this.startTime = Date.now();
 
-    this.log(`🚀 ${this.agentType} starting task: ${task.id}`);
+    const agentName = this.getAgentName();
+    logger.agent(agentName, `Starting task: ${task.id}`);
 
     try {
       // Pre-execution validation
@@ -70,7 +87,8 @@ export abstract class BaseAgent {
       await this.recordMetrics(result);
       await this.updateLDDLog(result);
 
-      this.log(`✅ ${this.agentType} completed task: ${task.id}`);
+      logger.agent(agentName, `Completed task: ${task.id}`);
+      logger.success(`Task ${task.id} completed successfully`);
 
       return result;
     } catch (error) {
@@ -92,7 +110,7 @@ export abstract class BaseAgent {
 
     // Check dependencies are resolved
     if (task.dependencies && task.dependencies.length > 0) {
-      this.log(`⚠️  Task ${task.id} has ${task.dependencies.length} dependencies`);
+      logger.warning(`Task ${task.id} has ${task.dependencies.length} dependencies`);
     }
   }
 
@@ -122,9 +140,9 @@ export abstract class BaseAgent {
       timestamp: new Date().toISOString(),
     };
 
-    this.log(`🚨 ESCALATION to ${target}: ${reason}`);
-    this.log(`   Severity: ${severity}`);
-    this.log(`   Context: ${JSON.stringify(context, null, 2)}`);
+    logger.error(`ESCALATION to ${target}: ${reason}`);
+    logger.error(`Severity: ${severity}`);
+    logger.muted(`Context: ${JSON.stringify(context, null, 2)}`);
 
     // Record escalation
     await this.recordEscalation(escalationInfo);
@@ -159,7 +177,7 @@ export abstract class BaseAgent {
     // TODO: Implement GitHub notification
     // - Create Issue comment with @mention
     // - Or create new escalation Issue
-    this.log(`📧 Escalation notification sent to ${escalation.target}`);
+    logger.info(`Escalation notification sent to ${escalation.target}`);
   }
 
   // ============================================================================
@@ -195,7 +213,7 @@ export abstract class BaseAgent {
 
     await fs.promises.writeFile(metricsFile, JSON.stringify(metrics, null, 2));
 
-    this.log(`📊 Metrics recorded: ${metricsFile}`);
+    logger.info(`Metrics recorded: ${metricsFile}`);
   }
 
   /**
@@ -304,7 +322,7 @@ ${JSON.stringify(invocations, null, 2)}
    * Handle execution errors
    */
   private async handleError(error: Error): Promise<AgentResult> {
-    this.log(`❌ Error in ${this.agentType}: ${error.message}`);
+    logger.error(`Error in ${this.agentType}: ${error.message}`, error);
 
     // Log error
     await this.logToolInvocation(
@@ -377,11 +395,11 @@ ${JSON.stringify(invocations, null, 2)}
   // ============================================================================
 
   /**
-   * Log message with agent context
+   * Log message with agent context (uses RichLogger)
    */
   protected log(message: string): void {
-    const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] [${this.agentType}] ${message}`);
+    const agentName = this.getAgentName();
+    logger.agent(agentName, message);
   }
 
   /**
@@ -404,7 +422,7 @@ ${JSON.stringify(invocations, null, 2)}
     try {
       await fs.promises.appendFile(filePath, content, 'utf-8');
     } catch (error) {
-      this.log(`⚠️  Failed to append to ${filePath}: ${error}`);
+      logger.warning(`Failed to append to ${filePath}: ${error}`);
     }
   }
 
@@ -475,7 +493,7 @@ ${JSON.stringify(invocations, null, 2)}
         lastError = error as Error;
         const delay = baseDelay * Math.pow(2, attempt);
 
-        this.log(`⚠️  Retry ${attempt + 1}/${maxRetries} after ${delay}ms: ${lastError.message}`);
+        logger.warning(`Retry ${attempt + 1}/${maxRetries} after ${delay}ms: ${lastError.message}`);
 
         if (attempt < maxRetries - 1) {
           await this.sleep(delay);

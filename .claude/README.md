@@ -110,6 +110,69 @@ npm test
 npm run agents:parallel:exec -- --help
 ```
 
+## 🔌 MCP Servers
+
+Agentic OSは5つのMCPサーバーを統合し、Claude Codeの機能を拡張しています。
+
+### 設定ファイル
+`.claude/mcp.json` に全MCPサーバーが定義されています。
+
+### 利用可能なMCPサーバー
+
+| MCP Server | 機能 | 提供ツール |
+|------------|------|-----------|
+| **IDE Integration** | VS Code診断、Jupyter実行 | `mcp__ide__getDiagnostics`, `mcp__ide__executeCode` |
+| **GitHub Enhanced** | Issue/PR管理 | Issue操作、PR作成、Projects V2統合 |
+| **Project Context** | 依存関係情報 | package.json解析、依存グラフ |
+| **Filesystem** | ファイルアクセス | ファイル読み書き、検索 |
+| **Context Engineering** | AIコンテキスト分析・最適化 | セマンティック検索、コンテキスト最適化、品質分析 |
+
+### Context Engineering MCP の特徴
+
+**目的**: コンテキストが不足している時の情報探索ツール
+
+**主要機能**:
+- 🧪 **AI駆動分析**: セマンティック一貫性、情報密度、明瞭度スコアリング
+- ⚡ **インテリジェント最適化**: トークン効率52%向上、応答速度2倍
+- 📋 **セマンティック検索**: Gemini AI搭載のコンテキスト検索
+- 🎯 **品質評価**: コンテキスト品質スコア (0-100)
+
+**利用可能なツール**:
+- `search_guides_with_gemini` - セマンティック検索
+- `analyze_guide` - ガイド分析
+- `analyze_guide_url` - 外部コンテンツ分析
+- `compare_guides` - 複数ガイド比較
+
+**使用例**:
+```
+"Geminiを使ってAIエージェントに関するガイドを検索"
+"OpenAI GPTベストプラクティスガイドを分析"
+"OpenAIとGoogleのAIガイドを比較"
+```
+
+**APIサーバー**:
+Context Engineering MCPは `http://localhost:8888` で動作するAPIサーバーと連携します。
+
+```bash
+# APIサーバー起動
+cd external/context-engineering-mcp
+uvicorn main:app --port 8888
+```
+
+### MCPサーバーの有効化/無効化
+
+`.claude/mcp.json` の `disabled` フラグで制御:
+
+```json
+{
+  "mcpServers": {
+    "context-engineering": {
+      "disabled": false  // true で無効化
+    }
+  }
+}
+```
+
 ## 🪝 Hooks設定
 
 ### auto-format.sh

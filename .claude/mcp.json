@@ -37,6 +37,17 @@
       ],
       "disabled": false,
       "description": "Filesystem access for project files"
+    },
+    "context-engineering": {
+      "command": "node",
+      "args": [
+        "external/context-engineering-mcp/mcp-server/index.js"
+      ],
+      "env": {
+        "AI_GUIDES_API_URL": "http://localhost:8888"
+      },
+      "disabled": false,
+      "description": "Context Engineering - AI-powered context analysis, optimization, and semantic search"
     }
   }
 }

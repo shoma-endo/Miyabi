@@ -9,7 +9,22 @@
  *   npx tsx scripts/demo-rich-cli.ts
  */
 
-import { logger, theme } from '../agents/ui/index.js';
+import {
+  logger,
+  theme,
+  // Phase 2 imports
+  createAgentStatusTable,
+  createKPITable,
+  successBox,
+  warningBox,
+  agentBox,
+  resultSummaryBox,
+  MultiStepProgress,
+  renderTaskTree,
+  type AgentStatus,
+  type KPIMetric,
+  type TaskNode,
+} from '../agents/ui/index.js';
 
 async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -157,8 +172,116 @@ async function main() {
   logger.newline();
 
   // ===== FINAL BOX =====
+  // ===== PHASE 2: TABLES =====
+  logger.section('📊', 'Phase 2: Tables');
+
+  const agentStatuses: AgentStatus[] = [
+    { name: 'CoordinatorAgent', status: 'success', task: 'Analyzed Issue #123', duration: 1500 },
+    { name: 'CodeGenAgent', status: 'running', task: 'Generating login component', duration: 3200 },
+    { name: 'ReviewAgent', status: 'idle' },
+    { name: 'IssueAgent', status: 'success', task: 'Auto-labeled Issue #456', duration: 800 },
+    { name: 'PRAgent', status: 'error', task: 'Failed to create PR', duration: 2100 },
+    { name: 'DeploymentAgent', status: 'idle' },
+  ];
+  console.log(createAgentStatusTable(agentStatuses));
+  logger.newline();
+
+  const kpiMetrics: KPIMetric[] = [
+    { name: 'AI Task Success Rate', current: '97%', target: '95%', status: 'good' },
+    { name: 'Average Execution Time', current: '3.2min', target: '5min', status: 'good' },
+    { name: 'Human Intervention Rate', current: '8%', target: '5%', status: 'warning' },
+    { name: 'Quality Score Average', current: '92/100', target: '85/100', status: 'good' },
+    { name: 'Circuit Breaker Triggers', current: '2', target: '0', status: 'bad' },
+  ];
+  console.log(createKPITable(kpiMetrics));
+  logger.newline();
+
+  // ===== PHASE 2: BOXES =====
+  logger.section('📦', 'Phase 2: Advanced Boxes');
+
+  console.log(successBox('Task completed successfully!\nAll tests passing.', '✅ Build Success'));
+  logger.newline();
+
+  console.log(warningBox('Budget threshold reached: 85%\nConsider reducing API usage.', '⚠️ Budget Alert'));
+  logger.newline();
+
+  console.log(agentBox('CoordinatorAgent', 'Analyzing dependencies...\n- Task 1: Parse Issue\n- Task 2: Build DAG\n- Task 3: Assign Agents', { status: 'running' }));
+  logger.newline();
+
+  console.log(resultSummaryBox({
+    success: 23,
+    warning: 2,
+    error: 1,
+    total: 26,
+    duration: 145000,
+  }));
+  logger.newline();
+
+  // ===== PHASE 2: PROGRESS =====
+  logger.section('📈', 'Phase 2: Progress Tracking');
+
+  const progress = new MultiStepProgress([
+    { id: '1', label: 'Parse Issue' },
+    { id: '2', label: 'Build Dependency Graph' },
+    { id: '3', label: 'Assign Tasks to Agents' },
+    { id: '4', label: 'Execute Tasks in Parallel' },
+    { id: '5', label: 'Create Draft PR' },
+  ]);
+
+  progress.startStep('1');
+  progress.completeStep('1', 500);
+  progress.startStep('2');
+  progress.completeStep('2', 1200);
+  progress.startStep('3');
+  progress.completeStep('3', 800);
+  progress.startStep('4');
+  progress.completeStep('4', 5200);
+  progress.startStep('5');
+
+  console.log(progress.render());
+  logger.newline();
+
+  // ===== PHASE 2: TREES =====
+  logger.section('🌳', 'Phase 2: Tree Structures');
+
+  const taskTree: TaskNode[] = [
+    {
+      id: '1',
+      title: 'Add user authentication',
+      status: 'success',
+      agent: 'CoordinatorAgent',
+      duration: 8500,
+      dependencies: [
+        {
+          id: '1.1',
+          title: 'Create login component',
+          status: 'success',
+          agent: 'CodeGenAgent',
+          duration: 3200,
+        },
+        {
+          id: '1.2',
+          title: 'Add JWT middleware',
+          status: 'success',
+          agent: 'CodeGenAgent',
+          duration: 2800,
+        },
+        {
+          id: '1.3',
+          title: 'Write tests',
+          status: 'running',
+          agent: 'CodeGenAgent',
+          duration: 1500,
+        },
+      ],
+    },
+  ];
+
+  console.log(renderTaskTree(taskTree));
+  logger.newline();
+
   logger.box(
-    `✅ Demo Complete!\n\nAll UI components demonstrated successfully.\nReady for integration into Agent systems.`,
+    `✅ Demo Complete!\n\nAll UI components demonstrated successfully.\n\nPhase 1: Core (logger, theme)\nPhase 2: Formatters (table, box, progress, tree)\n\nReady for Phase 3 integration!`,
     {
       title: '🎉 Success',
       borderStyle: 'bold',
@@ -169,7 +292,7 @@ async function main() {
   );
 
   logger.newline();
-  logger.muted('Run with: npx tsx scripts/demo-rich-cli.ts');
+  logger.muted('Run with: npm run demo');
   logger.newline();
 }
 

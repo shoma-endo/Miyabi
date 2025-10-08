@@ -131,6 +131,12 @@ export async function deployClaudeConfigToGitHub(
   if (fs.existsSync(claudeTemplateDir)) {
     const claudeFiles = await collectDirectoryFiles(claudeTemplateDir, '.claude');
     filesToCommit.push(...claudeFiles);
+    console.log(`[Claude Config] Collected ${claudeFiles.length} files from .claude/`);
+    // Log first few file paths for debugging
+    claudeFiles.slice(0, 5).forEach(f => console.log(`  - ${f.path}`));
+    if (claudeFiles.length > 5) {
+      console.log(`  ... and ${claudeFiles.length - 5} more files`);
+    }
   }
 
   // 2. Generate CLAUDE.md from template
@@ -141,6 +147,7 @@ export async function deployClaudeConfigToGitHub(
       path: 'CLAUDE.md',
       content: renderedContent,
     });
+    console.log(`[Claude Config] Added CLAUDE.md`);
   }
 
   // 3. Commit all files to GitHub using Contents API
@@ -204,6 +211,9 @@ export async function deployClaudeConfigToGitHub(
     ref: 'heads/main',
     sha: newCommit.sha,
   });
+
+  console.log(`[Claude Config] Successfully committed ${filesToCommit.length} files to GitHub`);
+  console.log(`[Claude Config] Commit SHA: ${newCommit.sha}`);
 }
 
 /**
@@ -219,7 +229,8 @@ async function collectDirectoryFiles(
 
   for (const entry of entries) {
     const srcPath = path.join(srcDir, entry.name);
-    const relativePath = path.join(basePrefix, entry.name);
+    // Use POSIX path separator (/) for GitHub
+    const relativePath = path.posix.join(basePrefix, entry.name);
 
     if (entry.isDirectory()) {
       // Recursively collect subdirectory files

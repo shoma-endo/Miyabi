@@ -247,6 +247,37 @@ npx miyabi status --watch
 - **Documentation**: SETUP_GUIDE.md, FOR_NON_PROGRAMMERS.md
 - **Contact**: supernovasyun@gmail.com
 
+## Claude Code統合
+
+このファイル（CLAUDE.md）は、`npx miyabi` をClaude Code内で実行した際に**自動的に参照されます**。
+
+### パッケージインストール時のコンテキスト読み込み
+
+```bash
+# Claude Code内で実行
+npm install miyabi
+
+# または
+npx miyabi init my-project
+```
+
+実行すると、以下のファイルがClaude Codeから自動的にアクセス可能になります:
+
+- `node_modules/miyabi/CLAUDE.md` - このファイル（Miyabi CLIのコンテキスト）
+- `node_modules/miyabi/.claude/` - カスタムコマンド、Agent定義
+- プロジェクト生成時: `./my-project/CLAUDE.md` - プロジェクト固有のコンテキスト
+- プロジェクト生成時: `./my-project/.claude/` - プロジェクト用設定
+
+### Claude Codeでの自動認識
+
+Claude Codeは以下の順序でコンテキストを検索します:
+
+1. **プロジェクトルート**: `./CLAUDE.md`, `./.claude/`
+2. **node_modules**: `node_modules/miyabi/CLAUDE.md`
+3. **パッケージ内テンプレート**: `node_modules/miyabi/templates/`
+
+これにより、`npx miyabi` コマンド実行時に、Claude Codeが自動的にMiyabiの全機能を理解できます。
+
 ---
 
 🌸 **Miyabi** - Beauty in Autonomous Development

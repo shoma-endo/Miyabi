@@ -39,41 +39,56 @@ export interface TokenResponse {
  * Main OAuth flow - returns GitHub token
  */
 export async function githubOAuth(): Promise<string> {
-  console.log(chalk.cyan('\n🔐 GitHub Authentication Required\n'));
+  console.log(chalk.cyan('\n🔐 GitHub認証が必要です\n'));
 
   // Check if token already exists
   const existingToken = loadTokenFromEnv();
 
   if (existingToken) {
-    console.log(chalk.gray('Found existing token in .env'));
+    console.log(chalk.gray('.envに保存されたトークンを確認中...'));
 
     // Verify token is valid
     if (await verifyToken(existingToken)) {
-      console.log(chalk.green('✓ Token is valid\n'));
+      console.log(chalk.green('✓ トークンは有効です\n'));
       return existingToken;
     } else {
-      console.log(chalk.yellow('⚠️  Existing token is invalid, re-authenticating...\n'));
+      console.log(chalk.yellow('⚠️  トークンが無効です。再認証が必要です\n'));
     }
+  }
+
+  // Check if CLIENT_ID is configured
+  if (CLIENT_ID === 'Iv1.placeholder') {
+    console.log(chalk.yellow('⚠️  OAuth Appが設定されていません\n'));
+    console.log(chalk.white('代わりにGitHub Personal Access Tokenを使用してください:\n'));
+    console.log(chalk.cyan('  1. https://github.com/settings/tokens/new にアクセス'));
+    console.log(chalk.cyan('  2. 以下の権限を選択:'));
+    console.log(chalk.gray('     - repo (Full control of private repositories)'));
+    console.log(chalk.gray('     - workflow (Update GitHub Action workflows)'));
+    console.log(chalk.gray('     - read:project, write:project (Access projects)'));
+    console.log(chalk.cyan('  3. トークンを生成してコピー'));
+    console.log(chalk.cyan('  4. .env ファイルに追加: GITHUB_TOKEN=ghp_your_token\n'));
+
+    throw new Error('OAuth App not configured: GitHub Personal Access Tokenを作成して .env に設定してください');
   }
 
   // Start Device Flow
   const deviceCode = await requestDeviceCode();
 
   // Show instructions to user
-  console.log(chalk.white.bold('Please complete authentication:'));
-  console.log(chalk.cyan(`\n  1. Open: ${deviceCode.verification_uri}`));
-  console.log(chalk.cyan(`  2. Enter code: ${chalk.bold(deviceCode.user_code)}\n`));
+  console.log(chalk.white.bold('認証を完了してください:'));
+  console.log(chalk.cyan(`\n  1. ブラウザで開く: ${deviceCode.verification_uri}`));
+  console.log(chalk.cyan(`  2. コードを入力: ${chalk.bold(deviceCode.user_code)}\n`));
 
   // Auto-open browser
-  console.log(chalk.gray('Opening browser automatically...\n'));
+  console.log(chalk.gray('ブラウザを自動的に開いています...\n'));
   try {
     await open(deviceCode.verification_uri);
   } catch {
-    console.log(chalk.yellow('Could not open browser automatically. Please open manually.\n'));
+    console.log(chalk.yellow('ブラウザを自動的に開けませんでした。手動で開いてください。\n'));
   }
 
   // Poll for token
-  console.log(chalk.gray('Waiting for authorization...'));
+  console.log(chalk.gray('認証を待っています...'));
   const token = await pollForToken(deviceCode);
 
   // Verify token has required scopes
@@ -82,7 +97,7 @@ export async function githubOAuth(): Promise<string> {
   // Save to .env
   await saveTokenToEnv(token);
 
-  console.log(chalk.green.bold('\n✅ Authentication successful!\n'));
+  console.log(chalk.green.bold('\n✅ 認証に成功しました！\n'));
 
   return token;
 }

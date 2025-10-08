@@ -49,7 +49,7 @@
     "perf:profile": "tsx scripts/performance-optimizer.ts profile",
     "parallel:run": "tsx scripts/parallel-agent-runner.ts run",
     "docs:generate": "tsx scripts/doc-generator.ts generate",
-    "docs:training": "tsx scripts/training-material-generator.ts generate"
+    "docs:training": "tsx scripts/training-material-generator.ts generate",
     "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
     "test": "vitest",

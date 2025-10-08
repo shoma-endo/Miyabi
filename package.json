@@ -5,6 +5,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "start": "tsx scripts/agentic.ts",
+    "task": "tsx scripts/execute-task.ts",
+    "demo": "tsx scripts/demo-rich-cli.ts",
     "agents:parallel:exec": "tsx scripts/parallel-executor.ts",
     "agents:parallel:issues": "npm run agents:parallel:exec --",
     "agents:parallel:todos": "npm run agents:parallel:exec --",

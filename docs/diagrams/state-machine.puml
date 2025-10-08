@@ -1,0 +1,93 @@
+@startuml Issue State Machine
+!theme cerulean-outline
+skinparam backgroundColor #FEFEFE
+
+title Issue Lifecycle - State Machine
+
+[*] --> Created : Developer creates issue
+
+state "Created" as Created {
+  [*] --> Triaged
+}
+
+state "In Progress" as InProgress {
+  [*] --> Analyzing
+  Analyzing --> Decomposed : Tasks identified
+  Decomposed --> Generating : Start code generation
+  Generating --> Generated : Code complete
+}
+
+state "Quality Check" as QA {
+  [*] --> Testing
+  Testing --> Reviewing : Tests pass
+  Testing --> Failed : Tests fail
+  Reviewing --> Approved : Review pass
+  Reviewing --> Failed : Review fail
+  Failed --> Testing : Retry
+}
+
+state "Ready for Review" as Ready {
+  [*] --> DraftPR
+  DraftPR --> AwaitingHuman : PR created
+}
+
+state "Deployed" as Deployed {
+  [*] --> Staging
+  Staging --> Production : Deploy to prod
+}
+
+Created --> InProgress : Agent picks up issue\n[Coordinator starts]
+
+InProgress --> QA : Code generated\n[All tasks complete]
+
+QA --> Ready : All checks passed\n[Tests + Review OK]
+QA --> InProgress : Fixes required\n[Regenerate code]
+
+Ready --> InProgress : Changes requested\n[Human feedback]
+Ready --> Deployed : PR merged\n[Human approval]
+
+Deployed --> [*] : Issue closed\n[Deployment complete]
+
+note right of Created
+  **Initial State**
+  - Issue created by human
+  - Labels applied
+  - Added to project board
+  - Priority assigned
+end note
+
+note right of InProgress
+  **Active Development**
+  - Coordinator analyzes
+  - Tasks decomposed
+  - Code generated
+  - Tests written
+  - Duration: 5-10 minutes
+end note
+
+note right of QA
+  **Automated Quality**
+  - Unit tests
+  - TypeScript check
+  - ESLint
+  - Security scan
+  - If failed: auto-retry
+end note
+
+note right of Ready
+  **Human Gate**
+  - Draft PR created
+  - Human review required
+  - Can request changes
+  - Can approve & merge
+end note
+
+note right of Deployed
+  **Production**
+  - CI/CD pipeline
+  - Staging → Prod
+  - Issue auto-closed
+  - Metrics collected
+end note
+
+@enduml

@@ -1,0 +1,117 @@
+@startuml Agentic OS - System Architecture
+!theme cerulean-outline
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Arial
+
+title Agentic OS - System Architecture
+
+' GitHub as Operating System
+package "GitHub (Agentic OS)" {
+  component [Issues\n<Process Control>] as Issues
+  component [Projects V2\n<Data Persistence>] as Projects
+  component [Actions\n<Execution Engine>] as Actions
+  component [Labels\n<State Machine>] as Labels
+  component [Webhooks\n<Event Bus>] as Webhooks
+
+  database "Repository\n<File System>" as Repo
+}
+
+' AI Layer
+package "AI Agents Layer" {
+  component [Coordinator Agent\n<Task Orchestration>] as Coordinator
+  component [CodeGen Agent\n<Code Generation>] as CodeGen
+  component [Review Agent\n<Quality Assurance>] as Review
+  component [Issue Agent\n<Issue Management>] as IssueAgent
+  component [PR Agent\n<Pull Request>] as PRAgent
+  component [Deployment Agent\n<CI/CD>] as Deployment
+}
+
+' Tools & Scripts
+package "Tools & Automation" {
+  component [Parallel Executor\n<Multi-Worker>] as ParallelExec
+  component [KPI Collector\n<Analytics>] as KPI
+  component [Dashboard Generator\n<Reporting>] as Dashboard
+  component [Project Manager\n<Projects V2 API>] as ProjectMgr
+  component [Rich CLI\n<UI System>] as CLI
+}
+
+' External Services
+cloud "External Services" {
+  component [Anthropic Claude\n<LLM>] as Claude
+  component [GitHub API\n<REST/GraphQL>] as GitHubAPI
+}
+
+' Human Interface
+actor "Developer/Guardian" as Human
+
+' Relationships - Human to GitHub
+Human --> Issues : Create Issue
+Human --> Actions : Approve/Monitor
+Human --> Repo : Code Review
+
+' Relationships - GitHub Internal
+Issues --> Labels : Tag with
+Issues --> Projects : Track in
+Actions --> Repo : Deploy to
+Webhooks --> Actions : Trigger
+
+' Relationships - AI Agents to GitHub
+Coordinator --> Issues : Analyze
+Coordinator --> Projects : Update Status
+CodeGen --> Repo : Generate Code
+Review --> Repo : Review Changes
+IssueAgent --> Issues : Manage
+PRAgent --> Repo : Create PR
+Deployment --> Actions : Trigger Deploy
+
+' Relationships - AI Agents Internal
+Coordinator --> CodeGen : Delegate
+Coordinator --> Review : Delegate
+Coordinator --> Deployment : Delegate
+Issues --> Coordinator : Trigger
+
+' Relationships - Tools
+ParallelExec --> Coordinator : Orchestrate
+ParallelExec --> IssueAgent : Execute
+ParallelExec --> PRAgent : Execute
+KPI --> GitHubAPI : Query Metrics
+Dashboard --> KPI : Aggregate Data
+ProjectMgr --> Projects : Manage Items
+CLI --> Human : Rich Output
+
+' Relationships - External Services
+Coordinator --> Claude : Query LLM
+CodeGen --> Claude : Generate
+Review --> Claude : Analyze
+GitHubAPI --> Projects : GraphQL API
+GitHubAPI --> Issues : REST API
+
+' Data Flow
+Projects ..> Dashboard : Metrics
+Actions ..> KPI : Build Data
+Labels ..> Dashboard : Status
+
+note right of Coordinator
+  **Task Orchestration**
+  - DAG Construction
+  - Dependency Resolution
+  - Parallel Execution
+  - State Management
+end note
+
+note right of Projects
+  **GitHub Projects V2**
+  - Persistent State
+  - Task Tracking
+  - Progress Metrics
+  - Custom Fields
+end note
+
+note bottom of ParallelExec
+  **Multi-Worker System**
+  - Concurrent Issue Processing
+  - Load Balancing
+  - Rate Limit Management
+end note
+
+@enduml

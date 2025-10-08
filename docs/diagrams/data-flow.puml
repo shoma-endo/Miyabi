@@ -1,0 +1,144 @@
+@startuml Data Flow Diagram
+!theme cerulean-outline
+skinparam backgroundColor #FEFEFE
+
+title Autonomous Operations - Data Flow Diagram
+
+' External Entities
+actor "Developer" as Dev
+entity "GitHub API\n(REST)" as GitHubREST
+entity "GitHub API\n(GraphQL)" as GitHubGraphQL
+entity "Claude API\n(LLM)" as ClaudeAPI
+
+' Data Stores
+database "GitHub\nRepository" as Repo {
+  folder "Issues" as IssueStore
+  folder "Pull Requests" as PRStore
+  folder "Actions Logs" as ActionsStore
+}
+
+database "Projects V2" as ProjectsDB {
+  folder "Items" as Items
+  folder "Fields" as Fields
+  folder "Status" as Status
+}
+
+database ".env File" as EnvStore
+database "KPI Data" as KPIStore
+database "Dashboard\nHTML" as DashboardStore
+
+' Processes
+rectangle "1.0\nIssue Analysis" as P1 {
+  process "Parse Issue\nContent" as P11
+  process "Extract\nRequirements" as P12
+}
+
+rectangle "2.0\nTask Decomposition" as P2 {
+  process "Query LLM\nfor Tasks" as P21
+  process "Build DAG" as P22
+  process "Validate\nDependencies" as P23
+}
+
+rectangle "3.0\nCode Generation" as P3 {
+  process "Generate\nCode" as P31
+  process "Generate\nTests" as P32
+  process "Create\nBranch" as P33
+}
+
+rectangle "4.0\nQuality Assurance" as P4 {
+  process "Run\nTests" as P41
+  process "Type\nCheck" as P42
+  process "Security\nScan" as P43
+}
+
+rectangle "5.0\nPR Management" as P5 {
+  process "Create\nPull Request" as P51
+  process "Update\nStatus" as P52
+}
+
+rectangle "6.0\nKPI Collection" as P6 {
+  process "Fetch\nMetrics" as P61
+  process "Aggregate\nData" as P62
+}
+
+rectangle "7.0\nDashboard Generation" as P7 {
+  process "Render\nCharts" as P71
+  process "Generate\nHTML" as P72
+}
+
+' Data Flows
+Dev --> IssueStore : Create Issue\n[Issue Data]
+IssueStore --> P11 : Read Issue\n[Issue JSON]
+P11 --> P12 : Parsed Data\n[Title, Body, Labels]
+P12 --> P21 : Requirements\n[Structured Requirements]
+
+P21 --> ClaudeAPI : Prompt\n[Task Request]
+ClaudeAPI --> P21 : Response\n[Task List]
+P21 --> P22 : Tasks\n[Task Array]
+P22 --> P23 : DAG\n[Graph Structure]
+P23 --> P31 : Valid Tasks\n[Ordered Tasks]
+
+P31 --> ClaudeAPI : Code Prompt\n[Generation Request]
+ClaudeAPI --> P31 : Generated Code\n[Source Code]
+P31 --> P32 : Code Files\n[.ts Files]
+P32 --> ClaudeAPI : Test Prompt\n[Test Request]
+ClaudeAPI --> P32 : Generated Tests\n[Test Files]
+P32 --> P33 : All Files\n[Code + Tests]
+P33 --> Repo : Commit & Push\n[Git Commits]
+
+Repo --> P41 : Pull Code\n[Source Files]
+P41 --> P42 : Test Results\n[Pass/Fail]
+P42 --> P43 : Type Check\n[Errors/OK]
+P43 --> P51 : QA Report\n[All Checks]
+
+P51 --> PRStore : Create PR\n[PR Metadata]
+P51 --> P52 : PR Info\n[PR Number, URL]
+P52 --> ProjectsDB : Update Item\n[Status Change]
+
+EnvStore --> P21 : API Keys\n[GITHUB_TOKEN, etc.]
+EnvStore --> P31 : Configuration\n[Settings]
+EnvStore --> P61 : Auth Token\n[GITHUB_TOKEN]
+
+IssueStore --> P61 : Issue Data\n[Metrics]
+PRStore --> P61 : PR Data\n[Metrics]
+ActionsStore --> P61 : Build Data\n[CI/CD Metrics]
+P61 --> P62 : Raw Data\n[JSON]
+P62 --> KPIStore : Aggregated\n[Metrics DB]
+
+KPIStore --> P71 : KPI Data\n[Time Series]
+ProjectsDB --> P71 : Status Data\n[Progress]
+P71 --> P72 : Chart Data\n[SVG/Canvas]
+P72 --> DashboardStore : HTML File\n[dashboard.html]
+DashboardStore --> Dev : View Dashboard\n[Browser]
+
+ProjectsDB --> GitHubGraphQL : GraphQL Query\n[Projects API]
+GitHubGraphQL --> ProjectsDB : Project Data\n[Items, Fields]
+
+IssueStore --> GitHubREST : REST API\n[Issues API]
+GitHubREST --> IssueStore : Issue Data\n[JSON]
+
+note right of P22
+  **DAG Construction**
+  Input: Tasks with dependencies
+  Output: Directed Acyclic Graph
+  Algorithm: Topological Sort
+end note
+
+note right of P62
+  **Metrics Aggregation**
+  - Cycle time
+  - Success rate
+  - Code quality scores
+  - Deployment frequency
+end note
+
+note bottom of EnvStore
+  **Environment Variables**
+  - GITHUB_TOKEN (required)
+  - ANTHROPIC_API_KEY
+  - PROJECT_ID
+  - REPO_OWNER
+  - REPO_NAME
+end note
+
+@enduml

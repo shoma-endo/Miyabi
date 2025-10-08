@@ -205,11 +205,18 @@ cd Autonomous-Operations
 # 2️⃣ Install dependencies
 npm install
 
-# 3️⃣ Start interactive guide
+# 3️⃣ Setup GitHub Token (required for project management)
+npm run setup:token
+# → Interactive token setup with scope validation
+
+# 4️⃣ Start interactive guide
 npm start
 # ✨ Answer 5 simple questions
 # → GitHub Issue auto-created!
 # → AI Agents start working!
+
+# 5️⃣ Watch the magic happen ✨
+# → Draft PR ready in 5-10 minutes
 ```
 
 **💡 No coding knowledge required!**

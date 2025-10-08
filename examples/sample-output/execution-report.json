@@ -1,0 +1,299 @@
+{
+  "issueNumber": 1,
+  "title": "[DEMO] ユーザー認証機能の実装",
+  "repository": "your-username/autonomous-operations",
+  "startTime": "2025-10-08T10:00:00Z",
+  "endTime": "2025-10-08T10:05:32Z",
+  "duration": "5m 32s",
+  "status": "success",
+  "executor": "CoordinatorAgent",
+  "tasks": [
+    {
+      "id": "task-1",
+      "type": "implement",
+      "description": "ログイン画面の実装",
+      "agent": "CodeGenAgent",
+      "status": "completed",
+      "startTime": "2025-10-08T10:00:15Z",
+      "endTime": "2025-10-08T10:01:45Z",
+      "duration": "1m 30s",
+      "files": [
+        {
+          "path": "src/components/LoginForm.tsx",
+          "lines": 120,
+          "type": "created"
+        },
+        {
+          "path": "src/components/LoginForm.test.tsx",
+          "lines": 95,
+          "type": "created"
+        },
+        {
+          "path": "src/components/LoginForm.module.css",
+          "lines": 45,
+          "type": "created"
+        }
+      ],
+      "metrics": {
+        "linesOfCode": 260,
+        "complexity": "low",
+        "dependencies": ["react", "react-testing-library"]
+      }
+    },
+    {
+      "id": "task-2",
+      "type": "implement",
+      "description": "JWT認証の実装",
+      "agent": "CodeGenAgent",
+      "status": "completed",
+      "startTime": "2025-10-08T10:01:45Z",
+      "endTime": "2025-10-08T10:03:15Z",
+      "duration": "1m 30s",
+      "files": [
+        {
+          "path": "src/auth/jwt.ts",
+          "lines": 85,
+          "type": "created"
+        },
+        {
+          "path": "src/auth/jwt.test.ts",
+          "lines": 110,
+          "type": "created"
+        },
+        {
+          "path": "src/auth/middleware.ts",
+          "lines": 65,
+          "type": "created"
+        },
+        {
+          "path": "src/auth/middleware.test.ts",
+          "lines": 78,
+          "type": "created"
+        }
+      ],
+      "metrics": {
+        "linesOfCode": 338,
+        "complexity": "medium",
+        "dependencies": ["jsonwebtoken", "express"]
+      }
+    },
+    {
+      "id": "task-3",
+      "type": "implement",
+      "description": "ユーザーモデルの作成",
+      "agent": "CodeGenAgent",
+      "status": "completed",
+      "startTime": "2025-10-08T10:03:15Z",
+      "endTime": "2025-10-08T10:04:00Z",
+      "duration": "45s",
+      "files": [
+        {
+          "path": "src/models/User.ts",
+          "lines": 55,
+          "type": "created"
+        },
+        {
+          "path": "src/models/User.test.ts",
+          "lines": 62,
+          "type": "created"
+        }
+      ],
+      "metrics": {
+        "linesOfCode": 117,
+        "complexity": "low",
+        "dependencies": ["bcrypt"]
+      }
+    },
+    {
+      "id": "task-4",
+      "type": "implement",
+      "description": "APIエンドポイントの実装",
+      "agent": "CodeGenAgent",
+      "status": "completed",
+      "startTime": "2025-10-08T10:04:00Z",
+      "endTime": "2025-10-08T10:04:45Z",
+      "duration": "45s",
+      "files": [
+        {
+          "path": "src/api/auth.ts",
+          "lines": 95,
+          "type": "created"
+        },
+        {
+          "path": "src/api/auth.test.ts",
+          "lines": 125,
+          "type": "created"
+        }
+      ],
+      "metrics": {
+        "linesOfCode": 220,
+        "complexity": "medium",
+        "dependencies": ["express", "bcrypt", "jsonwebtoken"]
+      }
+    },
+    {
+      "id": "task-5",
+      "type": "review",
+      "description": "品質チェック",
+      "agent": "ReviewAgent",
+      "status": "completed",
+      "startTime": "2025-10-08T10:04:45Z",
+      "endTime": "2025-10-08T10:05:15Z",
+      "duration": "30s",
+      "checks": {
+        "eslint": {
+          "status": "passed",
+          "errors": 0,
+          "warnings": 2,
+          "details": [
+            {
+              "file": "src/auth/jwt.ts",
+              "line": 12,
+              "severity": "warning",
+              "message": "Consider adding explicit return type"
+            },
+            {
+              "file": "src/components/LoginForm.tsx",
+              "line": 45,
+              "severity": "warning",
+              "message": "Prefer const over let"
+            }
+          ]
+        },
+        "typescript": {
+          "status": "passed",
+          "errors": 0
+        },
+        "security": {
+          "status": "passed",
+          "vulnerabilities": {
+            "critical": 0,
+            "high": 0,
+            "moderate": 0,
+            "low": 0
+          }
+        },
+        "tests": {
+          "status": "passed",
+          "total": 38,
+          "passed": 38,
+          "failed": 0,
+          "coverage": 87.5,
+          "details": {
+            "statements": 88.2,
+            "branches": 85.7,
+            "functions": 90.0,
+            "lines": 87.5
+          }
+        }
+      }
+    },
+    {
+      "id": "task-6",
+      "type": "pr",
+      "description": "PR作成",
+      "agent": "PRAgent",
+      "status": "completed",
+      "startTime": "2025-10-08T10:05:15Z",
+      "endTime": "2025-10-08T10:05:32Z",
+      "duration": "17s",
+      "prNumber": 2,
+      "prUrl": "https://github.com/your-username/autonomous-operations/pull/2",
+      "branch": "agent-generated-issue-1",
+      "baseBranch": "main",
+      "draft": true,
+      "reviewers": [],
+      "labels": ["🤖agent-generated", "🆕feature"]
+    }
+  ],
+  "qualityReport": {
+    "score": 87,
+    "passed": true,
+    "breakdown": {
+      "eslintScore": 98,
+      "typeScriptScore": 100,
+      "securityScore": 100,
+      "testCoverageScore": 88
+    },
+    "issues": [
+      {
+        "type": "warning",
+        "severity": "low",
+        "file": "src/auth/jwt.ts",
+        "line": 12,
+        "message": "Consider adding explicit return type",
+        "recommendation": "Add `: string` return type annotation"
+      },
+      {
+        "type": "warning",
+        "severity": "low",
+        "file": "src/components/LoginForm.tsx",
+        "line": 45,
+        "message": "Prefer const over let",
+        "recommendation": "Change `let error` to `const error`"
+      }
+    ],
+    "recommendations": [
+      "Consider adding rate limiting to login endpoint",
+      "Add CSRF protection for production",
+      "Implement password strength indicator",
+      "Add 'Remember me' functionality"
+    ],
+    "metrics": {
+      "totalFiles": 11,
+      "totalLines": 935,
+      "testFiles": 6,
+      "testLines": 470,
+      "complexity": {
+        "average": 3.2,
+        "max": 8,
+        "maxFile": "src/api/auth.ts"
+      }
+    }
+  },
+  "prNumber": 2,
+  "prUrl": "https://github.com/your-username/autonomous-operations/pull/2",
+  "files": [
+    "src/components/LoginForm.tsx",
+    "src/components/LoginForm.test.tsx",
+    "src/components/LoginForm.module.css",
+    "src/auth/jwt.ts",
+    "src/auth/jwt.test.ts",
+    "src/auth/middleware.ts",
+    "src/auth/middleware.test.ts",
+    "src/models/User.ts",
+    "src/models/User.test.ts",
+    "src/api/auth.ts",
+    "src/api/auth.test.ts"
+  ],
+  "lddLog": {
+    "file": ".ai/logs/2025-10-08.md",
+    "entries": 47,
+    "codexPromptChain": {
+      "intent": "Implement user authentication feature with login form, JWT, and tests",
+      "plan": "Decompose into 6 tasks: LoginForm UI, JWT logic, User model, API endpoints, quality check, PR creation",
+      "implementation": "Generated 11 files with 935 lines of code across 4 parallel tasks",
+      "verification": "All tests passed (38/38), quality score 87/100, coverage 87.5%"
+    },
+    "toolInvocations": 23,
+    "memoryBankUpdates": 8
+  },
+  "escalations": [],
+  "notifications": [
+    {
+      "type": "github_comment",
+      "target": "Issue #1",
+      "message": "🤖 Agent実行完了: Draft PR #2 を作成しました",
+      "timestamp": "2025-10-08T10:05:32Z"
+    }
+  ],
+  "metadata": {
+    "claudeModel": "claude-sonnet-4-20250514",
+    "nodeVersion": "20.10.0",
+    "platform": "darwin",
+    "ci": true,
+    "githubActions": true,
+    "runId": "1234567890",
+    "workflowName": "Autonomous Agent Executor"
+  }
+}

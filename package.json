@@ -90,6 +90,7 @@
     "gradient-string": "^2.0.2",
     "log-symbols": "^6.0.0",
     "ora": "^8.0.1",
+    "p-retry": "^7.1.0",
     "terminal-link": "^3.0.0"
   }
 }

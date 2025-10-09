@@ -371,7 +371,16 @@ npx miyabi install
 
 # Dry run (preview changes)
 npx miyabi install --dry-run
+
+# Non-interactive mode (CI/CD, Termux, SSH)
+npx miyabi install --non-interactive
+npx miyabi install --yes
 ```
+
+**Options:**
+- `--dry-run` - Preview changes without making them
+- `--non-interactive` - Skip all prompts (auto-approve)
+- `-y, --yes` - Auto-approve all prompts
 
 **What it does:**
 - ✅ Analyzes existing structure
@@ -495,8 +504,21 @@ cli:
 Interactive setup guide for beginners.
 
 ```bash
+# Interactive mode
 npx miyabi setup
+
+# Non-interactive mode
+npx miyabi setup --non-interactive
+
+# Skip specific steps
+npx miyabi setup --skip-token --skip-config
 ```
+
+**Options:**
+- `--non-interactive` - Skip all prompts
+- `-y, --yes` - Auto-approve all prompts
+- `--skip-token` - Skip token setup
+- `--skip-config` - Skip configuration
 
 **Guides through:**
 1. ✅ Environment check (Node.js, Git, gh CLI)
@@ -576,6 +598,35 @@ export ANTHROPIC_API_KEY=sk-ant-xxx
 
 # Webhook secret (for webhook router)
 export WEBHOOK_SECRET=your_secret
+
+# Non-interactive mode (auto-approve prompts)
+export MIYABI_AUTO_APPROVE=true
+
+# CI environment (auto-detected)
+export CI=true
+```
+
+**Non-Interactive Mode:**
+
+Miyabi automatically detects non-interactive environments:
+- `MIYABI_AUTO_APPROVE=true` - Explicit non-interactive mode
+- `CI=true` - CI/CD environments (GitHub Actions, GitLab CI, etc.)
+- Non-TTY terminals - Pipes, redirects, SSH without PTY
+
+**Usage in CI/CD:**
+```yaml
+# GitHub Actions example
+- name: Install Miyabi
+  run: npx miyabi install --non-interactive
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+**Usage in Termux (Android):**
+```bash
+# Termux automatically uses non-interactive mode
+export MIYABI_AUTO_APPROVE=true
+npx miyabi install
 ```
 
 ---

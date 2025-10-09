@@ -747,9 +747,22 @@ npx miyabi@latest
 npm install -g miyabi
 ```
 
-### GitHub Personal Access Token
+### GitHub Authentication
 
-Create at: https://github.com/settings/tokens/new
+**Recommended: Use GitHub CLI (automatic)**
+
+```bash
+# Authenticate once
+gh auth login
+
+# Miyabi will automatically use gh CLI token
+npx miyabi install
+# ✅ GitHub authentication complete (via gh CLI)
+```
+
+**Alternative: Personal Access Token**
+
+If you prefer manual token management, create at: https://github.com/settings/tokens/new
 
 **Required scopes:**
 - ✅ `repo` - Full repository access
@@ -758,6 +771,12 @@ Create at: https://github.com/settings/tokens/new
 - ✅ `delete:packages` - Manage packages
 - ✅ `admin:org` - Organization management (for org repos)
 - ✅ `project` - Projects V2 access
+
+**Token Priority:**
+1. **gh CLI** (automatic, recommended) - `gh auth login`
+2. **GITHUB_TOKEN** environment variable - `export GITHUB_TOKEN=ghp_xxx`
+3. **.env file** - Local development
+4. **OAuth flow** - Interactive fallback
 
 ---
 
@@ -778,22 +797,31 @@ Create at: https://github.com/settings/tokens/new
 
 **Solution:**
 
-Option 1: Environment variable
+**Option 1: Use GitHub CLI (Recommended)**
+```bash
+# One-time setup
+gh auth login
+
+# Miyabi will automatically use gh CLI token
+npx miyabi install
+```
+
+**Option 2: Environment variable**
 ```bash
 export GITHUB_TOKEN=ghp_your_token_here
 npx miyabi init my-project
 ```
 
-Option 2: Config file
+**Option 3: .env file**
+```bash
+echo "GITHUB_TOKEN=ghp_your_token" > .env
+npx miyabi install
+```
+
+**Option 4: Config file**
 ```bash
 npx miyabi config
 # → Follow prompts to set token
-```
-
-Option 3: Manual config
-```bash
-echo "github:
-  token: ghp_your_token" > .miyabi.yml
 ```
 </details>
 

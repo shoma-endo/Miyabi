@@ -13,6 +13,7 @@ import { AgentConfig, Issue, Task } from '../agents/types/index.js';
 import { Octokit } from '@octokit/rest';
 import * as fs from 'fs';
 import * as path from 'path';
+import { getGitHubTokenSync } from './github-token-helper.js';
 
 // ============================================================================
 // CLI Arguments
@@ -98,7 +99,7 @@ GitHub Actions:
 // ============================================================================
 
 function loadConfig(): AgentConfig {
-  // Load from .env if exists
+  // Load from .env if exists (for backward compatibility)
   const envPath = path.join(process.cwd(), '.env');
   if (fs.existsSync(envPath)) {
     const envContent = fs.readFileSync(envPath, 'utf-8');
@@ -110,14 +111,22 @@ function loadConfig(): AgentConfig {
     }
   }
 
-  const githubToken = process.env.GITHUB_TOKEN;
+  // Get GitHub token with priority: gh CLI > environment variable
+  let githubToken: string;
+  try {
+    githubToken = getGitHubTokenSync();
+  } catch (error) {
+    console.error('❌ Error: Failed to obtain GitHub token');
+    console.error('   ', (error as Error).message);
+    process.exit(1);
+  }
+
   const anthropicApiKey = process.env.ANTHROPIC_API_KEY;
 
-  if (!githubToken || !anthropicApiKey) {
-    console.error('❌ Error: Missing required environment variables');
-    console.error('   GITHUB_TOKEN:', githubToken ? '✅' : '❌');
-    console.error('   ANTHROPIC_API_KEY:', anthropicApiKey ? '✅' : '❌');
-    console.error('\nPlease set these environment variables or create a .env file.');
+  if (!anthropicApiKey) {
+    console.error('❌ Error: Missing required environment variable');
+    console.error('   ANTHROPIC_API_KEY: ❌');
+    console.error('\nPlease set ANTHROPIC_API_KEY environment variable or create a .env file.');
     process.exit(1);
   }
 

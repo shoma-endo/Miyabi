@@ -236,14 +236,30 @@ npx miyabi setup
 ```
 
 ### 環境変数
+
+**GitHub認証（必須）**
+
+推奨方法：gh CLIを使用
 ```bash
-# GitHub Personal Access Token（必須）
+# GitHub CLIで認証（推奨）
+gh auth login
+
+# アプリケーションは自動的に 'gh auth token' を使用します
+```
+
+代替方法：環境変数（CI/CD用）
+```bash
+# 環境変数を使用（gh CLIがない環境向け）
 export GITHUB_TOKEN=ghp_xxxxx
+```
 
-# Anthropic API Key（Agent実行時に必要）
+**Anthropic API Key（Agent実行時に必要）**
+```bash
 export ANTHROPIC_API_KEY=sk-ant-xxxxx
+```
 
-# オプション
+**オプション設定**
+```bash
 export MIYABI_LOG_LEVEL=info
 export MIYABI_PARALLEL_AGENTS=3
 ```

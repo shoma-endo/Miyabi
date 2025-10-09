@@ -19,21 +19,98 @@ Please report security vulnerabilities via:
 
 ### GitHub Token Management
 
-**✅ Recommended: Use gh CLI**
+**Automatic Token Retrieval (v0.8.0+)**
+
+Miyabi automatically retrieves GitHub tokens using the following priority system:
+
+1. **gh CLI** (Recommended) - `gh auth token`
+2. **Environment Variable** - `GITHUB_TOKEN`
+3. **.env file** - Local development fallback
+4. **OAuth Device Flow** - Interactive fallback
+
+#### ✅ Recommended: Use gh CLI
+
 ```bash
 gh auth login
 ```
-The application automatically uses `gh auth token` for secure authentication.
 
-**⚠️ Not Recommended: Storing token in .env**
+Once authenticated, Miyabi automatically uses `gh auth token` for all operations. **No manual token management required.**
+
+**Benefits:**
+- ✅ No plaintext token storage
+- ✅ Automatic token rotation by GitHub
+- ✅ Centralized credential management
+- ✅ Works across all Miyabi commands
+
+#### 📋 Acceptable: Environment Variables
+
+**For CI/CD environments only:**
 ```bash
-# Avoid storing tokens in .env files
-GITHUB_TOKEN=ghp_xxxxx  # ❌ Not secure
+# GitHub Actions
+GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+# Other CI/CD systems
+export GITHUB_TOKEN=ghp_xxxxx
 ```
 
-**Acceptable for CI/CD only:**
-- GitHub Actions secrets
-- Environment variables in secure CI/CD systems
+**Supported in v0.8.0:**
+- `GITHUB_TOKEN` - GitHub Personal Access Token
+- `MIYABI_AUTO_APPROVE=true` - Non-interactive mode
+- `CI=true` - CI environment detection
+
+#### ⚠️ Not Recommended: Storing token in .env
+
+```bash
+# Avoid storing tokens in .env files
+GITHUB_TOKEN=ghp_xxxxx  # ❌ Not secure for version control
+```
+
+**Only use .env for:**
+- Local development with `.env` in `.gitignore`
+- Testing environments
+- Never commit `.env` to version control
+
+#### Token Priority Implementation
+
+The `getGitHubToken()` utility (added in v0.8.0) implements the following flow:
+
+```typescript
+try {
+  // 1. Try gh CLI
+  token = execSync('gh auth token').trim();
+  if (isValidTokenFormat(token)) return token;
+} catch {}
+
+try {
+  // 2. Try environment variable
+  if (process.env.GITHUB_TOKEN) return process.env.GITHUB_TOKEN;
+} catch {}
+
+try {
+  // 3. Try .env file
+  token = readEnvFile('.env')['GITHUB_TOKEN'];
+  if (isValidTokenFormat(token)) return token;
+} catch {}
+
+// 4. Fall back to OAuth Device Flow
+return await githubOAuth();
+```
+
+#### Non-Interactive Mode (v0.8.0+)
+
+For CI/CD and automated environments:
+
+```bash
+# Auto-approve all prompts
+miyabi install --yes
+
+# Full non-interactive mode
+miyabi install --non-interactive
+
+# Environment variable
+export MIYABI_AUTO_APPROVE=true
+miyabi install
+```
 
 ### Token Scopes
 

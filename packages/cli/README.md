@@ -812,11 +812,17 @@ export GITHUB_TOKEN=ghp_your_token_here
 npx miyabi init my-project
 ```
 
-**Option 3: .env file**
+**Option 3: .env file (local development only)**
 ```bash
 echo "GITHUB_TOKEN=ghp_your_token" > .env
 npx miyabi install
 ```
+
+⚠️ **Security Warning:**
+- Only use `.env` for local development
+- Always add `.env` to `.gitignore`
+- Never commit `.env` to version control
+- See [SECURITY.md](../../SECURITY.md) for best practices
 
 **Option 4: Config file**
 ```bash

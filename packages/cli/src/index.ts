@@ -18,6 +18,7 @@ import { setup } from './commands/setup.js';
 import { docs } from './commands/docs.js';
 import { registerAgentCommand } from './commands/agent.js';
 import { registerAutoModeCommand } from './commands/auto.js';
+import { registerTodosCommand } from './commands/todos.js';
 import { loadConfig, applyConfigToEnvironment } from './config/loader.js';
 import {
   reportIssueToMiyabi,
@@ -82,6 +83,7 @@ program
       console.log(chalk.cyan('  npx miyabi agent run <name>') + chalk.gray('   - Agent実行'));
       console.log(chalk.cyan('  npx miyabi agent list') + chalk.gray('        - Agent一覧'));
       console.log(chalk.cyan('  npx miyabi auto') + chalk.gray('              - 全自動モード (Water Spider)'));
+      console.log(chalk.cyan('  npx miyabi todos') + chalk.gray('             - TODOコメント自動検出'));
       console.log(chalk.cyan('  npx miyabi status') + chalk.gray('             - ステータス確認'));
       console.log(chalk.cyan('  npx miyabi docs') + chalk.gray('               - ドキュメント生成'));
       console.log(chalk.cyan('  npx miyabi config') + chalk.gray('             - 設定管理'));
@@ -332,6 +334,9 @@ registerAgentCommand(program);
 
 // Register auto mode command
 registerAutoModeCommand(program);
+
+// Register todos command
+registerTodosCommand(program);
 
 /**
  * Handle error and report to Miyabi repository

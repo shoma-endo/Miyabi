@@ -20,6 +20,8 @@ export interface AutoModeOptions {
   maxDuration?: number;
   /** 並行実行数 */
   concurrency?: number;
+  /** TODOコメント監視 */
+  scanTodos?: boolean;
   /** ドライラン */
   dryRun?: boolean;
   /** 詳細ログ */
@@ -63,14 +65,28 @@ interface WaterSpiderState {
 /**
  * システム状態を監視・分析
  */
-async function monitorAndAnalyze(): Promise<Decision> {
+async function monitorAndAnalyze(options?: { scanTodos?: boolean }): Promise<Decision> {
   // TODO: 実際のGitHub API呼び出しを実装
   // - 未処理のIssue一覧取得
   // - 進行中のPR状態確認
   // - Label状態確認
   // - 依存関係グラフ構築
 
-  // モック判断ロジック
+  const decisions: Decision[] = [];
+
+  // TODOコメント監視 (オプション)
+  if (options?.scanTodos) {
+    // TODO: TODOスキャン機能統合
+    decisions.push({
+      shouldExecute: true,
+      agent: 'issue',
+      target: 'todos',
+      reason: 'TODOコメント検出、Issue化必要',
+      priority: 6,
+    });
+  }
+
+  // 既存のモック判断ロジック
   const mockDecisions: Decision[] = [
     {
       shouldExecute: true,
@@ -93,8 +109,10 @@ async function monitorAndAnalyze(): Promise<Decision> {
     },
   ];
 
+  decisions.push(...mockDecisions);
+
   // 最高優先度の判断を返す
-  return mockDecisions.sort((a, b) => b.priority - a.priority)[0];
+  return decisions.sort((a, b) => b.priority - a.priority)[0];
 }
 
 /**
@@ -157,7 +175,7 @@ export async function runAutoMode(options: AutoModeOptions): Promise<void> {
       spinner.text = `巡回 #${state.cycleCount} - 状態分析中...`;
 
       // 1. 監視・分析
-      const decision = await monitorAndAnalyze();
+      const decision = await monitorAndAnalyze({ scanTodos: options.scanTodos });
 
       // 2. 判断
       if (decision.shouldExecute) {
@@ -256,6 +274,7 @@ export function registerAutoModeCommand(program: Command): void {
     .option('-i, --interval <seconds>', '監視間隔（秒）', '10')
     .option('-m, --max-duration <minutes>', '最大実行時間（分）', '60')
     .option('-c, --concurrency <number>', '並行実行数', '1')
+    .option('--scan-todos', 'TODOコメント監視を有効化')
     .option('--dry-run', '実行シミュレーション')
     .option('-v, --verbose', '詳細ログ出力')
     .action(async (options: AutoModeOptions) => {
@@ -263,6 +282,7 @@ export function registerAutoModeCommand(program: Command): void {
         interval: parseInt(options.interval as unknown as string),
         maxDuration: parseInt(options.maxDuration as unknown as string),
         concurrency: parseInt(options.concurrency as unknown as string),
+        scanTodos: options.scanTodos,
         dryRun: options.dryRun,
         verbose: options.verbose,
       });

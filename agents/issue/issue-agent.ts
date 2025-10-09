@@ -9,6 +9,8 @@
  * - Apply Shikigaku (識学) theory label system (65 labels)
  * - Assign appropriate team members (via CODEOWNERS)
  * - Extract task dependencies
+ *
+ * Issue #41: Added retry logic with exponential backoff for all GitHub API calls
  */
 
 import { BaseAgent } from '../base-agent.js';
@@ -21,6 +23,7 @@ import {
   AgentType,
 } from '../types/index.js';
 import { Octokit } from '@octokit/rest';
+import { withRetry } from '@miyabi/agent-sdk';
 
 export class IssueAgent extends BaseAgent {
   private octokit: Octokit;
@@ -95,16 +98,18 @@ export class IssueAgent extends BaseAgent {
   // ============================================================================
 
   /**
-   * Fetch Issue from GitHub
+   * Fetch Issue from GitHub (with automatic retry on transient failures)
    */
   private async fetchIssue(issueNumber: number): Promise<Issue> {
     this.log(`📥 Fetching Issue #${issueNumber}`);
 
     try {
-      const response = await this.octokit.issues.get({
-        owner: this.owner,
-        repo: this.repo,
-        issue_number: issueNumber,
+      const response = await withRetry(async () => {
+        return await this.octokit.issues.get({
+          owner: this.owner,
+          repo: this.repo,
+          issue_number: issueNumber,
+        });
       });
 
       await this.logToolInvocation(
@@ -138,17 +143,19 @@ export class IssueAgent extends BaseAgent {
   }
 
   /**
-   * Apply labels to Issue
+   * Apply labels to Issue (with automatic retry on transient failures)
    */
   private async applyLabels(issueNumber: number, labels: string[]): Promise<void> {
     this.log(`🏷️  Applying ${labels.length} labels to Issue #${issueNumber}`);
 
     try {
-      await this.octokit.issues.addLabels({
-        owner: this.owner,
-        repo: this.repo,
-        issue_number: issueNumber,
-        labels,
+      await withRetry(async () => {
+        await this.octokit.issues.addLabels({
+          owner: this.owner,
+          repo: this.repo,
+          issue_number: issueNumber,
+          labels,
+        });
       });
 
       await this.logToolInvocation(
@@ -170,7 +177,7 @@ export class IssueAgent extends BaseAgent {
   }
 
   /**
-   * Assign team members to Issue
+   * Assign team members to Issue (with automatic retry on transient failures)
    */
   private async assignTeamMembers(issueNumber: number, assignees: string[]): Promise<void> {
     if (assignees.length === 0) return;
@@ -178,11 +185,13 @@ export class IssueAgent extends BaseAgent {
     this.log(`👥 Assigning ${assignees.length} team members to Issue #${issueNumber}`);
 
     try {
-      await this.octokit.issues.addAssignees({
-        owner: this.owner,
-        repo: this.repo,
-        issue_number: issueNumber,
-        assignees,
+      await withRetry(async () => {
+        await this.octokit.issues.addAssignees({
+          owner: this.owner,
+          repo: this.repo,
+          issue_number: issueNumber,
+          assignees,
+        });
       });
 
       await this.logToolInvocation(
@@ -205,7 +214,7 @@ export class IssueAgent extends BaseAgent {
   }
 
   /**
-   * Add analysis comment to Issue
+   * Add analysis comment to Issue (with automatic retry on transient failures)
    */
   private async addAnalysisComment(issueNumber: number, analysis: IssueAnalysis): Promise<void> {
     this.log(`💬 Adding analysis comment to Issue #${issueNumber}`);
@@ -213,11 +222,13 @@ export class IssueAgent extends BaseAgent {
     const comment = this.formatAnalysisComment(analysis);
 
     try {
-      await this.octokit.issues.createComment({
-        owner: this.owner,
-        repo: this.repo,
-        issue_number: issueNumber,
-        body: comment,
+      await withRetry(async () => {
+        await this.octokit.issues.createComment({
+          owner: this.owner,
+          repo: this.repo,
+          issue_number: issueNumber,
+          body: comment,
+        });
       });
 
       await this.logToolInvocation(

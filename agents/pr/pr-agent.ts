@@ -9,6 +9,8 @@
  * - Link related Issues
  * - Create as Draft PR by default
  * - Follow Conventional Commits style
+ *
+ * Issue #41: Added retry logic with exponential backoff for all GitHub API calls
  */
 
 import { BaseAgent } from '../base-agent.js';
@@ -19,6 +21,7 @@ import {
   PRResult,
 } from '../types/index.js';
 import { Octokit } from '@octokit/rest';
+import { withRetry } from '@miyabi/agent-sdk';
 
 export class PRAgent extends BaseAgent {
   private octokit: Octokit;
@@ -343,20 +346,22 @@ export class PRAgent extends BaseAgent {
   // ============================================================================
 
   /**
-   * Create Pull Request on GitHub
+   * Create Pull Request on GitHub (with automatic retry on transient failures)
    */
   private async createPullRequest(request: PRRequest): Promise<PRResult> {
     this.log(`🚀 Creating Pull Request: ${request.title}`);
 
     try {
-      const response = await this.octokit.pulls.create({
-        owner: this.owner,
-        repo: this.repo,
-        title: request.title,
-        body: request.body,
-        head: request.headBranch,
-        base: request.baseBranch,
-        draft: request.draft,
+      const response = await withRetry(async () => {
+        return await this.octokit.pulls.create({
+          owner: this.owner,
+          repo: this.repo,
+          title: request.title,
+          body: request.body,
+          head: request.headBranch,
+          base: request.baseBranch,
+          draft: request.draft,
+        });
       });
 
       await this.logToolInvocation(
@@ -385,17 +390,19 @@ export class PRAgent extends BaseAgent {
   }
 
   /**
-   * Add labels to PR
+   * Add labels to PR (with automatic retry on transient failures)
    */
   private async addLabels(prNumber: number, labels: string[]): Promise<void> {
     this.log(`🏷️  Adding labels to PR #${prNumber}`);
 
     try {
-      await this.octokit.issues.addLabels({
-        owner: this.owner,
-        repo: this.repo,
-        issue_number: prNumber,
-        labels,
+      await withRetry(async () => {
+        await this.octokit.issues.addLabels({
+          owner: this.owner,
+          repo: this.repo,
+          issue_number: prNumber,
+          labels,
+        });
       });
 
       await this.logToolInvocation(
@@ -418,7 +425,7 @@ export class PRAgent extends BaseAgent {
   }
 
   /**
-   * Request reviewers for PR
+   * Request reviewers for PR (with automatic retry on transient failures)
    */
   private async requestReviewers(prNumber: number, reviewers: string[]): Promise<void> {
     if (reviewers.length === 0) return;
@@ -426,11 +433,13 @@ export class PRAgent extends BaseAgent {
     this.log(`👥 Requesting reviewers for PR #${prNumber}: ${reviewers.join(', ')}`);
 
     try {
-      await this.octokit.pulls.requestReviewers({
-        owner: this.owner,
-        repo: this.repo,
-        pull_number: prNumber,
-        reviewers,
+      await withRetry(async () => {
+        await this.octokit.pulls.requestReviewers({
+          owner: this.owner,
+          repo: this.repo,
+          pull_number: prNumber,
+          reviewers,
+        });
       });
 
       await this.logToolInvocation(

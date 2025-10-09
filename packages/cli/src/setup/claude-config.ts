@@ -8,6 +8,16 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { Octokit } from '@octokit/rest';
+import {
+  validateDeployClaudeConfigParams,
+  validateDeployToGitHubParams,
+  validateProjectPath,
+  validateFilePath,
+  validateFileSize,
+  validateFileContent,
+  validateSymlink,
+  sanitizeTemplateVariable,
+} from './validation.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,6 +37,9 @@ export interface ClaudeConfigOptions {
 export async function deployClaudeConfig(options: ClaudeConfigOptions): Promise<void> {
   const { projectPath, projectName } = options;
 
+  // Validate input parameters (security: CWE-22 prevention)
+  validateDeployClaudeConfigParams(projectPath, projectName);
+
   // Source: templates in CLI package
   const templatesDir = path.join(__dirname, '../../templates');
   const claudeTemplateDir = path.join(templatesDir, 'claude-code');
@@ -45,8 +58,17 @@ export async function deployClaudeConfig(options: ClaudeConfigOptions): Promise<
 
   // 2. Generate CLAUDE.md from template
   if (fs.existsSync(claudeMdTemplate)) {
+    // Validate template file
+    validateFilePath(claudeMdTemplate, templatesDir);
+    validateSymlink(claudeMdTemplate);
+    validateFileSize(claudeMdTemplate, 1 * 1024 * 1024); // 1MB max for template
+
     const templateContent = fs.readFileSync(claudeMdTemplate, 'utf-8');
-    const renderedContent = templateContent.replace(/{{PROJECT_NAME}}/g, projectName);
+    validateFileContent(templateContent);
+
+    // Sanitize project name for template injection prevention
+    const sanitizedProjectName = sanitizeTemplateVariable(projectName);
+    const renderedContent = templateContent.replace(/{{PROJECT_NAME}}/g, sanitizedProjectName);
 
     // Atomic write
     const tempPath = `${claudeMdDest}.tmp`;
@@ -61,6 +83,10 @@ export async function deployClaudeConfig(options: ClaudeConfigOptions): Promise<
  * Recursively copy directory with atomic operations
  */
 async function copyDirectoryRecursive(src: string, dest: string): Promise<void> {
+  // Validate paths (security: prevent path traversal)
+  validateFilePath(src);
+  validateFilePath(dest);
+
   // Create destination directory
   try {
     fs.mkdirSync(dest, { recursive: true });
@@ -81,6 +107,10 @@ async function copyDirectoryRecursive(src: string, dest: string): Promise<void> 
       // Recursively copy subdirectory
       await copyDirectoryRecursive(srcPath, destPath);
     } else {
+      // Validate source file before copying
+      validateSymlink(srcPath);
+      validateFileSize(srcPath, 10 * 1024 * 1024); // 10MB max per file
+
       // Copy file atomically
       try {
         const tempPath = `${destPath}.tmp`;
@@ -117,6 +147,9 @@ export async function deployClaudeConfigToGitHub(
   projectName: string,
   token: string
 ): Promise<void> {
+  // Validate input parameters (security: prevent injection attacks)
+  validateDeployToGitHubParams(owner, repo, projectName, token);
+
   const octokit = new Octokit({ auth: token });
 
   // Source: templates in CLI package
@@ -148,8 +181,17 @@ export async function deployClaudeConfigToGitHub(
 
   // 2. Generate CLAUDE.md from template
   if (fs.existsSync(claudeMdTemplate)) {
+    // Validate template file
+    validateFilePath(claudeMdTemplate, templatesDir);
+    validateSymlink(claudeMdTemplate);
+    validateFileSize(claudeMdTemplate, 1 * 1024 * 1024); // 1MB max for template
+
     const templateContent = fs.readFileSync(claudeMdTemplate, 'utf-8');
-    const renderedContent = templateContent.replace(/{{PROJECT_NAME}}/g, projectName);
+    validateFileContent(templateContent);
+
+    // Sanitize project name for template injection prevention
+    const sanitizedProjectName = sanitizeTemplateVariable(projectName);
+    const renderedContent = templateContent.replace(/{{PROJECT_NAME}}/g, sanitizedProjectName);
     filesToCommit.push({
       path: 'CLAUDE.md',
       content: renderedContent,
@@ -246,8 +288,14 @@ async function collectDirectoryFiles(
       const subFiles = await collectDirectoryFiles(srcPath, relativePath);
       files.push(...subFiles);
     } else {
+      // Validate file before reading
+      validateSymlink(srcPath);
+      validateFileSize(srcPath, 10 * 1024 * 1024); // 10MB max per file
+
       // Read file content
       const content = fs.readFileSync(srcPath, 'utf-8');
+      validateFileContent(content);
+
       files.push({
         path: relativePath,
         content,
@@ -267,6 +315,9 @@ export async function verifyClaudeConfig(projectPath: string): Promise<{
   agentsCount: number;
   commandsCount: number;
 }> {
+  // Validate project path
+  validateProjectPath(projectPath);
+
   const claudeDir = path.join(projectPath, '.claude');
   const claudeMd = path.join(projectPath, 'CLAUDE.md');
 

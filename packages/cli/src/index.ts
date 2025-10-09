@@ -16,6 +16,8 @@ import { status } from './commands/status.js';
 import { config } from './commands/config.js';
 import { setup } from './commands/setup.js';
 import { docs } from './commands/docs.js';
+import { registerAgentCommand } from './commands/agent.js';
+import { registerAutoModeCommand } from './commands/auto.js';
 import { loadConfig, applyConfigToEnvironment } from './config/loader.js';
 import {
   reportIssueToMiyabi,
@@ -77,6 +79,9 @@ program
       console.log(chalk.white('利用可能なコマンド:\n'));
       console.log(chalk.cyan('  npx miyabi init <project-name>') + chalk.gray('  - 新規プロジェクト作成'));
       console.log(chalk.cyan('  npx miyabi install') + chalk.gray('            - 既存プロジェクトに追加'));
+      console.log(chalk.cyan('  npx miyabi agent run <name>') + chalk.gray('   - Agent実行'));
+      console.log(chalk.cyan('  npx miyabi agent list') + chalk.gray('        - Agent一覧'));
+      console.log(chalk.cyan('  npx miyabi auto') + chalk.gray('              - 全自動モード (Water Spider)'));
       console.log(chalk.cyan('  npx miyabi status') + chalk.gray('             - ステータス確認'));
       console.log(chalk.cyan('  npx miyabi docs') + chalk.gray('               - ドキュメント生成'));
       console.log(chalk.cyan('  npx miyabi config') + chalk.gray('             - 設定管理'));
@@ -321,6 +326,12 @@ program
   .action(async () => {
     await setup({});
   });
+
+// Register agent command
+registerAgentCommand(program);
+
+// Register auto mode command
+registerAutoModeCommand(program);
 
 /**
  * Handle error and report to Miyabi repository

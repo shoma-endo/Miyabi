@@ -4,6 +4,7 @@
  * Main SDK client for interacting with GitHub Projects V2
  *
  * Issue #5 Phase A: Data Persistence Layer
+ * Issue #41: Added retry logic with exponential backoff for all API calls
  */
 
 import { graphql } from '@octokit/graphql';
@@ -23,6 +24,7 @@ import {
   FieldNotFoundError,
   RateLimitExceededError,
 } from './types.js';
+import { withRetry, type GitHubRetryConfig } from '@miyabi/agent-sdk';
 
 // ============================================================================
 // Client Configuration
@@ -31,8 +33,12 @@ import {
 interface ClientConfig {
   token: string;
   project: ProjectConfig;
+  /** @deprecated Use retryConfig instead. Legacy support maintained for backward compatibility. */
   retryOnRateLimit?: boolean;
+  /** @deprecated Use retryConfig.retries instead. Legacy support maintained for backward compatibility. */
   maxRetries?: number;
+  /** Optional retry configuration (uses defaults if not specified) */
+  retryConfig?: Partial<GitHubRetryConfig>;
 }
 
 // ============================================================================
@@ -43,6 +49,8 @@ export class GitHubProjectsClient {
   private octokit: Octokit;
   private graphqlClient: typeof graphql;
   private config: ProjectConfig;
+  private retryConfig?: Partial<GitHubRetryConfig>;
+  // Legacy properties for backward compatibility
   private retryOnRateLimit: boolean;
   private maxRetries: number;
 
@@ -52,8 +60,20 @@ export class GitHubProjectsClient {
       headers: { authorization: `token ${clientConfig.token}` },
     });
     this.config = clientConfig.project;
-    this.retryOnRateLimit = clientConfig.retryOnRateLimit ?? true;
-    this.maxRetries = clientConfig.maxRetries ?? 3;
+
+    // Support new retry config or legacy properties
+    if (clientConfig.retryConfig) {
+      this.retryConfig = clientConfig.retryConfig;
+      this.retryOnRateLimit = true;
+      this.maxRetries = clientConfig.retryConfig.retries ?? 3;
+    } else {
+      // Legacy support
+      this.retryOnRateLimit = clientConfig.retryOnRateLimit ?? true;
+      this.maxRetries = clientConfig.maxRetries ?? 3;
+      this.retryConfig = {
+        retries: this.maxRetries,
+      };
+    }
   }
 
   // ==========================================================================
@@ -483,10 +503,10 @@ export class GitHubProjectsClient {
   // ==========================================================================
 
   /**
-   * Get current rate limit information
+   * Get current rate limit information (with automatic retry on transient failures)
    */
   async getRateLimitInfo(): Promise<RateLimitInfo> {
-    try {
+    return withRetry(async () => {
       const { data } = await this.octokit.rest.rateLimit.get();
       const graphqlLimit = data.resources.graphql;
 
@@ -500,10 +520,7 @@ export class GitHubProjectsClient {
         reset: new Date(graphqlLimit.reset * 1000),
         used: graphqlLimit.used,
       };
-    } catch (error) {
-      console.error('Failed to get rate limit info:', error);
-      throw error;
-    }
+    }, this.retryConfig);
   }
 
   // ==========================================================================
@@ -528,36 +545,16 @@ export class GitHubProjectsClient {
   }
 
   /**
-   * Execute GraphQL query with retry logic
+   * Execute GraphQL query with retry logic (using p-retry with exponential backoff)
    */
   private async executeQuery(
     query: string,
     variables: Record<string, any>
   ): Promise<any> {
-    let retries = 0;
-
-    while (retries <= this.maxRetries) {
-      try {
-        return await this.graphqlClient(query, variables);
-      } catch (error: any) {
-        if (
-          this.retryOnRateLimit &&
-          error.message?.includes('rate limit') &&
-          retries < this.maxRetries
-        ) {
-          const waitTime = Math.pow(2, retries) * 1000; // Exponential backoff
-          console.warn(
-            `Rate limit hit, waiting ${waitTime}ms before retry ${retries + 1}/${this.maxRetries}`
-          );
-          await this.sleep(waitTime);
-          retries++;
-          continue;
-        }
-        throw error;
-      }
-    }
-
-    throw new RateLimitExceededError(new Date(), 0);
+    return withRetry(
+      async () => await this.graphqlClient(query, variables),
+      this.retryConfig
+    );
   }
 
   /**
@@ -568,12 +565,5 @@ export class GitHubProjectsClient {
     variables: Record<string, any>
   ): Promise<any> {
     return this.executeQuery(mutation, variables);
-  }
-
-  /**
-   * Sleep utility for rate limiting
-   */
-  private sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

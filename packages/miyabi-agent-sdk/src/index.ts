@@ -33,3 +33,15 @@ export type { GitHubClientOptions } from './github-client.js';
 
 // Export utilities
 export { createAgentContext, validateContext } from './utils.js';
+
+// Export retry configuration
+export {
+  withRetry,
+  shouldRetry,
+  createRetryOptions,
+  calculateBackoff,
+  DEFAULT_RETRY_CONFIG,
+  RETRYABLE_ERROR_CODES,
+  NON_RETRYABLE_ERROR_CODES,
+} from './retry-config.js';
+export type { GitHubRetryConfig } from './retry-config.js';

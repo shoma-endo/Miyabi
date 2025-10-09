@@ -9,7 +9,6 @@ import type {
   AgentConfig,
   AgentResult,
   AgentMetrics,
-  AgentTask,
 } from './types.js';
 
 /**

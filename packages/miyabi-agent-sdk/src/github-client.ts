@@ -2,9 +2,11 @@
  * Miyabi Agent SDK - GitHub Client Helper
  *
  * This module provides helper functions for interacting with GitHub API.
+ * All API calls are automatically wrapped with retry logic for resilience.
  */
 
-import type { GitHubIssue, GitHubPullRequest } from './types.js';
+import type { GitHubIssue } from './types.js';
+import { withRetry, type GitHubRetryConfig } from './retry-config.js';
 
 /**
  * GitHub client options
@@ -13,18 +15,25 @@ export interface GitHubClientOptions {
   owner: string;
   repo: string;
   token: string;
+  /** Optional retry configuration (uses defaults if not specified) */
+  retryConfig?: Partial<GitHubRetryConfig>;
 }
 
 /**
  * Simplified GitHub client for agent operations
  * Note: This is a lightweight wrapper. For full functionality,
  * use @octokit/rest directly in your agent implementation.
+ *
+ * All API calls are automatically wrapped with retry logic for resilience
+ * against transient failures (rate limits, network errors, server errors).
  */
 export class GitHubClient {
   private options: GitHubClientOptions;
+  private retryConfig?: Partial<GitHubRetryConfig>;
 
   constructor(options: GitHubClientOptions) {
     this.options = options;
+    this.retryConfig = options.retryConfig;
   }
 
   /**
@@ -53,93 +62,113 @@ export class GitHubClient {
   }
 
   /**
-   * Fetch issue data
+   * Fetch issue data (with automatic retry on transient failures)
    */
   async getIssue(issueNumber: number): Promise<GitHubIssue> {
-    const url = `${this.apiUrl}/repos/${this.repoFullName}/issues/${issueNumber}`;
-    const response = await fetch(url, {
-      headers: this.getHeaders(),
-    });
+    return withRetry(async () => {
+      const url = `${this.apiUrl}/repos/${this.repoFullName}/issues/${issueNumber}`;
+      const response = await fetch(url, {
+        headers: this.getHeaders(),
+      });
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch issue #${issueNumber}: ${response.statusText}`
-      );
-    }
+      if (!response.ok) {
+        const error: any = new Error(
+          `Failed to fetch issue #${issueNumber}: ${response.statusText}`
+        );
+        error.status = response.status;
+        throw error;
+      }
 
-    const data = await response.json();
-    return this.mapIssueResponse(data);
+      const data = await response.json();
+      return this.mapIssueResponse(data);
+    }, this.retryConfig);
   }
 
   /**
-   * Create issue comment
+   * Create issue comment (with automatic retry on transient failures)
    */
   async createComment(issueNumber: number, body: string): Promise<void> {
-    const url = `${this.apiUrl}/repos/${this.repoFullName}/issues/${issueNumber}/comments`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: this.getHeaders(),
-      body: JSON.stringify({ body }),
-    });
+    return withRetry(async () => {
+      const url = `${this.apiUrl}/repos/${this.repoFullName}/issues/${issueNumber}/comments`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({ body }),
+      });
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to create comment on issue #${issueNumber}: ${response.statusText}`
-      );
-    }
+      if (!response.ok) {
+        const error: any = new Error(
+          `Failed to create comment on issue #${issueNumber}: ${response.statusText}`
+        );
+        error.status = response.status;
+        throw error;
+      }
+    }, this.retryConfig);
   }
 
   /**
-   * Add labels to issue
+   * Add labels to issue (with automatic retry on transient failures)
    */
   async addLabels(issueNumber: number, labels: string[]): Promise<void> {
-    const url = `${this.apiUrl}/repos/${this.repoFullName}/issues/${issueNumber}/labels`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: this.getHeaders(),
-      body: JSON.stringify({ labels }),
-    });
+    return withRetry(async () => {
+      const url = `${this.apiUrl}/repos/${this.repoFullName}/issues/${issueNumber}/labels`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify({ labels }),
+      });
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to add labels to issue #${issueNumber}: ${response.statusText}`
-      );
-    }
+      if (!response.ok) {
+        const error: any = new Error(
+          `Failed to add labels to issue #${issueNumber}: ${response.statusText}`
+        );
+        error.status = response.status;
+        throw error;
+      }
+    }, this.retryConfig);
   }
 
   /**
-   * Remove label from issue
+   * Remove label from issue (with automatic retry on transient failures)
    */
   async removeLabel(issueNumber: number, label: string): Promise<void> {
-    const url = `${this.apiUrl}/repos/${this.repoFullName}/issues/${issueNumber}/labels/${encodeURIComponent(label)}`;
-    const response = await fetch(url, {
-      method: 'DELETE',
-      headers: this.getHeaders(),
-    });
+    return withRetry(async () => {
+      const url = `${this.apiUrl}/repos/${this.repoFullName}/issues/${issueNumber}/labels/${encodeURIComponent(label)}`;
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: this.getHeaders(),
+      });
 
-    if (!response.ok && response.status !== 404) {
-      throw new Error(
-        `Failed to remove label from issue #${issueNumber}: ${response.statusText}`
-      );
-    }
+      if (!response.ok && response.status !== 404) {
+        const error: any = new Error(
+          `Failed to remove label from issue #${issueNumber}: ${response.statusText}`
+        );
+        error.status = response.status;
+        throw error;
+      }
+    }, this.retryConfig);
   }
 
   /**
-   * Close issue
+   * Close issue (with automatic retry on transient failures)
    */
   async closeIssue(issueNumber: number): Promise<void> {
-    const url = `${this.apiUrl}/repos/${this.repoFullName}/issues/${issueNumber}`;
-    const response = await fetch(url, {
-      method: 'PATCH',
-      headers: this.getHeaders(),
-      body: JSON.stringify({ state: 'closed' }),
-    });
+    return withRetry(async () => {
+      const url = `${this.apiUrl}/repos/${this.repoFullName}/issues/${issueNumber}`;
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: this.getHeaders(),
+        body: JSON.stringify({ state: 'closed' }),
+      });
 
-    if (!response.ok) {
-      throw new Error(
-        `Failed to close issue #${issueNumber}: ${response.statusText}`
-      );
-    }
+      if (!response.ok) {
+        const error: any = new Error(
+          `Failed to close issue #${issueNumber}: ${response.statusText}`
+        );
+        error.status = response.status;
+        throw error;
+      }
+    }, this.retryConfig);
   }
 
   /**

@@ -7,6 +7,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2025-10-10
+
+### Added
+
+**Non-Interactive Mode Support (#43 P0)**
+- `--non-interactive` flag for CI/CD and Termux environments
+- `--yes` / `-y` flag for quick approval
+- `MIYABI_AUTO_APPROVE` environment variable support
+- Automatic detection of CI environments (`CI=true`)
+- Automatic detection of non-TTY terminals (pipes, redirects, SSH)
+- `install` and `setup` commands now support non-interactive mode
+
+**GitHub CLI Auto-Integration (#43 P1)**
+- Automatic token retrieval from `gh auth token`
+- Token priority: gh CLI → GITHUB_TOKEN → .env file → OAuth
+- No manual `GITHUB_TOKEN` setup required if gh CLI is authenticated
+- `isGhCliAuthenticated()` helper function
+- Enhanced error messages with clear authentication instructions
+
+**New Utilities**
+- `src/utils/interactive.ts` - Non-interactive mode detection and helpers
+  - `isNonInteractive()` - Detect non-interactive environments
+  - `promptOrDefault()` - Prompt wrapper with fallback
+  - `confirmOrDefault()` - Confirmation with default value
+- `src/utils/github-token.ts` - GitHub token management
+  - `getGitHubToken()` - Async token retrieval with fallback
+  - `getGitHubTokenSync()` - Sync version
+  - `isGhCliAuthenticated()` - Check gh CLI status
+  - `isValidTokenFormat()` - Token validation
+  - Automatic `.env` file reading
+
+### Changed
+- `install` command now tries automatic token retrieval before OAuth
+- `setup` command fully supports non-interactive mode
+- Authentication flow enhanced with multiple fallback options
+- CLI flags added to command help output
+
+### Documentation
+- README updated with non-interactive mode examples
+- GitHub CLI authentication guide added
+- CI/CD usage examples (GitHub Actions, Termux)
+- Token priority explanation
+- Troubleshooting section enhanced
+
+### Technical Improvements
+- TypeScript strict mode compliance maintained
+- All builds passing successfully
+- Enhanced user experience for CI/CD environments
+- Better error messages with actionable instructions
+
 ## [0.7.0] - 2025-10-10
 
 ### Added

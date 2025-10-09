@@ -21,7 +21,7 @@ import {
   PRResult,
 } from '../types/index.js';
 import { Octokit } from '@octokit/rest';
-import { withRetry } from '@miyabi/agent-sdk';
+import { withRetry } from '../../utils/retry.js';
 
 export class PRAgent extends BaseAgent {
   private octokit: Octokit;

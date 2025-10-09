@@ -1,6 +1,6 @@
 {
   "name": "autonomous-operations",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Complete autonomous AI development operations platform",
   "type": "module",
   "main": "index.js",

@@ -23,7 +23,7 @@ import {
   AgentType,
 } from '../types/index.js';
 import { Octokit } from '@octokit/rest';
-import { withRetry } from '@miyabi/agent-sdk';
+import { withRetry } from '../../utils/retry.js';
 
 export class IssueAgent extends BaseAgent {
   private octokit: Octokit;

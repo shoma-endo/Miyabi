@@ -289,6 +289,7 @@ Miyabiは株式会社識学の理論に基づいた自律型組織設計:
 - [セットアップガイド](SETUP_GUIDE.md) - 詳細なインストール手順
 - [初心者向けガイド](FOR_NON_PROGRAMMERS.md) - プログラミング未経験者向け
 - [既存プロジェクト統合](INSTALL_TO_EXISTING_PROJECT.md) - 既存プロジェクトへの追加方法
+- [Termux環境ガイド](docs/TERMUX_GUIDE.md) - Android/Termux環境での使用方法
 
 ### 開発者向け
 - [パブリッシュガイド](docs/PUBLICATION_GUIDE.md) - npm公開手順

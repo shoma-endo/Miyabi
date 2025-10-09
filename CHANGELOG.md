@@ -7,6 +7,73 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2025-10-09
+
+### Added
+
+**Agent CLI Mode**
+- `miyabi agent run <agent-name>` - Execute specific agents (coordinator, codegen, review, issue, pr, deploy, mizusumashi)
+- `miyabi agent list` - Display all available agents with descriptions
+- `miyabi agent status [agent-name]` - Check agent execution status
+- 7 autonomous agent types with clear responsibility boundaries
+- CLI table display for better readability
+
+**Water Spider Auto Mode (ウォータースパイダー)**
+- `miyabi auto` - Fully autonomous monitoring and execution mode
+- Inspired by Toyota Production System's Water Spider concept
+- Continuous system state monitoring with configurable intervals
+- Autonomous decision making and agent execution
+- TODO comment scanning integration with `--scan-todos` option
+- Configurable options:
+  - `--interval <seconds>` - Monitoring interval (default: 10s)
+  - `--max-duration <minutes>` - Maximum execution time (default: 60min)
+  - `--concurrency <number>` - Parallel execution count (default: 1)
+  - `--dry-run` - Simulation mode
+  - `--verbose` - Detailed logging
+
+**Todos Auto Mode**
+- `miyabi todos` - Automatic TODO/FIXME/HACK/NOTE comment detection
+- Recursive directory scanning with configurable path
+- Multiple comment format support (// /* #)
+- Priority-based sorting (FIXME > TODO > HACK > NOTE)
+- GitHub Issue auto-conversion with `--create-issues`
+- Agent auto-execution with `--auto-execute`
+- Excluded directories: node_modules, .git, dist, build, coverage
+- Supported extensions: .ts, .tsx, .js, .jsx, .py, .go, .rs, .java, .c, .cpp, .h, .hpp, .md, .yaml, .yml
+
+**Mizusumashi (水澄) - Super App Designer Agent**
+- YAML-based app definition generation
+- Self-repair function for error recovery
+- Autonomous screen and component generation
+- No user interaction required (fully autonomous)
+- Integration with Water Spider auto mode
+
+**Prompt Management System**
+- `.ai/prompts/` directory structure
+- YAML frontmatter with codex_prompt_chain format
+- Prompt templates for agents, commands, and integrations
+- Version control and quality criteria
+- Comprehensive README for prompt management
+
+### Changed
+- Enhanced Claude Code environment detection
+- Improved CLI help messages with new commands
+- Updated command registration in main index.ts
+
+### Technical Improvements
+- Agent type system with TypeScript const assertions
+- Decision-making algorithm for autonomous execution
+- Self-repair circuit implementation
+- Spinner and progress indicators with ora
+- CLI table rendering with cli-table3
+
+## [0.5.0] - 2025-10-09
+
+### Added
+- CLI mode for Claude Code environment
+- Enhanced environment detection (CLAUDE_CODE, ANTHROPIC_CLI, TERM_PROGRAM)
+- Interactive terminal detection
+
 ## [0.4.4] - 2025-10-08
 
 ### Fixed

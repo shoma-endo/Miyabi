@@ -320,11 +320,16 @@ Miyabiは株式会社識学の理論に基づいた自律型組織設計:
 
 ## バージョン情報
 
-- **Current**: v0.5.0
+- **Current**: v0.5.0 (2025-10-09)
 - **npm**: https://www.npmjs.com/package/miyabi
 - **Repository**: https://github.com/ShunsukeHayashi/Miyabi
 - **License**: MIT
 - **Author**: Shunsuke Hayashi ([@ShunsukeHayashi](https://github.com/ShunsukeHayashi))
+
+### 最新の変更 (v0.5.0)
+- ✅ GitHubトークンセキュリティ強化（gh CLI優先）
+- ✅ Termux環境完全対応ガイド
+- ✅ セキュリティベストプラクティス文書化
 
 ## トラブルシューティング
 

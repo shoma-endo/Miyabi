@@ -70,9 +70,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.0] - 2025-10-09
 
 ### Added
+
+**Security Enhancements**
+- GitHub token helper utility (`scripts/github-token-helper.ts`)
+- Priority-based token retrieval: gh CLI > environment variable
+- Token format validation (ghp_, github_pat_ prefixes)
+- Automatic detection of gh CLI authentication status
 - CLI mode for Claude Code environment
 - Enhanced environment detection (CLAUDE_CODE, ANTHROPIC_CLI, TERM_PROGRAM)
 - Interactive terminal detection
+
+**Documentation**
+- Comprehensive Termux environment guide (`docs/TERMUX_GUIDE.md`)
+- Installation instructions for Android/Termux
+- 5 known issues with detailed workarounds
+- Performance optimization tips for mobile devices
+- Battery and network best practices
+- Troubleshooting guide and FAQ
+
+**Development Tools**
+- `getGitHubTokenSync()` - Synchronous token retrieval
+- `isGhCliAuthenticated()` - Check gh CLI status
+- `isValidTokenFormat()` - Token validation helper
+
+### Changed
+
+**Security**
+- **BREAKING**: `parallel-executor.ts` now prioritizes gh CLI authentication
+- `.env.example` updated with security warnings (token storage discouraged)
+- `README.md` authentication section rewritten with best practices
+- `SECURITY.md` expanded with token management guidelines
+
+**Documentation**
+- Added Termux guide link to main README
+- Updated environment variable documentation
+- Enhanced security best practices section
+
+### Fixed
+- Termux locale warning documented with workaround
+- Git credential helper conflicts documented
+- Interactive mode limitations clarified for Termux
+
+### Security
+- ⚠️ **Deprecation Notice**: Storing GITHUB_TOKEN in `.env` files is no longer recommended
+- ✅ **Recommended**: Use `gh auth login` for secure authentication
+- ✅ Environment variable fallback maintained for CI/CD compatibility
 
 ## [0.4.4] - 2025-10-08
 

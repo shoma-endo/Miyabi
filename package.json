@@ -4,6 +4,9 @@
   "description": "Complete autonomous AI development operations platform",
   "type": "module",
   "main": "index.js",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "start": "tsx scripts/agentic.ts",
     "task": "tsx scripts/execute-task.ts",
@@ -56,7 +59,13 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
-    "build": "tsc"
+    "build": "tsc",
+    "context:api": "cd services/context-api && python context_engineering/context_api.py",
+    "context:guides": "cd services/context-api && python main.py",
+    "context:mcp": "cd mcp-servers/context-engineering && node context_mcp_server.js",
+    "context:dev": "concurrently \"npm run context:api\" \"npm run context:guides\"",
+    "context:docker": "docker-compose --profile context-engineering up -d",
+    "context:docker:down": "docker-compose --profile context-engineering down"
   },
   "keywords": [
     "ai",

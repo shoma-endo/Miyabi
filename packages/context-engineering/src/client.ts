@@ -49,7 +49,7 @@ export class ContextEngineeringClient {
     // Add response interceptor for error handling
     this.client.interceptors.response.use(
       (response) => response,
-      (error: AxiosError) => {
+      (error: AxiosError<{ error?: string }>) => {
         if (error.response) {
           throw new ContextEngineeringError(
             error.response.data?.error || error.message,

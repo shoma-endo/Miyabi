@@ -96,6 +96,40 @@ services:
     profiles:
       - with-cache
 
+  # Context Engineering API Service
+  context-api:
+    build:
+      context: ./services/context-api
+      dockerfile: Dockerfile
+    container_name: miyabi-context-api
+    restart: unless-stopped
+    ports:
+      - "8888:8888"  # AI Guides API
+      - "9001:9001"  # Context Engineering API
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - UVICORN_HOST=0.0.0.0
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - CONTEXT_OPTIMIZATION_THRESHOLD=${CONTEXT_OPTIMIZATION_THRESHOLD:-80}
+    volumes:
+      - ./templates/prompts:/app/templates:ro
+      - context-api-data:/app/data
+    networks:
+      - miyabi-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9001/api/stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    profiles:
+      - context-engineering
+
 networks:
   miyabi-network:
     driver: bridge
@@ -106,4 +140,6 @@ volumes:
   postgres-data:
     driver: local
   redis-data:
+    driver: local
+  context-api-data:
     driver: local

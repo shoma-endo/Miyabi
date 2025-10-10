@@ -1,431 +1,224 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { MockedFunction } from 'vitest';
+# Miyabi Plugin Instructions for Claude Code
 
-// Mock the BaseAgent class based on the pattern mentioned
-class BaseAgent {
-  private name: string;
-  private isActive: boolean = false;
-  private config: AgentConfig;
+## Plugin Overview
 
-  constructor(name: string, config: AgentConfig = {}) {
-    this.name = name;
-    this.config = { ...defaultConfig, ...config };
-  }
+**Miyabi** is a fully autonomous AI development operations platform based on the "GitHub as OS" architecture, automating everything from Issue creation to code implementation, PR creation, and deployment.
 
-  public getName(): string {
-    return this.name;
-  }
+## How to Use This Plugin
 
-  public async initialize(): Promise<void> {
-    if (this.isActive) {
-      throw new Error('Agent is already initialized');
-    }
-    this.isActive = true;
-  }
+When users invoke Miyabi commands (e.g., `/miyabi-auto`, `/miyabi-status`), you should:
 
-  public async execute(input: string): Promise<string> {
-    if (!this.isActive) {
-      throw new Error('Agent must be initialized before execution');
-    }
-    
-    if (!input?.trim()) {
-      throw new Error('Input cannot be empty');
-    }
+1. **Understand the Command Context**: Read the corresponding command file in `.claude-plugin/commands/`
+2. **Execute via MCP Tools**: Use the `miyabi__*` MCP tools provided by this plugin
+3. **Report Results**: Provide clear, actionable feedback to the user
 
-    return this.processInput(input);
-  }
+## Agent System
 
-  public isInitialized(): boolean {
-    return this.isActive;
-  }
+Miyabi provides 7 specialized agents:
 
-  public async shutdown(): Promise<void> {
-    this.isActive = false;
-  }
+### 1. CoordinatorAgent
+- **Purpose**: Task orchestration and parallel execution control
+- **Triggers**: `🤖 agent:coordinator` label or `/miyabi-agent coordinator`
+- **Capabilities**: DAG-based task decomposition, critical path identification
 
-  public getConfig(): AgentConfig {
-    return { ...this.config };
-  }
+### 2. CodeGenAgent
+- **Purpose**: AI-driven code generation
+- **Triggers**: `🤖 agent:codegen` label or `/miyabi-agent codegen`
+- **Capabilities**: Claude Sonnet 4 powered code generation, TypeScript strict mode support
 
-  public updateConfig(newConfig: Partial<AgentConfig>): void {
-    this.config = { ...this.config, ...newConfig };
-  }
+### 3. ReviewAgent
+- **Purpose**: Code quality assessment
+- **Triggers**: `🤖 agent:review` label or `/miyabi-agent review`
+- **Capabilities**: Static analysis, security scanning, 100-point quality scoring
 
-  private async processInput(input: string): Promise<string> {
-    // Simulate async processing
-    await new Promise(resolve => setTimeout(resolve, 100));
-    return `Processed: ${input}`;
-  }
-}
+### 4. IssueAgent
+- **Purpose**: Issue analysis and label management
+- **Triggers**: `🤖 agent:issue` label or `/miyabi-agent issue`
+- **Capabilities**: AI-powered label classification using 53-label system
 
-// Types
-interface AgentConfig {
-  timeout?: number;
-  maxRetries?: number;
-  enableLogging?: boolean;
-}
+### 5. PRAgent
+- **Purpose**: Automatic Pull Request creation
+- **Triggers**: `🤖 agent:pr` label or `/miyabi-agent pr`
+- **Capabilities**: Conventional Commits compliance, Draft PR generation
 
-const defaultConfig: AgentConfig = {
-  timeout: 5000,
-  maxRetries: 3,
-  enableLogging: false
-};
+### 6. DeploymentAgent
+- **Purpose**: CI/CD deployment automation
+- **Triggers**: `🤖 agent:deployment` label or `/miyabi-agent deployment`
+- **Capabilities**: Firebase auto-deploy, health checks, automatic rollback
 
-// Mock external dependencies
-const mockExternalService = {
-  connect: vi.fn(),
-  disconnect: vi.fn(),
-  sendData: vi.fn()
-};
+### 7. TestAgent
+- **Purpose**: Automated test execution
+- **Triggers**: `🤖 agent:test` label or `/miyabi-agent test`
+- **Capabilities**: Vitest/Jest/Playwright execution, coverage reporting
 
-vi.mock('./external-service.js', () => ({
-  ExternalService: vi.fn(() => mockExternalService)
-}));
+## Label System (53 Labels)
 
-describe('BaseAgent', () => {
-  let agent: BaseAgent;
-  const testAgentName = 'TestAgent';
-  const defaultTestConfig: AgentConfig = {
-    timeout: 3000,
-    maxRetries: 2,
-    enableLogging: true
-  };
+Miyabi uses a structured 53-label system across 10 categories:
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-    agent = new BaseAgent(testAgentName, defaultTestConfig);
-  });
+1. **STATE** (8): Lifecycle management - `📥 state:pending`, `🔍 state:analyzing`, etc.
+2. **AGENT** (6): Agent assignment - `🤖 agent:coordinator`, `🤖 agent:codegen`, etc.
+3. **PRIORITY** (4): Priority management - `🔥 priority:P0-Critical` to `📝 priority:P3-Low`
+4. **TYPE** (7): Issue classification - `✨ type:feature`, `🐛 type:bug`, etc.
+5. **SEVERITY** (4): Severity levels - `🚨 severity:Sev.1-Critical`, etc.
+6. **PHASE** (5): Project phases - `🎯 phase:planning`, `🚀 phase:deployment`, etc.
+7. **SPECIAL** (7): Special operations - `🔐 security`, `💰 cost-watch`, etc.
+8. **TRIGGER** (4): Automation triggers - `🤖 trigger:agent-execute`, etc.
+9. **QUALITY** (4): Quality scores - `⭐ quality:excellent` (90-100), etc.
+10. **COMMUNITY** (4): Community labels - `👋 good-first-issue`, etc.
 
-  afterEach(async () => {
-    if (agent.isInitialized()) {
-      await agent.shutdown();
-    }
-  });
+### State Transition Flow
+```
+📥 pending → 🔍 analyzing → 🏗️ implementing → 👀 reviewing → ✅ done
+```
 
-  describe('Constructor', () => {
-    it('should create agent with provided name and config', () => {
-      expect(agent.getName()).toBe(testAgentName);
-      expect(agent.getConfig()).toEqual(defaultTestConfig);
-      expect(agent.isInitialized()).toBe(false);
-    });
+## Command Guidelines
 
-    it('should create agent with default config when none provided', () => {
-      const agentWithDefaults = new BaseAgent('DefaultAgent');
-      
-      expect(agentWithDefaults.getName()).toBe('DefaultAgent');
-      expect(agentWithDefaults.getConfig()).toEqual(defaultConfig);
-    });
+### /miyabi-auto (Water Spider Mode)
+- **Purpose**: Fully autonomous Issue execution mode
+- **When to use**: User wants hands-free automation
+- **Behavior**:
+  - Poll for `state:pending` Issues every 60 seconds
+  - Automatically assign agents based on labels
+  - Execute tasks without human intervention
+  - Update dashboard in real-time
 
-    it('should merge provided config with defaults', () => {
-      const partialConfig: Partial<AgentConfig> = { timeout: 10000 };
-      const agentWithPartialConfig = new BaseAgent('PartialAgent', partialConfig);
-      
-      expect(agentWithPartialConfig.getConfig()).toEqual({
-        timeout: 10000,
-        maxRetries: 3,
-        enableLogging: false
-      });
-    });
-  });
+### /miyabi-amembo (Amembo Mode)
+- **Purpose**: Lightweight monitoring mode
+- **When to use**: User wants observation without execution
+- **Behavior**:
+  - Scan Issues periodically
+  - Generate status reports
+  - No automatic execution - read-only mode
 
-  describe('getName()', () => {
-    it('should return the agent name', () => {
-      expect(agent.getName()).toBe(testAgentName);
-    });
+### /miyabi-watch (Watch Mode)
+- **Purpose**: Real-time webhook-based monitoring
+- **When to use**: User wants instant notifications
+- **Behavior**:
+  - Set up GitHub Webhooks
+  - React to events in 1-3 seconds
+  - Send notifications to Slack/Discord/Email
+  - Update dashboard in real-time
 
-    it('should return correct name for different agents', () => {
-      const anotherAgent = new BaseAgent('AnotherAgent');
-      expect(anotherAgent.getName()).toBe('AnotherAgent');
-    });
-  });
+### /miyabi-status
+- **Purpose**: Project status check
+- **Behavior**: Display current state of all Issues grouped by STATE labels
 
-  describe('initialize()', () => {
-    it('should initialize agent successfully', async () => {
-      expect(agent.isInitialized()).toBe(false);
-      
-      await agent.initialize();
-      
-      expect(agent.isInitialized()).toBe(true);
-    });
+### /miyabi-todos
+- **Purpose**: TODO comment detection and Issue creation
+- **Behavior**: Scan codebase for TODO comments, create Issues automatically
 
-    it('should throw error when initializing already initialized agent', async () => {
-      await agent.initialize();
-      
-      await expect(agent.initialize()).rejects.toThrow('Agent is already initialized');
-    });
+### /miyabi-agent <agent-name>
+- **Purpose**: Execute specific agent
+- **Parameters**: coordinator | codegen | review | issue | pr | deployment | test
 
-    it('should handle initialization with mocked external service', async () => {
-      mockExternalService.connect.mockResolvedValueOnce(true);
-      
-      await agent.initialize();
-      
-      expect(agent.isInitialized()).toBe(true);
-    });
-  });
+### /miyabi-docs
+- **Purpose**: Automatic documentation generation
+- **Behavior**: Generate docs from codebase, update README
 
-  describe('execute()', () => {
-    beforeEach(async () => {
-      await agent.initialize();
-    });
+### /miyabi-deploy
+- **Purpose**: Execute deployment
+- **Behavior**: Run deployment workflow based on environment
 
-    it('should execute with valid input', async () => {
-      const input = 'test input';
-      const result = await agent.execute(input);
-      
-      expect(result).toBe('Processed: test input');
-    });
+### /miyabi-test
+- **Purpose**: Run tests
+- **Behavior**: Execute test suite, report coverage
 
-    it('should throw error when not initialized', async () => {
-      const uninitializedAgent = new BaseAgent('Uninitialized');
-      
-      await expect(uninitializedAgent.execute('test')).rejects.toThrow(
-        'Agent must be initialized before execution'
-      );
-    });
+## Best Practices
 
-    it('should throw error for empty input', async () => {
-      await expect(agent.execute('')).rejects.toThrow('Input cannot be empty');
-      await expect(agent.execute('   ')).rejects.toThrow('Input cannot be empty');
-    });
+1. **Always check Issue labels** before executing agents
+2. **Update STATE labels** as work progresses
+3. **Use PRIORITY labels** to determine execution order
+4. **Respect TRIGGER labels** for automation conditions
+5. **Report QUALITY scores** after code generation/review
+6. **Follow Conventional Commits** for all PRs
+7. **Maintain 80%+ test coverage** as minimum quality bar
 
-    it('should throw error for null/undefined input', async () => {
-      await expect(agent.execute(null as any)).rejects.toThrow('Input cannot be empty');
-      await expect(agent.execute(undefined as any)).rejects.toThrow('Input cannot be empty');
-    });
+## Error Handling
 
-    it('should handle complex input strings', async () => {
-      const complexInput = 'Complex input with special chars: !@#$%^&*()';
-      const result = await agent.execute(complexInput);
-      
-      expect(result).toBe(`Processed: ${complexInput}`);
-    });
+- **API Rate Limits**: Implement exponential backoff (already built-in)
+- **Unicode Issues**: Use `safeTruncate()` for string truncation to avoid breaking surrogate pairs
+- **Webhook Security**: Verify HMAC-SHA256 signatures
+- **Git Conflicts**: Always fetch before push, use rebase strategy
 
-    it('should process multiple sequential executions', async () => {
-      const inputs = ['input1', 'input2', 'input3'];
-      const results = [];
-      
-      for (const input of inputs) {
-        results.push(await agent.execute(input));
-      }
-      
-      expect(results).toEqual([
-        'Processed: input1',
-        'Processed: input2',
-        'Processed: input3'
-      ]);
-    });
-  });
+## Communication Style
 
-  describe('isInitialized()', () => {
-    it('should return false for new agent', () => {
-      expect(agent.isInitialized()).toBe(false);
-    });
+- **Concise**: Provide clear, actionable updates
+- **Structured**: Use markdown formatting for readability
+- **Progressive**: Report progress incrementally for long-running tasks
+- **Transparent**: Always explain what agents are doing and why
 
-    it('should return true after initialization', async () => {
-      await agent.initialize();
-      expect(agent.isInitialized()).toBe(true);
-    });
+## Integration Points
 
-    it('should return false after shutdown', async () => {
-      await agent.initialize();
-      await agent.shutdown();
-      expect(agent.isInitialized()).toBe(false);
-    });
-  });
+### GitHub API
+- Use `@octokit/rest` for all GitHub operations
+- Token stored in `GITHUB_TOKEN` environment variable
+- Rate limit: 5000 requests/hour (authenticated)
 
-  describe('shutdown()', () => {
-    it('should shutdown initialized agent', async () => {
-      await agent.initialize();
-      expect(agent.isInitialized()).toBe(true);
-      
-      await agent.shutdown();
-      expect(agent.isInitialized()).toBe(false);
-    });
+### Anthropic API
+- Use `@anthropic-ai/sdk` for AI operations
+- Token stored in `ANTHROPIC_API_KEY` environment variable
+- Model: `claude-sonnet-4-20250514` (latest)
 
-    it('should handle shutdown of non-initialized agent', async () => {
-      expect(agent.isInitialized()).toBe(false);
-      
-      await expect(agent.shutdown()).resolves.not.toThrow();
-      expect(agent.isInitialized()).toBe(false);
-    });
+### MCP Servers
+- `miyabi-integration.js`: Main integration server
+- Provides all `miyabi__*` tools to Claude Code
 
-    it('should handle multiple shutdown calls', async () => {
-      await agent.initialize();
-      await agent.shutdown();
-      
-      await expect(agent.shutdown()).resolves.not.toThrow();
-    });
-  });
+## Security Considerations
 
-  describe('getConfig()', () => {
-    it('should return current configuration', () => {
-      const config = agent.getConfig();
-      expect(config).toEqual(defaultTestConfig);
-    });
+- **Never commit secrets**: Use environment variables
+- **Verify webhooks**: Always check HMAC signatures
+- **Limit agent permissions**: Each agent has specific scopes
+- **Audit logs**: All operations are logged to `logs/`
 
-    it('should return a copy of config (not reference)', () => {
-      const config1 = agent.getConfig();
-      const config2 = agent.getConfig();
-      
-      expect(config1).toEqual(config2);
-      expect(config1).not.toBe(config2); // Different object references
-    });
-  });
+## Performance Targets
 
-  describe('updateConfig()', () => {
-    it('should update partial configuration', () => {
-      const newConfig = { timeout: 8000 };
-      agent.updateConfig(newConfig);
-      
-      expect(agent.getConfig()).toEqual({
-        timeout: 8000,
-        maxRetries: 2,
-        enableLogging: true
-      });
-    });
+- **Agent Execution**: < 5 minutes per Issue
+- **Parallel Efficiency**: 70%+ (measured via Critical Path)
+- **API Response Time**: < 2 seconds (95th percentile)
+- **Test Coverage**: 80%+ minimum
+- **Quality Score**: 80+ points for approval
 
-    it('should update multiple config properties', () => {
-      const newConfig = { 
-        timeout: 15000, 
-        maxRetries: 5,
-        enableLogging: false 
-      };
-      agent.updateConfig(newConfig);
-      
-      expect(agent.getConfig()).toEqual(newConfig);
-    });
+## User Experience Guidelines
 
-    it('should handle empty config update', () => {
-      const originalConfig = agent.getConfig();
-      agent.updateConfig({});
-      
-      expect(agent.getConfig()).toEqual(originalConfig);
-    });
+1. **Initial Setup**: Guide users through `miyabi init` or `miyabi install`
+2. **First Run**: Explain what each agent does
+3. **Watch Mode**: Show real-time updates as they happen
+4. **Error Recovery**: Provide clear next steps on failures
+5. **Success Confirmation**: Always confirm completed actions
 
-    it('should preserve existing config when updating subset', () => {
-      agent.updateConfig({ maxRetries: 10 });
-      
-      expect(agent.getConfig()).toEqual({
-        timeout: 3000,
-        maxRetries: 10,
-        enableLogging: true
-      });
-    });
-  });
+## Advanced Usage
 
-  describe('Edge Cases and Error Handling', () => {
-    it('should handle concurrent initialization attempts', async () => {
-      const initPromise1 = agent.initialize();
-      const initPromise2 = agent.initialize();
-      
-      await expect(initPromise1).resolves.not.toThrow();
-      await expect(initPromise2).rejects.toThrow('Agent is already initialized');
-    });
+### Parallel Agent Execution
+```bash
+npm run agents:parallel:exec -- --issues=5 --concurrency=3
+```
 
-    it('should handle execution after shutdown', async () => {
-      await agent.initialize();
-      await agent.execute('test');
-      await agent.shutdown();
-      
-      await expect(agent.execute('test after shutdown')).rejects.toThrow(
-        'Agent must be initialized before execution'
-      );
-    });
+### Custom Workflows
+Users can customize `.github/workflows/` to add project-specific automation
 
-    it('should maintain state consistency during errors', async () => {
-      await agent.initialize();
-      
-      try {
-        await agent.execute('');
-      } catch (error) {
-        // Agent should still be initialized even after execution error
-        expect(agent.isInitialized()).toBe(true);
-      }
-    });
-  });
+### Dashboard Customization
+The GitHub Pages dashboard at `/docs/dashboard/` can be customized
 
-  describe('Integration Tests', () => {
-    it('should complete full lifecycle successfully', async () => {
-      // Initialize
-      await agent.initialize();
-      expect(agent.isInitialized()).toBe(true);
-      
-      // Execute
-      const result = await agent.execute('integration test');
-      expect(result).toBe('Processed: integration test');
-      
-      // Update config
-      agent.updateConfig({ timeout: 10000 });
-      expect(agent.getConfig().timeout).toBe(10000);
-      
-      // Shutdown
-      await agent.shutdown();
-      expect(agent.isInitialized()).toBe(false);
-    });
+## Troubleshooting
 
-    it('should handle multiple agents independently', async () => {
-      const agent1 = new BaseAgent('Agent1', { timeout: 1000 });
-      const agent2 = new BaseAgent('Agent2', { timeout: 2000 });
-      
-      await agent1.initialize();
-      await agent2.initialize();
-      
-      const result1 = await agent1.execute('test1');
-      const result2 = await agent2.execute('test2');
-      
-      expect(result1).toBe('Processed: test1');
-      expect(result2).toBe('Processed: test2');
-      expect(agent1.getConfig().timeout).toBe(1000);
-      expect(agent2.getConfig().timeout).toBe(2000);
-      
-      await agent1.shutdown();
-      await agent2.shutdown();
-    });
-  });
+### Common Issues
+1. **"Agent already running"**: Check for lock files in `.miyabi/locks/`
+2. **"API rate limit exceeded"**: Wait or use authenticated requests
+3. **"Webhook not receiving events"**: Verify ngrok/localtunnel is running
+4. **"Unicode API error"**: Already fixed with `safeTruncate()` method
 
-  describe('Performance Tests', () => {
-    it('should handle rapid sequential executions', async () => {
-      await agent.initialize();
-      
-      const startTime = Date.now();
-      const promises = Array.from({ length: 10 }, (_, i) => 
-        agent.execute(`rapid test ${i}`)
-      );
-      
-      const results = await Promise.all(promises);
-      const endTime = Date.now();
-      
-      expect(results).toHaveLength(10);
-      expect(endTime - startTime).toBeLessThan(2000); // Should complete within 2 seconds
-      
-      results.forEach((result, i) => {
-        expect(result).toBe(`Processed: rapid test ${i}`);
-      });
-    });
-  });
-});
+### Debug Mode
+Set `MIYABI_LOG_LEVEL=debug` for verbose logging
 
-// Additional helper tests for type checking
-describe('Type Safety', () => {
-  it('should enforce correct config types', () => {
-    const validConfig: AgentConfig = {
-      timeout: 5000,
-      maxRetries: 3,
-      enableLogging: true
-    };
-    
-    const agent = new BaseAgent('TypeTest', validConfig);
-    expect(agent.getConfig()).toEqual(validConfig);
-  });
+## Version Information
 
-  it('should handle partial config types', () => {
-    const partialConfig: Partial<AgentConfig> = {
-      timeout: 8000
-    };
-    
-    const agent = new BaseAgent('PartialTest', partialConfig);
-    agent.updateConfig(partialConfig);
-    
-    expect(agent.getConfig().timeout).toBe(8000);
-  });
-});
+- **Current Version**: 0.8.2
+- **Claude Code Compatibility**: >=2.0.0
+- **Node Version**: >=18.0.0
+- **License**: Apache-2.0
+
+---
+
+**Remember**: Miyabi is designed for full autonomy. Guide users to set it up, then let the agents do the work. Your role is to facilitate, monitor, and explain - not to manually implement every step.
+
+🌸 **Miyabi** - Beauty in Autonomous Development

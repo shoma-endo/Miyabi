@@ -1,25 +1,29 @@
 # Memory Bank Template
 
 ## Active Story / Task
-- タイトル:
-- ステータス:
-- 期間:
+- タイトル: E2Eテスト基盤整備とドキュメント拡充
+- ステータス: コミット準備中
+- 期間: 2025-10-10
 
 ## Key Decisions
-- YYYY-MM-DD: （意思決定内容 / 影響範囲 / 関係者）
-- 
+- 2025-10-10: Playwright E2Eテスト12件全て成功（100%成功率） / テスト基盤 / Claude Code
+- 2025-10-10: E2Eデモガイド2種類作成（実行方法＋トレース活用） / ドキュメント拡充 / Claude Code
+- 2025-10-10: AGENTS.md を Repository Guidelines として簡潔化 / コントリビューター向け改善 / Claude Code
+- 2025-10-10: PRD とアーキテクチャがドラフト状態のため実装を保留 / 全体計画 / Codex
+- 2025-10-10: ユーザー要請に基づき AGENTS.md を貢献者ガイドとして更新 / ドキュメント管理 / Codex
 
 ## Pending Questions / Blockers
-- [ ] 課題1 — 担当:
-- [ ] 課題2 — 担当:
+- [ ] PRD およびアーキテクチャ承認の取得 — 担当: ユーザー
 
 ## Execution Notes
+- E2Eテスト: 12テスト全てPASS、総実行時間2.4秒、並列4ワーカー
+- 新規ドキュメント: E2E_DEMO_GUIDE.md, docs/E2E_TEST_DEMO.md
 - ログファイル: `.ai/logs/{date}-codex_prompt_chain.yaml`
-- 関連コミット/ブランチ:
-- 補足:
+- 関連コミット/ブランチ: 次回コミット予定「docs: Add Playwright E2E testing infrastructure and demo guides」
+- 補足: 2025-10-10に初期状況確認を実施。実装前の制約確認ログを作成。AGENTS.md を最新ガイドラインで更新済み。E2Eテスト基盤完成。
 
 ## Next Review Window
-- 予定日:
-- レビュー担当:
+- 予定日: コミット後、PRD承認待ち
+- レビュー担当: ユーザー
 
 > 更新時は最新項目を上に追記し、履歴を保持してください。

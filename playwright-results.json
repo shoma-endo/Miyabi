@@ -92,7 +92,7 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 27,
+                      "duration": 30,
                       "errors": [],
                       "stdout": [
                         {
@@ -101,9 +101,15 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-10T08:01:45.682Z",
+                      "startTime": "2025-10-10T08:05:09.146Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/shunsuke/Dev/Autonomous-Operations/test-results/miyabi-demo-Miyabi-CLI-Dem-c56b1-display-version-information-chromium/trace.zip"
+                        }
+                      ]
                     }
                   ],
                   "status": "expected"
@@ -135,9 +141,15 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-10T08:01:45.729Z",
+                      "startTime": "2025-10-10T08:05:09.200Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/shunsuke/Dev/Autonomous-Operations/test-results/miyabi-demo-Miyabi-CLI-Dem-26191-n-contains-correct-metadata-chromium/trace.zip"
+                        }
+                      ]
                     }
                   ],
                   "status": "expected"
@@ -164,14 +176,20 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 3,
+                      "duration": 2,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-10T08:01:45.738Z",
+                      "startTime": "2025-10-10T08:05:09.211Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/shunsuke/Dev/Autonomous-Operations/test-results/miyabi-demo-Miyabi-CLI-Dem-1981b-ify-CLI-scripts-are-defined-chromium/trace.zip"
+                        }
+                      ]
                     }
                   ],
                   "status": "expected"
@@ -198,14 +216,20 @@
                       "workerIndex": 1,
                       "parallelIndex": 1,
                       "status": "passed",
-                      "duration": 6,
+                      "duration": 4,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-10T08:01:45.688Z",
+                      "startTime": "2025-10-10T08:05:09.149Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/shunsuke/Dev/Autonomous-Operations/test-results/miyabi-demo-Miyabi-CLI-Dem-8b463-fy-TypeScript-configuration-chromium/trace.zip"
+                        }
+                      ]
                     }
                   ],
                   "status": "expected"
@@ -237,9 +261,15 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-10T08:01:45.712Z",
+                      "startTime": "2025-10-10T08:05:09.183Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/shunsuke/Dev/Autonomous-Operations/test-results/miyabi-demo-Miyabi-CLI-Dem-f2634--contains-required-sections-chromium/trace.zip"
+                        }
+                      ]
                     }
                   ],
                   "status": "expected"
@@ -271,9 +301,15 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-10T08:01:45.722Z",
+                      "startTime": "2025-10-10T08:05:09.196Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/shunsuke/Dev/Autonomous-Operations/test-results/miyabi-demo-Miyabi-CLI-Dem-b2f30--legal-documentation-exists-chromium/trace.zip"
+                        }
+                      ]
                     }
                   ],
                   "status": "expected"
@@ -305,9 +341,15 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-10T08:01:45.683Z",
+                      "startTime": "2025-10-10T08:05:09.149Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/shunsuke/Dev/Autonomous-Operations/test-results/miyabi-demo-Miyabi-CLI-Dem-24686-ord-community-documentation-chromium/trace.zip"
+                        }
+                      ]
                     }
                   ],
                   "status": "expected"
@@ -339,9 +381,15 @@
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-10T08:01:45.709Z",
+                      "startTime": "2025-10-10T08:05:09.182Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/shunsuke/Dev/Autonomous-Operations/test-results/miyabi-demo-Miyabi-CLI-Dem-44c98--agent-system-documentation-chromium/trace.zip"
+                        }
+                      ]
                     }
                   ],
                   "status": "expected"
@@ -368,14 +416,20 @@
                       "workerIndex": 2,
                       "parallelIndex": 2,
                       "status": "passed",
-                      "duration": 280,
+                      "duration": 677,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-10T08:01:45.716Z",
+                      "startTime": "2025-10-10T08:05:09.194Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/shunsuke/Dev/Autonomous-Operations/test-results/miyabi-demo-Miyabi-CLI-Dem-51452--verify-test-infrastructure-chromium/trace.zip"
+                        }
+                      ]
                     }
                   ],
                   "status": "expected"
@@ -402,7 +456,7 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 1377,
+                      "duration": 1862,
                       "errors": [],
                       "stdout": [
                         {
@@ -411,9 +465,15 @@
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-10T08:01:45.684Z",
+                      "startTime": "2025-10-10T08:05:09.149Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/shunsuke/Dev/Autonomous-Operations/test-results/miyabi-demo-Miyabi-CLI-Dem-2decf-rify-TypeScript-compilation-chromium/trace.zip"
+                        }
+                      ]
                     }
                   ],
                   "status": "expected"
@@ -440,14 +500,20 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 37,
+                      "duration": 32,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-10T08:01:47.082Z",
+                      "startTime": "2025-10-10T08:05:11.039Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/shunsuke/Dev/Autonomous-Operations/test-results/miyabi-demo-Miyabi-CLI-Demo-should-verify-project-structure-chromium/trace.zip"
+                        }
+                      ]
                     }
                   ],
                   "status": "expected"
@@ -474,14 +540,20 @@
                       "workerIndex": 3,
                       "parallelIndex": 3,
                       "status": "passed",
-                      "duration": 3,
+                      "duration": 2,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2025-10-10T08:01:47.124Z",
+                      "startTime": "2025-10-10T08:05:11.079Z",
                       "annotations": [],
-                      "attachments": []
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "/Users/shunsuke/Dev/Autonomous-Operations/test-results/miyabi-demo-Miyabi-CLI-Dem-bc32f--dependencies-are-installed-chromium/trace.zip"
+                        }
+                      ]
                     }
                   ],
                   "status": "expected"
@@ -499,8 +571,8 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2025-10-10T08:01:45.162Z",
-    "duration": 1978.742,
+    "startTime": "2025-10-10T08:05:08.743Z",
+    "duration": 2352.1989999999996,
     "expected": 12,
     "skipped": 0,
     "unexpected": 0,

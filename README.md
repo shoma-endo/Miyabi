@@ -2,6 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/miyabi.svg)](https://www.npmjs.com/package/miyabi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord&logoColor=white)](https://discord.gg/miyabi)
 
 **一つのコマンドで全てが完結する自律型開発フレームワーク**
 
@@ -413,8 +414,9 @@ Conventional Commits準拠:
 ## サポート
 
 ### コミュニティ
-- **GitHub Discussions**: https://github.com/ShunsukeHayashi/Miyabi/discussions
-- **Issues**: https://github.com/ShunsukeHayashi/Miyabi/issues
+- **Discord**: https://discord.gg/miyabi - リアルタイムチャット、質問、プロジェクト共有
+- **GitHub Discussions**: https://github.com/ShunsukeHayashi/Miyabi/discussions - 技術議論、提案
+- **Issues**: https://github.com/ShunsukeHayashi/Miyabi/issues - バグ報告、機能リクエスト
 
 ### スポンサー
 Miyabiの開発を支援してください:

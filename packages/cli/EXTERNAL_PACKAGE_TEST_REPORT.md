@@ -71,7 +71,7 @@ $ head -15 node_modules/miyabi/CLAUDE.md
 
 **Miyabi** - 一つのコマンドで全てが完結する自律型開発フレームワーク
 
-このCLIツールは、識学理論(Shikigaku Theory)とAI Agentsを組み合わせた自律型開発環境を提供します。
+このCLIツールは、組織設計原則(Organizational Design Principles)とAI Agentsを組み合わせた自律型開発環境を提供します。
 
 ## 主要コマンド
 
@@ -172,7 +172,7 @@ npm notice total files: 111
 - `node_modules/miyabi/CLAUDE.md` を参照することで、Miyabiプロジェクトの全体像を把握可能
 - Agent System（7種類）の詳細
 - GitHub OS Integration（15コンポーネント）の仕様
-- 識学理論5原則の実装方針
+- 組織設計原則5原則の実装方針
 
 ### カスタムスラッシュコマンド
 - `/setup-miyabi` - プログラミング初心者向け自動セットアップ

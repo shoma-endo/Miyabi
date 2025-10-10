@@ -4,7 +4,7 @@ Thank you for your interest in contributing to the Autonomous Operations platfor
 
 ## 🎯 Overview
 
-Autonomous Operations is a fully autonomous AI-driven development platform. We follow the Shikigaku (識学) theory principles for clear responsibility, hierarchy, and data-driven decision making.
+Autonomous Operations is a fully autonomous AI-driven development platform. We follow the Organizational (組織設計) theory principles for clear responsibility, hierarchy, and data-driven decision making.
 
 ## 📋 Table of Contents
 
@@ -21,7 +21,7 @@ Autonomous Operations is a fully autonomous AI-driven development platform. We f
 - Be respectful and inclusive
 - Focus on constructive feedback
 - Follow objective, data-driven discussions
-- Respect the Shikigaku principles (no emotional judgment)
+- Respect the Organizational principles (no emotional judgment)
 
 ## 🚀 Getting Started
 
@@ -526,7 +526,7 @@ What other approaches were considered?
 - [docs/AGENT_OPERATIONS_MANUAL.md](docs/AGENT_OPERATIONS_MANUAL.md) - Complete agent guide
 - [docs/AUTONOMOUS_WORKFLOW_INTEGRATION.md](docs/AUTONOMOUS_WORKFLOW_INTEGRATION.md) - Workflow integration
 - [docs/REPOSITORY_OVERVIEW.md](docs/REPOSITORY_OVERVIEW.md) - Architecture overview
-- [Shikigaku Theory](https://en.wikipedia.org/wiki/Shikigaku) - Management philosophy
+- [Organizational Design Principles](https://en.wikipedia.org/wiki/Organizational) - Management philosophy
 
 ## 💡 Tips
 

@@ -42,7 +42,7 @@ miyabi__init({ projectName: "quick-setup", skipInstall: true })
 - .gitignore (Node.js用) 追加
 - LICENSE (MIT) 追加
 
-### 3. 識学理論53ラベル体系
+### 3. 組織設計原則53ラベル体系
 以下のラベルカテゴリを自動作成:
 
 | カテゴリ | ラベル数 | 例 |
@@ -141,7 +141,7 @@ $ npx miyabi init my-awesome-app
 
 ✅ リポジトリ作成完了
 
-🏷️  識学ラベル体系セットアップ中...
+🏷️  組織設計ラベル体系セットアップ中...
    作成: 53ラベル
 
 ✅ ラベルセットアップ完了

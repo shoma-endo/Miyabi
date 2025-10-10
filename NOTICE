@@ -69,12 +69,18 @@ Example attribution:
 
 THEORETICAL FOUNDATION
 
-This project is inspired by Shikigaku Theory (識学理論), a management and
-organizational design philosophy developed by Shikigaku Inc.
+This project is inspired by organizational management theory and hierarchical
+system design principles commonly used in modern software architecture and
+autonomous systems.
 
-The implementation of hierarchical agent systems and responsibility allocation
-draws inspiration from these principles, though this software is an independent
-work and not affiliated with or endorsed by Shikigaku Inc.
+The implementation follows well-established patterns for:
+- Clear responsibility allocation
+- Delegation of authority in autonomous agents
+- Hierarchical coordination structures
+- Result-based evaluation systems
+- Elimination of ambiguity through structured workflows
+
+These are general organizational design principles applied to software systems.
 
 ================================================================================
 

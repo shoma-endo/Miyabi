@@ -15,7 +15,7 @@
 3. [Agent階層構造](#3-agent階層構造)
 4. [自律型ワークフロー](#4-自律型ワークフロー)
 5. [並行実行システム](#5-並行実行システム)
-6. [識学理論5原則の実装](#6-識学理論5原則の実装)
+6. [組織設計原則5原則の実装](#6-組織設計原則5原則の実装)
 7. [運用プロトコル](#7-運用プロトコル)
 8. [実行コマンド](#8-実行コマンド)
 9. [トラブルシューティング](#9-トラブルシューティング)
@@ -30,7 +30,7 @@
 本マニュアルは、**人間の手が極力介入しない自律型オペレーション**を実現するためのAgent運用ガイドです。以下の原則に基づいています:
 
 - **完全自動化**: Issue作成 → タスク分解 → コード実装 → テスト → PR作成までの全自動化
-- **識学理論準拠**: 責任・権限・階層・結果の明確化による組織的自動化
+- **組織設計原則準拠**: 責任・権限・階層・結果の明確化による組織的自動化
 - **並行実行**: 複数Agentの同時実行とバッティング回避
 - **ログ駆動開発(LDD)**: すべての作業を構造化ログとして記録
 
@@ -281,7 +281,7 @@ export class IssueAgent extends BaseAgent {
     // 1. Issue種別判定（feature/bug/refactor/docs）
     // 2. Severity評価（Sev.1-5）
     // 3. 影響度評価（Critical/High/Medium/Low）
-    // 4. Label自動付与（識学理論体系）
+    // 4. Label自動付与（組織設計原則体系）
     // 5. 担当者割り当て（CODEOWNERS参照）
 
     return {
@@ -295,7 +295,7 @@ export class IssueAgent extends BaseAgent {
 }
 ```
 
-**Label体系（識学理論）**:
+**Label体系（組織設計原則）**:
 
 | カテゴリ | Label例 | 意味 |
 |---------|---------|------|
@@ -783,7 +783,7 @@ conflict_avoidance:
 
 ---
 
-## 6. 識学理論5原則の実装
+## 6. 組織設計原則5原則の実装
 
 ### 6.1 原則1: 責任と権限の明確化
 
@@ -1333,7 +1333,7 @@ export class LarkSync {
 - `/Users/shunsuke/Dev/Autonomous-Operations/docs/AUTONOMOUS_WORKFLOW_INTEGRATION.md`
 
 ### 関連仕様
-- 識学理論5原則: [CLAUDE.md L543-557]
+- 組織設計原則5原則: [CLAUDE.md L543-557]
 - Label体系: `.github/labels.yml` (65個)
 - GitHub Actions: `.github/workflows/agentic-system.yml`
 

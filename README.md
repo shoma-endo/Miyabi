@@ -83,7 +83,7 @@ AIエージェントが自動で:
 
 ### 🔄 完全自動ワークフロー
 - Issue作成からPR作成まで全自動
-- 識学理論に基づく53ラベル体系
+- 構造化された53ラベル体系
 - GitHub Projects V2自動連携
 - リアルタイム進捗トラッキング
 - 並列実行で高速処理（72%効率化）
@@ -272,15 +272,15 @@ export MIYABI_PARALLEL_AGENTS=3
 
 ## アーキテクチャ
 
-### 識学理論（Shikigaku Theory）5原則
+### 組織設計原則（Organizational Design Principles）
 
-Miyabiは株式会社識学の理論に基づいた自律型組織設計:
+Miyabiは明確な組織理論の5原則に基づいた自律型システム設計:
 
-1. **責任の明確化** - 各AgentがIssueに対する責任を負う
-2. **権限の委譲** - Agentは自律的に判断・実行可能
-3. **階層の設計** - CoordinatorAgent → 各専門Agent
-4. **結果の評価** - 品質スコア、カバレッジ、実行時間で評価
-5. **曖昧性の排除** - DAGによる依存関係明示、状態ラベルで進捗可視化
+1. **責任の明確化（Clear Accountability）** - 各AgentがIssueに対する責任を負う
+2. **権限の委譲（Delegation of Authority）** - Agentは自律的に判断・実行可能
+3. **階層の設計（Hierarchical Structure）** - CoordinatorAgent → 各専門Agent
+4. **結果の評価（Result-Based Evaluation）** - 品質スコア、カバレッジ、実行時間で評価
+5. **曖昧性の排除（Elimination of Ambiguity）** - DAGによる依存関係明示、状態ラベルで進捗可視化
 
 ### パフォーマンス指標
 
@@ -442,7 +442,7 @@ Copyright (c) 2025 Shunsuke Hayashi
 ## 謝辞
 
 - **Claude AI (Anthropic)** - AIペアプログラミング
-- **識学理論** - 組織設計の理論的基盤
+- **組織マネジメント理論** - 階層的Agent設計の理論的基盤
 - **オープンソースコミュニティ** - 全ての依存パッケージ
 
 ---
@@ -494,7 +494,7 @@ Miyabi is a complete autonomous AI development operations platform built on the 
 
 🔄 **Fully Automated Workflow**
 - Fully automated from issue creation to PR creation
-- 53-label system based on Shikigaku Theory
+- Structured 53-label system based on organizational principles
 - Auto-integration with GitHub Projects V2
 - Real-time progress tracking
 - High-speed processing with parallel execution (72% efficiency improvement)
@@ -614,7 +614,7 @@ This software is provided under the Apache 2.0 License with trademark and patent
 ### Acknowledgments
 
 - **Claude AI (Anthropic)** - AI pair programming
-- **Shikigaku Theory** - Theoretical foundation for organizational design
+- **Organizational Management Theory** - Theoretical foundation for hierarchical agent design
 - **Open Source Community** - All dependency packages
 
 ---

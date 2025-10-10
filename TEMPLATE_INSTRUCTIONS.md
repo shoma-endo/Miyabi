@@ -16,7 +16,7 @@ Autonomous Operationsは、**Claude Codeを使用して人間とAutonomous Agent
 - ✅ **Claude Code最適化** (カスタムコマンド、hooks、Agent定義)
 - ✅ **Log-Driven Development (LDD)** 準拠のロギング
 - ✅ **品質スコアリングシステム** (80点基準)
-- ✅ **識学理論に基づくエスカレーションフロー**
+- ✅ **組織設計原則に基づくエスカレーションフロー**
 
 ---
 

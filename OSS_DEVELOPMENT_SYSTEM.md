@@ -142,7 +142,7 @@ thresholds:
 
 #### 1.3 Automated Prioritization Protocol
 
-**識学Label体系との統合**:
+**組織設計Label体系との統合**:
 
 ```typescript
 // scripts/auto-prioritize.ts

@@ -4,7 +4,7 @@
 
 **Miyabi** - 一つのコマンドで全てが完結する自律型開発フレームワーク
 
-このCLIツールは、識学理論(Shikigaku Theory)とAI Agentsを組み合わせた自律型開発環境を提供します。
+このCLIツールは、組織設計原則(Organizational Design Principles)とAI Agentsを組み合わせた自律型開発環境を提供します。
 
 ## 主要コマンド
 
@@ -34,7 +34,7 @@ npx miyabi setup
    - Critical Path特定と並列実行最適化
 
 2. **IssueAgent** - Issue分析・ラベル管理
-   - 識学理論65ラベル体系による自動分類
+   - 組織設計原則65ラベル体系による自動分類
    - タスク複雑度推定（小/中/大/特大）
 
 3. **CodeGenAgent** - AI駆動コード生成
@@ -71,7 +71,7 @@ Miyabiは「GitHubをOSとして扱う」設計思想のもと、以下を統合
 8. **Releases** - 自動リリース
 9. **Environments** - dev/staging/prod環境管理
 10. **Security** - Dependabot, CodeQL
-11. **Labels** - 識学理論65ラベル体系
+11. **Labels** - 組織設計原則65ラベル体系
 12. **Milestones** - 進捗管理
 13. **Pull Requests** - コードレビュー
 14. **Wiki** - ドキュメント自動生成
@@ -156,9 +156,9 @@ npm run test:coverage       # カバレッジレポート
 
 目標: 80%+ カバレッジ（statements, lines）
 
-## 識学理論（Shikigaku Theory）5原則
+## 組織設計原則（Organizational Design Principles）5原則
 
-Miyabiは株式会社識学の理論に基づいた自律型組織設計を実装：
+Miyabiは株式会社組織設計の理論に基づいた自律型組織設計を実装：
 
 1. **責任の明確化** - 各AgentがIssueに対する責任を負う
 2. **権限の委譲** - Agentは自律的に判断・実行可能

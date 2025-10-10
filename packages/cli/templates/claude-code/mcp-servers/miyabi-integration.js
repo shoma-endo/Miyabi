@@ -131,7 +131,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: 'miyabi__install',
-        description: '既存プロジェクトにMiyabiをインストールします。.claude/、GitHub Actions、識学ラベル体系を追加します。',
+        description: '既存プロジェクトにMiyabiをインストールします。.claude/、GitHub Actions、組織設計ラベル体系を追加します。',
         inputSchema: {
           type: 'object',
           properties: {

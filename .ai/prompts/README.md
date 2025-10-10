@@ -106,7 +106,7 @@ tags: ["codegen", "typescript", "agent"]
 ## 変更履歴
 
 ### v1.1.0 (2025-10-09)
-- 識学理論5原則に基づく評価基準追加
+- 組織設計原則5原則に基づく評価基準追加
 - エスカレーション条件明確化
 
 ### v1.0.0 (2025-10-08)
@@ -174,7 +174,7 @@ find .ai/prompts/agents -name "*.md" | grep codegen
 grep -r "tags:.*typescript" .ai/prompts
 
 # 全文検索
-grep -r "識学理論" .ai/prompts
+grep -r "組織設計原則" .ai/prompts
 ```
 
 ### プロンプト統計
@@ -196,7 +196,7 @@ ls -1 .ai/prompts/agents/*.md | wc -l
 
 - **Agent運用マニュアル**: `docs/AGENT_OPERATIONS_MANUAL.md`
 - **ワークフロー統合ガイド**: `docs/AUTONOMOUS_WORKFLOW_INTEGRATION.md`
-- **識学理論5原則**: `CLAUDE.md` L76-82
+- **組織設計原則5原則**: `CLAUDE.md` L76-82
 - **LDD仕様**: `.ai/logs/`
 
 ---

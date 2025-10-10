@@ -283,4 +283,4 @@ levels:
 
 ---
 
-🤖 識学理論: 責任と権限の明確化 - CoordinatorAgentは統括権限を持ち、タスク分解・Agent割り当てを完全自律で決定
+🤖 組織設計原則: 責任と権限の明確化 - CoordinatorAgentは統括権限を持ち、タスク分解・Agent割り当てを完全自律で決定

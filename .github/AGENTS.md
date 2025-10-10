@@ -127,7 +127,7 @@ jobs:
 
 ### Automated Prioritization Protocol (自動優先度付けプロトコル)
 
-**識学Label体系との統合**。
+**組織設計Label体系との統合**。
 
 #### ルール
 

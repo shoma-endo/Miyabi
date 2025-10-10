@@ -19,7 +19,7 @@ Based on comprehensive analysis of ai-course-content-generator documentation, we
 - **Zero static secrets** (dynamic secrets with 15min TTL)
 
 ### Integration Goals
-1. **Phase 1 (4 weeks)**: Foundation — 6-Agent System + Shikigaku Framework
+1. **Phase 1 (4 weeks)**: Foundation — 6-Agent System + Organizational Framework
 2. **Phase 2 (3 weeks)**: Parallel Execution — DAG Resolution + Task Tool Optimization
 3. **Phase 3 (4 weeks)**: Knowledge Persistence — Vector DB + Postmortem System
 4. **Phase 4 (3 weeks)**: Security & Monitoring — Vault Integration + SLA Tracking
@@ -97,14 +97,14 @@ export class CodeGenAgent extends BaseAgent {
 
 ---
 
-### 1.2 Shikigaku Theory Operations Framework ⭐⭐⭐
+### 1.2 Organizational Design Principles Operations Framework ⭐⭐⭐
 
 **Source:** `OPERATION_LOGIC_PLAN.md`
 **Priority:** Critical
 **Effort:** 24 hours
 **Status:** Not Started
 
-**What is Shikigaku (識学)?**
+**What is Organizational (組織設計)?**
 Japanese management theory emphasizing **clear responsibility** and **zero ambiguity**.
 
 **5 Core Principles:**
@@ -117,7 +117,7 @@ Japanese management theory emphasizing **clear responsibility** and **zero ambig
 **Implementation in Agentic OS:**
 
 ```typescript
-// agents/governance/ShikigakuFramework.ts
+// agents/governance/OrganizationalFramework.ts
 export interface AgentResponsibility {
   agentType: AgentType;
   scope: string;              // What this agent is responsible for
@@ -1211,7 +1211,7 @@ resource "vault_jwt_auth_backend_role" "github_actions" {
 **Status:** Not Started
 
 **Concept:**
-Automated collection of Shikigaku KPIs for each agent. Real-time dashboard. Alerts on SLA breaches.
+Automated collection of Organizational KPIs for each agent. Real-time dashboard. Alerts on SLA breaches.
 
 **KPIs to Track:**
 
@@ -1595,7 +1595,7 @@ export function setupMetricsEndpoint(app: Express) {
 
 ```
 Month 1 (Week 1-4): Phase 1 — Foundation
-├─ Week 1: Six-Agent System (24h) + Shikigaku Framework (24h)
+├─ Week 1: Six-Agent System (24h) + Organizational Framework (24h)
 ├─ Week 2: Economic Circuit Breaker (16h) + Agent Security Rules (16h)
 ├─ Week 3: Enhanced Logging System (16h) + Documentation
 └─ Week 4: Testing + Bug Fixes
@@ -1626,7 +1626,7 @@ Month 4 (Week 12-14): Phase 4 — Security & Monitoring
 
 ### Phase 1 Success Criteria
 - ✅ All 6 agent types implemented and tested
-- ✅ Shikigaku KPIs defined and measurable
+- ✅ Organizational KPIs defined and measurable
 - ✅ Economic circuit breaker functional
 - ✅ Security rules enforced
 - ✅ Structured logging operational

@@ -31,6 +31,7 @@ lerna-debug.log*
 # AI Agent outputs
 .ai/logs/*.md
 .ai/parallel-reports/*.json
+.ai/parallel-reports/escalations/
 .ai/issues/*.json
 
 # Keep directory structure but ignore contents
@@ -84,3 +85,9 @@ test-results/
 # Generated documentation
 docs/GENERATED_CODE.md
 .task-locks-test/
+
+# Generated files and temporary directories
+generated/
+claude-plugin/
+.gitignore.update
+package.json.migration-update.js

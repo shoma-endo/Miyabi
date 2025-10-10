@@ -1,0 +1,43 @@
+{
+  "name": "Miyabi Official Plugins",
+  "description": "完全自律型AI開発プラットフォーム Miyabi の公式プラグインコレクション",
+  "owner": {
+    "name": "Shunsuke Hayashi",
+    "url": "https://github.com/ShunsukeHayashi"
+  },
+  "repository": "https://github.com/ShunsukeHayashi/Miyabi",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "miyabi",
+      "source": ".",
+      "version": "0.8.1",
+      "description": "Miyabi 完全パッケージ - 7つのAgent、7つのコマンド、4つのHook",
+      "category": "automation",
+      "tags": ["ai", "agents", "devops", "automation", "github"],
+      "author": "Shunsuke Hayashi",
+      "license": "Apache-2.0",
+      "featured": true
+    },
+    {
+      "name": "miyabi-core",
+      "source": "./plugins/miyabi-core",
+      "version": "0.8.1",
+      "description": "Miyabi コア機能のみ（init, status, auto）",
+      "category": "productivity",
+      "tags": ["ai", "automation"],
+      "author": "Shunsuke Hayashi",
+      "license": "Apache-2.0"
+    },
+    {
+      "name": "miyabi-agents-only",
+      "source": "./plugins/miyabi-agents",
+      "version": "0.8.1",
+      "description": "Miyabi の7つのAgent定義のみ",
+      "category": "agents",
+      "tags": ["ai", "agents"],
+      "author": "Shunsuke Hayashi",
+      "license": "Apache-2.0"
+    }
+  ]
+}

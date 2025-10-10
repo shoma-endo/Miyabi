@@ -91,3 +91,8 @@ generated/
 claude-plugin/
 .gitignore.update
 package.json.migration-update.js
+
+# Work-in-progress/experimental code (not integrated)
+src/
+__tests__/
+commands/

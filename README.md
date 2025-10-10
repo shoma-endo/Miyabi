@@ -15,7 +15,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Powered by Claude](https://img.shields.io/badge/Powered%20by-Claude%20AI-5865F2?style=for-the-badge&logo=anthropic&logoColor=white)](https://www.anthropic.com/)
 
-[🇯🇵 日本語](#日本語) • [🇬🇧 English](#english) • [📖 Docs](https://github.com/ShunsukeHayashi/Miyabi/wiki) • [💬 Discord](https://discord.gg/miyabi)
+[🇯🇵 日本語](#日本語) • [🇬🇧 English](#english) • [📖 Docs](https://github.com/ShunsukeHayashi/Miyabi/wiki) • [💬 Discord](https://discord.gg/miyabi) • [🦀 Codex (Subproject)](https://github.com/ShunsukeHayashi/codex)
 
 </div>
 

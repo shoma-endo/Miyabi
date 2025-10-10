@@ -57,7 +57,7 @@
 
 #### IssueAgent (`agents/issue/issue-agent.ts`)
 - ✅ GitHub Issue automatic analysis
-- ✅ Shikigaku 65-label system
+- ✅ Organizational 65-label system
 - ✅ Severity/impact determination
 - ✅ Agent assignment logic
 - ✅ Dependency extraction

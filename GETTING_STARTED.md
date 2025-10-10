@@ -100,9 +100,9 @@ graph LR
     J --> K[DeploymentAgent<br/>自動デプロイ]
 ```
 
-### 1.4 識学理論5原則
+### 1.4 組織設計原則5原則
 
-Autonomous Operationsは、識学理論5原則に基づいて設計されています：
+Autonomous Operationsは、組織設計原則5原則に基づいて設計されています：
 
 | 原則 | 実装内容 | 効果 |
 |------|---------|------|
@@ -1676,7 +1676,7 @@ cat docs/AGENT_OPERATIONS_MANUAL.md | less
 
 - Agent階層構造の詳細
 - 並行実行システムの仕組み
-- 識学理論5原則の実装
+- 組織設計原則5原則の実装
 - LDD（ログ駆動開発）プロトコル
 - エスカレーションフロー
 - KPI定義と測定方法

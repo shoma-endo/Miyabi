@@ -229,25 +229,92 @@ The SDK expects the following environment variables:
 
 ## Error Handling
 
-The SDK provides automatic retry logic for transient errors:
+### Automatic Retry Logic
+
+The SDK provides automatic retry logic with exponential backoff for all GitHub API calls. This is implemented using the `p-retry` library and is enabled by default.
+
+#### Default Retry Configuration
 
 ```typescript
-// Automatic retry with exponential backoff
-const result = await agent.retry(
+{
+  retries: 3,              // Number of retry attempts
+  minTimeout: 1000,        // Minimum delay (1s)
+  maxTimeout: 4000,        // Maximum delay (4s)
+  factor: 2,               // Exponential backoff factor
+  randomize: true,         // Add jitter to prevent thundering herd
+}
+```
+
+#### Retryable Errors
+
+The following errors are automatically retried:
+- **Rate Limiting**: HTTP 429 (Too Many Requests)
+- **Server Errors**: HTTP 500, 502, 503, 504
+- **Network Errors**: ECONNRESET, ETIMEDOUT, ENOTFOUND
+- **GitHub Abuse Detection**: Secondary rate limits
+
+#### Non-Retryable Errors
+
+These errors fail immediately without retrying:
+- **Authentication**: HTTP 401 (Unauthorized)
+- **Permissions**: HTTP 403 (Forbidden)
+- **Not Found**: HTTP 404
+- **Validation**: HTTP 400, 422 (Bad Request, Unprocessable Entity)
+
+#### Using withRetry
+
+All GitHub API calls in `GitHubClient`, `IssueAgent`, `PRAgent`, and `GitHubProjectsClient` automatically use retry logic. You can also use it directly:
+
+```typescript
+import { withRetry } from '@miyabi/agent-sdk';
+
+// Use with default configuration
+const data = await withRetry(async () => {
+  return await someApiCall();
+});
+
+// Use with custom configuration
+const data = await withRetry(
   async () => {
-    // Operation that might fail
     return await someApiCall();
   },
-  3, // max attempts
-  1000 // initial delay in ms
+  {
+    retries: 5,           // Override: 5 retries instead of 3
+    minTimeout: 2000,     // Override: Start with 2s delay
+    onFailedAttempt: (context) => {
+      console.log(`Retry attempt ${context.attemptNumber} failed`);
+      console.log(`${context.retriesLeft} retries remaining`);
+    },
+  }
 );
 ```
 
-Retryable errors include:
-- Network errors (ECONNREFUSED, ETIMEDOUT)
-- Rate limiting (HTTP 429)
-- Server errors (HTTP 502, 503)
-- Timeout errors
+#### Custom Retry Configuration for GitHubClient
+
+```typescript
+import { GitHubClient } from '@miyabi/agent-sdk';
+
+const client = new GitHubClient({
+  owner: 'your-org',
+  repo: 'your-repo',
+  token: process.env.GITHUB_TOKEN,
+  retryConfig: {
+    retries: 5,
+    minTimeout: 2000,
+    maxTimeout: 10000,
+  },
+});
+```
+
+#### Retry Metrics
+
+When retries occur, you'll see log messages like:
+
+```
+[GitHubRetry] Attempt 1/4 failed: rate limit exceeded
+[GitHubRetry] Retrying... (3 attempts left)
+[GitHubRetry] Attempt 2/4 succeeded
+```
 
 ## Examples
 

@@ -269,7 +269,7 @@ jobs:
   auto-label:
     - name: AI Label Prediction
       # Anthropic API で Issue内容分析
-      # 適切なLabel自動付与 (65-label識学体系)
+      # 適切なLabel自動付与 (65-label組織設計体系)
 ```
 
 #### Public Dashboard
@@ -500,14 +500,14 @@ iPhoneの革命は技術ではなく、**UX**だった:
    - `.github/GITHUB_AGENTIC_SYSTEM.md` (760行)
    - `.github/AGENTIC_ORCHESTRATION_SYSTEM.md` (565行)
    - `.github/workflows/economic-circuit-breaker.yml` (204行)
-   - 識学理論5原則の実践例
+   - 組織設計原則5原則の実践例
 
 2. **AGENTS.md (ユーザー提供)**
    - v5.0 "The Final Mandate" - 憲法としての設計
    - Three Laws of Autonomy
    - 全てのプロトコル定義
 
-3. **識学理論 (Shikigaku)**
+3. **組織設計原則 (Organizational)**
    - 責任と権限の明確化
    - 結果重視
    - 階層の明確化

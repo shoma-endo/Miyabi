@@ -151,7 +151,7 @@ Specialist Layer
 - [x] Agent hierarchy structure design
 - [x] Parallel execution system
 - [x] LDD operational protocol
-- [x] Shikigaku theory label system (65 labels)
+- [x] Organizational theory label system (65 labels)
 - [x] Integrated documentation
 
 **Deliverables**:
@@ -216,7 +216,7 @@ Specialist Layer
 | Test Suite | <30s | ✅ |
 | Parallel Tasks | 2-5 concurrent | ✅ |
 
-### Shikigaku Compliance
+### Organizational Compliance
 
 | Principle | Implementation | Status |
 |-----------|----------------|--------|
@@ -341,7 +341,7 @@ npm run agents:parallel:exec -- --issue 123
 ### Development Practices
 
 1. **Log-Driven Development (LDD)**: Structured, reproducible development process
-2. **Shikigaku Theory**: Clear hierarchy, responsibility, and objective judgment
+2. **Organizational Design Principles**: Clear hierarchy, responsibility, and objective judgment
 3. **Quality Gates**: 80-point threshold for code acceptance
 4. **Automatic Escalation**: Human intervention only when needed
 5. **Documentation-First**: 44 markdown files, comprehensive guides
@@ -380,7 +380,7 @@ npm run agents:parallel:exec -- --issue 123
 ### Core Development
 
 - **AI Operations Lead**: Autonomous Agent System
-- **Architecture**: Shikigaku theory integration
+- **Architecture**: Organizational theory integration
 - **Implementation**: Claude Code (Anthropic)
 
 ### Attribution
@@ -409,7 +409,7 @@ Based on patterns from [ai-course-content-generator-v.0.0.1](https://github.com/
 - [Anthropic Documentation](https://docs.anthropic.com/)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Conventional Commits](https://www.conventionalcommits.org/)
-- [Shikigaku Theory](https://en.wikipedia.org/wiki/Shikigaku)
+- [Organizational Design Principles](https://en.wikipedia.org/wiki/Organizational)
 
 ---
 

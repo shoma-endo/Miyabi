@@ -92,9 +92,9 @@ emergency_actions:
 
 **`.github/workflows/economic-circuit-breaker.yml`** が1時間ごとに監視し、150%到達時に自動停止。
 
-### 3. Agent Hierarchy — 識学理論
+### 3. Agent Hierarchy — 組織設計原則
 
-**識学理論 (Shikigaku)** の5原則に基づく階層構造:
+**組織設計原則 (Organizational)** の5原則に基づく階層構造:
 
 ```
 🔴 Coordinator Layer (決裁権限)
@@ -420,7 +420,7 @@ Final Project:
 
 このプロジェクトは、以下の思想と技術の融合です:
 
-- **識学理論 (Shikigaku)**: 責任と権限の明確化
+- **組織設計原則 (Organizational)**: 責任と権限の明確化
 - **Anthropic Claude**: 人間と協調できるAI
 - **GitHub**: 世界最大の開発者プラットフォーム
 - **Open Source Philosophy**: 知識の共有と民主化

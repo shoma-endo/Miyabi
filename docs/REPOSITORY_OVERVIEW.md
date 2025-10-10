@@ -8,7 +8,7 @@
 
 ## 概要
 
-Autonomous-Operationsは、**人間介入を最小化する完全自律型AI開発オペレーション**を実現するための統合プラットフォームです。識学理論5原則に基づき、Agent階層・並行実行・ログ駆動開発を統合した次世代開発環境を提供します。
+Autonomous-Operationsは、**人間介入を最小化する完全自律型AI開発オペレーション**を実現するための統合プラットフォームです。組織設計原則5原則に基づき、Agent階層・並行実行・ログ駆動開発を統合した次世代開発環境を提供します。
 
 ### ビジョン
 
@@ -18,7 +18,7 @@ vision:
   principles:
     - 人間は戦略決定・承認のみ
     - Agentが計画・実装・検証・デプロイを自動化
-    - 識学理論による明確な責任・権限・階層
+    - 組織設計原則による明確な責任・権限・階層
     - データ駆動の客観的判断
 ```
 
@@ -58,7 +58,7 @@ Autonomous-Operations/
 └── .github/                      # GitHub設定
     ├── workflows/
     │   └── autonomous-agent.yml  # 自動化ワークフロー
-    ├── labels.yml                # 識学理論Label体系
+    ├── labels.yml                # 組織設計原則Label体系
     └── CODEOWNERS                # 責任者自動割り当て
 ```
 
@@ -157,7 +157,7 @@ ldd_components:
     retention: 90日
 ```
 
-### 4. 識学理論5原則
+### 4. 組織設計原則5原則
 
 | 原則 | 実装内容 | KPI | 目標 |
 |------|---------|-----|------|
@@ -282,7 +282,7 @@ npm run agents:pr -- --issue=270
 project_stats:
   total_lines: 679,000+
   agents_implemented: 7種類（2,600行）
-  labels_created: 65個（識学理論体系）
+  labels_created: 65個（組織設計原則体系）
   kpi_achievement:
     ai_task_success_rate: 97%
     average_execution_time: 3分
@@ -303,7 +303,7 @@ project_stats:
    - タスクログ自動保存
    - エラーハンドリング・リトライ
 
-3. **識学理論Label体系** (`.github/labels.yml` 65個)
+3. **組織設計原則Label体系** (`.github/labels.yml` 65個)
    - 責任者（5種類）
    - Severity（5段階: Sev.1-5）
    - 影響度（4段階）
@@ -528,7 +528,7 @@ npm run dashboard:generate
 - [x] Agent階層構造設計
 - [x] 並行実行システム実装
 - [x] LDD運用プロトコル確立
-- [x] 識学理論Label体系統合
+- [x] 組織設計原則Label体系統合
 
 ### Phase 2: Agent実装 (進行中)
 
@@ -584,7 +584,7 @@ npm run dashboard:generate
 
 ### 外部リソース
 
-- [識学理論公式](https://www.shikigaku.jp/)
+- [組織設計原則公式](https://www.shikigaku.jp/)
 - [Claude Code Documentation](https://docs.claude.com/en/docs/claude-code)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 

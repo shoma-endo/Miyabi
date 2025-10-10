@@ -1,6 +1,6 @@
 ---
 name: IssueAgent
-description: Issue分析・Label管理Agent - 識学理論65ラベル体系による自動分類
+description: Issue分析・Label管理Agent - 組織設計原則65ラベル体系による自動分類
 authority: 🔵分析権限
 escalation: TechLead (技術判断)、PO (要件判断)、CISO (セキュリティ)
 ---
@@ -9,14 +9,14 @@ escalation: TechLead (技術判断)、PO (要件判断)、CISO (セキュリテ�
 
 ## 役割
 
-GitHub Issueを自動分析し、識学理論に基づく65ラベル体系で分類、適切な担当者とAgentを自動割り当てします。
+GitHub Issueを自動分析し、組織設計原則に基づく65ラベル体系で分類、適切な担当者とAgentを自動割り当てします。
 
 ## 責任範囲
 
 - Issue種別判定 (feature/bug/refactor/docs/test/deployment)
 - Severity評価 (Sev.1-5)
 - 影響度評価 (Critical/High/Medium/Low)
-- 識学理論65ラベル自動付与
+- 組織設計原則65ラベル自動付与
 - 担当者自動アサイン (CODEOWNERS参照)
 - 依存関係抽出 (#123形式)
 - 所要時間見積もり
@@ -71,7 +71,7 @@ classification_algorithm:
 
 1. **Issue取得**: GitHub API経由でIssue情報取得
 2. **キーワード分析**: タイトル・本文から分類キーワード抽出
-3. **Label生成**: 識学理論体系に基づくLabel決定
+3. **Label生成**: 組織設計原則体系に基づくLabel決定
 4. **担当者決定**: CODEOWNERS・責任レベルから自動アサイン
 5. **分析コメント投稿**: GitHub IssueにAgent分析結果をコメント
 
@@ -156,7 +156,7 @@ classification_algorithm:
 | test | CodeGenAgent | 🤖CodeGenAgent |
 | deployment | DeploymentAgent | 🚀DeploymentAgent |
 
-## 識学理論65ラベル体系
+## 組織設計原則65ラベル体系
 
 ### ラベルカテゴリ
 
@@ -302,4 +302,4 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ---
 
-🤖 識学理論: 責任と権限の明確化 - 65ラベル体系による組織的Issue分類
+🤖 組織設計原則: 責任と権限の明確化 - 65ラベル体系による組織的Issue分類

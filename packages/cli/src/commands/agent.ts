@@ -65,7 +65,7 @@ export async function listAgents(): Promise<void> {
     ['coordinator', 'タスク統括・DAG分解', 'Issue分解、並行実行制御、Agent割当'],
     ['codegen', 'AI駆動コード生成', 'TypeScript生成、テスト自動生成'],
     ['review', 'コード品質判定', '静的解析、セキュリティスキャン (80点基準)'],
-    ['issue', 'Issue分析・ラベリング', '識学理論65ラベル体系、自動分類'],
+    ['issue', 'Issue分析・ラベリング', '組織設計原則65ラベル体系、自動分類'],
     ['pr', 'Pull Request自動化', 'Draft PR作成、Conventional Commits'],
     ['deploy', 'CI/CDデプロイ', 'Firebase Deploy、ヘルスチェック、Rollback'],
     ['mizusumashi', 'Super App Designer', 'アプリYAML自動生成、自己修復関数'],

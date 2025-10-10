@@ -292,7 +292,9 @@ program
   .command('install')
   .description('既存プロジェクトにMiyabiを追加')
   .option('--dry-run', 'ドライラン（実際には変更しない）')
-  .action(async (options: { dryRun?: boolean }) => {
+  .option('--non-interactive', '非対話モード（プロンプトをスキップ）')
+  .option('-y, --yes', 'すべてのプロンプトを自動承認')
+  .action(async (options: { dryRun?: boolean; nonInteractive?: boolean; yes?: boolean }) => {
     await install(options);
   });
 
@@ -325,8 +327,12 @@ program
 program
   .command('setup')
   .description('セットアップガイドを表示')
-  .action(async () => {
-    await setup({});
+  .option('--non-interactive', '非対話モード（プロンプトをスキップ）')
+  .option('-y, --yes', 'すべてのプロンプトを自動承認')
+  .option('--skip-token', 'トークンセットアップをスキップ')
+  .option('--skip-config', '設定をスキップ')
+  .action(async (options: { nonInteractive?: boolean; yes?: boolean; skipToken?: boolean; skipConfig?: boolean }) => {
+    await setup(options);
   });
 
 // Register agent command

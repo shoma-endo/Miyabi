@@ -341,4 +341,4 @@ Resource not accessible by integration (403)
 
 ---
 
-🤖 識学理論: 誤解・錯覚の排除 - Conventional Commits準拠による標準化されたPR運用
+🤖 組織設計原則: 誤解・錯覚の排除 - Conventional Commits準拠による標準化されたPR運用

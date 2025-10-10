@@ -22,9 +22,13 @@ import { deployClaudeConfig, verifyClaudeConfig } from '../setup/claude-config.j
 // @ts-ignore - inquirer is an ESM-only module
 import inquirer from 'inquirer';
 import { linkToProject } from '../setup/projects.js';
+import { confirmOrDefault } from '../utils/interactive.js';
+import { getGitHubToken, isGhCliAuthenticated } from '../utils/github-token.js';
 
 export interface InstallOptions {
   dryRun?: boolean;
+  nonInteractive?: boolean;
+  yes?: boolean;
 }
 
 export async function install(options: InstallOptions = {}) {
@@ -70,27 +74,41 @@ export async function install(options: InstallOptions = {}) {
   }
 
   // Confirm installation
-  const { confirmed } = await inquirer.prompt([
+  const confirmed = await confirmOrDefault(
+    'Install Agentic OS into this project?',
+    true,
     {
-      type: 'confirm',
-      name: 'confirmed',
-      message: 'Install Agentic OS into this project?',
-      default: true,
-    },
-  ]);
+      nonInteractive: options.nonInteractive,
+      yes: options.yes,
+    }
+  );
 
   if (!confirmed) {
     console.log(chalk.yellow('\n⏸️  Installation cancelled\n'));
     return;
   }
 
-  // Step 2: GitHub OAuth
+  // Show auto-approve message in non-interactive mode
+  if (options.nonInteractive || options.yes) {
+    console.log(chalk.gray('  [Non-interactive mode: auto-approved]\n'));
+  }
+
+  // Step 2: GitHub Authentication
   spinner.start('Authenticating with GitHub...');
   let token: string;
 
   try {
-    token = await githubOAuth();
-    spinner.succeed(chalk.green('GitHub authentication complete'));
+    // Try automatic token retrieval first (gh CLI or env var)
+    try {
+      token = await getGitHubToken();
+      const source = isGhCliAuthenticated() ? 'gh CLI' : 'environment variable';
+      spinner.succeed(chalk.green(`GitHub authentication complete (via ${source})`));
+    } catch (tokenError) {
+      // Fall back to OAuth if automatic retrieval fails
+      spinner.text = 'No GitHub token found, starting OAuth flow...';
+      token = await githubOAuth();
+      spinner.succeed(chalk.green('GitHub authentication complete (via OAuth)'));
+    }
   } catch (error) {
     spinner.fail(chalk.red('GitHub認証に失敗しました'));
     if (error instanceof Error) {

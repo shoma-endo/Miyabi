@@ -371,7 +371,16 @@ npx miyabi install
 
 # Dry run (preview changes)
 npx miyabi install --dry-run
+
+# Non-interactive mode (CI/CD, Termux, SSH)
+npx miyabi install --non-interactive
+npx miyabi install --yes
 ```
+
+**Options:**
+- `--dry-run` - Preview changes without making them
+- `--non-interactive` - Skip all prompts (auto-approve)
+- `-y, --yes` - Auto-approve all prompts
 
 **What it does:**
 - ✅ Analyzes existing structure
@@ -495,8 +504,21 @@ cli:
 Interactive setup guide for beginners.
 
 ```bash
+# Interactive mode
 npx miyabi setup
+
+# Non-interactive mode
+npx miyabi setup --non-interactive
+
+# Skip specific steps
+npx miyabi setup --skip-token --skip-config
 ```
+
+**Options:**
+- `--non-interactive` - Skip all prompts
+- `-y, --yes` - Auto-approve all prompts
+- `--skip-token` - Skip token setup
+- `--skip-config` - Skip configuration
 
 **Guides through:**
 1. ✅ Environment check (Node.js, Git, gh CLI)
@@ -576,6 +598,35 @@ export ANTHROPIC_API_KEY=sk-ant-xxx
 
 # Webhook secret (for webhook router)
 export WEBHOOK_SECRET=your_secret
+
+# Non-interactive mode (auto-approve prompts)
+export MIYABI_AUTO_APPROVE=true
+
+# CI environment (auto-detected)
+export CI=true
+```
+
+**Non-Interactive Mode:**
+
+Miyabi automatically detects non-interactive environments:
+- `MIYABI_AUTO_APPROVE=true` - Explicit non-interactive mode
+- `CI=true` - CI/CD environments (GitHub Actions, GitLab CI, etc.)
+- Non-TTY terminals - Pipes, redirects, SSH without PTY
+
+**Usage in CI/CD:**
+```yaml
+# GitHub Actions example
+- name: Install Miyabi
+  run: npx miyabi install --non-interactive
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+**Usage in Termux (Android):**
+```bash
+# Termux automatically uses non-interactive mode
+export MIYABI_AUTO_APPROVE=true
+npx miyabi install
 ```
 
 ---
@@ -696,9 +747,22 @@ npx miyabi@latest
 npm install -g miyabi
 ```
 
-### GitHub Personal Access Token
+### GitHub Authentication
 
-Create at: https://github.com/settings/tokens/new
+**Recommended: Use GitHub CLI (automatic)**
+
+```bash
+# Authenticate once
+gh auth login
+
+# Miyabi will automatically use gh CLI token
+npx miyabi install
+# ✅ GitHub authentication complete (via gh CLI)
+```
+
+**Alternative: Personal Access Token**
+
+If you prefer manual token management, create at: https://github.com/settings/tokens/new
 
 **Required scopes:**
 - ✅ `repo` - Full repository access
@@ -707,6 +771,12 @@ Create at: https://github.com/settings/tokens/new
 - ✅ `delete:packages` - Manage packages
 - ✅ `admin:org` - Organization management (for org repos)
 - ✅ `project` - Projects V2 access
+
+**Token Priority:**
+1. **gh CLI** (automatic, recommended) - `gh auth login`
+2. **GITHUB_TOKEN** environment variable - `export GITHUB_TOKEN=ghp_xxx`
+3. **.env file** - Local development
+4. **OAuth flow** - Interactive fallback
 
 ---
 
@@ -727,22 +797,37 @@ Create at: https://github.com/settings/tokens/new
 
 **Solution:**
 
-Option 1: Environment variable
+**Option 1: Use GitHub CLI (Recommended)**
+```bash
+# One-time setup
+gh auth login
+
+# Miyabi will automatically use gh CLI token
+npx miyabi install
+```
+
+**Option 2: Environment variable**
 ```bash
 export GITHUB_TOKEN=ghp_your_token_here
 npx miyabi init my-project
 ```
 
-Option 2: Config file
+**Option 3: .env file (local development only)**
+```bash
+echo "GITHUB_TOKEN=ghp_your_token" > .env
+npx miyabi install
+```
+
+⚠️ **Security Warning:**
+- Only use `.env` for local development
+- Always add `.env` to `.gitignore`
+- Never commit `.env` to version control
+- See [SECURITY.md](../../SECURITY.md) for best practices
+
+**Option 4: Config file**
 ```bash
 npx miyabi config
 # → Follow prompts to set token
-```
-
-Option 3: Manual config
-```bash
-echo "github:
-  token: ghp_your_token" > .miyabi.yml
 ```
 </details>
 

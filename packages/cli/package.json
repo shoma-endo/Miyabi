@@ -1,7 +1,7 @@
 {
   "name": "miyabi",
-  "version": "0.6.0",
-  "description": "Miyabi - 一つのコマンドで全てが完結する自律型開発フレームワーク",
+  "version": "0.8.1",
+  "description": "Miyabi - Beauty in Autonomous Development. Complete autonomous AI development platform with GitHub OS integration.",
   "type": "module",
   "bin": {
     "miyabi": "./dist/index.js"
@@ -43,10 +43,10 @@
     "anthropic"
   ],
   "author": "Shunsuke Hayashi <supernovasyun@gmail.com>",
-  "license": "MIT",
-  "homepage": "https://github.com/ShunsukeHayashi/Autonomous-Operations#readme",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/ShunsukeHayashi/Miyabi#readme",
   "bugs": {
-    "url": "https://github.com/ShunsukeHayashi/Autonomous-Operations/issues"
+    "url": "https://github.com/ShunsukeHayashi/Miyabi/issues"
   },
   "dependencies": {
     "@octokit/rest": "^20.0.0",
@@ -73,7 +73,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ShunsukeHayashi/Autonomous-Operations.git",
+    "url": "https://github.com/ShunsukeHayashi/Miyabi.git",
     "directory": "packages/cli"
   },
   "publishConfig": {

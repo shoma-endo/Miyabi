@@ -337,7 +337,7 @@ npm run agents:parallel:exec -- --issues=5 --phase=B,E --concurrency=2
 
 ---
 
-## Identification (識学理論)
+## Identification (組織設計原則)
 
 **責任と権限の明確化**:
 
@@ -359,4 +359,4 @@ npm run agents:parallel:exec -- --issues=5 --phase=B,E --concurrency=2
 
 ---
 
-**CoordinatorAgent - 識学理論に基づく統括権限を保持**
+**CoordinatorAgent - 組織設計原則に基づく統括権限を保持**

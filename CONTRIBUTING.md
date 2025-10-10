@@ -4,11 +4,12 @@ Thank you for your interest in contributing to the Autonomous Operations platfor
 
 ## 🎯 Overview
 
-Autonomous Operations is a fully autonomous AI-driven development platform. We follow the Shikigaku (識学) theory principles for clear responsibility, hierarchy, and data-driven decision making.
+Autonomous Operations is a fully autonomous AI-driven development platform. We follow the Organizational (組織設計) theory principles for clear responsibility, hierarchy, and data-driven decision making.
 
 ## 📋 Table of Contents
 
 - [Code of Conduct](#code-of-conduct)
+- [Contributor License Agreement (CLA)](#-contributor-license-agreement-cla)
 - [Getting Started](#getting-started)
 - [Development Workflow](#development-workflow)
 - [Agent Development](#agent-development)
@@ -21,7 +22,49 @@ Autonomous Operations is a fully autonomous AI-driven development platform. We f
 - Be respectful and inclusive
 - Focus on constructive feedback
 - Follow objective, data-driven discussions
-- Respect the Shikigaku principles (no emotional judgment)
+- Respect the Organizational principles (no emotional judgment)
+
+## 📝 Contributor License Agreement (CLA)
+
+By submitting a pull request to this project, you agree to the following terms:
+
+### 1. License Grant
+
+You grant Shunsuke Hayashi and all users of Miyabi a perpetual, worldwide, non-exclusive, royalty-free license to:
+- Use, reproduce, and distribute your contributions
+- Create derivative works based on your contributions
+- Sublicense your contributions under Apache License 2.0
+
+### 2. Patent License
+
+If your contribution includes any patents, you grant a patent license to:
+- Make, use, sell, and distribute the work embodying your contribution
+- This license applies only to patent claims you can license
+
+### 3. Your Certifications
+
+By submitting a contribution, you certify that:
+
+- ✅ You have the right to submit the work under Apache 2.0
+- ✅ Your contribution is your original creation or you have permission to submit it
+- ✅ You understand this is a voluntary contribution
+- ✅ Your contribution does not violate any third-party rights
+
+### 4. No Warranty
+
+Your contributions are provided "AS IS" without warranties of any kind.
+
+### 5. Employer Rights
+
+If your employer has rights to intellectual property you create, you have:
+- Permission to make the contribution on behalf of your employer, OR
+- Your employer has waived such rights for this contribution
+
+---
+
+**By creating a pull request, you acknowledge that you have read and agree to these terms.**
+
+For questions about the CLA, please open an issue or contact the maintainers via GitHub.
 
 ## 🚀 Getting Started
 
@@ -526,7 +569,7 @@ What other approaches were considered?
 - [docs/AGENT_OPERATIONS_MANUAL.md](docs/AGENT_OPERATIONS_MANUAL.md) - Complete agent guide
 - [docs/AUTONOMOUS_WORKFLOW_INTEGRATION.md](docs/AUTONOMOUS_WORKFLOW_INTEGRATION.md) - Workflow integration
 - [docs/REPOSITORY_OVERVIEW.md](docs/REPOSITORY_OVERVIEW.md) - Architecture overview
-- [Shikigaku Theory](https://en.wikipedia.org/wiki/Shikigaku) - Management philosophy
+- [Organizational Design Principles](https://en.wikipedia.org/wiki/Organizational) - Management philosophy
 
 ## 💡 Tips
 

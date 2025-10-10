@@ -7,6 +7,127 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2025-10-10
+
+### Changed
+
+**License Update (Breaking Change)**
+- ⚠️ **License changed from MIT to Apache License 2.0**
+- Added trademark protection for "Miyabi" brand
+- Added patent protection for innovations
+- Added NOTICE file with attribution requirements
+- Modified versions must clearly indicate changes
+- Stronger protection for original author's rights
+- **Migration Note**: Existing users under MIT license can continue under MIT, but new versions use Apache 2.0
+
+**Documentation Improvements**
+- README.md now bilingual (Japanese + English)
+- Added English version section with complete feature documentation
+- Updated all license references to Apache-2.0
+- Fixed broken documentation links (removed 3 non-existent files)
+- Corrected template paths (.github/ instead of templates/)
+- Added author contact information (X/Twitter, Patreon, GitHub Sponsors)
+- Version information updated to v0.8.0
+- Repository URL corrected to `ShunsukeHayashi/Autonomous-Operations`
+
+### Added
+
+**Non-Interactive Mode Support (#43 P0)**
+- `--non-interactive` flag for CI/CD and Termux environments
+- `--yes` / `-y` flag for quick approval
+- `MIYABI_AUTO_APPROVE` environment variable support
+- Automatic detection of CI environments (`CI=true`)
+- Automatic detection of non-TTY terminals (pipes, redirects, SSH)
+- `install` and `setup` commands now support non-interactive mode
+
+**GitHub CLI Auto-Integration (#43 P1)**
+- Automatic token retrieval from `gh auth token`
+- Token priority: gh CLI → GITHUB_TOKEN → .env file → OAuth
+- No manual `GITHUB_TOKEN` setup required if gh CLI is authenticated
+- `isGhCliAuthenticated()` helper function
+- Enhanced error messages with clear authentication instructions
+
+**New Utilities**
+- `src/utils/interactive.ts` - Non-interactive mode detection and helpers
+  - `isNonInteractive()` - Detect non-interactive environments
+  - `promptOrDefault()` - Prompt wrapper with fallback
+  - `confirmOrDefault()` - Confirmation with default value
+- `src/utils/github-token.ts` - GitHub token management
+  - `getGitHubToken()` - Async token retrieval with fallback
+  - `getGitHubTokenSync()` - Sync version
+  - `isGhCliAuthenticated()` - Check gh CLI status
+  - `isValidTokenFormat()` - Token validation
+  - Automatic `.env` file reading
+
+### Changed
+- `install` command now tries automatic token retrieval before OAuth
+- `setup` command fully supports non-interactive mode
+- Authentication flow enhanced with multiple fallback options
+- CLI flags added to command help output
+
+### Documentation
+- README updated with non-interactive mode examples
+- GitHub CLI authentication guide added
+- CI/CD usage examples (GitHub Actions, Termux)
+- Token priority explanation
+- Troubleshooting section enhanced
+
+### Technical Improvements
+- TypeScript strict mode compliance maintained
+- All builds passing successfully
+- Enhanced user experience for CI/CD environments
+- Better error messages with actionable instructions
+
+## [0.7.0] - 2025-10-10
+
+### Added
+
+**Miyabi CLI Integration with Claude Code**
+- `miyabi-auto` slash command - Autonomous Water Spider mode from Claude Code
+- `miyabi-todos` slash command - TODO comment detection and Issue creation
+- `miyabi-agent` slash command - Direct agent execution
+- `miyabi-init` slash command - Project initialization wizard
+- `miyabi-status` slash command - Real-time system status monitoring
+
+**MCP Server Integration**
+- `miyabi-integration.js` - Model Context Protocol server for Miyabi coordination
+- Seamless integration with Claude Code MCP architecture
+- Enhanced context sharing between agents and Claude Code
+- `.claude/` directory templates with all integrations pre-configured
+
+**Claude Code Templates**
+- Complete `.claude/` configuration templates
+- 7 agent definitions (CoordinatorAgent, CodeGenAgent, ReviewAgent, IssueAgent, PRAgent, DeploymentAgent, Mizusumashi)
+- 8 slash commands ready to use
+- 4 MCP servers (miyabi-integration, github-enhanced, ide-integration, project-context)
+- Updated README with Miyabi integration guide
+
+**GitHub API Retry Logic (#41)**
+- Exponential backoff retry mechanism for all GitHub API calls
+- Automatic retry on transient failures (rate limits, 5xx errors, network timeouts)
+- Configurable retry parameters (default: 3 retries, 1s-4s backoff)
+- Smart error classification (retryable vs non-retryable)
+- Implemented across all critical endpoints:
+  - IssueAgent: `issues.get`, `issues.addLabels`, `issues.addAssignees`, `issues.createComment`
+  - PRAgent: `pulls.create`, `issues.addLabels`, `pulls.requestReviewers`
+  - GitHubProjectsClient: GraphQL queries/mutations, rate limit checks
+  - SDK GitHubClient: All fetch-based API calls
+- Comprehensive unit tests (42 test cases, 100% pass rate)
+- Exponential backoff with randomized jitter to prevent thundering herd
+
+### Changed
+- Enhanced `auto.ts` command with improved parallel processing support
+- Updated package templates to include Claude Code integration
+- Improved documentation with Miyabi + Claude Code usage examples
+
+### Technical Improvements
+- `p-retry` library integration for robust retry logic
+- `withRetry` wrapper function for consistent API resilience
+- `shouldRetry` error classification for intelligent retry decisions
+- Performance impact: <5% overhead on successful requests
+- Retry success rate: >90% within 3 attempts for transient errors
+- MCP protocol implementation for agent coordination
+
 ## [0.6.0] - 2025-10-09
 
 ### Added

@@ -32,7 +32,7 @@ agent_hierarchy:
     - PO: P0緊急・Critical影響度対応
 ```
 
-### 1.2 識学理論5原則の実装
+### 1.2 組織設計原則5原則の実装
 
 | 原則 | 実装内容 | KPI | 達成率 |
 |------|---------|-----|-------|
@@ -136,7 +136,7 @@ planning_phase:
   2_agent_assignment:
     - Issue内容からAgent種別自動判定
     - Priority/Severity評価
-    - Label体系適用（識学理論ベース）
+    - Label体系適用（組織設計原則ベース）
 
   3_resource_allocation:
     - 並行度算出: --concurrency=N
@@ -342,7 +342,7 @@ export class LarkBaseSync {
   async generateDashboard(): Promise<string>;
 }
 
-// 識学理論Label体系同期
+// 組織設計原則Label体系同期
 export const SHIKIGAKU_LABELS = {
   responsibility: [
     "👤担当-開発者",
@@ -399,7 +399,7 @@ context_extraction:
 - [x] 並行実行システム (`scripts/parallel-executor.ts`)
 - [x] Task tool統合 (`scripts/task-wrapper.ts`)
 - [x] Agent階層構造 (`agents/`)
-- [x] 識学理論Label体系 (`.github/labels.yml`)
+- [x] 組織設計原則Label体系 (`.github/labels.yml`)
 
 ### 未完了・検討事項
 - [ ] Lark Base自動同期
@@ -591,7 +591,7 @@ npm run agents:parallel:exec -- --issues=300 --ignore-deps
 - `/Users/shunsuke/Dev/Autonomous-Operations/docs/`
 
 ### 関連仕様
-- 識学理論5原則: CLAUDE.md L543-557
+- 組織設計原則5原則: CLAUDE.md L543-557
 - Label体系: .github/labels.yml (65個)
 - GitHub Actions: .github/workflows/agentic-system.yml
 

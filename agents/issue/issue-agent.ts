@@ -6,7 +6,7 @@
  * - Determine issue type (feature/bug/refactor/docs/test)
  * - Assess Severity (Sev.1-5)
  * - Assess Impact (Critical/High/Medium/Low)
- * - Apply Shikigaku (識学) theory label system (65 labels)
+ * - Apply Organizational (組織設計) theory label system (65 labels)
  * - Assign appropriate team members (via CODEOWNERS)
  * - Extract task dependencies
  *
@@ -63,7 +63,7 @@ export class IssueAgent extends BaseAgent {
       // 2. Analyze Issue content
       const analysis = await this.analyzeIssue(issue);
 
-      // 3. Apply Shikigaku labels
+      // 3. Apply Organizational labels
       await this.applyLabels(issueNumber, analysis.labels);
 
       // 4. Assign team members
@@ -277,7 +277,7 @@ export class IssueAgent extends BaseAgent {
     // Estimate duration
     analysis.estimatedDuration = this.estimateDuration(issue, analysis.type);
 
-    // Build Shikigaku label set
+    // Build Organizational label set
     analysis.labels = this.buildLabelSet(analysis);
 
     // Determine assignees from CODEOWNERS or responsibility
@@ -451,11 +451,11 @@ export class IssueAgent extends BaseAgent {
   }
 
   // ============================================================================
-  // Shikigaku Label System (識学理論65ラベル体系)
+  // Organizational Label System (組織設計原則65ラベル体系)
   // ============================================================================
 
   /**
-   * Build complete label set based on Shikigaku theory
+   * Build complete label set based on Organizational theory
    */
   private buildLabelSet(analysis: IssueAnalysis): string[] {
     const labels: string[] = [];

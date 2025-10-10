@@ -1,0 +1,94 @@
+Miyabi - Autonomous Development Framework
+Copyright 2025 Shunsuke Hayashi
+
+This product includes software developed by Shunsuke Hayashi.
+
+Original Author: Shunsuke Hayashi (@ShunsukeHayashi)
+Project Website: https://github.com/ShunsukeHayashi/Miyabi
+X (Twitter): @The_AGI_WAY
+
+================================================================================
+
+This software is built on top of the following open source projects:
+
+- Anthropic Claude AI SDK
+  Copyright (c) Anthropic, PBC
+  License: MIT
+  https://github.com/anthropics/anthropic-sdk-typescript
+
+- Octokit (GitHub REST API)
+  Copyright (c) 2012 Cloud9 IDE, Inc. (Mike de Boer)
+  License: MIT
+  https://github.com/octokit/rest.js
+
+- Chalk (Terminal string styling)
+  Copyright (c) Sindre Sorhus
+  License: MIT
+  https://github.com/chalk/chalk
+
+- Ora (Terminal spinners)
+  Copyright (c) Sindre Sorhus
+  License: MIT
+  https://github.com/sindresorhus/ora
+
+- TypeScript
+  Copyright (c) Microsoft Corporation
+  License: Apache-2.0
+  https://github.com/microsoft/TypeScript
+
+- Vitest (Testing framework)
+  Copyright (c) 2021-Present Anthony Fu
+  License: MIT
+  https://github.com/vitest-dev/vitest
+
+================================================================================
+
+PRODUCT NAME AND TRADEMARK CLAIM
+
+"Miyabi" is a product name claimed by Shunsuke Hayashi.
+
+While not a registered trademark, the "Miyabi" name and associated branding
+are claimed under common law trademark rights. You may not use the "Miyabi"
+name or logo to promote derivative works, products, or services without prior
+written permission from the original author.
+
+================================================================================
+
+ATTRIBUTION REQUIREMENTS
+
+When distributing this software or derivative works, you must:
+
+1. Retain all copyright notices and attributions
+2. Include a copy of this NOTICE file
+3. Include a copy of the LICENSE file
+4. Clearly indicate any modifications made to the original work
+5. Provide attribution to the original author (Shunsuke Hayashi)
+
+Example attribution:
+"Based on Miyabi by Shunsuke Hayashi (https://github.com/ShunsukeHayashi/Miyabi)"
+
+================================================================================
+
+THEORETICAL FOUNDATION
+
+This project is inspired by organizational management theory and hierarchical
+system design principles commonly used in modern software architecture and
+autonomous systems.
+
+The implementation follows well-established patterns for:
+- Clear responsibility allocation
+- Delegation of authority in autonomous agents
+- Hierarchical coordination structures
+- Result-based evaluation systems
+- Elimination of ambiguity through structured workflows
+
+These are general organizational design principles applied to software systems.
+
+================================================================================
+
+For questions regarding licensing, trademark usage, or contributions:
+- GitHub: https://github.com/ShunsukeHayashi
+- X (Twitter): @The_AGI_WAY
+- Email: Contact via GitHub profile
+
+Last updated: 2025-10-10

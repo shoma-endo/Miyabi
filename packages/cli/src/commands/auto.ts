@@ -9,6 +9,9 @@ import chalk from 'chalk';
 import ora from 'ora';
 import { Command } from 'commander';
 import type { AgentType } from './agent.js';
+import { runAgent } from './agent.js';
+import { Octokit } from '@octokit/rest';
+import { execSync } from 'child_process';
 
 /**
  * Auto Mode設定
@@ -63,53 +66,156 @@ interface WaterSpiderState {
 }
 
 /**
+ * GitHubリポジトリ情報を取得
+ */
+function getGitHubRepo(): { owner: string; repo: string } | null {
+  try {
+    const remoteUrl = execSync('git remote get-url origin', {
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    }).trim();
+
+    const match = remoteUrl.match(/github\.com[:/](.+?)\/(.+?)(\.git)?$/);
+    if (match) {
+      return { owner: match[1], repo: match[2] };
+    }
+  } catch {
+    // Git repository not found
+  }
+
+  return null;
+}
+
+/**
  * システム状態を監視・分析
  */
 async function monitorAndAnalyze(options?: { scanTodos?: boolean }): Promise<Decision> {
-  // TODO: 実際のGitHub API呼び出しを実装
-  // - 未処理のIssue一覧取得
-  // - 進行中のPR状態確認
-  // - Label状態確認
-  // - 依存関係グラフ構築
-
   const decisions: Decision[] = [];
 
-  // TODOコメント監視 (オプション)
-  if (options?.scanTodos) {
-    // TODO: TODOスキャン機能統合
-    decisions.push({
-      shouldExecute: true,
-      agent: 'issue',
-      target: 'todos',
-      reason: 'TODOコメント検出、Issue化必要',
-      priority: 6,
-    });
+  // GitHub認証トークン取得
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) {
+    return {
+      shouldExecute: false,
+      reason: 'GITHUB_TOKENが設定されていません',
+      priority: 0,
+    };
   }
 
-  // 既存のモック判断ロジック
-  const mockDecisions: Decision[] = [
-    {
-      shouldExecute: true,
-      agent: 'issue',
-      target: '#123',
-      reason: '新規Issue未分析',
-      priority: 8,
-    },
-    {
-      shouldExecute: true,
-      agent: 'codegen',
-      target: '#124',
-      reason: 'Issue分析完了、実装待ち',
-      priority: 7,
-    },
-    {
+  // リポジトリ情報取得
+  const repoInfo = getGitHubRepo();
+  if (!repoInfo) {
+    return {
+      shouldExecute: false,
+      reason: 'Gitリポジトリが見つかりません',
+      priority: 0,
+    };
+  }
+
+  const { owner, repo } = repoInfo;
+  const octokit = new Octokit({ auth: token });
+
+  try {
+    // 未処理のIssue一覧取得
+    const { data: issues } = await octokit.issues.listForRepo({
+      owner,
+      repo,
+      state: 'open',
+      per_page: 50,
+    });
+
+    // 各Issueを分析して優先順位付け
+    for (const issue of issues) {
+      const labels = issue.labels.map((l) => (typeof l === 'string' ? l : l.name || ''));
+
+      // ブロック状態のIssueはスキップ
+      if (labels.some((l) => l.includes('blocked') || l.includes('paused'))) {
+        continue;
+      }
+
+      // 優先度を計算
+      let priority = 5; // デフォルト
+
+      // 緊急度ラベル
+      if (labels.some((l) => l.includes('P0') || l.includes('critical'))) {
+        priority += 5;
+      } else if (labels.some((l) => l.includes('P1') || l.includes('high'))) {
+        priority += 3;
+      }
+
+      // セキュリティ関連
+      if (labels.some((l) => l.includes('security') || l.includes('vulnerability'))) {
+        priority += 4;
+      }
+
+      // 規模（小さいほど優先）
+      if (labels.some((l) => l.includes('size:small') || l.includes('規模-小'))) {
+        priority += 2;
+      }
+
+      // 状態に応じたAgent判断
+      let agent: AgentType = 'issue';
+      let reason = '';
+
+      if (labels.some((l) => l.includes('pending') || !l.includes('state:'))) {
+        agent = 'issue';
+        reason = '新規Issue - 分析・ラベリングが必要';
+        priority += 2;
+      } else if (labels.some((l) => l.includes('analyzing'))) {
+        agent = 'codegen';
+        reason = 'Issue分析完了 - コード実装が必要';
+        priority += 1;
+      } else if (labels.some((l) => l.includes('implementing'))) {
+        agent = 'review';
+        reason = 'コード実装完了 - レビューが必要';
+        priority += 0;
+      } else if (labels.some((l) => l.includes('reviewing'))) {
+        agent = 'pr';
+        reason = 'レビュー完了 - PR作成が必要';
+        priority -= 1;
+      } else {
+        // すでに処理中または完了
+        continue;
+      }
+
+      decisions.push({
+        shouldExecute: true,
+        agent,
+        target: `#${issue.number}`,
+        reason: `${reason} - ${issue.title}`,
+        priority,
+      });
+    }
+
+    // TODOコメント監視 (オプション)
+    if (options?.scanTodos && decisions.length === 0) {
+      decisions.push({
+        shouldExecute: true,
+        agent: 'issue',
+        target: 'todos',
+        reason: 'TODOコメント検出、Issue化必要',
+        priority: 6,
+      });
+    }
+
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        shouldExecute: false,
+        reason: `GitHub API エラー: ${error.message}`,
+        priority: 0,
+      };
+    }
+  }
+
+  // 実行可能なタスクがない場合
+  if (decisions.length === 0) {
+    return {
       shouldExecute: false,
       reason: '実行可能なタスクなし',
       priority: 0,
-    },
-  ];
-
-  decisions.push(...mockDecisions);
+    };
+  }
 
   // 最高優先度の判断を返す
   return decisions.sort((a, b) => b.priority - a.priority)[0];
@@ -132,10 +238,30 @@ async function executeDecision(
     return true;
   }
 
-  // TODO: 実際のAgent実行
-  // await runAgent(decision.agent, { issue: decision.target });
+  try {
+    // 実際のAgent実行
+    const result = await runAgent(decision.agent, {
+      issue: decision.target,
+      dryRun: options.dryRun,
+      verbose: options.verbose,
+    });
 
-  return true;
+    if (result.status === 'success') {
+      console.log(chalk.green(`✅ ${decision.agent}Agent実行成功: ${decision.target}`));
+      if (options.verbose && result.details) {
+        console.log(chalk.gray(JSON.stringify(result.details, null, 2)));
+      }
+      return true;
+    } else {
+      console.log(chalk.yellow(`⚠️  ${decision.agent}Agent実行失敗: ${result.message}`));
+      return false;
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(chalk.red(`❌ Agent実行エラー: ${error.message}`));
+    }
+    return false;
+  }
 }
 
 /**

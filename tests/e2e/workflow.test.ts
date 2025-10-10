@@ -166,7 +166,8 @@ async function simulateAILabeling(issue: any): Promise<string[]> {
   // Type detection
   if (issue.body.toLowerCase().includes('bug') || issue.body.toLowerCase().includes('fix')) {
     labels.push('🐛 type:bug');
-  } else if (issue.body.toLowerCase().includes('add') || issue.body.toLowerCase().includes('new')) {
+  } else if (issue.body.toLowerCase().includes('add') || issue.body.toLowerCase().includes('new') ||
+             issue.title.toLowerCase().includes('add')) {
     labels.push('✨ type:feature');
   } else if (issue.body.toLowerCase().includes('document') || issue.body.toLowerCase().includes('docs')) {
     labels.push('📚 type:docs');

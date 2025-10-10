@@ -38,7 +38,7 @@
 ### 設定ファイル
 - `.miyabi.yml`: プロジェクト設定（GitHubトークンは環境変数推奨）
 - `.github/workflows/`: 自動化ワークフロー
-- `.github/labels.yml`: 識学理論65ラベル体系
+- `.github/labels.yml`: 構造化された53ラベル体系
 
 ### ドキュメント
 - `docs/AGENT_OPERATIONS_MANUAL.md`: Agent運用マニュアル
@@ -73,7 +73,7 @@
 - Dependabot有効
 - CodeQL有効
 
-## 識学理論5原則
+## 組織設計原則5原則
 
 1. **責任の明確化**: 各Agentの役割を明確に定義
 2. **権限の明確化**: Agent毎の実行権限を制限

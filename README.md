@@ -326,7 +326,7 @@ Miyabiは株式会社識学の理論に基づいた自律型組織設計:
 
 - **Current**: v0.8.0 (2025-10-09)
 - **npm**: https://www.npmjs.com/package/miyabi
-- **Repository**: https://github.com/ShunsukeHayashi/Autonomous-Operations
+- **Repository**: https://github.com/ShunsukeHayashi/Miyabi
 - **License**: Apache-2.0
 - **Author**: Shunsuke Hayashi ([@ShunsukeHayashi](https://github.com/ShunsukeHayashi))
 - **X (Twitter)**: [@The_AGI_WAY](https://x.com/The_AGI_WAY)
@@ -584,7 +584,7 @@ PR completes in 10-15 minutes. Just review and merge.
 
 - **Current**: v0.8.0 (2025-10-09)
 - **npm**: https://www.npmjs.com/package/miyabi
-- **Repository**: https://github.com/ShunsukeHayashi/Autonomous-Operations
+- **Repository**: https://github.com/ShunsukeHayashi/Miyabi
 - **License**: Apache-2.0
 - **Author**: Shunsuke Hayashi ([@ShunsukeHayashi](https://github.com/ShunsukeHayashi))
 - **X (Twitter)**: [@The_AGI_WAY](https://x.com/The_AGI_WAY)

@@ -230,6 +230,26 @@ Miyabiは[Claude Code](https://claude.ai/code)の公式Pluginとしても利用�
 
 **詳細**: [Claude Code Plugin統合ガイド](docs/CLAUDE_CODE_PLUGIN_INTEGRATION.md)
 
+#### 🪝 **Event Hooks (Plugin限定)**
+
+Claude Code Pluginとして使用すると、以下のイベントフックが自動実行されます：
+
+```bash
+pre-commit    # コミット前チェック
+post-commit   # コミット後通知
+pre-pr        # PR作成前チェック
+post-test     # テスト後カバレッジレポート
+```
+
+**Hooksの機能**:
+
+| Hook | タイミング | 実行内容 |
+|------|----------|---------|
+| `pre-commit` | コミット前 | ✅ Lint実行<br>✅ Type check<br>✅ テスト実行 |
+| `post-commit` | コミット後 | ✅ コミット情報表示<br>✅ メトリクス更新 |
+| `pre-pr` | PR作成前 | ✅ Rebase確認<br>✅ テスト実行<br>✅ カバレッジ確認<br>✅ Conventional Commits検証 |
+| `post-test` | テスト後 | ✅ カバレッジレポート生成<br>✅ HTMLレポート出力<br>✅ 結果アーカイブ |
+
 ---
 
 ## 💡 使い方
@@ -1099,6 +1119,26 @@ Available commands after installation:
 ```
 
 **Details**: [Claude Code Plugin Integration Guide](docs/CLAUDE_CODE_PLUGIN_INTEGRATION.md)
+
+#### 🪝 **Event Hooks (Plugin Only)**
+
+When used as a Claude Code Plugin, the following event hooks are automatically executed:
+
+```bash
+pre-commit    # Pre-commit checks
+post-commit   # Post-commit notifications
+pre-pr        # Pre-PR checks
+post-test     # Post-test coverage reports
+```
+
+**Hook Features**:
+
+| Hook | Timing | Actions |
+|------|--------|---------|
+| `pre-commit` | Before commit | ✅ Run linter<br>✅ Type check<br>✅ Run tests |
+| `post-commit` | After commit | ✅ Display commit info<br>✅ Update metrics |
+| `pre-pr` | Before PR creation | ✅ Check rebase status<br>✅ Run tests<br>✅ Check coverage<br>✅ Validate Conventional Commits |
+| `post-test` | After tests | ✅ Generate coverage report<br>✅ Output HTML report<br>✅ Archive results |
 
 ---
 

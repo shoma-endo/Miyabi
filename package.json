@@ -1,6 +1,6 @@
 {
   "name": "autonomous-operations",
-  "version": "0.6.0",
+  "version": "0.8.0",
   "description": "Complete autonomous AI development operations platform",
   "type": "module",
   "main": "index.js",
@@ -63,8 +63,8 @@
     "devops",
     "automation"
   ],
-  "author": "AI Operations Lead",
-  "license": "MIT",
+  "author": "Shunsuke Hayashi <https://github.com/ShunsukeHayashi>",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@anthropic-ai/claude-code": "^2.0.9",
     "@types/figlet": "^1.5.8",

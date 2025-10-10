@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.8.0] - 2025-10-10
 
+### Changed
+
+**License Update (Breaking Change)**
+- ⚠️ **License changed from MIT to Apache License 2.0**
+- Added trademark protection for "Miyabi" brand
+- Added patent protection for innovations
+- Added NOTICE file with attribution requirements
+- Modified versions must clearly indicate changes
+- Stronger protection for original author's rights
+- **Migration Note**: Existing users under MIT license can continue under MIT, but new versions use Apache 2.0
+
+**Documentation Improvements**
+- README.md now bilingual (Japanese + English)
+- Added English version section with complete feature documentation
+- Updated all license references to Apache-2.0
+- Fixed broken documentation links (removed 3 non-existent files)
+- Corrected template paths (.github/ instead of templates/)
+- Added author contact information (X/Twitter, Patreon, GitHub Sponsors)
+- Version information updated to v0.8.0
+- Repository URL corrected to `ShunsukeHayashi/Autonomous-Operations`
+
 ### Added
 
 **Non-Interactive Mode Support (#43 P0)**

@@ -1,7 +1,13 @@
 # Miyabi ✨
 
 [![npm version](https://badge.fury.io/js/miyabi.svg)](https://www.npmjs.com/package/miyabi)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+[English](#english) | [日本語](#日本語)
+
+---
+
+## 日本語
 
 **一つのコマンドで全てが完結する自律型開発フレームワーク**
 
@@ -286,10 +292,8 @@ Miyabiは株式会社識学の理論に基づいた自律型組織設計:
 ## ドキュメント
 
 ### 公式ドキュメント
-- [セットアップガイド](SETUP_GUIDE.md) - 詳細なインストール手順
-- [初心者向けガイド](FOR_NON_PROGRAMMERS.md) - プログラミング未経験者向け
-- [既存プロジェクト統合](INSTALL_TO_EXISTING_PROJECT.md) - 既存プロジェクトへの追加方法
 - [Termux環境ガイド](docs/TERMUX_GUIDE.md) - Android/Termux環境での使用方法
+- [セキュリティポリシー](SECURITY.md) - セキュリティ脆弱性の報告方法
 
 ### 開発者向け
 - [パブリッシュガイド](docs/PUBLICATION_GUIDE.md) - npm公開手順
@@ -297,8 +301,8 @@ Miyabiは株式会社識学の理論に基づいた自律型組織設計:
 - [CLAUDE.md](packages/cli/CLAUDE.md) - Claude Code統合
 
 ### API・仕様
-- [ラベル定義](templates/labels.yml) - 53ラベル体系
-- [ワークフロー](templates/workflows/) - 26 GitHub Actions
+- [ラベル定義](.github/labels.yml) - 53ラベル体系
+- [GitHub Actionsワークフロー](.github/workflows/) - 自動化ワークフロー
 
 ## 必要要件
 
@@ -320,16 +324,19 @@ Miyabiは株式会社識学の理論に基づいた自律型組織設計:
 
 ## バージョン情報
 
-- **Current**: v0.5.0 (2025-10-09)
+- **Current**: v0.8.0 (2025-10-09)
 - **npm**: https://www.npmjs.com/package/miyabi
-- **Repository**: https://github.com/ShunsukeHayashi/Miyabi
-- **License**: MIT
+- **Repository**: https://github.com/ShunsukeHayashi/Autonomous-Operations
+- **License**: Apache-2.0
 - **Author**: Shunsuke Hayashi ([@ShunsukeHayashi](https://github.com/ShunsukeHayashi))
+- **X (Twitter)**: [@The_AGI_WAY](https://x.com/The_AGI_WAY)
 
-### 最新の変更 (v0.5.0)
+### 最新の変更 (v0.8.0)
+- ✅ ライセンスをApache 2.0に変更（商標・特許保護強化）
+- ✅ NOTICEファイル追加（帰属表示・商標保護）
+- ✅ README英語版セクション追加
 - ✅ GitHubトークンセキュリティ強化（gh CLI優先）
 - ✅ Termux環境完全対応ガイド
-- ✅ セキュリティベストプラクティス文書化
 
 ## トラブルシューティング
 
@@ -419,12 +426,18 @@ Conventional Commits準拠:
 ### スポンサー
 Miyabiの開発を支援してください:
 - **GitHub Sponsors**: https://github.com/sponsors/ShunsukeHayashi
+- **Patreon**: https://www.patreon.com/ShunsukeHayashi
 
 ## ライセンス
 
-MIT License - 詳細は [LICENSE](LICENSE) を参照
+Apache License 2.0 - 詳細は [LICENSE](LICENSE) を参照
 
 Copyright (c) 2025 Shunsuke Hayashi
+
+このソフトウェアは商標保護と特許保護を含むApache 2.0ライセンスの下で提供されています。
+- 「Miyabi」は Shunsuke Hayashi の商標です
+- 改変版を配布する場合は、変更内容を明示する必要があります
+- 詳細は [NOTICE](NOTICE) ファイルをご覧ください
 
 ## 謝辞
 
@@ -435,6 +448,178 @@ Copyright (c) 2025 Shunsuke Hayashi
 ---
 
 **覚えるコマンドは一つだけ。**
+
+```bash
+npx miyabi
+```
+
+🌸 **Miyabi** - Beauty in Autonomous Development
+🤖 Powered by Claude AI
+
+---
+
+## English
+
+**An autonomous development framework where everything completes with one command**
+
+### Quick Start
+
+```bash
+npx miyabi
+```
+
+That's it. Everything runs automatically.
+
+### What is Miyabi?
+
+Miyabi is a complete autonomous AI development operations platform built on the "GitHub as OS" architecture. From issue creation to code implementation, PR creation, and deployment—everything is fully automated.
+
+### Key Features
+
+🎯 **Developer Experience**
+- **One Command**: Just remember `miyabi`
+- **Interactive Mode**: Guides you through setup with questions
+- **Fully Japanese UI**: All messages in Japanese (English support coming soon)
+- **Auto Setup**: Works right after `npm install`
+- **Environment Detection**: Auto-checks Node.js, Git, GITHUB_TOKEN
+
+🤖 **7 AI Autonomous Agents**
+1. **CoordinatorAgent** - Task orchestration & parallel execution control
+2. **IssueAgent** - Issue analysis & label management
+3. **CodeGenAgent** - AI-driven code generation
+4. **ReviewAgent** - Code quality assessment
+5. **PRAgent** - Automated Pull Request creation
+6. **DeploymentAgent** - CI/CD deployment automation
+7. **TestAgent** - Automated test execution
+
+🔄 **Fully Automated Workflow**
+- Fully automated from issue creation to PR creation
+- 53-label system based on Shikigaku Theory
+- Auto-integration with GitHub Projects V2
+- Real-time progress tracking
+- High-speed processing with parallel execution (72% efficiency improvement)
+
+📚 **Automatic Documentation Generation**
+- Auto-generated from TypeScript/JavaScript code
+- JSDoc/TSDoc support
+- Watch mode (auto-detects file changes)
+- Training materials generation (for AI learning)
+
+🔐 **Security**
+- CODEOWNERS auto-generation
+- Branch protection rules management
+- Secret scanning integration
+- Dependency vulnerability checking
+- SBOM generation (CycloneDX format)
+
+### Installation
+
+```bash
+# Run directly with npx (recommended)
+npx miyabi
+
+# Global installation
+npm install -g miyabi
+miyabi
+```
+
+### Usage
+
+**Step 1: Run the command**
+```bash
+npx miyabi
+```
+
+**Step 2: Select from menu**
+```
+✨ Miyabi
+
+Everything completes with one command
+
+? What would you like to do?
+  🆕 Create new project
+  📦 Add to existing project
+  📊 Check status
+  ❌ Exit
+```
+
+**Step 3: Just wait**
+
+AI agents automatically:
+- Analyze and label issues
+- Decompose into tasks
+- Implement code
+- Review code quality
+- Create PR
+
+PR completes in 10-15 minutes. Just review and merge.
+
+### Requirements
+
+**Basic Requirements**
+- **Node.js** >= 18.0.0 (recommended: v20 LTS)
+- **GitHub Account**
+- **git CLI** - Version control
+- **GitHub Personal Access Token** - API authentication
+
+**Optional**
+- **gh CLI** - GitHub CLI (recommended)
+- **Anthropic API Key** - Required for agent execution
+
+### Supported Environments
+- ✅ macOS (Intel / Apple Silicon)
+- ✅ Linux (Ubuntu, Debian, RHEL-based)
+- ✅ Windows (WSL2 recommended)
+- ⚠️ Termux (some features limited - interactive mode disabled)
+
+### Documentation
+
+- [Termux Guide](docs/TERMUX_GUIDE.md) - Usage in Android/Termux environment
+- [Security Policy](SECURITY.md) - Security vulnerability reporting
+- [Publication Guide](docs/PUBLICATION_GUIDE.md) - npm publishing process
+- [Agent SDK](packages/miyabi-agent-sdk/README.md) - Custom agent development
+- [Claude Code Integration](packages/cli/CLAUDE.md) - Claude Code setup
+
+### Version Information
+
+- **Current**: v0.8.0 (2025-10-09)
+- **npm**: https://www.npmjs.com/package/miyabi
+- **Repository**: https://github.com/ShunsukeHayashi/Autonomous-Operations
+- **License**: Apache-2.0
+- **Author**: Shunsuke Hayashi ([@ShunsukeHayashi](https://github.com/ShunsukeHayashi))
+- **X (Twitter)**: [@The_AGI_WAY](https://x.com/The_AGI_WAY)
+
+### Support
+
+**Community**
+- **GitHub Discussions**: https://github.com/ShunsukeHayashi/Miyabi/discussions
+- **Issues**: https://github.com/ShunsukeHayashi/Miyabi/issues
+
+**Sponsorship**
+Support Miyabi's development:
+- **GitHub Sponsors**: https://github.com/sponsors/ShunsukeHayashi
+- **Patreon**: https://www.patreon.com/ShunsukeHayashi
+
+### License
+
+Apache License 2.0 - See [LICENSE](LICENSE) for details
+
+Copyright (c) 2025 Shunsuke Hayashi
+
+This software is provided under the Apache 2.0 License with trademark and patent protection.
+- "Miyabi" is a trademark of Shunsuke Hayashi
+- Modified versions must clearly indicate changes
+- See [NOTICE](NOTICE) file for full attribution requirements
+
+### Acknowledgments
+
+- **Claude AI (Anthropic)** - AI pair programming
+- **Shikigaku Theory** - Theoretical foundation for organizational design
+- **Open Source Community** - All dependency packages
+
+---
+
+**Remember just one command.**
 
 ```bash
 npx miyabi

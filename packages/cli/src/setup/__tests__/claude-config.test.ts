@@ -29,7 +29,7 @@ import { Octokit } from '@octokit/rest';
 vi.mock('fs');
 vi.mock('path');
 vi.mock('url', () => ({
-  fileURLToPath: vi.fn((url: string) => '/mock/path/to/file.js'),
+  fileURLToPath: vi.fn((url: string) => '/mock/cli/src/setup/file.js'),
 }));
 
 // Mock Octokit
@@ -41,10 +41,43 @@ describe('claude-config', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Setup default path mocks
-    vi.mocked(path.join).mockImplementation((...args) => args.join('/'));
-    vi.mocked(path.dirname).mockReturnValue('/mock/path/to');
+    // Setup default path mocks that properly simulate path behavior
+    vi.mocked(path.join).mockImplementation((...args) => {
+      const joined = args.join('/').replace(/\/+/g, '/');
+      // Simulate path.join resolving .. sequences
+      const parts = joined.split('/');
+      const result: string[] = [];
+      for (const part of parts) {
+        if (part === '..') {
+          result.pop();
+        } else if (part !== '.' && part !== '') {
+          result.push(part);
+        }
+      }
+      return (joined.startsWith('/') ? '/' : '') + result.join('/');
+    });
+    vi.mocked(path.dirname).mockReturnValue('/mock/cli/src/setup');
     vi.mocked(path.posix.join).mockImplementation((...args) => args.join('/'));
+    vi.mocked(path.isAbsolute).mockImplementation((p: string) => p.startsWith('/'));
+    // Mock normalize to properly resolve .. sequences
+    vi.mocked(path.normalize).mockImplementation((p: string) => {
+      const parts = p.split('/');
+      const result: string[] = [];
+      for (const part of parts) {
+        if (part === '..') {
+          result.pop();
+        } else if (part !== '.' && part !== '') {
+          result.push(part);
+        }
+      }
+      return (p.startsWith('/') ? '/' : '') + result.join('/');
+    });
+    vi.mocked(path.resolve).mockImplementation((p: string) => {
+      if (p.startsWith('/')) {
+        return vi.mocked(path.normalize)(p);
+      }
+      return vi.mocked(path.normalize)('/mock/cli/src/setup/' + p);
+    });
   });
 
   afterEach(() => {

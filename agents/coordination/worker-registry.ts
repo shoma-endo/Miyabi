@@ -116,6 +116,9 @@ export class WorkerRegistry {
 
   /**
    * Find best worker for task
+   * Scoring algorithm:
+   * 1. Skill match quality (more matching skills = better)
+   * 2. Current load (fewer tasks = better)
    */
   findBestWorker(requiredSkills: string[]): Worker | null {
     const availableWorkers = this.getActiveWorkers().filter(worker => {
@@ -132,8 +135,25 @@ export class WorkerRegistry {
       return null;
     }
 
-    // Sort by load (fewer tasks first)
-    availableWorkers.sort((a, b) => a.currentTasks.length - b.currentTasks.length);
+    // Sort by skill match quality first, then by total skills, then by load
+    availableWorkers.sort((a, b) => {
+      // Count matching skills (prefer specialists over generalists)
+      const aMatchCount = requiredSkills.filter(skill => a.skills.includes(skill)).length;
+      const bMatchCount = requiredSkills.filter(skill => b.skills.includes(skill)).length;
+
+      // If skill match count is different, prefer better match
+      if (aMatchCount !== bMatchCount) {
+        return bMatchCount - aMatchCount; // Descending
+      }
+
+      // If match count is same, prefer worker with more total skills (specialist)
+      if (a.skills.length !== b.skills.length) {
+        return b.skills.length - a.skills.length; // Descending
+      }
+
+      // If skills are same, prefer worker with fewer tasks
+      return a.currentTasks.length - b.currentTasks.length; // Ascending
+    });
 
     return availableWorkers[0];
   }

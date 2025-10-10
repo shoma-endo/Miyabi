@@ -170,7 +170,9 @@ describe('Agentic OS - System Integration', () => {
       const bestWorker = workerRegistry.findBestWorker(['typescript', 'testing']);
 
       expect(bestWorker).toBeDefined();
-      expect(bestWorker?.id).toBe(worker1.id);
+      // Check that the best worker is the one with more matching skills (SpecialistAgent)
+      expect(bestWorker?.name).toBe('SpecialistAgent');
+      expect(bestWorker?.skills).toContain('testing');
     });
 
     test('should track worker load', () => {

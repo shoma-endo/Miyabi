@@ -1,6 +1,6 @@
 {
   "name": "miyabi",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Miyabi - Beauty in Autonomous Development. Complete autonomous AI development platform with GitHub OS integration.",
   "type": "module",
   "bin": {
@@ -11,7 +11,6 @@
   "files": [
     "dist",
     "templates",
-    "scripts",
     ".claude",
     "CLAUDE.md",
     "README.md",
@@ -58,7 +57,8 @@
     "ora": "^8.0.1",
     "open": "^10.0.3",
     "dotenv": "^16.3.1",
-    "yaml": "^2.3.4"
+    "yaml": "^2.3.4",
+    "miyabi-agent-sdk": "^0.1.0-alpha.2"
   },
   "devDependencies": {
     "@types/inquirer": "^9.0.7",

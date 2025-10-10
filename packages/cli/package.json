@@ -1,6 +1,6 @@
 {
   "name": "miyabi",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "Miyabi - Beauty in Autonomous Development. Complete autonomous AI development platform with GitHub OS integration.",
   "type": "module",
   "bin": {
@@ -27,7 +27,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "postinstall": "node scripts/postinstall.js",
-    "prepublishOnly": "npm run clean && npm run build"
+    "prepublishOnly": "npm run clean && npm run build && chmod +x dist/index.js"
   },
   "keywords": [
     "ai",

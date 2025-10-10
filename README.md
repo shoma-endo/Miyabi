@@ -135,6 +135,28 @@ graph LR
     style F fill:#00D2FF
 ```
 
+---
+
+## ⚠️ AI生成コードに関する重要な注意事項
+
+Miyabiは **Claude AI** を使用して自動的にコードを生成します。以下の点にご注意ください：
+
+### 📋 ユーザーの責任
+
+- ✅ **必ずレビュー**: 生成されたコードをマージ前に必ず確認してください
+- ✅ **徹底的なテスト**: 本番環境以外で十分にテストしてください
+- ✅ **エラーの可能性**: AIが生成するコードには予期しないエラーが含まれる可能性があります
+- ✅ **本番デプロイの責任**: 本番環境へのデプロイはユーザーの責任です
+
+### ⚖️ 免責事項
+
+**Miyabiプロジェクトは、AI生成コードに起因する問題について一切の責任を負いません。**
+生成されたコードの品質、セキュリティ、動作については、ユーザー自身で確認・検証してください。
+
+詳細は [LICENSE](LICENSE) および [NOTICE](NOTICE) をご覧ください。
+
+---
+
 ### 🏗️ **GitHub OS統合（15コンポーネント）**
 
 <div align="center">
@@ -738,8 +760,8 @@ Miyabiの開発を支援してください:
 |:----------------|:------|
 | 🐦 **X (Twitter)** | [@The_AGI_WAY](https://x.com/The_AGI_WAY) |
 | 💬 **Discord** | [Miyabi Community](https://discord.gg/miyabi) |
-| 📧 **Email** | hayashi@miyabi.dev |
-| 🌐 **Website** | [miyabi.dev](https://miyabi.dev) |
+| 📧 **Email** | Contact via GitHub profile |
+| 🌐 **Website** | [note.ambitiousai.co.jp](https://note.ambitiousai.co.jp/) |
 
 </div>
 
@@ -759,7 +781,7 @@ Copyright (c) 2025 Shunsuke Hayashi
 
 #### ⚖️ **ライセンス要件**
 
-- ✅ 「Miyabi」は Shunsuke Hayashi の商標です
+- ✅ 「Miyabi」は Shunsuke Hayashi の商号です（未登録商標）
 - ✅ 改変版を配布する場合は、変更内容を明示する必要があります
 - ✅ 詳細は [LICENSE](LICENSE) および [NOTICE](NOTICE) ファイルをご覧ください
 
@@ -974,6 +996,28 @@ From issue creation to code implementation, PR creation, and deployment—**ever
 - ✅ Real-time progress tracking
 - ✅ High-speed processing with parallel execution (72% efficiency)
 
+---
+
+## ⚠️ AI-Generated Code Notice
+
+Miyabi uses **Claude AI** for automatic code generation. Please note:
+
+### 📋 User Responsibilities
+
+- ✅ **Always Review**: Review all generated code before merging
+- ✅ **Thorough Testing**: Test extensively in non-production environments
+- ✅ **Potential Errors**: AI-generated code may contain unexpected errors
+- ✅ **Production Deployment**: Users are responsible for code deployed to production
+
+### ⚖️ Disclaimer
+
+**The Miyabi project is not liable for issues arising from AI-generated code.**
+Users must verify the quality, security, and functionality of generated code themselves.
+
+See [LICENSE](LICENSE) and [NOTICE](NOTICE) for full details.
+
+---
+
 #### 📚 **Automatic Documentation Generation**
 
 - ✅ Auto-generated from TypeScript/JavaScript code
@@ -1099,8 +1143,8 @@ Support Miyabi's development:
 |:---------|:-----|
 | 🐦 **X (Twitter)** | [@The_AGI_WAY](https://x.com/The_AGI_WAY) |
 | 💬 **Discord** | [Miyabi Community](https://discord.gg/miyabi) |
-| 📧 **Email** | hayashi@miyabi.dev |
-| 🌐 **Website** | [miyabi.dev](https://miyabi.dev) |
+| 📧 **Email** | Contact via GitHub profile |
+| 🌐 **Website** | [note.ambitiousai.co.jp](https://note.ambitiousai.co.jp/) |
 
 </div>
 
@@ -1118,7 +1162,7 @@ This software is provided under the Apache 2.0 License with **trademark and pate
 
 </div>
 
-- ✅ "Miyabi" is a trademark of Shunsuke Hayashi
+- ✅ "Miyabi" is a product name claimed by Shunsuke Hayashi (unregistered)
 - ✅ Modified versions must clearly indicate changes
 - ✅ See [LICENSE](LICENSE) and [NOTICE](NOTICE) for full details
 

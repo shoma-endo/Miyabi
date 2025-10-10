@@ -79,6 +79,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",
+    "@modelcontextprotocol/sdk": "^1.20.0",
     "@octokit/graphql": "^7.0.2",
     "@octokit/rest": "^20.0.0",
     "ansi-escapes": "^7.0.0",

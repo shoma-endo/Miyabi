@@ -564,8 +564,10 @@ A ──┤      ├─ F         (26時間)
 
 <div align="center">
 
-[![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/miyabi)
+[![Discord](https://img.shields.io/badge/Discord-Coming%20Soon-5865F2?style=for-the-badge&logo=discord&logoColor=white)](#)
 [![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-181717?style=for-the-badge&logo=github)](https://github.com/ShunsukeHayashi/Miyabi/discussions)
+
+**Discord サーバー準備中！** 詳細は [Discord Community Plan](docs/DISCORD_COMMUNITY_PLAN.md) をご覧ください。
 
 </div>
 

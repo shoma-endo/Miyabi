@@ -554,6 +554,8 @@ A ──┤      ├─ F         (26時間)
 | 📱 [Termux環境ガイド](docs/TERMUX_GUIDE.md) | Android/Termux環境での使用方法 |
 | 🔒 [セキュリティポリシー](SECURITY.md) | セキュリティ脆弱性の報告方法 |
 | 🔐 [プライバシーポリシー](PRIVACY.md) | データ収集とプライバシー保護 |
+| 🤝 [コントリビューション](CONTRIBUTING.md) | プロジェクトへの貢献方法・CLA |
+| 💬 [コミュニティガイドライン](COMMUNITY_GUIDELINES.md) | Discordコミュニティの行動規範 |
 | 📦 [パブリッシュガイド](docs/PUBLICATION_GUIDE.md) | npm公開手順 |
 | 🤖 [Agent開発ガイド](packages/miyabi-agent-sdk/README.md) | カスタムAgent作成 |
 | 🔌 [Claude Code統合](packages/cli/CLAUDE.md) | Claude Code設定 |
@@ -1118,6 +1120,8 @@ AI agents automatically:
 | 📱 [Termux Guide](docs/TERMUX_GUIDE.md) | Usage in Android/Termux environment |
 | 🔒 [Security Policy](SECURITY.md) | Security vulnerability reporting |
 | 🔐 [Privacy Policy](PRIVACY.md) | Data collection and privacy protection |
+| 🤝 [Contributing](CONTRIBUTING.md) | How to contribute & CLA |
+| 💬 [Community Guidelines](COMMUNITY_GUIDELINES.md) | Discord community code of conduct |
 | 📦 [Publication Guide](docs/PUBLICATION_GUIDE.md) | npm publishing process |
 | 🤖 [Agent SDK](packages/miyabi-agent-sdk/README.md) | Custom agent development |
 | 🔌 [Claude Code](packages/cli/CLAUDE.md) | Claude Code integration |

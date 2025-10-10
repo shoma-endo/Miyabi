@@ -129,16 +129,8 @@ describe('GitHubProjectsClient', () => {
     });
   });
 
-  describe('sleep utility', () => {
-    it('should wait for specified duration', async () => {
-      const start = Date.now();
-      await (client as any).sleep(100);
-      const duration = Date.now() - start;
-
-      expect(duration).toBeGreaterThanOrEqual(95); // Allow small variance
-      expect(duration).toBeLessThan(150);
-    });
-  });
+  // Note: sleep utility test removed as the method is not part of the public or private API
+  // If rate limiting delay functionality is needed, it should be tested through the retry mechanism
 });
 
 describe('Type guards and validation', () => {

@@ -72,12 +72,9 @@ const REPOSITORY = process.env.GITHUB_REPOSITORY || 'ShunsukeHayashi/Autonomous-
 // const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || '';
 const [owner, repo] = REPOSITORY.split('/');
 
-if (!GITHUB_TOKEN) {
-  console.error('❌ GITHUB_TOKEN environment variable is required');
-  process.exit(1);
-}
-
-const octokit = new Octokit({ auth: GITHUB_TOKEN });
+// Only create octokit if token is available (for CLI usage)
+// When imported as a module, WebhookEventRouter doesn't use the global octokit
+const octokit = GITHUB_TOKEN ? new Octokit({ auth: GITHUB_TOKEN }) : null as any;
 
 // Retry configuration for failed operations
 const RETRY_CONFIG: RetryConfig = {
@@ -341,6 +338,11 @@ class WebhookEventRouter {
 // ============================================================================
 
 async function main() {
+  if (!GITHUB_TOKEN) {
+    console.error('❌ GITHUB_TOKEN environment variable is required');
+    process.exit(1);
+  }
+
   const args = process.argv.slice(2);
 
   if (args.length < 2) {

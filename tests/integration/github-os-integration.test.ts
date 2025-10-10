@@ -297,30 +297,41 @@ describe('GitHub OS Integration - Phase A-J', () => {
 
   describe('Phase I: Scalability & Performance', () => {
     it('should create performance optimizer', async () => {
-      const { PerformanceOptimizer } = await import('../../scripts/performance-optimizer.js');
+      const { createPerformanceOptimizer } = await import('../../scripts/performance-optimizer.js');
 
-      const optimizer = new PerformanceOptimizer();
+      const optimizer = createPerformanceOptimizer();
       expect(optimizer).toBeDefined();
     });
 
     it('should cache API results', async () => {
-      const { PerformanceOptimizer } = await import('../../scripts/performance-optimizer.js');
+      const { createPerformanceOptimizer } = await import('../../scripts/performance-optimizer.js');
 
-      const optimizer = new PerformanceOptimizer({ enableCache: true });
+      const optimizer = createPerformanceOptimizer({ cacheTTLMs: 60000 });
 
       const key = 'test-key';
-      const value = { data: 'test' };
+      let callCount = 0;
 
-      optimizer.setCache(key, value);
-      const cached = optimizer.getCache(key);
+      // Use withCache to test caching behavior
+      const fetchData = async () => {
+        callCount++;
+        return { data: 'test' };
+      };
 
-      expect(cached).toEqual(value);
+      const result1 = await optimizer.withCache(key, fetchData);
+      const result2 = await optimizer.withCache(key, fetchData);
+
+      expect(result1).toEqual({ data: 'test' });
+      expect(result2).toEqual({ data: 'test' });
+      expect(callCount).toBe(1); // Should only call once due to cache
     });
 
     it('should create parallel agent runner', async () => {
-      const { ParallelAgentRunner } = await import('../../scripts/parallel-agent-runner.js');
+      const { createParallelAgentRunner } = await import('../../scripts/parallel-agent-runner.js');
 
-      const runner = new ParallelAgentRunner({ minWorkers: 2, maxWorkers: 5 });
+      const runner = createParallelAgentRunner(
+        {} as any, // AgentConfig
+        { minWorkers: 2, maxWorkers: 5 }
+      );
       expect(runner).toBeDefined();
     });
   });

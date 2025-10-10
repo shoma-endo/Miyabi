@@ -79,11 +79,6 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_OWNER = process.env.GITHUB_OWNER || 'ShunsukeHayashi';
 const PROJECT_NUMBER = parseInt(process.env.PROJECT_NUMBER || '1');
 
-if (!GITHUB_TOKEN) {
-  console.error('❌ GITHUB_TOKEN is required');
-  process.exit(1);
-}
-
 // ============================================================================
 // Metrics Calculation
 // ============================================================================
@@ -255,6 +250,11 @@ async function generateMetrics(): Promise<DashboardData> {
 // ============================================================================
 
 async function main() {
+  if (!GITHUB_TOKEN) {
+    console.error('❌ GITHUB_TOKEN is required');
+    process.exit(1);
+  }
+
   const outputPath = path.join(__dirname, '../docs/metrics.json');
 
   console.log('🚀 Generating real-time metrics...\n');

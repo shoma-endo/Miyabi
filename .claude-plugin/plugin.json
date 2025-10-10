@@ -1,6 +1,6 @@
 {
   "name": "miyabi",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "完全自律型AI開発オペレーションプラットフォーム - GitHub as OS アーキテクチャに基づき、Issue作成からコード実装、PR作成、デプロイまでを完全自動化",
   "author": {
     "name": "Shunsuke Hayashi",

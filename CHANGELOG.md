@@ -7,6 +7,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.2] - 2025-10-10
+
+### Added
+
+**Claude Code Plugin Integration (Complete)**
+- `.claude-plugin/` directory with complete Plugin structure
+- 8 Slash Commands for Claude Code:
+  - `/miyabi-init` - 新規プロジェクト作成（53ラベル、26ワークフロー自動セットアップ）
+  - `/miyabi-status` - ステータス確認（リアルタイムIssue/PR状態表示）
+  - `/miyabi-auto` - Water Spider自動モード（Issue自動処理）
+  - `/miyabi-todos` - TODO検出→Issue化（コード内TODO自動検出）
+  - `/miyabi-agent` - Agent実行（7つのAgentから選択実行）
+  - `/miyabi-docs` - ドキュメント生成（README/API/Architecture docs）
+  - `/miyabi-deploy` - デプロイ実行（staging/production デプロイ）
+  - `/miyabi-test` - テスト実行（unit/integration/e2e テスト）
+- 7 Autonomous Agents definitions
+- 4 Event Hooks (Plugin限定機能):
+  - `pre-commit` - コミット前チェック（Lint + Type check + Test）
+  - `post-commit` - コミット後処理（コミット情報表示、メトリクス更新）
+  - `pre-pr` - PR作成前検証（Rebase確認、Test、Coverage、Conventional Commits検証）
+  - `post-test` - テスト後処理（カバレッジレポート生成、HTML出力、アーカイブ）
+
+**MCP Tool Extensions**
+- 3 new MCP tools added to `.claude/mcp-servers/miyabi-integration.js`:
+  - `miyabi__docs` - ドキュメント自動生成（type/format/output パラメータ）
+  - `miyabi__deploy` - デプロイ実行（environment/skip-tests/force パラメータ）
+  - `miyabi__test` - テスト実行（type/coverage/watch パラメータ）
+- Total 11 MCP tools available (8 existing + 3 new)
+
+**Plugin Documentation**
+- `.claude-plugin/README.md` - 完全なPlugin説明書（350+ lines）
+- Quick start guide with installation instructions
+- Comprehensive command reference
+- Agent descriptions and workflow diagrams
+- Performance metrics and KPI
+- 53-label system explanation
+- Security features documentation
+- Requirements and license information
+
+**Hook Scripts Validation**
+- All 4 hook scripts (`pre-commit.sh`, `post-commit.sh`, `pre-pr.sh`, `post-test.sh`) syntax validated
+- Executable permissions verified (755)
+- Ready for Claude Code Plugin system execution
+
+### Changed
+- README.md updated with Claude Code Plugin installation section (Japanese + English)
+- README.md updated with Event Hooks documentation
+- Plugin structure follows official Claude Code Plugin specification
+- `plugin.json` metadata complete with all references
+- `marketplace.json` configured for marketplace distribution
+
+### Documentation
+- Added "方法4: Claude Code Plugin" installation option to README
+- Added comprehensive Hooks section with detailed feature table
+- Created standalone Plugin README for marketplace
+- All documentation bilingual (Japanese + English)
+
+### Technical Improvements
+- MCP tool extensions follow existing pattern and structure
+- Hooks leverage existing npm scripts for consistency
+- Plugin configuration references relative paths for portability
+- All changes backward compatible with existing CLI functionality
+
 ## [0.8.0] - 2025-10-10
 
 ### Changed

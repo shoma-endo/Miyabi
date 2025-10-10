@@ -76,6 +76,11 @@ Thumbs.db
 # Vitest
 .vitest/
 
+# Playwright
+playwright-report/data/
+playwright-report/trace/
+test-results/
+
 # Generated documentation
 docs/GENERATED_CODE.md
 .task-locks-test/

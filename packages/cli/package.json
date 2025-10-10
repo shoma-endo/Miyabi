@@ -1,6 +1,6 @@
 {
   "name": "miyabi",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Miyabi - Beauty in Autonomous Development. Complete autonomous AI development platform with GitHub OS integration.",
   "type": "module",
   "bin": {
@@ -11,6 +11,7 @@
   "files": [
     "dist",
     "templates",
+    "scripts/postinstall.js",
     ".claude",
     "CLAUDE.md",
     "README.md",

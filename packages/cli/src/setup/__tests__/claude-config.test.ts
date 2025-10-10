@@ -78,6 +78,20 @@ describe('claude-config', () => {
       }
       return vi.mocked(path.normalize)('/mock/cli/src/setup/' + p);
     });
+
+    // Add fs.lstatSync mock with isSymbolicLink method
+    vi.mocked(fs.lstatSync).mockReturnValue({
+      isSymbolicLink: () => false,
+      isFile: () => true,
+      isDirectory: () => false,
+    } as any);
+
+    // Add fs.statSync mock for validation
+    vi.mocked(fs.statSync).mockReturnValue({
+      isFile: () => true,
+      isDirectory: () => false,
+      size: 1024,
+    } as any);
   });
 
   afterEach(() => {
@@ -210,19 +224,10 @@ describe('claude-config', () => {
       );
     });
 
-    it('should handle empty project name correctly', async () => {
-      vi.mocked(fs.existsSync).mockReturnValue(true);
-      vi.mocked(fs.readFileSync).mockReturnValue('Project: {{PROJECT_NAME}}');
-      vi.mocked(fs.writeFileSync).mockImplementation((path, content) => {
-        expect(content).toBe('Project: ');
-      });
-      vi.mocked(fs.renameSync).mockReturnValue(undefined);
-      vi.mocked(fs.mkdirSync).mockReturnValue(undefined);
-      vi.mocked(fs.readdirSync).mockReturnValue([]);
-
-      await deployClaudeConfig({ projectPath: '/test', projectName: '' });
-
-      expect(fs.writeFileSync).toHaveBeenCalled();
+    it('should throw error for empty project name', async () => {
+      await expect(
+        deployClaudeConfig({ projectPath: '/test', projectName: '' })
+      ).rejects.toThrow('Project name must be a non-empty string');
     });
   });
 
@@ -441,7 +446,7 @@ describe('claude-config', () => {
         { name: 'file.md', isDirectory: () => false } as fs.Dirent,
       ]);
 
-      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token');
+      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890');
 
       expect(mockOctokit.git.getRef).toHaveBeenCalledWith({
         owner: 'owner',
@@ -459,7 +464,7 @@ describe('claude-config', () => {
         { name: 'file.md', isDirectory: () => false } as fs.Dirent,
       ]);
 
-      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token');
+      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890');
 
       expect(mockOctokit.git.createBlob).toHaveBeenCalledWith({
         owner: 'owner',
@@ -476,7 +481,7 @@ describe('claude-config', () => {
         { name: 'file.md', isDirectory: () => false } as fs.Dirent,
       ]);
 
-      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token');
+      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890');
 
       expect(mockOctokit.git.createCommit).toHaveBeenCalledWith({
         owner: 'owner',
@@ -494,20 +499,21 @@ describe('claude-config', () => {
       vi.mocked(fs.existsSync).mockReturnValue(false);
 
       await expect(
-        deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token')
+        deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890')
       ).rejects.toThrow('Claude template directory not found');
     });
 
     it('should throw error if CLAUDE.md template not found', async () => {
       vi.mocked(fs.existsSync).mockImplementation((path) => {
-        return path.toString().includes('claude-code');
+        return path.toString().includes('claude-code') && !path.toString().includes('CLAUDE.md.template');
       });
       vi.mocked(fs.readdirSync).mockReturnValue([
         { name: 'file.md', isDirectory: () => false } as fs.Dirent,
       ]);
+      vi.mocked(fs.readFileSync).mockReturnValue('File content');
 
       await expect(
-        deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token')
+        deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890')
       ).rejects.toThrow('CLAUDE.md template not found');
     });
 
@@ -516,7 +522,7 @@ describe('claude-config', () => {
       vi.mocked(fs.readdirSync).mockReturnValue([]);
 
       await expect(
-        deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token')
+        deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890')
       ).rejects.toThrow('No files found in .claude/ template directory');
     });
 
@@ -533,7 +539,7 @@ describe('claude-config', () => {
           { name: 'agent1.md', isDirectory: () => false } as fs.Dirent,
         ]);
 
-      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token');
+      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890');
 
       // Should create blobs for nested files
       expect(mockOctokit.git.createBlob).toHaveBeenCalledTimes(2); // 1 from .claude/agents + 1 CLAUDE.md
@@ -546,7 +552,7 @@ describe('claude-config', () => {
         { name: 'file.md', isDirectory: () => false } as fs.Dirent,
       ]);
 
-      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token');
+      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890');
 
       // path.posix.join should be used for GitHub paths
       expect(path.posix.join).toHaveBeenCalled();
@@ -560,7 +566,7 @@ describe('claude-config', () => {
         { name: 'file2.md', isDirectory: () => false } as fs.Dirent,
       ]);
 
-      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token');
+      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890');
 
       expect(console.log).toHaveBeenCalledWith(
         expect.stringContaining('Collected 2 files from .claude/')
@@ -574,7 +580,7 @@ describe('claude-config', () => {
         { name: 'file.md', isDirectory: () => false } as fs.Dirent,
       ]);
 
-      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token');
+      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890');
 
       expect(mockOctokit.git.createTree).toHaveBeenCalledWith({
         owner: 'owner',
@@ -614,7 +620,7 @@ describe('claude-config', () => {
       vi.mocked(Octokit).mockReturnValue(mockOctokit);
       vi.spyOn(console, 'log').mockImplementation(() => {});
 
-      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token');
+      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890');
 
       // Should have called readFileSync for each file
       expect(fs.readFileSync).toHaveBeenCalledTimes(3); // 2 files + 1 CLAUDE.md template
@@ -640,7 +646,7 @@ describe('claude-config', () => {
       vi.mocked(Octokit).mockReturnValue(mockOctokit);
       vi.spyOn(console, 'log').mockImplementation(() => {});
 
-      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token');
+      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890');
 
       // Verify path.posix.join was used for relative paths
       expect(path.posix.join).toHaveBeenCalledWith('.claude', 'file.md');
@@ -672,7 +678,7 @@ describe('claude-config', () => {
       vi.mocked(Octokit).mockReturnValue(mockOctokit);
       vi.spyOn(console, 'log').mockImplementation(() => {});
 
-      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token');
+      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890');
 
       // Should collect nested files
       expect(fs.readdirSync).toHaveBeenCalledTimes(2);
@@ -698,7 +704,7 @@ describe('claude-config', () => {
       vi.mocked(Octokit).mockReturnValue(mockOctokit);
       vi.spyOn(console, 'log').mockImplementation(() => {});
 
-      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token');
+      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890');
 
       expect(fs.readFileSync).toHaveBeenCalledWith(expect.any(String), 'utf-8');
     });
@@ -723,7 +729,7 @@ describe('claude-config', () => {
       vi.mocked(Octokit).mockReturnValue(mockOctokit);
       vi.spyOn(console, 'log').mockImplementation(() => {});
 
-      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token');
+      await deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890');
 
       // Verify createBlob was called with file content
       expect(mockOctokit.git.createBlob).toHaveBeenCalledWith({
@@ -740,7 +746,7 @@ describe('claude-config', () => {
       vi.mocked(fs.readdirSync).mockReturnValue([]);
 
       await expect(
-        deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'token')
+        deployClaudeConfigToGitHub('owner', 'repo', 'test-project', 'ghp_1234567890123456789012345678901234567890')
       ).rejects.toThrow('No files found in .claude/ template directory');
     });
   });

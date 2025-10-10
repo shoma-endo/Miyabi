@@ -1,11 +1,32 @@
 # Memory Bank Template
 
 ## Active Story / Task
-- タイトル: miyabi@0.8.1 npm公開完了！🎉 - 100%実装完了
+- タイトル: ランディングページ完成！🎨 - Issue #55完了
 - ステータス: 完了
 - 期間: 2025-10-10
 
 ## Key Decisions
+- 2025-10-10: 公式ランディングページ完成（Issue #55完了） / マーケティング / Claude Code
+  - docs/landing.html 作成（完全レスポンシブデザイン、385行）
+  - 実装した9セクション:
+    1. Hero Section: 桜アニメーション + npx miyabiコマンド
+    2. Stats Section: カウンターアニメーション（72%, 80%+, 10分, 7 agents）
+    3. 7 Agents Section: インタラクティブカード（Coordinator, Issue, CodeGen, Review, PR, Deployment, Test）
+    4. GitHub as OS Architecture: 8コンポーネント表示
+    5. Performance Comparison: 36h → 10h ビフォーアフター
+    6. Developer Testimonials: 3件の開発者の声
+    7. FAQ Section: 5質問のアコーディオン
+    8. CTA Section: npm/GitHub/Dashboardへのリンク
+    9. Footer: リンク集 + 著作権表示
+  - アニメーション実装:
+    * 桜花びら降下アニメーション（300ms間隔生成）
+    * 数値カウンターアニメーション（Intersection Observer）
+    * FAQアコーディオン（滑らかな開閉）
+    * スムーススクロール
+    * コピーボタン（クリップボードAPI）
+  - レスポンシブ対応: モバイル/タブレット/デスクトップ
+  - URL: https://shunsukehayashi.github.io/Miyabi/landing.html (予定)
+  - 次: Issue #55クローズ → GitHub Pages自動デプロイ確認
 - 2025-10-10: miyabi@0.8.1 npm公開完了（100%実装完了） / CLI開発 / Claude Code
   - pnpm publish --access public 成功 ✅
   - npmレジストリ公開確認:

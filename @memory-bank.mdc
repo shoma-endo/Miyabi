@@ -1,11 +1,23 @@
 # Memory Bank Template
 
 ## Active Story / Task
-- タイトル: CLI Package E2Eテスト完了 - 95%実装完了・npm publish準備完了 🚀
+- タイトル: miyabi@0.8.1 npm公開完了！🎉 - 100%実装完了
 - ステータス: 完了
 - 期間: 2025-10-10
 
 ## Key Decisions
+- 2025-10-10: miyabi@0.8.1 npm公開完了（100%実装完了） / CLI開発 / Claude Code
+  - pnpm publish --access public 成功 ✅
+  - npmレジストリ公開確認:
+    * Package: miyabi@0.8.1
+    * Tag: latest
+    * Size: 182.2 kB (packed), 728.1 kB (unpacked)
+    * Files: 160 total
+    * URL: https://www.npmjs.com/package/miyabi
+  - npx miyabi@latest 動作確認成功 ✅
+  - npm view miyabi version → 0.8.1 ✅
+  - 世界中どこからでも `npx miyabi init` で利用可能に！
+  - docs/CLI_PACKAGE_PROGRESS.md 更新（95% → 100%、npm公開完了）
 - 2025-10-10: CLI Package E2Eテスト完了（95%実装完了、npm publish準備完了） / CLI開発 / Claude Code
   - GitHub API統合テスト成功:
     * gh auth token で認証取得成功

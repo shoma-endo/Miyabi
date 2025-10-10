@@ -93,6 +93,7 @@ claude-plugin/
 package.json.migration-update.js
 
 # Work-in-progress/experimental code (not integrated)
-src/
-__tests__/
-commands/
+# Only exclude root-level directories, not packages/*/src/
+/src/
+/__tests__/
+/commands/

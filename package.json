@@ -65,6 +65,14 @@
   ],
   "author": "Shunsuke Hayashi <https://github.com/ShunsukeHayashi>",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ShunsukeHayashi/Miyabi.git"
+  },
+  "homepage": "https://github.com/ShunsukeHayashi/Miyabi#readme",
+  "bugs": {
+    "url": "https://github.com/ShunsukeHayashi/Miyabi/issues"
+  },
   "devDependencies": {
     "@anthropic-ai/claude-code": "^2.0.9",
     "@types/figlet": "^1.5.8",

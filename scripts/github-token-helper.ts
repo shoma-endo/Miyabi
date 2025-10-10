@@ -22,7 +22,7 @@ export async function getGitHubToken(): Promise<string> {
       stdio: ['pipe', 'pipe', 'ignore'] // Suppress stderr
     }).trim();
 
-    if (token && token.startsWith('ghp_') || token.startsWith('github_pat_')) {
+    if (token && (token.startsWith('ghp_') || token.startsWith('github_pat_') || token.startsWith('gho_'))) {
       console.log('✅ Using GitHub token from gh CLI');
       return token;
     }
@@ -33,7 +33,7 @@ export async function getGitHubToken(): Promise<string> {
   // Priority 2: Check environment variable (for CI/CD)
   const envToken = process.env.GITHUB_TOKEN;
   if (envToken) {
-    if (envToken.startsWith('ghp_') || envToken.startsWith('github_pat_')) {
+    if (envToken.startsWith('ghp_') || envToken.startsWith('github_pat_') || envToken.startsWith('gho_')) {
       console.log('✅ Using GitHub token from GITHUB_TOKEN environment variable');
       return envToken;
     } else {
@@ -63,7 +63,7 @@ export function getGitHubTokenSync(): string {
       stdio: ['pipe', 'pipe', 'ignore']
     }).trim();
 
-    if (token && (token.startsWith('ghp_') || token.startsWith('github_pat_'))) {
+    if (token && (token.startsWith('ghp_') || token.startsWith('github_pat_') || token.startsWith('gho_'))) {
       return token;
     }
   } catch (error) {
@@ -72,7 +72,7 @@ export function getGitHubTokenSync(): string {
 
   // Priority 2: Check environment variable
   const envToken = process.env.GITHUB_TOKEN;
-  if (envToken && (envToken.startsWith('ghp_') || envToken.startsWith('github_pat_'))) {
+  if (envToken && (envToken.startsWith('ghp_') || envToken.startsWith('github_pat_') || envToken.startsWith('gho_'))) {
     return envToken;
   }
 
@@ -105,5 +105,5 @@ export function isGhCliAuthenticated(): boolean {
  * @returns true if token format looks valid
  */
 export function isValidTokenFormat(token: string): boolean {
-  return token.startsWith('ghp_') || token.startsWith('github_pat_');
+  return token.startsWith('ghp_') || token.startsWith('github_pat_') || token.startsWith('gho_');
 }

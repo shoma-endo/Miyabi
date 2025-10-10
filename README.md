@@ -206,6 +206,30 @@ npm install --save-dev miyabi
 npx miyabi
 ```
 
+### 🔌 方法4: Claude Code Plugin（新機能！）
+
+Miyabiは[Claude Code](https://claude.ai/code)の公式Pluginとしても利用できます。
+
+```bash
+# Claude Code内で実行
+/plugin install miyabi
+```
+
+インストール後、以下のコマンドが利用可能になります：
+
+```bash
+/miyabi-init      # 新規プロジェクト作成
+/miyabi-status    # ステータス確認
+/miyabi-auto      # Water Spider自動モード
+/miyabi-todos     # TODO検出・Issue化
+/miyabi-agent     # Agent実行
+/miyabi-docs      # ドキュメント生成
+/miyabi-deploy    # デプロイ実行
+/miyabi-test      # テスト実行
+```
+
+**詳細**: [Claude Code Plugin統合ガイド](docs/CLAUDE_CODE_PLUGIN_INTEGRATION.md)
+
 ---
 
 ## 💡 使い方
@@ -1051,6 +1075,30 @@ npx miyabi
 npm install -g miyabi
 miyabi
 ```
+
+#### 🔌 **Claude Code Plugin (New!)**
+
+Miyabi is also available as an official [Claude Code](https://claude.ai/code) Plugin.
+
+```bash
+# Inside Claude Code
+/plugin install miyabi
+```
+
+Available commands after installation:
+
+```bash
+/miyabi-init      # Create new project
+/miyabi-status    # Check status
+/miyabi-auto      # Water Spider auto mode
+/miyabi-todos     # TODO detection & Issue creation
+/miyabi-agent     # Run agent
+/miyabi-docs      # Generate documentation
+/miyabi-deploy    # Execute deployment
+/miyabi-test      # Run tests
+```
+
+**Details**: [Claude Code Plugin Integration Guide](docs/CLAUDE_CODE_PLUGIN_INTEGRATION.md)
 
 ---
 

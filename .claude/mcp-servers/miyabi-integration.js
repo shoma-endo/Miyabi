@@ -13,6 +13,9 @@
  * - miyabi__auto - Water Spider全自動モード起動
  * - miyabi__todos - TODOコメント自動検出
  * - miyabi__config - 設定管理
+ * - miyabi__docs - ドキュメント自動生成
+ * - miyabi__deploy - デプロイ実行
+ * - miyabi__test - テスト実行
  */
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
@@ -254,6 +257,91 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
           properties: {},
         },
       },
+      {
+        name: 'miyabi__docs',
+        description: 'プロジェクトのドキュメントを自動生成します。README、API docs、アーキテクチャ図などを作成します。',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            type: {
+              type: 'string',
+              enum: ['readme', 'api', 'architecture', 'all'],
+              description: 'ドキュメントタイプ（readme/api/architecture/all）',
+              default: 'all',
+            },
+            format: {
+              type: 'string',
+              enum: ['markdown', 'html', 'pdf'],
+              description: '出力形式',
+              default: 'markdown',
+            },
+            output: {
+              type: 'string',
+              description: '出力先ディレクトリ',
+              default: './docs',
+            },
+          },
+        },
+      },
+      {
+        name: 'miyabi__deploy',
+        description: 'デプロイを実行します。staging/productionへのデプロイ、ロールバック機能を提供します。',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            environment: {
+              type: 'string',
+              enum: ['staging', 'production'],
+              description: 'デプロイ先環境',
+              default: 'staging',
+            },
+            action: {
+              type: 'string',
+              enum: ['deploy', 'rollback', 'status'],
+              description: 'アクション（deploy/rollback/status）',
+              default: 'deploy',
+            },
+            version: {
+              type: 'string',
+              description: 'デプロイするバージョン（タグまたはコミットハッシュ）',
+            },
+            skipTests: {
+              type: 'boolean',
+              description: 'テストをスキップするか',
+              default: false,
+            },
+          },
+        },
+      },
+      {
+        name: 'miyabi__test',
+        description: 'テストを実行します。ユニットテスト、統合テスト、E2Eテストをサポートします。',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            type: {
+              type: 'string',
+              enum: ['unit', 'integration', 'e2e', 'all'],
+              description: 'テストタイプ（unit/integration/e2e/all）',
+              default: 'unit',
+            },
+            coverage: {
+              type: 'boolean',
+              description: 'カバレッジレポートを生成するか',
+              default: false,
+            },
+            watch: {
+              type: 'boolean',
+              description: 'ウォッチモードで実行するか',
+              default: false,
+            },
+            file: {
+              type: 'string',
+              description: '特定のテストファイルのみ実行',
+            },
+          },
+        },
+      },
     ],
   };
 });
@@ -444,6 +532,77 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             {
               type: 'text',
               text: statusText,
+            },
+          ],
+        };
+      }
+
+      case 'miyabi__docs': {
+        const { type, format, output } = args;
+
+        const flags = [
+          type ? `--type ${type}` : '',
+          format ? `--format ${format}` : '',
+          output ? `--output ${output}` : '',
+        ].filter(Boolean);
+
+        const result = executeMiyabiCommand(`docs ${flags.join(' ')}`);
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: result.success
+                ? `📚 ドキュメント生成完了\n\n${result.output}`
+                : `❌ ドキュメント生成に失敗しました\n\nエラー: ${result.error}\n\n${result.stderr}`,
+            },
+          ],
+        };
+      }
+
+      case 'miyabi__deploy': {
+        const { environment, action, version, skipTests } = args;
+
+        const flags = [
+          environment ? `--env ${environment}` : '',
+          action ? `--action ${action}` : '',
+          version ? `--version ${version}` : '',
+          skipTests ? '--skip-tests' : '',
+        ].filter(Boolean);
+
+        const result = executeMiyabiCommand(`deploy ${flags.join(' ')}`);
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: result.success
+                ? `🚀 デプロイ完了\n\n${result.output}`
+                : `❌ デプロイに失敗しました\n\nエラー: ${result.error}\n\n${result.stderr}`,
+            },
+          ],
+        };
+      }
+
+      case 'miyabi__test': {
+        const { type, coverage, watch, file } = args;
+
+        const flags = [
+          type ? `--type ${type}` : '',
+          coverage ? '--coverage' : '',
+          watch ? '--watch' : '',
+          file ? `--file ${file}` : '',
+        ].filter(Boolean);
+
+        const result = executeMiyabiCommand(`test ${flags.join(' ')}`);
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: result.success
+                ? `🧪 テスト完了\n\n${result.output}`
+                : `❌ テストに失敗しました\n\nエラー: ${result.error}\n\n${result.stderr}\n\n${result.stdout}`,
             },
           ],
         };

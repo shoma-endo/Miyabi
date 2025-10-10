@@ -1,11 +1,18 @@
 # Memory Bank Template
 
 ## Active Story / Task
-- タイトル: テンプレート化プラン Phase 4.1 確認完了
+- タイトル: テスト改善 Phase 1 完了 - GitHub統合テストのモック化
 - ステータス: 完了
 - 期間: 2025-10-10
 
 ## Key Decisions
+- 2025-10-10: GitHub統合テストをモック化して+27テスト改善（86.3% → 97.4%） / テスト基盤強化 / Claude Code
+  - Issue #39 をクローズ（claude-config.test.ts 既に41テスト完備）
+  - .env.test 作成（モック認証情報）
+  - tests/fixtures/github-responses.ts 作成（GitHub APIレスポンスフィクスチャ）
+  - tests/mocks/github-api.ts 作成（モッククラス群）
+  - github-os-integration.test.ts をモック対応に更新（18/21テスト成功）
+  - テストカバレッジ: 229/235 (97.4%) - 目標の+6を大幅超過（+27達成）
 - 2025-10-10: Phase 4.1（プロジェクト初期化システム）既に完成していることを確認 / テンプレート化 / Claude Code
   - scripts/init-project.sh: 対話的初期化スクリプト完備
   - TEMPLATE_INSTRUCTIONS.md: 日本語テンプレート使用ガイド完備
@@ -20,8 +27,24 @@
 
 ## Pending Questions / Blockers
 - [ ] PRD およびアーキテクチャ承認の取得 — 担当: ユーザー
+- [ ] 残り6テスト修正（Phase I: 2テスト、cicd-integration.ts不在: 1テスト、github-projects: 3テスト）
 
 ## Execution Notes
+- テスト改善 Phase 1 実施内容:
+  ✅ Issue #39 クローズ（gh issue close 39 実行済み）
+  ✅ .env.test 作成（モック GITHUB_TOKEN 等）
+  ✅ tests/fixtures/github-responses.ts 作成（14種類のモックデータ）
+  ✅ tests/mocks/github-api.ts 作成（11クラスのモック実装）
+  ✅ github-os-integration.test.ts 更新（全フェーズA-Jをモック対応）
+  ✅ dotenv パッケージ追加（pnpm add -Dw dotenv）
+  ✅ テスト成功率: 86.3% → 97.4% (+11.1ポイント、+27テスト）
+  📊 テスト結果詳細:
+     - Total: 235テスト（前回234から+1）
+     - Passing: 229テスト（前回202から+27）
+     - Failing: 6テスト（前回32から-26）
+     - Success Rate: 97.4%（目標90%を達成）
+  🎯 当初目標: +6テスト（86.3% → 88.9%）
+  ✨ 実績: +27テスト（86.3% → 97.4%） - 目標の450%達成!
 - Phase 4.1完成確認項目:
   ✅ scripts/init-project.sh (245行、対話的セットアップ)
   ✅ TEMPLATE_INSTRUCTIONS.md (436行、日本語ガイド)
@@ -35,12 +58,13 @@
 - 補足: テンプレート化基盤は既に整備済み。次はPhase 4.2（MCP統合）またはPhase 4.3（Claude Code完全最適化）へ進行可能。
 
 ## Next Review Window
-- 予定日: Phase 4.2/4.3 着手時
+- 予定日: テスト改善 Phase 2 着手時
 - レビュー担当: ユーザー
 - 次のアクション候補:
-  1. Phase 4.2: MCP統合設定（.claude/mcp.json + カスタムサーバー）
-  2. Phase 4.3: Claude Codeコマンド拡張（残り7コマンド）
-  3. テスト改善プラン実行（86.3% → 100%）
-  4. オープンIssue対応（#52 Discord, #39 テスト等）
+  1. 残り6テスト修正（97.4% → 100%到達）
+  2. Phase 4.2: MCP統合設定（.claude/mcp.json + カスタムサーバー）
+  3. Phase 4.3: Claude Codeコマンド拡張（残り7コマンド）
+  4. オープンIssue対応（#52 Discord等）
+  5. Claude Code Plugin化計画実行（docs/CLAUDE_CODE_PLUGIN_INTEGRATION.md）
 
 > 更新時は最新項目を上に追記し、履歴を保持してください。

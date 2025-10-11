@@ -11,6 +11,9 @@ interface Props {
 export const IssueNode = memo(({ data, agentStatuses = {} }: Props) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  // Check if agent is assigned
+  const hasAssignedAgent = data.assignedAgents && data.assignedAgents.length > 0;
+
   const getPriorityGradient = (priority?: string): string => {
     if (!priority) return 'linear-gradient(135deg, #9ca3af 0%, #d1d5db 100%)';
     if (priority.includes('P0')) return 'linear-gradient(135deg, #ef4444 0%, #f87171 50%, #fca5a5 100%)';
@@ -61,7 +64,10 @@ export const IssueNode = memo(({ data, agentStatuses = {} }: Props) => {
   return (
     <div
       className="relative min-w-[280px] transition-all duration-300"
-      style={{ filter: `drop-shadow(${getPriorityGlow(data.priority)})` }}
+      style={{
+        filter: `drop-shadow(${getPriorityGlow(data.priority)})`,
+        opacity: hasAssignedAgent ? 1 : 0.5,
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -114,7 +120,7 @@ export const IssueNode = memo(({ data, agentStatuses = {} }: Props) => {
             </div>
 
             {/* Agent Badges - Compact design */}
-            {data.assignedAgents && data.assignedAgents.length > 0 && (
+            {data.assignedAgents && data.assignedAgents.length > 0 ? (
               <div className="mt-2 space-y-1">
                 {data.assignedAgents.map((agentId) => {
                   const display = getAgentDisplay(agentId);
@@ -183,6 +189,15 @@ export const IssueNode = memo(({ data, agentStatuses = {} }: Props) => {
                     </div>
                   );
                 })}
+              </div>
+            ) : (
+              <div className="mt-2">
+                <div className="relative flex items-center gap-1 p-1 rounded bg-gray-100 border border-gray-300">
+                  <div className="flex-shrink-0 text-sm">⚪</div>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-[9px] font-semibold text-gray-500">未割り当て (Backlog)</span>
+                  </div>
+                </div>
               </div>
             )}
           </div>

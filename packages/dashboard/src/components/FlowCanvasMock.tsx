@@ -105,6 +105,34 @@ const mockNodes: GraphNode[] = [
       url: 'https://github.com/example/repo/issues/58',
     },
   },
+  {
+    id: 'issue-56',
+    type: 'issue',
+    position: { x: 700, y: 300 },
+    data: {
+      number: 56,
+      title: '[BACKLOG] Dashboard performance improvements',
+      state: 'state:pending',
+      labels: ['type:enhancement', 'priority:P2-Medium'],
+      priority: 'priority:P2-Medium',
+      assignedAgents: [], // No agent assigned - backlog
+      url: 'https://github.com/example/repo/issues/56',
+    },
+  },
+  {
+    id: 'issue-55',
+    type: 'issue',
+    position: { x: 1000, y: 300 },
+    data: {
+      number: 55,
+      title: '[BACKLOG] Add dark mode support',
+      state: 'state:pending',
+      labels: ['type:feature', 'priority:P3-Low'],
+      priority: 'priority:P3-Low',
+      assignedAgents: [], // No agent assigned - backlog
+      url: 'https://github.com/example/repo/issues/55',
+    },
+  },
 ];
 
 const mockEdges: GraphEdge[] = [

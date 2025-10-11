@@ -331,10 +331,12 @@ assets/
   }
 }
 
-// CLI execution
-if (require.main === module) {
+// ESM module check
+import { fileURLToPath } from 'node:url';
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const generator = new DemoGenerator();
-  
+
   const command = process.argv[2];
   switch (command) {
     case 'generate':

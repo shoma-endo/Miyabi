@@ -226,10 +226,12 @@ This directory contains screenshots and demo GIFs for the Miyabi project.
   }
 }
 
-// CLI execution
-if (require.main === module) {
+// ESM module check
+import { fileURLToPath } from 'node:url';
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const updater = new ReadmeUpdater();
-  
+
   const command = process.argv[2];
   switch (command) {
     case 'update':

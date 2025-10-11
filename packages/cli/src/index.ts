@@ -27,6 +27,7 @@ import {
   inferUserIntent,
   type FeedbackContext,
 } from './feedback/issue-reporter.js';
+import { isJsonMode, outputError } from './utils/agent-output.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -98,6 +99,16 @@ program
 
     // 対話モード（通常のターミナル環境）
     if (!isInteractiveTerminal()) {
+      // AI agent向けJSON出力
+      if (isJsonMode()) {
+        outputError(
+          'INVALID_COMMAND_OR_NON_INTERACTIVE',
+          'Interactive mode not available in non-interactive terminal',
+          true,
+          'Specify a command directly: miyabi status --json'
+        );
+      }
+
       console.log(chalk.yellow('⚠️  対話モードは対話型ターミナルでのみ利用可能です'));
       console.log(chalk.white('\nコマンドを直接指定してください: miyabi --help\n'));
       process.exit(1);

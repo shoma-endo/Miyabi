@@ -59,12 +59,27 @@ export async function status(options: StatusOptions = {}) {
   const repo = await getCurrentRepo();
 
   if (!repo) {
-    outputError(
-      'NO_GIT_REPOSITORY',
-      'Not a git repository or no origin remote found',
-      true,
-      'Run this command inside a git repository with a GitHub remote'
-    );
+    // Use appropriate exit code (will be mapped to VALIDATION_ERROR = 3)
+    const output = {
+      success: false,
+      error: {
+        code: 'NO_GIT_REPOSITORY',
+        message: 'Not a git repository or no origin remote found',
+        recoverable: true,
+        suggestion: 'Run this command inside a git repository with a GitHub remote'
+      },
+      timestamp: new Date().toISOString()
+    };
+
+    if (isJsonMode() || options.json) {
+      console.error(JSON.stringify(output, null, 2));
+    } else {
+      console.error(`❌ ${output.error.message}`);
+      if (output.error.suggestion) {
+        console.error(`\n💡 ${output.error.suggestion}`);
+      }
+    }
+    process.exit(3); // VALIDATION_ERROR
   }
 
   logVerbose(`Repository: ${repo.owner}/${repo.name}`);
@@ -136,7 +151,11 @@ export async function status(options: StatusOptions = {}) {
 async function getCurrentRepo(): Promise<{ owner: string; name: string } | null> {
   try {
     const { execSync } = await import('child_process');
-    const remoteUrl = execSync('git remote get-url origin', { encoding: 'utf-8' }).trim();
+    // Suppress stderr in JSON mode to avoid polluting output
+    const remoteUrl = execSync('git remote get-url origin', {
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'ignore'] // Suppress stderr
+    }).trim();
 
     logVerbose(`Remote URL: ${remoteUrl}`);
 

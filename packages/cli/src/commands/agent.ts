@@ -9,6 +9,7 @@ import chalk from 'chalk';
 import ora from 'ora';
 import Table from 'cli-table3';
 import { Command } from 'commander';
+import { isJsonMode, outputSuccess, outputError } from '../utils/agent-output.js';
 
 /**
  * 利用可能なAgent種別
@@ -49,7 +50,50 @@ export interface AgentResult {
 /**
  * Agent一覧表示
  */
-export async function listAgents(): Promise<void> {
+export async function listAgents(options?: { json?: boolean }): Promise<void> {
+  const agents = [
+    {
+      name: 'coordinator',
+      description: 'タスク統括・DAG分解',
+      responsibility: 'Issue分解、並行実行制御、Agent割当'
+    },
+    {
+      name: 'codegen',
+      description: 'AI駆動コード生成',
+      responsibility: 'TypeScript生成、テスト自動生成'
+    },
+    {
+      name: 'review',
+      description: 'コード品質判定',
+      responsibility: '静的解析、セキュリティスキャン (80点基準)'
+    },
+    {
+      name: 'issue',
+      description: 'Issue分析・ラベリング',
+      responsibility: '組織設計原則65ラベル体系、自動分類'
+    },
+    {
+      name: 'pr',
+      description: 'Pull Request自動化',
+      responsibility: 'Draft PR作成、Conventional Commits'
+    },
+    {
+      name: 'deploy',
+      description: 'CI/CDデプロイ',
+      responsibility: 'Firebase Deploy、ヘルスチェック、Rollback'
+    },
+    {
+      name: 'mizusumashi',
+      description: 'Super App Designer',
+      responsibility: 'アプリYAML自動生成、自己修復関数'
+    },
+  ];
+
+  if (isJsonMode() || options?.json) {
+    outputSuccess({ agents }, 'Available agents list');
+    return;
+  }
+
   console.log(chalk.cyan.bold('\n🤖 利用可能なAgent一覧\n'));
 
   const table = new Table({
@@ -61,15 +105,9 @@ export async function listAgents(): Promise<void> {
     colWidths: [20, 40, 40],
   });
 
-  table.push(
-    ['coordinator', 'タスク統括・DAG分解', 'Issue分解、並行実行制御、Agent割当'],
-    ['codegen', 'AI駆動コード生成', 'TypeScript生成、テスト自動生成'],
-    ['review', 'コード品質判定', '静的解析、セキュリティスキャン (80点基準)'],
-    ['issue', 'Issue分析・ラベリング', '組織設計原則65ラベル体系、自動分類'],
-    ['pr', 'Pull Request自動化', 'Draft PR作成、Conventional Commits'],
-    ['deploy', 'CI/CDデプロイ', 'Firebase Deploy、ヘルスチェック、Rollback'],
-    ['mizusumashi', 'Super App Designer', 'アプリYAML自動生成、自己修復関数'],
-  );
+  agents.forEach(agent => {
+    table.push([agent.name, agent.description, agent.responsibility]);
+  });
 
   console.log(table.toString());
   console.log(chalk.gray('\n使用例: miyabi agent run codegen --issue=123\n'));
@@ -180,17 +218,45 @@ export function registerAgentCommand(program: Command): void {
     .option('-v, --verbose', '詳細ログ出力')
     .option('--json', 'JSON形式で出力')
     .action(async (agentName: string, options: AgentRunOptions & { json?: boolean }) => {
-      console.log(chalk.cyan.bold('\n🤖 Miyabi Agent CLI\n'));
-
       // Agent名のバリデーション
       if (!AVAILABLE_AGENTS.includes(agentName as AgentType)) {
+        // AI agent向けJSON出力
+        if (isJsonMode() || options.json) {
+          outputError(
+            'INVALID_AGENT_NAME',
+            `Invalid agent: ${agentName}`,
+            true,
+            `Available agents: ${AVAILABLE_AGENTS.join(', ')}`
+          );
+        }
+
         console.error(chalk.red(`❌ 無効なAgent: ${agentName}`));
         console.log(chalk.yellow('\n利用可能なAgent:'));
         console.log(chalk.gray(`  ${AVAILABLE_AGENTS.join(', ')}\n`));
         process.exit(1);
       }
 
+      if (!isJsonMode() && !options.json) {
+        console.log(chalk.cyan.bold('\n🤖 Miyabi Agent CLI\n'));
+      }
+
       const result = await runAgent(agentName as AgentType, options);
+
+      // JSON出力
+      if (isJsonMode() || options.json) {
+        if (result.status === 'success') {
+          outputSuccess(result, `Agent ${agentName} executed successfully`);
+        } else {
+          outputError(
+            'AGENT_EXECUTION_FAILED',
+            result.message,
+            true,
+            'Check agent logs for details',
+            result
+          );
+        }
+        return;
+      }
 
       if (result.status === 'failure') {
         process.exit(1);
@@ -202,9 +268,8 @@ export function registerAgentCommand(program: Command): void {
     .command('list')
     .description('利用可能なAgent一覧')
     .option('--json', 'JSON形式で出力')
-    .action(async (_options: { json?: boolean }) => {
-      // TODO: Implement JSON output
-      await listAgents();
+    .action(async (options: { json?: boolean }) => {
+      await listAgents(options);
     });
 
   // agent status [agent-name]

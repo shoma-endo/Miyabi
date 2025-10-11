@@ -180,7 +180,6 @@ export async function runAgent(
     }
 
     const { owner, name: repo } = repoInfo;
-    const repository = `${owner}/${repo}`;
 
     // Agent実行 - miyabi-agent-sdk を使用
     let result: any;
@@ -198,8 +197,8 @@ export async function runAgent(
 
         const input: IssueInput = {
           issueNumber: parseInt(options.issue),
-          repository,
-          owner,
+          repository: repo, // repo name only (e.g., "Miyabi")
+          owner,            // owner name (e.g., "ShunsukeHayashi")
         };
 
         result = await agent.analyze(input);

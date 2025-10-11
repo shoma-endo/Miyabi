@@ -29,6 +29,8 @@ import { CelebrationEffect, useCelebration } from './CelebrationEffect';
 import { NodeDetailsModal } from './NodeDetailsModal';
 import { useWebSocket } from '../hooks/useWebSocket';
 import type { GraphNode, GraphEdge } from '../types';
+import { PerformanceStats } from './PerformanceStats';
+import { useAccessibilityPreferences } from '../hooks/useAccessibilityPreferences';
 
 const nodeTypes: NodeTypes = {
   issue: IssueNode,
@@ -50,6 +52,16 @@ export function FlowCanvas() {
     showOnlyActive: false,
   });
   const reactFlowInstance = useRef<any>(null);
+  const { prefersReducedMotion, prefersHighContrast } = useAccessibilityPreferences();
+  const [visualMode, setVisualMode] = useState<'rich' | 'light'>(prefersReducedMotion ? 'light' : 'rich');
+  const [showPerformanceStats, setShowPerformanceStats] = useState(false);
+
+  // NEW: Panel visibility states
+  const [showStats, setShowStats] = useState(false);
+  const [showMetrics, setShowMetrics] = useState(false);
+  const [showWorkflow, setShowWorkflow] = useState(false);
+  const [showActivityLog, setShowActivityLog] = useState(false);
+  const [showLegend, setShowLegend] = useState(false);
 
   // Workflow stage tracking
   const [currentStage, setCurrentStage] = useState<string | null>(null);
@@ -72,6 +84,32 @@ export function FlowCanvas() {
   // NEW: Celebration and particle flow hooks
   const { celebrationTrigger, celebrate } = useCelebration();
   const { activeEdgeIds, activateEdgesForNode } = useParticleFlow();
+
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      setVisualMode('light');
+    }
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const handleKeyToggle = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === 'p' && event.shiftKey) {
+        setShowPerformanceStats((prev) => !prev);
+      }
+      if (event.key.toLowerCase() === 'l' && event.shiftKey) {
+        setVisualMode((prev) => (prev === 'rich' ? 'light' : 'rich'));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyToggle);
+    return () => {
+      window.removeEventListener('keydown', handleKeyToggle);
+    };
+  }, []);
 
   // Helper to add activity log entry
   const addActivity = useCallback((entry: Omit<ActivityLogEntry, 'id'>) => {
@@ -734,20 +772,24 @@ export function FlowCanvas() {
 
   return (
     <div className="flex h-screen w-full flex-col">
-      {/* Stats Panel */}
-      <StatsPanel nodes={nodes as any} />
+      {/* Stats Panel - Conditional */}
+      {showStats && <StatsPanel nodes={nodes as any} />}
 
-      {/* NEW: System Metrics Dashboard (top-right) */}
-      <SystemMetricsDashboard nodes={nodes as any} startTime={systemStartTime} />
+      {/* NEW: System Metrics Dashboard (top-right) - Conditional */}
+      {showMetrics && <SystemMetricsDashboard nodes={nodes as any} startTime={systemStartTime} />}
 
-      {/* Workflow Stage Indicator */}
-      <WorkflowStageIndicator
-        currentStage={currentStage}
-        completedStages={completedStages}
-      />
+      {/* Workflow Stage Indicator - Conditional */}
+      {showWorkflow && (
+        <WorkflowStageIndicator
+          currentStage={currentStage}
+          completedStages={completedStages}
+        />
+      )}
 
       {/* NEW: Celebration Effect */}
-      <CelebrationEffect trigger={celebrationTrigger} />
+      {visualMode === 'rich' && !prefersReducedMotion && (
+        <CelebrationEffect trigger={celebrationTrigger} />
+      )}
 
       {/* Main content area */}
       <div className="relative flex flex-1 overflow-hidden">
@@ -808,6 +850,101 @@ export function FlowCanvas() {
               />
             </svg>
           </button>
+
+          {/* Panel toggles */}
+          <div className="flex gap-1 rounded-lg bg-white p-1 shadow-lg">
+            <button
+              onClick={() => setShowStats(!showStats)}
+              className={`rounded px-2 py-1.5 text-xs font-medium transition ${
+                showStats ? 'bg-blue-600 text-white' : 'bg-transparent text-gray-700 hover:bg-gray-100'
+              }`}
+              title="Toggle Stats Panel"
+            >
+              📊
+            </button>
+            <button
+              onClick={() => setShowMetrics(!showMetrics)}
+              className={`rounded px-2 py-1.5 text-xs font-medium transition ${
+                showMetrics ? 'bg-blue-600 text-white' : 'bg-transparent text-gray-700 hover:bg-gray-100'
+              }`}
+              title="Toggle System Metrics"
+            >
+              📈
+            </button>
+            <button
+              onClick={() => setShowWorkflow(!showWorkflow)}
+              className={`rounded px-2 py-1.5 text-xs font-medium transition ${
+                showWorkflow ? 'bg-blue-600 text-white' : 'bg-transparent text-gray-700 hover:bg-gray-100'
+              }`}
+              title="Toggle Workflow Stages"
+            >
+              🚀
+            </button>
+            <button
+              onClick={() => setShowActivityLog(!showActivityLog)}
+              className={`rounded px-2 py-1.5 text-xs font-medium transition ${
+                showActivityLog ? 'bg-blue-600 text-white' : 'bg-transparent text-gray-700 hover:bg-gray-100'
+              }`}
+              title="Toggle Activity Log"
+            >
+              📝
+            </button>
+            <button
+              onClick={() => setShowLegend(!showLegend)}
+              className={`rounded px-2 py-1.5 text-xs font-medium transition ${
+                showLegend ? 'bg-blue-600 text-white' : 'bg-transparent text-gray-700 hover:bg-gray-100'
+              }`}
+              title="Toggle Legend"
+            >
+              ℹ️
+            </button>
+          </div>
+        </div>
+
+        {/* Effects & Performance controls */}
+        <div className="absolute right-4 top-4 z-10 flex flex-col items-end gap-2">
+          <div
+            className={`flex items-center gap-2 rounded-lg px-3 py-2 shadow-lg border ${
+              prefersHighContrast
+                ? 'bg-slate-900/90 border-white/20 text-slate-100'
+                : 'bg-white/90 border-gray-200 text-gray-700'
+            }`}
+          >
+            <span className="text-[10px] font-semibold uppercase tracking-widest">Effects</span>
+            <button
+              onClick={() => setVisualMode('rich')}
+              disabled={prefersReducedMotion}
+              className={`rounded px-2 py-1 text-xs font-semibold transition ${
+                visualMode === 'rich' && !prefersReducedMotion
+                  ? 'bg-purple-600 text-white shadow'
+                  : 'bg-transparent hover:bg-black/10'
+              } ${prefersReducedMotion ? 'opacity-40 cursor-not-allowed' : ''}`}
+            >
+              Rich
+            </button>
+            <button
+              onClick={() => setVisualMode('light')}
+              className={`rounded px-2 py-1 text-xs font-semibold transition ${
+                visualMode === 'light'
+                  ? 'bg-blue-600 text-white shadow'
+                  : 'bg-transparent hover:bg-black/10'
+              }`}
+            >
+              Light
+            </button>
+          </div>
+
+          <button
+            onClick={() => setShowPerformanceStats((prev) => !prev)}
+            className={`rounded-lg px-3 py-2 text-xs font-semibold shadow-lg transition ${
+              prefersHighContrast
+                ? 'bg-slate-900/90 border border-white/20 text-slate-100 hover:bg-slate-800/90'
+                : 'bg-white/90 border border-gray-200 text-gray-700 hover:bg-gray-100'
+            }`}
+            title="Shift+Pで切り替え"
+          >
+            {showPerformanceStats ? 'Hide Performance' : 'Show Performance'}
+          </button>
         </div>
 
         {/* Filter Panel */}
@@ -820,7 +957,7 @@ export function FlowCanvas() {
         )}
 
         {/* React Flow Canvas */}
-        <div className={`flex-1 ${selectedNode ? 'pr-80' : ''}`}>
+        <div className={`flex-1 ${selectedNode ? 'lg:pr-80' : ''}`}>
           <ReactFlow
             nodes={filteredNodes}
             edges={edges}
@@ -852,31 +989,35 @@ export function FlowCanvas() {
           </ReactFlow>
 
           {/* NEW: Particle Flow Animation */}
-          <ParticleFlow
-            edges={edges as GraphEdge[]}
-            nodes={nodes as any[]}
-            activeEdgeIds={activeEdgeIds}
-          />
+          {visualMode === 'rich' && !prefersReducedMotion && (
+            <ParticleFlow
+              edges={edges as GraphEdge[]}
+              nodes={nodes as any[]}
+              activeEdgeIds={activeEdgeIds}
+            />
+          )}
 
           {/* NEW: Agent Thinking Bubbles */}
-          <AgentThinkingBubbles
-            bubbles={Object.entries(agentThinking).map(([agentId, data]) => {
-              const agentNames: Record<string, string> = {
-                codegen: 'CodeGen',
-                review: 'Review',
-                pr: 'PR',
-                deployment: 'Deploy',
-                coordinator: 'Coordinator',
-              };
-              return {
-                agentId,
-                agentName: agentNames[agentId] || agentId,
-                thinking: data.thinking,
-                position: data.position,
-                status: data.status as any,
-              };
-            })}
-          />
+          {visualMode !== 'light' && !prefersReducedMotion && (
+            <AgentThinkingBubbles
+              bubbles={Object.entries(agentThinking).map(([agentId, data]) => {
+                const agentNames: Record<string, string> = {
+                  codegen: 'CodeGen',
+                  review: 'Review',
+                  pr: 'PR',
+                  deployment: 'Deploy',
+                  coordinator: 'Coordinator',
+                };
+                return {
+                  agentId,
+                  agentName: agentNames[agentId] || agentId,
+                  thinking: data.thinking,
+                  position: data.position,
+                  status: data.status as any,
+                };
+              })}
+            />
+          )}
         </div>
 
         {/* Sidebar */}
@@ -884,15 +1025,15 @@ export function FlowCanvas() {
           <Sidebar selectedNode={selectedNode} onClose={() => setSelectedNode(null)} />
         )}
 
-        {/* Explanation Panel */}
+        {/* Explanation Panel - Always visible but minimized by default */}
         <ExplanationPanel entries={explanations} />
 
-        {/* Legend Panel */}
-        <LegendPanel />
+        {/* Legend Panel - Conditional */}
+        {showLegend && <LegendPanel />}
       </div>
 
-      {/* Activity Log */}
-      <ActivityLog activities={activities} />
+      {/* Activity Log - Conditional */}
+      {showActivityLog && <ActivityLog activities={activities} />}
 
       {/* NEW: Node Details Modal */}
       <NodeDetailsModal
@@ -901,6 +1042,13 @@ export function FlowCanvas() {
           setDetailsNode(null);
           setSelectedNode(null);
         }}
+      />
+
+      <PerformanceStats
+        isVisible={showPerformanceStats}
+        nodeCount={nodes.length}
+        edgeCount={edges.length}
+        visualMode={visualMode}
       />
     </div>
   );

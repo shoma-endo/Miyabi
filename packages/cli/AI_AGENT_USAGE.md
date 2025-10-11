@@ -157,24 +157,109 @@ miyabi install --json --yes --non-interactive
 **Use case:** Execute a specific agent on an Issue
 
 ```bash
+# IssueAgent - Fully integrated with SDK (v0.8.7+)
+miyabi agent run issue --issue=123 --json
+
+# Other agents - Pending SDK integration
 miyabi agent run codegen --issue=123 --json --dry-run
 ```
 
 **Available agents:**
-- `coordinator` - Task decomposition and DAG planning
-- `codegen` - AI-driven code generation (Claude Sonnet 4)
-- `review` - Code quality review (80+ score required)
-- `issue` - Issue analysis and labeling
-- `pr` - Pull Request creation
-- `deploy` - CI/CD deployment
-- `mizusumashi` - Water Spider (full autonomous mode)
+- `issue` - Issue analysis and labeling **✅ SDK integrated**
+- `coordinator` - Task decomposition and DAG planning **⏳ Pending**
+- `codegen` - AI-driven code generation (Claude Sonnet 4) **⏳ Pending**
+- `review` - Code quality review (80+ score required) **⏳ Pending**
+- `pr` - Pull Request creation **⏳ Pending**
+- `deploy` - CI/CD deployment **⏳ Pending**
+- `mizusumashi` - Water Spider (full autonomous mode) **⏳ Pending**
 
-**Current limitation:** Full JSON output not yet implemented (Phase 2)
+**v0.8.7 Features:**
+- ✅ Full JSON output support for all agent commands
+- ✅ IssueAgent uses miyabi-agent-sdk (real AI analysis)
+- ✅ Auto repository detection from git remote
+- ✅ Uses Claude Code CLI (free, no API key needed)
+- ✅ Exit code error handling with suggestions
+
+**Success Response (IssueAgent):**
+```json
+{
+  "success": true,
+  "data": {
+    "agent": "issue",
+    "status": "success",
+    "message": "IssueAgent executed successfully",
+    "duration": 1247,
+    "details": {
+      "issueNumber": 123,
+      "labelsApplied": ["type:bug", "priority:P1-High"],
+      "analysis": {
+        "type": "bug",
+        "priority": "P1-High",
+        "severity": "Sev.2-High",
+        "complexity": "medium"
+      }
+    }
+  },
+  "message": "Agent issue executed successfully",
+  "timestamp": "2025-10-11T00:00:00Z"
+}
+```
+
+**Error Response (Example):**
+```json
+{
+  "success": false,
+  "error": {
+    "code": "AGENT_EXECUTION_FAILED",
+    "message": "--issue option is required for IssueAgent. Example: miyabi agent run issue --issue=123",
+    "recoverable": true,
+    "suggestion": "Provide --issue flag with issue number"
+  },
+  "timestamp": "2025-10-11T00:00:00Z"
+}
+```
+
+**Agents Not Yet Integrated (will return "skipped" status):**
+```json
+{
+  "success": true,
+  "data": {
+    "agent": "codegen",
+    "status": "skipped",
+    "message": "codegenAgent SDK integration pending"
+  },
+  "timestamp": "2025-10-11T00:00:00Z"
+}
+```
+
+**AI Agent Decision Tree:**
+1. Check which agent is needed based on issue state
+2. If IssueAgent needed: Execute `miyabi agent run issue --issue=X --json`
+3. Parse JSON response and check `data.status`
+4. If `status: "success"`, proceed to next step in pipeline
+5. If `status: "skipped"`, inform user that agent is not yet integrated
+6. If `status: "failure"`, check `error.suggestion` for recovery steps
+
+**Environment Variables (NOT REQUIRED in v0.8.7+):**
+```bash
+# These are NO LONGER NEEDED (auto-detected from git remote)
+# export GITHUB_OWNER=username
+# export GITHUB_REPO=repo-name
+
+# Only GITHUB_TOKEN is required
+export GITHUB_TOKEN=ghp_xxx
+```
 
 **AI Agent should:**
-1. Check exit code (0 = success)
-2. Remove `--dry-run` for actual execution
-3. Monitor agent execution via `miyabi status --json`
+1. Execute with `--json` flag: `miyabi agent run issue --issue=123 --json`
+2. Check exit code (0 = success, non-zero = error)
+3. Parse JSON response
+4. Check `result.data.status` field:
+   - `"success"` → Agent completed, parse `details`
+   - `"skipped"` → Agent not yet integrated with SDK
+   - `"failure"` → Agent failed, check `error.message`
+5. For IssueAgent success: Extract applied labels from `details`
+6. Report concisely to user (see .claude/instructions.md for output style)
 
 ### 5. Auto Mode (Water Spider)
 
@@ -258,10 +343,13 @@ fi
 
 ## Recommended Workflows for AI Agents
 
-### Workflow 1: Autonomous Issue Processing
+### Workflow 1: Autonomous Issue Processing (v0.8.7+)
 
 ```bash
-# 1. Check status
+# Prerequisites: Set GITHUB_TOKEN
+export GITHUB_TOKEN=ghp_xxx
+
+# 1. Check status (repository auto-detected from git remote)
 miyabi status --json > status.json
 EXIT_CODE=$?
 [ $EXIT_CODE -ne 0 ] && exit $EXIT_CODE
@@ -269,19 +357,35 @@ EXIT_CODE=$?
 # 2. Parse pending issues count
 PENDING=$(jq -r '.data.issues.byState.pending' status.json)
 
-# 3. If pending issues exist, run IssueAgent
+# 3. If pending issues exist, run IssueAgent (SDK integrated)
 if [ "$PENDING" -gt 0 ]; then
-  miyabi agent run issue --json --yes
+  # Get issue numbers from GitHub API or status output
+  # Example: Process issue #123
+  miyabi agent run issue --issue=123 --json > issue_result.json
+  EXIT_CODE=$?
+
+  if [ $EXIT_CODE -eq 0 ]; then
+    # Parse labels applied
+    LABELS=$(jq -r '.data.details.labelsApplied[]' issue_result.json)
+    echo "IssueAgent completed. Labels applied: $LABELS"
+  fi
 fi
 
 # 4. Check implementing issues
 IMPLEMENTING=$(jq -r '.data.issues.byState.implementing' status.json)
 
-# 5. If implementing, run ReviewAgent
+# 5. If implementing, run ReviewAgent (pending SDK integration)
 if [ "$IMPLEMENTING" -gt 0 ]; then
-  miyabi agent run review --json --yes
+  miyabi agent run review --issue=123 --json
+  # Note: Will return status: "skipped" until SDK integration complete
 fi
 ```
+
+**Key Changes in v0.8.7:**
+- ✅ No need to set GITHUB_OWNER/GITHUB_REPO (auto-detected)
+- ✅ IssueAgent returns full JSON response with analysis details
+- ✅ Other agents return "skipped" status until SDK integration
+- ✅ Exit codes properly set for error handling
 
 ### Workflow 2: New Project Setup
 
@@ -384,9 +488,16 @@ miyabi status --json
 
 ## Version Compatibility
 
-- **Current version:** 0.8.4
+- **Current version:** 0.8.7
 - **Status command:** Full JSON support ✅
-- **Other commands:** JSON flag supported, full implementation in Phase 2 ⚠️
+- **Agent commands:** Full JSON support ✅ (IssueAgent SDK integrated)
+- **Other commands:** JSON flag supported, full implementation in progress ⚠️
+
+**What's New in v0.8.7:**
+- ✅ miyabi-agent-sdk integration (IssueAgent fully functional)
+- ✅ Auto repository detection from git remote (no env vars needed)
+- ✅ Uses Claude Code CLI (free, no ANTHROPIC_API_KEY required)
+- ⏳ Other agents (codegen, review, pr, coordinator) pending SDK integration
 
 Check version:
 ```bash

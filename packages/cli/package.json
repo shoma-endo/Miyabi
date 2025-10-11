@@ -20,14 +20,14 @@
     "INSTALL_TO_EXISTING_PROJECT.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && chmod +x dist/index.js",
     "dev": "tsx src/index.ts",
     "clean": "rm -rf dist",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "postinstall": "node scripts/postinstall.js",
-    "prepublishOnly": "npm run clean && npm run build && chmod +x dist/index.js"
+    "prepublishOnly": "npm run clean && npm run build"
   },
   "keywords": [
     "ai",

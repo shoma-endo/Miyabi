@@ -33,6 +33,7 @@ lerna-debug.log*
 .ai/parallel-reports/*.json
 .ai/parallel-reports/escalations/
 .ai/issues/*.json
+.ai/*.mjs
 
 # Keep directory structure but ignore contents
 !.ai/logs/.gitkeep
@@ -76,6 +77,9 @@ Thumbs.db
 
 # Vitest
 .vitest/
+
+# Vite
+**/.vite/
 
 # Playwright
 playwright-report/data/

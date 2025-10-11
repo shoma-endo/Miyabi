@@ -21,12 +21,21 @@ import {
   type CoordinatorInput,
 } from 'miyabi-agent-sdk';
 
-// PRAgent は TODO (ファイル生成との統合が必要)
-// import { PRAgent, type PRInput } from 'miyabi-agent-sdk';
+import {
+  PRAgent,
+  type PRInput,
+} from 'miyabi-agent-sdk';
 import {
   getGitHubToken,
   verifyTokenAccess,
 } from '../auth/credentials.js';
+import {
+  saveCodeGenOutput,
+  loadCodeGenOutput,
+  saveReviewOutput,
+  loadReviewOutput,
+  checkIssueStorage,
+} from '../utils/storage.js';
 
 /**
  * 利用可能なAgent種別
@@ -278,13 +287,19 @@ export async function runAgent(
         };
 
         result = await agent.generate(input);
+
+        // Save CodeGenAgent output for PRAgent
+        if (result.success && result.data) {
+          saveCodeGenOutput(owner, repo, parseInt(options.issue), result.data);
+        }
+
         break;
       }
 
       case 'review': {
-        // ReviewAgent requires either --pr or --files
+        // ReviewAgent requires either --pr or --files, and optionally --issue for storage
         if (!options.pr && !options.files) {
-          throw new Error('--pr or --files option is required for ReviewAgent. Example: miyabi agent run review --pr=123');
+          throw new Error('--pr or --files option is required for ReviewAgent. Example: miyabi agent run review --pr=123 --issue=52');
         }
 
         // For now, implement PR review only
@@ -322,6 +337,11 @@ export async function runAgent(
           };
 
           result = await agent.review(input);
+
+          // Save ReviewAgent output for PRAgent (if --issue provided)
+          if (options.issue && result.success && result.data) {
+            saveReviewOutput(owner, repo, parseInt(options.issue), result.data);
+          }
         } else {
           // TODO: Implement file review
           throw new Error('--files option is not yet implemented. Use --pr for now.');
@@ -334,13 +354,53 @@ export async function runAgent(
           throw new Error('--issue option is required for PRAgent. Example: miyabi agent run pr --issue=123');
         }
 
-        // TODO: PRAgent requires integration with file storage
-        // Need to get generated files from CodeGenAgent and quality report from ReviewAgent
-        throw new Error(
-          'PRAgent is not yet fully implemented. ' +
-          'It requires files from CodeGenAgent and quality report from ReviewAgent. ' +
-          'Implementation pending in next release.'
-        );
+        const issueNumber = parseInt(options.issue);
+
+        // Check if CodeGenAgent and ReviewAgent outputs exist
+        const storage = checkIssueStorage(owner, repo, issueNumber);
+
+        if (!storage.hasCodeGen) {
+          throw new Error(
+            `CodeGenAgent output not found for issue #${issueNumber}. ` +
+            'Please run: miyabi agent run codegen --issue=' + issueNumber
+          );
+        }
+
+        if (!storage.hasReview) {
+          throw new Error(
+            `ReviewAgent output not found for issue #${issueNumber}. ` +
+            'Please run: miyabi agent run review --pr=XXX --issue=' + issueNumber
+          );
+        }
+
+        // Load CodeGenAgent output
+        const codegenOutput = loadCodeGenOutput(owner, repo, issueNumber);
+        if (!codegenOutput || !codegenOutput.files) {
+          throw new Error('Invalid CodeGenAgent output format');
+        }
+
+        // Load ReviewAgent output
+        const reviewOutput = loadReviewOutput(owner, repo, issueNumber);
+        if (!reviewOutput) {
+          throw new Error('Invalid ReviewAgent output format');
+        }
+
+        // Create PRAgent
+        const agent = new PRAgent({
+          githubToken,
+        });
+
+        const input: PRInput = {
+          issueNumber: issueNumber,
+          repository: repo,
+          owner,
+          files: codegenOutput.files,
+          qualityReport: reviewOutput,
+          baseBranch: 'main',
+        };
+
+        result = await agent.create(input);
+        break;
       }
 
       case 'coordinator': {

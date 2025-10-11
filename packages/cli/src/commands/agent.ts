@@ -178,7 +178,8 @@ export function registerAgentCommand(program: Command): void {
     .option('-p, --parallel <number>', '並行実行数', '1')
     .option('--dry-run', '実行シミュレーション')
     .option('-v, --verbose', '詳細ログ出力')
-    .action(async (agentName: string, options: AgentRunOptions) => {
+    .option('--json', 'JSON形式で出力')
+    .action(async (agentName: string, options: AgentRunOptions & { json?: boolean }) => {
       console.log(chalk.cyan.bold('\n🤖 Miyabi Agent CLI\n'));
 
       // Agent名のバリデーション
@@ -200,7 +201,9 @@ export function registerAgentCommand(program: Command): void {
   agent
     .command('list')
     .description('利用可能なAgent一覧')
-    .action(async () => {
+    .option('--json', 'JSON形式で出力')
+    .action(async (_options: { json?: boolean }) => {
+      // TODO: Implement JSON output
       await listAgents();
     });
 
@@ -208,7 +211,9 @@ export function registerAgentCommand(program: Command): void {
   agent
     .command('status [agent-name]')
     .description('Agent実行状態確認')
-    .action(async (agentName?: string) => {
+    .option('--json', 'JSON形式で出力')
+    .action(async (agentName: string | undefined, _options: { json?: boolean }) => {
+      // TODO: Implement JSON output
       await agentStatus(agentName as AgentType | undefined);
     });
 }

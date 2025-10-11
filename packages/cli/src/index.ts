@@ -64,7 +64,11 @@ const program = new Command();
 program
   .name('miyabi')
   .description('✨ Miyabi - 一つのコマンドで全てが完結する自律型開発フレームワーク')
-  .version(packageJson.version);
+  .version(packageJson.version)
+  .option('--json', 'Output in JSON format (for AI agents)')
+  .option('-y, --yes', 'Auto-confirm all prompts (non-interactive mode)')
+  .option('-v, --verbose', 'Verbose output with detailed logs')
+  .option('--debug', 'Debug mode with extra detailed logs');
 
 // ============================================================================
 // Single Command Interface
@@ -284,7 +288,9 @@ program
   .description('新しいプロジェクトを作成')
   .option('-p, --private', 'プライベートリポジトリとして作成')
   .option('--skip-install', 'npm installをスキップ')
-  .action(async (projectName: string, options: { private?: boolean; skipInstall?: boolean }) => {
+  .option('--json', 'JSON形式で出力')
+  .option('-y, --yes', 'すべてのプロンプトを自動承認')
+  .action(async (projectName: string, options: { private?: boolean; skipInstall?: boolean; json?: boolean; yes?: boolean }) => {
     await init(projectName, options);
   });
 
@@ -294,7 +300,8 @@ program
   .option('--dry-run', 'ドライラン（実際には変更しない）')
   .option('--non-interactive', '非対話モード（プロンプトをスキップ）')
   .option('-y, --yes', 'すべてのプロンプトを自動承認')
-  .action(async (options: { dryRun?: boolean; nonInteractive?: boolean; yes?: boolean }) => {
+  .option('--json', 'JSON形式で出力')
+  .action(async (options: { dryRun?: boolean; nonInteractive?: boolean; yes?: boolean; json?: boolean }) => {
     await install(options);
   });
 
@@ -302,7 +309,8 @@ program
   .command('status')
   .description('プロジェクトの状態を確認')
   .option('-w, --watch', 'ウォッチモード（自動更新）')
-  .action(async (options: { watch?: boolean }) => {
+  .option('--json', 'JSON形式で出力')
+  .action(async (options: { watch?: boolean; json?: boolean }) => {
     await status(options);
   });
 
@@ -313,15 +321,17 @@ program
   .option('-o, --output <file>', '出力ファイル', './docs/API.md')
   .option('-w, --watch', 'ウォッチモード')
   .option('-t, --training', 'トレーニング資料も生成')
-  .action(async (options: { input?: string; output?: string; watch?: boolean; training?: boolean }) => {
+  .option('--json', 'JSON形式で出力')
+  .action(async (options: { input?: string; output?: string; watch?: boolean; training?: boolean; json?: boolean }) => {
     await docs(options);
   });
 
 program
   .command('config')
   .description('設定を管理')
-  .action(async () => {
-    await config({});
+  .option('--json', 'JSON形式で出力')
+  .action(async (options: { json?: boolean }) => {
+    await config(options);
   });
 
 program
@@ -331,7 +341,8 @@ program
   .option('-y, --yes', 'すべてのプロンプトを自動承認')
   .option('--skip-token', 'トークンセットアップをスキップ')
   .option('--skip-config', '設定をスキップ')
-  .action(async (options: { nonInteractive?: boolean; yes?: boolean; skipToken?: boolean; skipConfig?: boolean }) => {
+  .option('--json', 'JSON形式で出力')
+  .action(async (options: { nonInteractive?: boolean; yes?: boolean; skipToken?: boolean; skipConfig?: boolean; json?: boolean }) => {
     await setup(options);
   });
 

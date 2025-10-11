@@ -58,6 +58,9 @@
     "lint": "eslint . --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
+    "check:all": "tsx scripts/parallel-checks.ts",
+    "check:all:verbose": "tsx scripts/parallel-checks.ts --verbose",
+    "check:all:bail": "tsx scripts/parallel-checks.ts --bail",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
@@ -72,7 +75,14 @@
     "dashboard:frontend": "cd packages/dashboard && npm run dev",
     "dashboard:dev": "concurrently \"npm run dashboard:server\" \"npm run dashboard:frontend\"",
     "dashboard:build": "cd packages/dashboard-server && npm run build && cd ../dashboard && npm run build",
-    "dashboard:install": "cd packages/dashboard-server && npm install && cd ../dashboard && npm install"
+    "dashboard:install": "cd packages/dashboard-server && npm install && cd ../dashboard && npm install",
+    "miyabi:status": "npx miyabi status",
+    "miyabi:agent": "npx miyabi agent",
+    "miyabi:auto": "npx miyabi auto",
+    "miyabi:todos": "npx miyabi todos",
+    "miyabi:config": "npx miyabi config",
+    "miyabi:setup": "npx miyabi setup",
+    "miyabi:docs": "npx miyabi docs"
   },
   "keywords": [
     "ai",

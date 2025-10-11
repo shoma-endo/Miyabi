@@ -19,6 +19,7 @@ import { docs } from './commands/docs.js';
 import { registerAgentCommand } from './commands/agent.js';
 import { registerAutoModeCommand } from './commands/auto.js';
 import { registerTodosCommand } from './commands/todos.js';
+import { registerAuthCommand } from './commands/auth.js';
 import { loadConfig, applyConfigToEnvironment } from './config/loader.js';
 import {
   reportIssueToMiyabi,
@@ -359,6 +360,9 @@ program
 
 // Register agent command
 registerAgentCommand(program);
+
+// Register auth command
+registerAuthCommand(program);
 
 // Register auto mode command
 registerAutoModeCommand(program);

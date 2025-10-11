@@ -16,6 +16,10 @@ import {
   CodeGenAgent,
   type CodeGenInput,
 } from 'miyabi-agent-sdk';
+import {
+  getGitHubToken,
+  verifyTokenAccess,
+} from '../auth/credentials.js';
 
 /**
  * 利用可能なAgent種別
@@ -165,10 +169,15 @@ export async function runAgent(
       };
     }
 
-    // 環境変数チェック
-    const githubToken = process.env.GITHUB_TOKEN;
+    // GitHub認証チェック（OAuth or GITHUB_TOKEN）
+    const githubToken = getGitHubToken();
     if (!githubToken) {
-      throw new Error('GITHUB_TOKEN environment variable is required');
+      spinner.fail(chalk.red('Not authenticated'));
+      console.log(chalk.yellow('\n⚠️  GitHub認証が必要です'));
+      console.log(chalk.white('\nAuthenticate using one of these methods:'));
+      console.log(chalk.cyan('  1. Run: miyabi auth login'));
+      console.log(chalk.cyan('  2. Set environment variable: export GITHUB_TOKEN=ghp_xxx\n'));
+      throw new Error('Not authenticated. Run `miyabi auth login` to authenticate.');
     }
 
     // リポジトリ情報取得（git remoteから自動検出）
@@ -182,6 +191,19 @@ export async function runAgent(
     }
 
     const { owner, name: repo } = repoInfo;
+
+    // リポジトリアクセス権限チェック（セキュリティ）
+    if (!options.verbose) spinner.text = 'Verifying repository access...';
+    const hasAccess = await verifyTokenAccess(githubToken, owner, repo);
+    if (!hasAccess) {
+      spinner.fail(chalk.red('Access denied'));
+      throw new Error(
+        `You don't have access to ${owner}/${repo}. ` +
+        'Make sure you have the correct permissions.'
+      );
+    }
+
+    if (!options.verbose) spinner.text = `${agentName}Agent 実行中...`;
 
     // Agent実行 - miyabi-agent-sdk を使用
     let result: any;

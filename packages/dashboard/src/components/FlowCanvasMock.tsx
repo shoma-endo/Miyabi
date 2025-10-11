@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -18,12 +18,6 @@ import { StateNode } from './nodes/StateNode';
 import { StatsPanel } from './StatsPanel';
 import { ActivityLog, type ActivityLogEntry } from './ActivityLog';
 import type { GraphNode, GraphEdge } from '../types';
-
-const nodeTypes: NodeTypes = {
-  issue: IssueNode,
-  agent: AgentNode,
-  state: StateNode,
-};
 
 // Mock data with parameters
 const mockNodes: GraphNode[] = [
@@ -156,6 +150,31 @@ export function FlowCanvasMock() {
     },
   ]);
 
+  // Build agent status map
+  const agentStatusMap = useMemo(() => {
+    const statusMap: Record<string, { status: string; progress?: number }> = {};
+    nodes.filter(n => n.type === 'agent').forEach(agent => {
+      const data = agent.data as any;
+      statusMap[data.agentId] = {
+        status: data.status || 'idle',
+        progress: data.progress
+      };
+    });
+    return statusMap;
+  }, [nodes]);
+
+  // Define node types with agent status
+  const nodeTypes: NodeTypes = useMemo(() => ({
+    issue: (props: any) => <IssueNode {...props} agentStatuses={agentStatusMap} />,
+    agent: AgentNode,
+    state: StateNode,
+  }), [agentStatusMap]);
+
+  // Filter out agent nodes - show only issue nodes with agent badges
+  const filteredNodes = useMemo(() => {
+    return nodes.filter(n => n.type !== 'agent');
+  }, [nodes]);
+
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges]
@@ -181,7 +200,7 @@ export function FlowCanvasMock() {
         {/* React Flow Canvas */}
         <div className="flex-1">
           <ReactFlow
-            nodes={nodes}
+            nodes={filteredNodes}
             edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}

@@ -5,8 +5,6 @@
  * Shows 5 main stages with progress indication and Japanese explanations.
  */
 
-import { useMemo } from 'react';
-
 export interface WorkflowStage {
   id: string;
   name: string;
@@ -65,142 +63,74 @@ export interface WorkflowStageIndicatorProps {
 }
 
 export function WorkflowStageIndicator({ currentStage, completedStages }: WorkflowStageIndicatorProps) {
-  // Determine the active stage index
-  const activeStageIndex = useMemo(() => {
-    if (!currentStage) return -1;
-    return WORKFLOW_STAGES.findIndex((stage) => stage.id === currentStage);
-  }, [currentStage]);
-
   return (
-    <div className="glass-effect-dark border-b border-white/10 px-8 py-5 backdrop-blur-2xl">
-      {/* Title */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 flex items-center gap-2">
-            <span className="text-2xl">🚀</span>
-            <span>自律ワークフロー / Autonomous Workflow</span>
-          </h2>
-          <p className="text-sm text-gray-300 mt-1 font-medium">
-            {currentStage
-              ? WORKFLOW_STAGES.find((s) => s.id === currentStage)?.description || 'Processing...'
-              : 'Waiting for tasks...'}
-          </p>
-        </div>
-        {activeStageIndex >= 0 && (
-          <div className="rounded-full glass-effect px-4 py-2 text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-            Step {activeStageIndex + 1} / {WORKFLOW_STAGES.length}
-          </div>
-        )}
-      </div>
-
-      {/* Stage Progress */}
-      <div className="flex items-center gap-2">
+    <div className="border-b border-white/10 px-2 py-1 backdrop-blur-lg bg-gray-900/80">
+      {/* Compact Stage Progress */}
+      <div className="flex items-center gap-1">
         {WORKFLOW_STAGES.map((stage, index) => {
           const isCompleted = completedStages.includes(stage.id);
           const isActive = currentStage === stage.id;
 
           return (
             <div key={stage.id} className="flex flex-1 items-center">
-              {/* Stage Card */}
+              {/* Compact Stage Card */}
               <div
-                className={`relative flex flex-1 flex-col items-center rounded-2xl p-[2px] transition-all duration-500 ${
-                  isActive
-                    ? 'scale-110 shimmer'
-                    : isCompleted
-                    ? 'scale-105'
-                    : 'opacity-60 scale-95'
+                className={`relative flex flex-1 flex-col items-center rounded p-[1px] transition-all duration-200 ${
+                  isActive ? '' : isCompleted ? '' : 'opacity-50'
                 }`}
                 style={{
                   background: isActive
-                    ? `linear-gradient(135deg, ${stage.color}, ${stage.color}dd)`
+                    ? `linear-gradient(135deg, ${stage.color}60, ${stage.color}40)`
                     : isCompleted
-                    ? 'linear-gradient(135deg, #10b981, #34d399)'
-                    : 'linear-gradient(135deg, #6b7280, #9ca3af)',
-                  filter: isActive
-                    ? `drop-shadow(0 0 20px ${stage.color}80)`
-                    : isCompleted
-                    ? 'drop-shadow(0 0 20px rgba(16, 185, 129, 0.6))'
-                    : 'none',
+                    ? 'linear-gradient(135deg, #10b98140, #34d39940)'
+                    : 'linear-gradient(135deg, #6b728040, #9ca3af40)',
                 }}
               >
-                <div className="w-full rounded-2xl bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl p-4">
-                  {/* Icon and Status */}
-                  <div className="relative mb-3 flex justify-center">
+                <div className="w-full rounded bg-gray-900/90 px-1.5 py-1">
+                  {/* Icon */}
+                  <div className="relative flex justify-center">
                     <span
-                      className="text-4xl transition-transform duration-300"
+                      className="text-base"
                       style={{
-                        animation: isActive ? 'scalePulse 2s ease-in-out infinite' : 'none',
                         filter: isActive
-                          ? `drop-shadow(0 0 15px ${stage.color})`
+                          ? `drop-shadow(0 0 2px ${stage.color}60)`
                           : isCompleted
-                          ? 'drop-shadow(0 0 10px rgba(16, 185, 129, 0.8))'
+                          ? 'drop-shadow(0 0 2px rgba(16, 185, 129, 0.4))'
                           : 'none',
                       }}
                     >
                       {stage.icon}
                     </span>
                     {isCompleted && (
-                      <div className="absolute -right-2 -top-1 flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-emerald-500 text-sm text-white font-bold shadow-lg">
+                      <div className="absolute -right-1 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-green-500 text-[8px] text-white font-bold">
                         ✓
-                      </div>
-                    )}
-                    {isActive && (
-                      <div className="absolute -right-2 -top-1">
-                        <div className="h-4 w-4 animate-ping rounded-full" style={{ backgroundColor: stage.color }}></div>
-                        <div className="absolute top-0 h-4 w-4 rounded-full" style={{ backgroundColor: stage.color }}></div>
                       </div>
                     )}
                   </div>
 
                   {/* Stage Name */}
-                  <div className="text-center">
+                  <div className="text-center mt-0.5">
                     <div
-                      className={`text-sm font-black mb-1 ${
-                        isActive || isCompleted ? 'text-white' : 'text-gray-400'
+                      className={`text-[9px] font-semibold truncate ${
+                        isActive || isCompleted ? 'text-white' : 'text-gray-500'
                       }`}
                     >
                       {stage.nameJa}
                     </div>
-                    <div
-                      className={`text-[10px] font-semibold ${
-                        isActive || isCompleted ? 'text-gray-300' : 'text-gray-500'
-                      }`}
-                    >
-                      {stage.name}
-                    </div>
                   </div>
-
-                  {/* Progress Bar (for active stage) */}
-                  {isActive && (
-                    <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-gray-700/50">
-                      <div
-                        className="h-full animate-pulse rounded-full shadow-lg"
-                        style={{
-                          background: `linear-gradient(90deg, ${stage.color}, ${stage.color}dd, ${stage.color})`,
-                          boxShadow: `0 0 10px ${stage.color}80`,
-                          width: '100%',
-                        }}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent shimmer" />
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
 
               {/* Arrow Connector */}
               {index < WORKFLOW_STAGES.length - 1 && (
-                <div className="flex-shrink-0 px-3">
+                <div className="flex-shrink-0 px-0.5">
                   <svg
-                    className={`h-8 w-8 transition-all duration-300 ${
+                    className={`h-3 w-3 transition-all duration-200 ${
                       isCompleted ? 'text-green-400' : 'text-gray-600'
                     }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
-                    style={{
-                      filter: isCompleted ? 'drop-shadow(0 0 4px rgba(16, 185, 129, 0.6))' : 'none',
-                    }}
                   >
                     <path
                       strokeLinecap="round"

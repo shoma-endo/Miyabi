@@ -48,6 +48,15 @@ export async function authLogin(): Promise<void> {
     console.log(chalk.white(`Logged in as: ${chalk.cyan(user.login)}`));
     console.log(chalk.gray(`User ID: ${user.id}`));
     console.log(chalk.gray(`Profile: ${user.html_url}\n`));
+
+    // Show next steps
+    console.log(chalk.cyan.bold('🚀 Next Steps:\n'));
+    console.log(chalk.white('  1. Check available agents:'));
+    console.log(chalk.gray('     miyabi agent list\n'));
+    console.log(chalk.white('  2. Run an agent:'));
+    console.log(chalk.gray('     miyabi agent run codegen --issue=123\n'));
+    console.log(chalk.white('  3. Check project status:'));
+    console.log(chalk.gray('     miyabi status\n'));
   } catch (error) {
     console.log(chalk.yellow('\n⚠️  Could not fetch user info\n'));
   }

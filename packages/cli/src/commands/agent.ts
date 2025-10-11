@@ -173,10 +173,14 @@ export async function runAgent(
     const githubToken = getGitHubToken();
     if (!githubToken) {
       spinner.fail(chalk.red('Not authenticated'));
-      console.log(chalk.yellow('\n⚠️  GitHub認証が必要です'));
-      console.log(chalk.white('\nAuthenticate using one of these methods:'));
-      console.log(chalk.cyan('  1. Run: miyabi auth login'));
-      console.log(chalk.cyan('  2. Set environment variable: export GITHUB_TOKEN=ghp_xxx\n'));
+      console.log(chalk.yellow('\n⚠️  GitHub認証が必要です\n'));
+      console.log(chalk.white('Miyabi uses OAuth authentication for secure access.'));
+      console.log(chalk.gray('Your token will be stored securely in ~/.miyabi/credentials.json\n'));
+      console.log(chalk.cyan.bold('🔐 Authenticate now:\n'));
+      console.log(chalk.white('  miyabi auth login'));
+      console.log(chalk.gray('  (Opens browser for GitHub OAuth)\n'));
+      console.log(chalk.white('Or use environment variable:'));
+      console.log(chalk.gray('  export GITHUB_TOKEN=ghp_xxx\n'));
       throw new Error('Not authenticated. Run `miyabi auth login` to authenticate.');
     }
 

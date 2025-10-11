@@ -10,6 +10,10 @@ import ora from 'ora';
 import Table from 'cli-table3';
 import { Command } from 'commander';
 import { isJsonMode, outputSuccess, outputError } from '../utils/agent-output.js';
+import {
+  IssueAgent,
+  type IssueInput,
+} from 'miyabi-agent-sdk';
 
 /**
  * 利用可能なAgent種別
@@ -114,6 +118,27 @@ export async function listAgents(options?: { json?: boolean }): Promise<void> {
 }
 
 /**
+ * 現在のGitリポジトリ情報を取得
+ */
+async function getCurrentRepo(): Promise<{ owner: string; name: string } | null> {
+  try {
+    const { execSync } = await import('child_process');
+    const remoteUrl = execSync('git remote get-url origin', { encoding: 'utf-8' }).trim();
+
+    const match = remoteUrl.match(/github\.com[/:]([^/]+)\/([^/.]+)/);
+
+    if (match) {
+      return { owner: match[1], name: match[2] };
+    }
+  } catch (error) {
+    // Git repository not found
+    return null;
+  }
+
+  return null;
+}
+
+/**
  * Agent実行
  */
 export async function runAgent(
@@ -121,6 +146,7 @@ export async function runAgent(
   options: AgentRunOptions
 ): Promise<AgentResult> {
   const spinner = ora(`${agentName}Agent 実行中...`).start();
+  const startTime = Date.now();
 
   try {
     // バリデーション
@@ -137,22 +163,88 @@ export async function runAgent(
       };
     }
 
-    // Agent実行ロジック（実装予定）
-    // TODO: 実際のAgent実行を統合
+    // 環境変数チェック
+    const githubToken = process.env.GITHUB_TOKEN;
+    if (!githubToken) {
+      throw new Error('GITHUB_TOKEN environment variable is required');
+    }
 
-    spinner.succeed(chalk.green(`${agentName}Agent 実行完了`));
+    // リポジトリ情報取得（git remoteから自動検出）
+    const repoInfo = await getCurrentRepo();
+
+    if (!repoInfo) {
+      throw new Error(
+        'Not a git repository or no origin remote found. ' +
+        'Run this command inside a git repository with a GitHub remote.'
+      );
+    }
+
+    const { owner, name: repo } = repoInfo;
+    const repository = `${owner}/${repo}`;
+
+    // Agent実行 - miyabi-agent-sdk を使用
+    let result: any;
+
+    switch (agentName) {
+      case 'issue': {
+        if (!options.issue) {
+          throw new Error('--issue option is required for IssueAgent. Example: miyabi agent run issue --issue=123');
+        }
+
+        const agent = new IssueAgent({
+          githubToken,
+          useClaudeCode: true, // デフォルトでClaude Code CLI使用（無料）
+        });
+
+        const input: IssueInput = {
+          issueNumber: parseInt(options.issue),
+          repository,
+          owner,
+        };
+
+        result = await agent.analyze(input);
+        break;
+      }
+
+      case 'codegen':
+      case 'review':
+      case 'pr':
+      case 'coordinator':
+      case 'deploy':
+      case 'mizusumashi': {
+        // 他のAgentは同様のパターンで実装予定
+        spinner.warn(chalk.yellow(`${agentName}Agent is not yet fully integrated with SDK`));
+        return {
+          agent: agentName,
+          status: 'skipped',
+          message: `${agentName}Agent SDK integration pending`,
+        };
+      }
+
+      default:
+        throw new Error(`Agent ${agentName} is not implemented`);
+    }
+
+    const duration = Date.now() - startTime;
+    spinner.succeed(chalk.green(`${agentName}Agent 実行完了 (${duration}ms)`));
 
     return {
       agent: agentName,
       status: 'success',
       message: `${agentName}Agent executed successfully`,
-      duration: 1000,
+      duration,
+      details: result,
     };
 
   } catch (error) {
     spinner.fail(chalk.red(`${agentName}Agent 実行失敗`));
 
-    if (error instanceof Error) {
+    if (options.verbose && error instanceof Error) {
+      console.error(chalk.red(`エラー: ${error.message}`));
+      if (error.stack) {
+        console.error(chalk.gray(error.stack));
+      }
+    } else if (error instanceof Error) {
       console.error(chalk.red(`エラー: ${error.message}`));
     }
 

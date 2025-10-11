@@ -15,7 +15,14 @@ import {
   type IssueInput,
   CodeGenAgent,
   type CodeGenInput,
+  ReviewAgent,
+  type ReviewInput,
+  CoordinatorAgent,
+  type CoordinatorInput,
 } from 'miyabi-agent-sdk';
+
+// PRAgent は TODO (ファイル生成との統合が必要)
+// import { PRAgent, type PRInput } from 'miyabi-agent-sdk';
 import {
   getGitHubToken,
   verifyTokenAccess,
@@ -41,6 +48,8 @@ export type AgentType = typeof AVAILABLE_AGENTS[number];
  */
 export interface AgentRunOptions {
   issue?: string;
+  pr?: string;
+  files?: string;
   parallel?: number;
   dryRun?: boolean;
   verbose?: boolean;
@@ -272,9 +281,85 @@ export async function runAgent(
         break;
       }
 
-      case 'review':
-      case 'pr':
-      case 'coordinator':
+      case 'review': {
+        // ReviewAgent requires either --pr or --files
+        if (!options.pr && !options.files) {
+          throw new Error('--pr or --files option is required for ReviewAgent. Example: miyabi agent run review --pr=123');
+        }
+
+        // For now, implement PR review only
+        if (options.pr) {
+          const { Octokit } = await import('@octokit/rest');
+          const octokit = new Octokit({ auth: githubToken });
+
+          // Fetch PR files
+          const prNumber = parseInt(options.pr);
+          const prFilesResponse = await octokit.pulls.listFiles({
+            owner,
+            repo,
+            pull_number: prNumber,
+          });
+
+          // Convert PR files to GeneratedFile format
+          const files = prFilesResponse.data.map((file: any) => ({
+            path: file.filename,
+            content: '', // TODO: Fetch file content from PR
+            action: (file.status === 'added' ? 'create' :
+                    file.status === 'removed' ? 'delete' : 'modify') as 'create' | 'modify' | 'delete',
+          }));
+
+          const agent = new ReviewAgent({
+            useClaudeCode: true,
+          });
+
+          const input: ReviewInput = {
+            files: files,
+            standards: {
+              minQualityScore: 80, // 80点基準
+              requireTests: true,
+              securityScan: true,
+            },
+          };
+
+          result = await agent.review(input);
+        } else {
+          // TODO: Implement file review
+          throw new Error('--files option is not yet implemented. Use --pr for now.');
+        }
+        break;
+      }
+
+      case 'pr': {
+        if (!options.issue) {
+          throw new Error('--issue option is required for PRAgent. Example: miyabi agent run pr --issue=123');
+        }
+
+        // TODO: PRAgent requires integration with file storage
+        // Need to get generated files from CodeGenAgent and quality report from ReviewAgent
+        throw new Error(
+          'PRAgent is not yet fully implemented. ' +
+          'It requires files from CodeGenAgent and quality report from ReviewAgent. ' +
+          'Implementation pending in next release.'
+        );
+      }
+
+      case 'coordinator': {
+        if (!options.issue) {
+          throw new Error('--issue option is required for CoordinatorAgent. Example: miyabi agent run coordinator --issue=123');
+        }
+
+        const agent = new CoordinatorAgent();
+
+        const input: CoordinatorInput = {
+          issueNumber: parseInt(options.issue),
+          repository: repo,
+          owner,
+        };
+
+        result = await agent.execute(input);
+        break;
+      }
+
       case 'deploy':
       case 'mizusumashi': {
         // 他のAgentは同様のパターンで実装予定
@@ -370,6 +455,8 @@ export function registerAgentCommand(program: Command): void {
     .command('run <agent-name>')
     .description('Agent実行')
     .option('-i, --issue <number>', 'Issue番号指定')
+    .option('--pr <number>', 'Pull Request番号指定 (ReviewAgent用)')
+    .option('--files <paths>', 'ファイルパス指定 (ReviewAgent用、カンマ区切り)')
     .option('-p, --parallel <number>', '並行実行数', '1')
     .option('--dry-run', '実行シミュレーション')
     .option('-v, --verbose', '詳細ログ出力')

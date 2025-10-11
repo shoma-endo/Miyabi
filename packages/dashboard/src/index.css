@@ -344,3 +344,57 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
+
+/* ============================================================================
+   ACCESSIBILITY PREFERENCES
+   ============================================================================ */
+
+:root[data-motion='reduced'] body,
+:root[data-motion='reduced'] .gradient-text,
+:root[data-motion='reduced'] .gradient-text-success,
+:root[data-motion='reduced'] .gradient-text-error {
+  animation: none !important;
+}
+
+:root[data-motion='reduced'] .react-flow {
+  animation: none !important;
+}
+
+:root[data-motion='reduced'] .shimmer::after,
+:root[data-motion='reduced'] .pulse-glow,
+:root[data-motion='reduced'] .scale-pulse,
+:root[data-motion='reduced'] .float,
+:root[data-motion='reduced'] .react-flow__edge.animated path,
+:root[data-motion='reduced'] .btn-primary::before,
+:root[data-motion='reduced'] body {
+  animation: none !important;
+}
+
+:root[data-motion='reduced'] .react-flow__edge.animated path {
+  stroke-dasharray: none;
+}
+
+:root[data-contrast='high'] body {
+  background: #0f172a;
+  animation: none;
+}
+
+:root[data-contrast='high'] .glass-effect,
+:root[data-contrast='high'] .glass-effect-dark {
+  background: rgba(15, 23, 42, 0.92);
+  border-color: rgba(226, 232, 240, 0.35);
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.4);
+}
+
+:root[data-contrast='high'] .gradient-text,
+:root[data-contrast='high'] .gradient-text-success,
+:root[data-contrast='high'] .gradient-text-error {
+  animation: none;
+  background: none;
+  color: #f8fafc;
+  -webkit-text-fill-color: #f8fafc;
+}
+
+:root[data-contrast='high'] .react-flow__edge-path {
+  filter: drop-shadow(0 0 6px rgba(248, 250, 252, 0.5));
+}

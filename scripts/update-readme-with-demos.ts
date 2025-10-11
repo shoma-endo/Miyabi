@@ -23,7 +23,7 @@ export class ReadmeUpdater {
       
       logger.success('README.md updated with demo content');
     } catch (error) {
-      logger.error('Failed to update README:', error);
+      logger.error('Failed to update README:', undefined, error instanceof Error ? error : new Error(String(error)));
       throw error;
     }
   }
@@ -172,17 +172,6 @@ graph LR
         logger.info(`Created directory: ${dir}`);
       }
     });
-
-    // Create placeholder files
-    const placeholders = [
-      { file: `${this.assetsPath}/screenshots/cli-help.png`, desc: 'CLI help screen screenshot' },
-      { file: `${this.assetsPath}/screenshots/project-init.png`, desc: 'Project initialization screenshot' },
-      { file: `${this.assetsPath}/screenshots/agent-workflow.png`, desc: 'Agent workflow screenshot' },
-      { file: `${this.assetsPath}/screenshots/completed-project.png`, desc: 'Completed project screenshot' },
-      { file: `${this.assetsPath}/gifs/quickstart-demo.gif`, desc: 'Quick start demonstration GIF' },
-      { file: `${this.assetsPath}/gifs/workflow-demo.gif`, desc: 'Agent workflow demonstration GIF' },
-      { file: `${this.assetsPath}/gifs/structure-demo.gif`, desc: 'Project structure generation GIF' },
-    ];
 
     // Create .gitkeep and README for asset directories
     const assetReadme = `# Miyabi Demo Assets

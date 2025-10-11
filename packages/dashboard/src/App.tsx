@@ -2,16 +2,25 @@ import { useState } from 'react';
 import { FlowCanvas } from './components/FlowCanvas';
 import { FlowCanvasMock } from './components/FlowCanvasMock';
 import { ERView } from './components/ERView';
+import { useAccessibilityPreferences } from './hooks/useAccessibilityPreferences';
 
 type ViewMode = 'flow' | 'flow-mock' | 'er';
 
 function App() {
   const [viewMode, setViewMode] = useState<ViewMode>('flow');
+  const { prefersHighContrast } = useAccessibilityPreferences();
 
   return (
     <div className="flex h-screen w-full flex-col">
       {/* Compact Header */}
-      <header className="z-20 bg-gradient-to-r from-purple-600 to-blue-500 shadow-lg">
+      <header
+        className="z-20 shadow-lg"
+        style={{
+          background: prefersHighContrast
+            ? 'linear-gradient(135deg, #312e81 0%, #1e293b 100%)'
+            : 'linear-gradient(135deg, #9333ea 0%, #2563eb 100%)',
+        }}
+      >
         <div className="container mx-auto flex items-center justify-between px-6 py-3">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">

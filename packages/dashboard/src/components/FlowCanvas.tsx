@@ -28,7 +28,10 @@ import { SystemMetricsDashboard } from './SystemMetricsDashboard';
 import { ParticleFlow, useParticleFlow } from './ParticleFlow';
 import { CelebrationEffect, useCelebration } from './CelebrationEffect';
 import { NodeDetailsModal } from './NodeDetailsModal';
+import { WelcomeTour, type TourStep } from './WelcomeTour';
+import { ProgressiveLoader, SkeletonLoader } from './SkeletonLoader';
 import { useWebSocket } from '../hooks/useWebSocket';
+import { useResponsiveLayout } from '../hooks/useResponsiveLayout';
 import type { GraphNode, GraphEdge } from '../types';
 import { PerformanceStats } from './PerformanceStats';
 import { useAccessibilityPreferences } from '../hooks/useAccessibilityPreferences';
@@ -41,17 +44,17 @@ const getLayoutedElements = (nodes: GraphNode[], edges: GraphEdge[]) => {
   // Configure layout: horizontal flow (LR = Left to Right)
   dagreGraph.setGraph({
     rankdir: 'LR',
-    nodesep: 120,  // Horizontal spacing between nodes
-    ranksep: 200,  // Vertical spacing between ranks
-    marginx: 50,
-    marginy: 50,
+    nodesep: 80,   // Reduced horizontal spacing
+    ranksep: 150,  // Reduced vertical spacing
+    marginx: 30,
+    marginy: 30,
   });
 
-  // Add nodes to dagre
+  // Add nodes to dagre with smaller dimensions
   nodes.forEach((node) => {
     dagreGraph.setNode(node.id, {
-      width: node.type === 'issue' ? 360 : 280,
-      height: node.type === 'issue' ? 250 : 150,
+      width: node.type === 'issue' ? 360 : 200,
+      height: node.type === 'issue' ? 200 : 120,
     });
   });
 
@@ -63,14 +66,17 @@ const getLayoutedElements = (nodes: GraphNode[], edges: GraphEdge[]) => {
   // Calculate layout
   dagre.layout(dagreGraph);
 
-  // Apply positions
+  // Apply positions with centering offset
   const layoutedNodes = nodes.map((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
+    const width = node.type === 'issue' ? 360 : 200;
+    const height = node.type === 'issue' ? 200 : 120;
+
     return {
       ...node,
       position: {
-        x: nodeWithPosition.x - (node.type === 'issue' ? 180 : 140),
-        y: nodeWithPosition.y - (node.type === 'issue' ? 125 : 75),
+        x: nodeWithPosition.x - width / 2,
+        y: nodeWithPosition.y - height / 2,
       },
     };
   });
@@ -82,6 +88,7 @@ export function FlowCanvas() {
   const [nodes, setNodes, onNodesChange] = useNodesState<GraphNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<GraphEdge>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingStage, setLoadingStage] = useState(0);
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
   const [activities, setActivities] = useState<ActivityLogEntry[]>([]);
   const [showFilters, setShowFilters] = useState(false);
@@ -93,15 +100,27 @@ export function FlowCanvas() {
   });
   const reactFlowInstance = useRef<any>(null);
   const { prefersReducedMotion, prefersHighContrast } = useAccessibilityPreferences();
+  const { isMobile, isTablet, screenSize } = useResponsiveLayout();
   const [visualMode, setVisualMode] = useState<'rich' | 'light'>(prefersReducedMotion ? 'light' : 'rich');
   const [showPerformanceStats, setShowPerformanceStats] = useState(false);
 
-  // NEW: Panel visibility states
-  const [showStats, setShowStats] = useState(false);
-  const [showMetrics, setShowMetrics] = useState(false);
-  const [showWorkflow, setShowWorkflow] = useState(false);
+  // NEW: Panel visibility states with responsive defaults
+  const [showStats, setShowStats] = useState(!isMobile);
+  const [showMetrics, setShowMetrics] = useState(!isMobile && !isTablet);
+  const [showWorkflow, setShowWorkflow] = useState(!isMobile);
   const [showActivityLog, setShowActivityLog] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
+
+  // Auto-hide panels on mobile/tablet
+  useEffect(() => {
+    if (isMobile) {
+      setShowStats(false);
+      setShowMetrics(false);
+      setShowWorkflow(false);
+    } else if (isTablet) {
+      setShowMetrics(false);
+    }
+  }, [isMobile, isTablet]);
 
   // Workflow stage tracking
   const [currentStage, setCurrentStage] = useState<string | null>(null);
@@ -773,6 +792,15 @@ export function FlowCanvas() {
     return filtered;
   }, [nodes, filters, edges]);
 
+  // Auto-fit view when nodes change
+  useEffect(() => {
+    if (reactFlowInstance.current && filteredNodes.length > 0) {
+      setTimeout(() => {
+        reactFlowInstance.current?.fitView({ padding: 0.2, duration: 300 });
+      }, 100);
+    }
+  }, [filteredNodes]);
+
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges]
@@ -807,29 +835,81 @@ export function FlowCanvas() {
       });
   }, [addActivity]);
 
-  // Fetch initial graph data
+  // Fetch initial graph data with progressive loading
   useEffect(() => {
-    fetch('http://localhost:3001/api/graph')
-      .then((res) => res.json())
-      .then((data) => {
+    const loadData = async () => {
+      try {
+        setLoadingStage(0); // Connecting...
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        setLoadingStage(1); // Loading graph...
+        const res = await fetch('http://localhost:3001/api/graph');
+        const data = await res.json();
+
+        setLoadingStage(2); // Rendering nodes...
+        await new Promise(resolve => setTimeout(resolve, 200));
+
         setNodes(data.nodes);
         setEdges(data.edges);
+
+        setLoadingStage(3); // Complete
+        await new Promise(resolve => setTimeout(resolve, 100));
+
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Failed to fetch initial graph:', error);
         setLoading(false);
-      });
+      }
+    };
+
+    loadData();
   }, [setNodes, setEdges]);
+
+  // Welcome Tour steps
+  const tourSteps: TourStep[] = [
+    {
+      target: '.react-flow',
+      title: 'グラフビュー',
+      content: 'Issueとエージェントの関係を視覚化します。ノードをクリックすると詳細が表示されます。',
+      placement: 'bottom',
+    },
+    {
+      target: '[title="Toggle System Metrics"]',
+      title: 'システムメトリクス',
+      content: 'リアルタイムのシステム状態を確認できます。アクティブなエージェント数、成功率などを表示します。',
+      placement: 'left',
+    },
+    {
+      target: '[title="Toggle Workflow Stages"]',
+      title: 'ワークフローステージ',
+      content: 'タスクの進行状況を5つのステージで確認できます。現在どの段階にいるかが一目でわかります。',
+      placement: 'bottom',
+    },
+    {
+      target: '.explanation-panel',
+      title: '説明パネル',
+      content: '何が起きているかを日本語で説明します。初めての方でもわかりやすい内容です。',
+      placement: 'left',
+    },
+    {
+      target: '[title="Toggle Activity Log"]',
+      title: 'アクティビティログ',
+      content: '全てのイベントを時系列で確認できます。デバッグや履歴確認に便利です。',
+      placement: 'top',
+    },
+  ];
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-100">
-        <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
-          <p className="text-gray-600">Loading Agent Flow...</p>
-        </div>
-      </div>
+      <ProgressiveLoader
+        stages={[
+          'Connecting to server...',
+          'Loading graph data...',
+          'Rendering nodes...',
+          'Complete!',
+        ]}
+        currentStage={loadingStage}
+      />
     );
   }
 

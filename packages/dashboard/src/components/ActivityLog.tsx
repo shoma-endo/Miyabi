@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useAccessibilityPreferences } from '../hooks/useAccessibilityPreferences';
 
 export interface ActivityLogEntry {
   id: string;
@@ -24,6 +25,7 @@ interface ActivityLogProps {
 }
 
 export function ActivityLog({ activities, maxItems = 50 }: ActivityLogProps) {
+  const { prefersReducedMotion, prefersHighContrast } = useAccessibilityPreferences();
   const recentActivities = useMemo(() => {
     return activities.slice(0, maxItems);
   }, [activities, maxItems]);
@@ -47,14 +49,34 @@ export function ActivityLog({ activities, maxItems = 50 }: ActivityLogProps) {
   };
 
   return (
-    <div className="glass-effect-dark border-t border-white/10">
-      <div className="border-b border-white/10 px-6 py-3 backdrop-blur-xl">
+    <div className={`glass-effect-dark border-t ${prefersHighContrast ? 'border-white/20' : 'border-white/10'}`}>
+      <div className={`border-b ${prefersHighContrast ? 'border-white/20' : 'border-white/10'} px-6 py-3 backdrop-blur-xl`}>
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 uppercase tracking-wider flex items-center gap-2">
+          <h3
+            className={`text-base font-black uppercase tracking-wider flex items-center gap-2 ${
+              prefersHighContrast
+                ? 'text-slate-100'
+                : 'text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400'
+            }`}
+            style={
+              prefersHighContrast
+                ? undefined
+                : { backgroundImage: 'linear-gradient(135deg, #60a5fa 0%, #22d3ee 100%)' }
+            }
+          >
             <span className="text-xl">📊</span>
             <span>Activity Log</span>
           </h3>
-          <span className="glass-effect px-3 py-1 text-xs font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 rounded-full">
+          <span
+            className={`glass-effect px-3 py-1 text-xs font-black rounded-full ${
+              prefersHighContrast ? 'text-slate-100' : 'text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400'
+            }`}
+            style={
+              prefersHighContrast
+                ? undefined
+                : { backgroundImage: 'linear-gradient(135deg, #c084fc 0%, #f472b6 100%)' }
+            }
+          >
             {recentActivities.length} Events
           </span>
         </div>
@@ -68,14 +90,18 @@ export function ActivityLog({ activities, maxItems = 50 }: ActivityLogProps) {
             <p className="text-xs text-gray-500 mt-1">Waiting for events...</p>
           </div>
         ) : (
-          <div className="divide-y divide-white/5">
+          <div className={`divide-y ${prefersHighContrast ? 'divide-white/20' : 'divide-white/5'}`}>
             {recentActivities.map((activity, index) => (
               <div
                 key={activity.id}
                 className="group flex items-start gap-4 px-6 py-4 transition-all duration-300 hover:bg-white/5 relative"
-                style={{
-                  animation: `fadeIn 0.3s ease-out ${index * 0.05}s both`,
-                }}
+                style={
+                  prefersReducedMotion
+                    ? undefined
+                    : {
+                        animation: `fadeIn 0.3s ease-out ${index * 0.05}s both`,
+                      }
+                }
               >
                 {/* Icon */}
                 <div

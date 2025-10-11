@@ -151,6 +151,8 @@ export async function init(projectName: string, options: InitOptions = {}) {
   try {
     await cloneAndSetup(repo.clone_url, projectName, {
       skipInstall: options.skipInstall || false,
+      owner: repo.owner.login,
+      repo: repo.name,
     });
     projectPath = `./${projectName}`;
     spinner.succeed(chalk.green('Local setup complete'));
@@ -199,6 +201,28 @@ export async function init(projectName: string, options: InitOptions = {}) {
     console.log(chalk.gray('  You can create Issues manually\n'));
   }
 
+  // Step 8: Final verification
+  if (projectPath) {
+    spinner.start('Verifying project setup...');
+
+    try {
+      const verification = verifyProjectSetup(projectPath);
+
+      if (verification.allComplete) {
+        spinner.succeed(chalk.green('Project setup verified'));
+        console.log(chalk.gray(`  ✓ ${verification.filesCreated} files created`));
+        console.log(chalk.gray(`  ✓ ${verification.directoriesCreated} directories created`));
+      } else {
+        spinner.warn(chalk.yellow('Setup verification incomplete'));
+        if (verification.missing.length > 0) {
+          console.log(chalk.yellow(`  Missing: ${verification.missing.join(', ')}`));
+        }
+      }
+    } catch (error) {
+      spinner.warn(chalk.yellow('Verification skipped'));
+    }
+  }
+
   // Success!
   console.log(chalk.green.bold('\n✅ Setup complete!\n'));
   console.log(chalk.cyan('Next steps:'));
@@ -206,4 +230,62 @@ export async function init(projectName: string, options: InitOptions = {}) {
   console.log(chalk.white('  gh issue create --title "Your task" --body "Description"\n'));
   console.log(chalk.gray('💡 Tip: The AI agents will automatically start working on your Issue.'));
   console.log(chalk.gray('    You\'ll see a PR appear within minutes!\n'));
+}
+
+/**
+ * Verify project setup completeness
+ */
+function verifyProjectSetup(projectPath: string): {
+  allComplete: boolean;
+  filesCreated: number;
+  directoriesCreated: number;
+  missing: string[];
+} {
+  const fs = require('fs');
+  const path = require('path');
+
+  const requiredFiles = [
+    'package.json',
+    'tsconfig.json',
+    '.gitignore',
+    '.env.example',
+    '.eslintrc.json',
+    'README.md',
+    'CLAUDE.md',
+    'src/index.ts',
+    'tests/example.test.ts',
+  ];
+
+  const requiredDirs = ['.claude', 'src', 'tests'];
+
+  const missing: string[] = [];
+  let filesCreated = 0;
+  let directoriesCreated = 0;
+
+  // Check files
+  for (const file of requiredFiles) {
+    const filePath = path.join(projectPath, file);
+    if (fs.existsSync(filePath)) {
+      filesCreated++;
+    } else {
+      missing.push(file);
+    }
+  }
+
+  // Check directories
+  for (const dir of requiredDirs) {
+    const dirPath = path.join(projectPath, dir);
+    if (fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory()) {
+      directoriesCreated++;
+    } else {
+      missing.push(`${dir}/`);
+    }
+  }
+
+  return {
+    allComplete: missing.length === 0,
+    filesCreated,
+    directoriesCreated,
+    missing,
+  };
 }

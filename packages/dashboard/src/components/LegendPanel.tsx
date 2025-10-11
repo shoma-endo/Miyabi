@@ -6,13 +6,30 @@
  */
 
 import { useState } from 'react';
+import { useAccessibilityPreferences } from '../hooks/useAccessibilityPreferences';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 export function LegendPanel() {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { prefersHighContrast } = useAccessibilityPreferences();
+  const isCompactLayout = useMediaQuery('(max-width: 1280px)');
+
+  const collapsedPositionClass = isCompactLayout ? 'fixed bottom-6 right-4 z-20' : 'fixed bottom-20 left-4 z-20';
+  const expandedPositionClass = isCompactLayout ? 'fixed bottom-6 inset-x-4 z-30' : 'fixed bottom-20 left-4 z-20';
+  const expandedWidthClass = isCompactLayout ? 'w-auto max-w-md mx-auto' : 'w-80';
+  const backgroundStyle = prefersHighContrast
+    ? {
+        background: 'rgba(15, 23, 42, 0.95)',
+        border: '1px solid rgba(226, 232, 240, 0.35)',
+      }
+    : {
+        background: 'rgba(255, 255, 255, 1)',
+        border: '1px solid rgba(229, 231, 235, 1)',
+      };
 
   if (!isExpanded) {
     return (
-      <div className="fixed bottom-20 left-4 z-20">
+      <div className={collapsedPositionClass}>
         <button
           onClick={() => setIsExpanded(true)}
           className="flex items-center gap-2 rounded-lg bg-white px-4 py-3 shadow-xl transition-all hover:shadow-2xl"
@@ -25,9 +42,20 @@ export function LegendPanel() {
   }
 
   return (
-    <div className="fixed bottom-20 left-4 z-20 w-80 rounded-xl bg-white shadow-2xl">
+    <div
+      className={`${expandedPositionClass} ${expandedWidthClass} rounded-xl shadow-2xl`}
+      style={backgroundStyle}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-200 bg-gradient-to-r from-purple-600 to-blue-500 p-4 rounded-t-xl">
+      <div
+        className="flex items-center justify-between border-b border-gray-200 p-4 rounded-t-xl"
+        style={{
+          background: prefersHighContrast
+            ? 'linear-gradient(135deg, #1f2937 0%, #0f172a 100%)'
+            : 'linear-gradient(135deg, #a855f7 0%, #6366f1 100%)',
+          borderColor: prefersHighContrast ? 'rgba(226, 232, 240, 0.35)' : undefined,
+        }}
+      >
         <div className="flex items-center gap-2">
           <span className="text-2xl">📖</span>
           <div>

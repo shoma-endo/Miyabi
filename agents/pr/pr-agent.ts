@@ -22,6 +22,7 @@ import {
 } from '../types/index.js';
 import { Octokit } from '@octokit/rest';
 import { withRetry } from '../../utils/retry.js';
+import { getGitHubClient } from '../../utils/api-client.js';
 
 export class PRAgent extends BaseAgent {
   private octokit: Octokit;
@@ -35,9 +36,8 @@ export class PRAgent extends BaseAgent {
       throw new Error('GITHUB_TOKEN is required for PRAgent');
     }
 
-    this.octokit = new Octokit({
-      auth: config.githubToken,
-    });
+    // Use singleton GitHub client with connection pooling
+    this.octokit = getGitHubClient(config.githubToken);
 
     this.parseRepository();
   }

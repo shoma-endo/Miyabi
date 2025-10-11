@@ -5,7 +5,9 @@
  * in plain Japanese, making the autonomous workflow understandable to everyone.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useAccessibilityPreferences } from '../hooks/useAccessibilityPreferences';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 export interface ExplanationEntry {
   id: string;
@@ -22,8 +24,19 @@ export interface ExplanationPanelProps {
 }
 
 export function ExplanationPanel({ entries }: ExplanationPanelProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const { prefersHighContrast } = useAccessibilityPreferences();
+  const isCompactLayout = useMediaQuery('(max-width: 1280px)');
+  const [isExpanded, setIsExpanded] = useState<boolean>(() => !isCompactLayout);
   const currentEntry = entries[0]; // Most recent entry
+
+  // Ensure layout responds to breakpoint changes
+  useEffect(() => {
+    if (isCompactLayout) {
+      setIsExpanded(false);
+    } else {
+      setIsExpanded(true);
+    }
+  }, [isCompactLayout]);
 
   // Auto-scroll to top when new entry arrives
   useEffect(() => {
@@ -63,9 +76,23 @@ export function ExplanationPanel({ entries }: ExplanationPanelProps) {
     }
   };
 
+  const containerPositionClasses = useMemo(() => {
+    if (isCompactLayout) {
+      return 'fixed inset-x-4 bottom-6 z-30';
+    }
+    return 'fixed right-4 top-20 z-20';
+  }, [isCompactLayout]);
+
+  const containerWidthClasses = isCompactLayout ? 'w-auto max-w-xl mx-auto' : 'w-96';
+
   if (!isExpanded) {
     return (
-      <div className="fixed right-4 top-20 z-20">
+      <div
+        className={containerPositionClasses}
+        style={{
+          maxWidth: isCompactLayout ? 'min(92vw, 24rem)' : undefined,
+        }}
+      >
         <button
           onClick={() => setIsExpanded(true)}
           className="flex items-center gap-2 rounded-lg bg-white px-4 py-3 shadow-xl transition-all hover:shadow-2xl"
@@ -78,9 +105,23 @@ export function ExplanationPanel({ entries }: ExplanationPanelProps) {
   }
 
   return (
-    <div className="fixed right-4 top-20 z-20 flex w-96 flex-col rounded-xl bg-white shadow-2xl">
+    <div
+      className={`${containerPositionClasses} flex flex-col rounded-xl shadow-2xl ${containerWidthClasses}`}
+      style={{
+        background: prefersHighContrast ? '#0f172a' : '#ffffff',
+        border: prefersHighContrast ? '1px solid rgba(148, 163, 184, 0.4)' : '1px solid transparent',
+      }}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-200 bg-gradient-to-r from-purple-600 to-blue-500 p-4 rounded-t-xl">
+      <div
+        className="flex items-center justify-between border-b border-gray-200 p-4 rounded-t-xl"
+        style={{
+          background: prefersHighContrast
+            ? 'linear-gradient(135deg, #312e81 0%, #1e293b 100%)'
+            : 'linear-gradient(135deg, #9333ea 0%, #2563eb 100%)',
+          borderColor: prefersHighContrast ? 'rgba(148, 163, 184, 0.4)' : undefined,
+        }}
+      >
         <div className="flex items-center gap-2">
           <span className="text-2xl">💡</span>
           <div>

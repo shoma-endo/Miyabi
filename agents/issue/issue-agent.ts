@@ -24,6 +24,7 @@ import {
 } from '../types/index.js';
 import { Octokit } from '@octokit/rest';
 import { withRetry } from '../../utils/retry.js';
+import { getGitHubClient, withGitHubCache } from '../../utils/api-client.js';
 
 export class IssueAgent extends BaseAgent {
   private octokit: Octokit;
@@ -37,9 +38,8 @@ export class IssueAgent extends BaseAgent {
       throw new Error('GITHUB_TOKEN is required for IssueAgent');
     }
 
-    this.octokit = new Octokit({
-      auth: config.githubToken,
-    });
+    // Use singleton GitHub client with connection pooling
+    this.octokit = getGitHubClient(config.githubToken);
 
     // Parse repo from git remote
     this.parseRepository();
@@ -63,14 +63,12 @@ export class IssueAgent extends BaseAgent {
       // 2. Analyze Issue content
       const analysis = await this.analyzeIssue(issue);
 
-      // 3. Apply Organizational labels
-      await this.applyLabels(issueNumber, analysis.labels);
-
-      // 4. Assign team members
-      await this.assignTeamMembers(issueNumber, analysis.assignees);
-
-      // 5. Add analysis comment
-      await this.addAnalysisComment(issueNumber, analysis);
+      // 3-5. Apply labels, assign team members, and add comment (parallel for performance)
+      await Promise.all([
+        this.applyLabels(issueNumber, analysis.labels),
+        this.assignTeamMembers(issueNumber, analysis.assignees),
+        this.addAnalysisComment(issueNumber, analysis),
+      ]);
 
       this.log(`✅ Issue analysis complete: ${analysis.labels.length} labels applied`);
 
@@ -98,17 +96,22 @@ export class IssueAgent extends BaseAgent {
   // ============================================================================
 
   /**
-   * Fetch Issue from GitHub (with automatic retry on transient failures)
+   * Fetch Issue from GitHub (with LRU cache + automatic retry)
    */
   private async fetchIssue(issueNumber: number): Promise<Issue> {
     this.log(`📥 Fetching Issue #${issueNumber}`);
 
     try {
-      const response = await withRetry(async () => {
-        return await this.octokit.issues.get({
-          owner: this.owner,
-          repo: this.repo,
-          issue_number: issueNumber,
+      // Use LRU cache to avoid repeated API calls for same issue
+      const cacheKey = `issue:${this.owner}/${this.repo}/${issueNumber}`;
+
+      const response = await withGitHubCache(cacheKey, async () => {
+        return await withRetry(async () => {
+          return await this.octokit.issues.get({
+            owner: this.owner,
+            repo: this.repo,
+            issue_number: issueNumber,
+          });
         });
       });
 

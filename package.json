@@ -50,6 +50,8 @@
     "security:codeowners": "tsx scripts/security-manager.ts codeowners",
     "perf:optimize": "tsx scripts/performance-optimizer.ts optimize",
     "perf:profile": "tsx scripts/performance-optimizer.ts profile",
+    "perf:report": "tsx scripts/performance-report.ts",
+    "perf:benchmark": "tsx scripts/benchmark-agents.ts",
     "parallel:run": "tsx scripts/parallel-agent-runner.ts run",
     "docs:generate": "tsx scripts/doc-generator.ts generate",
     "docs:training": "tsx scripts/training-material-generator.ts generate",
@@ -65,7 +67,12 @@
     "context:mcp": "cd mcp-servers/context-engineering && node context_mcp_server.js",
     "context:dev": "concurrently \"npm run context:api\" \"npm run context:guides\"",
     "context:docker": "docker-compose --profile context-engineering up -d",
-    "context:docker:down": "docker-compose --profile context-engineering down"
+    "context:docker:down": "docker-compose --profile context-engineering down",
+    "dashboard:server": "cd packages/dashboard-server && npm run dev",
+    "dashboard:frontend": "cd packages/dashboard && npm run dev",
+    "dashboard:dev": "concurrently \"npm run dashboard:server\" \"npm run dashboard:frontend\"",
+    "dashboard:build": "cd packages/dashboard-server && npm run build && cd ../dashboard && npm run build",
+    "dashboard:install": "cd packages/dashboard-server && npm install && cd ../dashboard && npm install"
   },
   "keywords": [
     "ai",
@@ -93,6 +100,7 @@
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
+    "concurrently": "^9.2.1",
     "dotenv": "^16.3.1",
     "eslint": "^8.54.0",
     "playwright": "^1.56.0",
@@ -101,7 +109,6 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.30.0",
     "@modelcontextprotocol/sdk": "^1.20.0",
     "@octokit/graphql": "^7.0.2",
     "@octokit/rest": "^20.0.0",
@@ -113,6 +120,7 @@
     "figlet": "^1.7.0",
     "gradient-string": "^2.0.2",
     "log-symbols": "^6.0.0",
+    "lru-cache": "^11.2.2",
     "ora": "^8.0.1",
     "p-retry": "^7.1.0",
     "terminal-link": "^3.0.0"

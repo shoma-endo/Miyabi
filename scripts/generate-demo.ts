@@ -1,4 +1,3 @@
-import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { logger } from '../src/ui/index.js';
@@ -41,7 +40,7 @@ export class DemoGenerator {
       
       logger.success('Demo assets generated successfully!');
     } catch (error) {
-      logger.error('Failed to generate demo assets:', error);
+      logger.error('Failed to generate demo assets:', undefined, error instanceof Error ? error : new Error(String(error)));
       throw error;
     }
   }
@@ -50,12 +49,6 @@ export class DemoGenerator {
    * Capture quick start demo
    */
   private async captureQuickStart(): Promise<void> {
-    const commands = [
-      'npx miyabi --help',
-      'npx miyabi init demo-project',
-      'cd demo-project && npx miyabi',
-    ];
-
     // Generate terminal recording script
     const scriptPath = path.join(this.assetsDir, 'quickstart-demo.sh');
     const script = `#!/bin/bash

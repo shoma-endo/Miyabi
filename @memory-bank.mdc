@@ -386,3 +386,8 @@
   6. Phase 4.3: Claude Codeコマンド拡張（残り7コマンド）
 
 > 更新時は最新項目を上に追記し、履歴を保持してください。
+- 2025-10-11: Dashboardアクセシビリティ強化 / UI改善 / Codex
+  - Reduced motion / High contrast 対応用フックを追加し、AgentNode/ActivityLog/App/index.cssへ反映
+  - ExplanationPanel・LegendPanelをブレークポイント対応にし、小画面デフォルト折りたたみ化
+  - FlowCanvasへライトモード切替とPerformanceStatsオーバーレイ（Shift+P/Lショートカット）を実装
+  - `npm run lint -- packages/dashboard` はESLint設定未検出で失敗（要設定確認）

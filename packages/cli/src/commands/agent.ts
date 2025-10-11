@@ -13,6 +13,8 @@ import { isJsonMode, outputSuccess, outputError } from '../utils/agent-output.js
 import {
   IssueAgent,
   type IssueInput,
+  CodeGenAgent,
+  type CodeGenInput,
 } from 'miyabi-agent-sdk';
 
 /**
@@ -205,7 +207,45 @@ export async function runAgent(
         break;
       }
 
-      case 'codegen':
+      case 'codegen': {
+        if (!options.issue) {
+          throw new Error('--issue option is required for CodeGenAgent. Example: miyabi agent run codegen --issue=123');
+        }
+
+        // First, fetch Issue details to get requirements
+        const { Octokit } = await import('@octokit/rest');
+        const octokit = new Octokit({ auth: githubToken });
+
+        const issueResponse = await octokit.issues.get({
+          owner,
+          repo,
+          issue_number: parseInt(options.issue),
+        });
+
+        const issue = issueResponse.data;
+        const requirements = issue.body || issue.title;
+
+        const agent = new CodeGenAgent({
+          githubToken,
+          useClaudeCode: true, // デフォルトでClaude Code CLI使用（無料）
+        });
+
+        const input: CodeGenInput = {
+          taskId: `issue-${options.issue}`,
+          requirements: requirements,
+          context: {
+            repository: repo,
+            owner: owner,
+            baseBranch: 'main',
+            relatedFiles: [], // TODO: 関連ファイル自動検出
+          },
+          language: 'typescript', // デフォルトはTypeScript
+        };
+
+        result = await agent.generate(input);
+        break;
+      }
+
       case 'review':
       case 'pr':
       case 'coordinator':

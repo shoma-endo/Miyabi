@@ -4,9 +4,11 @@ import type { IssueNodeData } from '../../types';
 
 interface Props {
   data: IssueNodeData;
+  // NEW: Add agent status data
+  agentStatuses?: Record<string, { status: string; progress?: number }>;
 }
 
-export const IssueNode = memo(({ data }: Props) => {
+export const IssueNode = memo(({ data, agentStatuses = {} }: Props) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const getPriorityGradient = (priority?: string): string => {
@@ -18,11 +20,12 @@ export const IssueNode = memo(({ data }: Props) => {
   };
 
   const getPriorityGlow = (priority?: string): string => {
-    if (!priority) return '0 0 20px rgba(156, 163, 175, 0.3)';
-    if (priority.includes('P0')) return '0 0 30px rgba(239, 68, 68, 0.6), 0 0 60px rgba(239, 68, 68, 0.3)';
-    if (priority.includes('P1')) return '0 0 30px rgba(245, 158, 11, 0.6), 0 0 60px rgba(245, 158, 11, 0.3)';
-    if (priority.includes('P2')) return '0 0 30px rgba(59, 130, 246, 0.6), 0 0 60px rgba(59, 130, 246, 0.3)';
-    return '0 0 30px rgba(16, 185, 129, 0.6), 0 0 60px rgba(16, 185, 129, 0.3)';
+    // Reduced intensity for glow effects
+    if (!priority) return '0 0 10px rgba(156, 163, 175, 0.2)';
+    if (priority.includes('P0')) return '0 0 15px rgba(239, 68, 68, 0.3)';
+    if (priority.includes('P1')) return '0 0 15px rgba(245, 158, 11, 0.3)';
+    if (priority.includes('P2')) return '0 0 15px rgba(59, 130, 246, 0.3)';
+    return '0 0 15px rgba(16, 185, 129, 0.3)';
   };
 
   const getPriorityEmoji = (priority?: string): string => {
@@ -33,9 +36,31 @@ export const IssueNode = memo(({ data }: Props) => {
     return '✨';
   };
 
+  // NEW: Get agent icon and color
+  const getAgentDisplay = (agentId: string): { icon: string; name: string; color: string } => {
+    const displays: Record<string, { icon: string; name: string; color: string }> = {
+      coordinator: { icon: '🎯', name: 'Coordinator', color: '#8B5CF6' },
+      codegen: { icon: '💻', name: 'CodeGen', color: '#3B82F6' },
+      review: { icon: '👀', name: 'Review', color: '#10B981' },
+      pr: { icon: '🔀', name: 'PR', color: '#F59E0B' },
+      deployment: { icon: '🚀', name: 'Deploy', color: '#EC4899' },
+      test: { icon: '🧪', name: 'Test', color: '#6366F1' },
+    };
+    return displays[agentId] || { icon: '🤖', name: agentId, color: '#6B7280' };
+  };
+
+  const getStatusColor = (status: string): string => {
+    switch (status) {
+      case 'running': return '#10B981';
+      case 'completed': return '#22C55E';
+      case 'error': return '#EF4444';
+      default: return '#6B7280';
+    }
+  };
+
   return (
     <div
-      className="relative min-w-[320px] transition-all duration-500 float"
+      className="relative min-w-[360px] transition-all duration-500 float"
       style={{ filter: `drop-shadow(${getPriorityGlow(data.priority)})` }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -91,13 +116,80 @@ export const IssueNode = memo(({ data }: Props) => {
                   {data.state.includes(':') ? data.state.split(':')[1] : data.state}
                 </span>
               )}
-              {data.assignedAgents.length > 0 && (
-                <span className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 text-xs font-bold uppercase tracking-wide border border-purple-200/50 flex items-center gap-1">
-                  <span>🤖</span>
-                  <span>{data.assignedAgents.length} Agent{data.assignedAgents.length > 1 ? 's' : ''}</span>
-                </span>
-              )}
             </div>
+
+            {/* NEW: Agent Badges - Show working agents prominently */}
+            {data.assignedAgents && data.assignedAgents.length > 0 && (
+              <div className="mt-4 space-y-2">
+                {data.assignedAgents.map((agentId) => {
+                  const display = getAgentDisplay(agentId);
+                  const agentStatus = agentStatuses[agentId] || { status: 'idle' };
+                  const isWorking = agentStatus.status === 'running';
+                  const progress = agentStatus.progress || 0;
+
+                  return (
+                    <div
+                      key={agentId}
+                      className="relative flex items-center gap-2 p-2 rounded-lg transition-all duration-300"
+                      style={{
+                        background: isWorking
+                          ? `linear-gradient(90deg, ${display.color}15 0%, ${display.color}08 100%)`
+                          : 'linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 100%)',
+                        border: isWorking ? `2px solid ${display.color}` : '2px solid #d1d5db',
+                        boxShadow: isWorking ? `0 0 8px ${display.color}20` : 'none',
+                      }}
+                    >
+                      {/* Agent Icon */}
+                      <div
+                        className="flex-shrink-0 text-2xl"
+                        style={{
+                          filter: isWorking ? `drop-shadow(0 0 4px ${display.color}80)` : 'none',
+                        }}
+                      >
+                        {display.icon}
+                      </div>
+
+                      {/* Agent Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-xs font-bold text-gray-700 truncate">
+                            {display.name}
+                          </span>
+                          {isWorking && (
+                            <span className="text-xs font-black" style={{ color: display.color }}>
+                              {progress}%
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Progress Bar */}
+                        {isWorking && (
+                          <div className="mt-1.5 h-1.5 w-full rounded-full bg-gray-200 overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{
+                                width: `${progress}%`,
+                                background: `linear-gradient(90deg, ${display.color}, ${display.color}dd)`,
+                                boxShadow: `0 0 4px ${display.color}40`,
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Status Indicator */}
+                      <div
+                        className="flex-shrink-0 w-2.5 h-2.5 rounded-full"
+                        style={{
+                          backgroundColor: getStatusColor(agentStatus.status),
+                          boxShadow: isWorking ? `0 0 4px ${getStatusColor(agentStatus.status)}60` : 'none',
+                        }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>

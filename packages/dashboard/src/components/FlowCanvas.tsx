@@ -11,6 +11,7 @@ import ReactFlow, {
   BackgroundVariant,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
+import dagre from 'dagre';
 
 import { IssueNode } from './nodes/IssueNode';
 import { AgentNode } from './nodes/AgentNode';
@@ -32,10 +33,49 @@ import type { GraphNode, GraphEdge } from '../types';
 import { PerformanceStats } from './PerformanceStats';
 import { useAccessibilityPreferences } from '../hooks/useAccessibilityPreferences';
 
-const nodeTypes: NodeTypes = {
-  issue: IssueNode,
-  agent: AgentNode,
-  state: StateNode,
+// Dagre layout configuration
+const getLayoutedElements = (nodes: GraphNode[], edges: GraphEdge[]) => {
+  const dagreGraph = new dagre.graphlib.Graph();
+  dagreGraph.setDefaultEdgeLabel(() => ({}));
+
+  // Configure layout: horizontal flow (LR = Left to Right)
+  dagreGraph.setGraph({
+    rankdir: 'LR',
+    nodesep: 120,  // Horizontal spacing between nodes
+    ranksep: 200,  // Vertical spacing between ranks
+    marginx: 50,
+    marginy: 50,
+  });
+
+  // Add nodes to dagre
+  nodes.forEach((node) => {
+    dagreGraph.setNode(node.id, {
+      width: node.type === 'issue' ? 360 : 280,
+      height: node.type === 'issue' ? 250 : 150,
+    });
+  });
+
+  // Add edges to dagre
+  edges.forEach((edge) => {
+    dagreGraph.setEdge(edge.source, edge.target);
+  });
+
+  // Calculate layout
+  dagre.layout(dagreGraph);
+
+  // Apply positions
+  const layoutedNodes = nodes.map((node) => {
+    const nodeWithPosition = dagreGraph.node(node.id);
+    return {
+      ...node,
+      position: {
+        x: nodeWithPosition.x - (node.type === 'issue' ? 180 : 140),
+        y: nodeWithPosition.y - (node.type === 'issue' ? 125 : 75),
+      },
+    };
+  });
+
+  return layoutedNodes;
 };
 
 export function FlowCanvas() {
@@ -205,13 +245,10 @@ export function FlowCanvas() {
         icon: '💻',
       });
 
-      // Update agent node status with parameters
+      // Update agent node status with parameters and focus on issue node
       setNodes((nds) =>
         nds.map((node) => {
           if (node.type === 'agent' && (node.data as any).agentId === event.agentId) {
-            // Auto-focus on the agent that started
-            setTimeout(() => focusOnNode(node.id), 100);
-
             // NEW: Set thinking message
             const thinkingMessages: Record<string, string> = {
               codegen: 'コード構造を分析中...',
@@ -248,6 +285,14 @@ export function FlowCanvas() {
           return node;
         })
       );
+
+      // Auto-focus on the Issue node (not the agent node)
+      const issueNode = nodes.find((n) =>
+        n.type === 'issue' && (n.data as any).number === event.issueNumber
+      );
+      if (issueNode) {
+        setTimeout(() => focusOnNode(issueNode.id), 300);
+      }
     },
     // onAgentProgress
     (event) => {
@@ -651,9 +696,30 @@ export function FlowCanvas() {
     }
   );
 
+  // Build agent status map from agent nodes
+  const agentStatusMap = useMemo(() => {
+    const statusMap: Record<string, { status: string; progress?: number }> = {};
+    nodes.filter(n => n.type === 'agent').forEach(agent => {
+      const data = agent.data as any;
+      statusMap[data.agentId] = {
+        status: data.status || 'idle',
+        progress: data.progress
+      };
+    });
+    return statusMap;
+  }, [nodes]);
+
+  // Define node types with agent status passed to IssueNode
+  const nodeTypes: NodeTypes = useMemo(() => ({
+    issue: (props: any) => <IssueNode {...props} agentStatuses={agentStatusMap} />,
+    agent: AgentNode,
+    state: StateNode,
+  }), [agentStatusMap]);
+
   // Filter nodes based on active filters
   const filteredNodes = useMemo(() => {
-    let filtered = nodes;
+    // First, filter out agent nodes (they're now embedded in Issue nodes)
+    let filtered = nodes.filter(n => n.type !== 'agent');
 
     // Filter by state
     if (filters.states.length > 0) {
@@ -669,10 +735,6 @@ export function FlowCanvas() {
     // Filter by agent
     if (filters.agents.length > 0) {
       filtered = filtered.filter((node) => {
-        if (node.type === 'agent') {
-          const data = node.data as any;
-          return filters.agents.includes(data.agentId);
-        }
         if (node.type === 'issue') {
           const data = node.data as any;
           return data.assignedAgents?.some((a: string) => filters.agents.includes(a));
@@ -695,10 +757,6 @@ export function FlowCanvas() {
     // Show only active
     if (filters.showOnlyActive) {
       filtered = filtered.filter((node) => {
-        if (node.type === 'agent') {
-          const data = node.data as any;
-          return data.status === 'running' || data.status === 'completed';
-        }
         if (node.type === 'issue') {
           const data = node.data as any;
           return !data.state?.includes('done') && !data.state?.includes('failed');
@@ -707,8 +765,13 @@ export function FlowCanvas() {
       });
     }
 
+    // Apply Dagre layout to prevent overlaps
+    if (filtered.length > 0) {
+      filtered = getLayoutedElements(filtered as any, edges as any) as any;
+    }
+
     return filtered;
-  }, [nodes, filters]);
+  }, [nodes, filters, edges]);
 
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),

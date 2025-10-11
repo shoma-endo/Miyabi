@@ -113,9 +113,9 @@ export const IssueNode = memo(({ data, agentStatuses = {} }: Props) => {
               )}
             </div>
 
-            {/* NEW: Agent Badges - Compact design */}
+            {/* Agent Badges - Compact design */}
             {data.assignedAgents && data.assignedAgents.length > 0 && (
-              <div className="mt-2 space-y-1.5">
+              <div className="mt-2 space-y-1">
                 {data.assignedAgents.map((agentId) => {
                   const display = getAgentDisplay(agentId);
                   const agentStatus = agentStatuses[agentId] || { status: 'idle' };
@@ -125,20 +125,20 @@ export const IssueNode = memo(({ data, agentStatuses = {} }: Props) => {
                   return (
                     <div
                       key={agentId}
-                      className="relative flex items-center gap-1.5 p-1.5 rounded-md transition-all duration-300"
+                      className="relative flex items-center gap-1 p-1 rounded transition-all duration-200"
                       style={{
                         background: isWorking
-                          ? `linear-gradient(90deg, ${display.color}10 0%, ${display.color}05 100%)`
+                          ? `linear-gradient(90deg, ${display.color}08 0%, ${display.color}03 100%)`
                           : 'linear-gradient(90deg, #f9fafb 0%, #f3f4f6 100%)',
-                        border: isWorking ? `1px solid ${display.color}60` : '1px solid #e5e7eb',
-                        boxShadow: isWorking ? `0 0 4px ${display.color}15` : 'none',
+                        border: isWorking ? `1px solid ${display.color}40` : '1px solid #e5e7eb',
+                        boxShadow: isWorking ? `0 0 2px ${display.color}10` : 'none',
                       }}
                     >
                       {/* Agent Icon */}
                       <div
-                        className="flex-shrink-0 text-base"
+                        className="flex-shrink-0 text-sm"
                         style={{
-                          filter: isWorking ? `drop-shadow(0 0 2px ${display.color}60)` : 'none',
+                          filter: isWorking ? `drop-shadow(0 0 1px ${display.color}40)` : 'none',
                         }}
                       >
                         {display.icon}
@@ -146,12 +146,12 @@ export const IssueNode = memo(({ data, agentStatuses = {} }: Props) => {
 
                       {/* Agent Info */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-1.5">
-                          <span className="text-[10px] font-bold text-gray-600 truncate">
+                        <div className="flex items-center justify-between gap-1">
+                          <span className="text-[9px] font-semibold text-gray-600 truncate">
                             {display.name}
                           </span>
                           {isWorking && (
-                            <span className="text-[10px] font-black" style={{ color: display.color }}>
+                            <span className="text-[9px] font-bold" style={{ color: display.color }}>
                               {progress}%
                             </span>
                           )}
@@ -159,13 +159,13 @@ export const IssueNode = memo(({ data, agentStatuses = {} }: Props) => {
 
                         {/* Progress Bar */}
                         {isWorking && (
-                          <div className="mt-1 h-1 w-full rounded-full bg-gray-200 overflow-hidden">
+                          <div className="mt-0.5 h-0.5 w-full rounded-full bg-gray-200 overflow-hidden">
                             <div
-                              className="h-full rounded-full transition-all duration-500"
+                              className="h-full rounded-full transition-all duration-300"
                               style={{
                                 width: `${progress}%`,
                                 background: `linear-gradient(90deg, ${display.color}, ${display.color}dd)`,
-                                boxShadow: `0 0 2px ${display.color}30`,
+                                boxShadow: `0 0 1px ${display.color}20`,
                               }}
                             />
                           </div>
@@ -174,10 +174,10 @@ export const IssueNode = memo(({ data, agentStatuses = {} }: Props) => {
 
                       {/* Status Indicator */}
                       <div
-                        className="flex-shrink-0 w-1.5 h-1.5 rounded-full"
+                        className="flex-shrink-0 w-1 h-1 rounded-full"
                         style={{
                           backgroundColor: getStatusColor(agentStatus.status),
-                          boxShadow: isWorking ? `0 0 2px ${getStatusColor(agentStatus.status)}40` : 'none',
+                          boxShadow: isWorking ? `0 0 1px ${getStatusColor(agentStatus.status)}30` : 'none',
                         }}
                       />
                     </div>

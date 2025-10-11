@@ -29,7 +29,7 @@ import { ParticleFlow, useParticleFlow } from './ParticleFlow';
 import { CelebrationEffect, useCelebration } from './CelebrationEffect';
 import { NodeDetailsModal } from './NodeDetailsModal';
 import { WelcomeTour, type TourStep } from './WelcomeTour';
-import { ProgressiveLoader, SkeletonLoader } from './SkeletonLoader';
+import { ProgressiveLoader } from './SkeletonLoader';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { useResponsiveLayout } from '../hooks/useResponsiveLayout';
 import type { GraphNode, GraphEdge } from '../types';
@@ -50,11 +50,11 @@ const getLayoutedElements = (nodes: GraphNode[], edges: GraphEdge[]) => {
     marginy: 30,
   });
 
-  // Add nodes to dagre with smaller dimensions
+  // Add nodes to dagre with compact dimensions
   nodes.forEach((node) => {
     dagreGraph.setNode(node.id, {
-      width: node.type === 'issue' ? 360 : 200,
-      height: node.type === 'issue' ? 200 : 120,
+      width: node.type === 'issue' ? 280 : 180,
+      height: node.type === 'issue' ? 160 : 100,
     });
   });
 
@@ -69,8 +69,8 @@ const getLayoutedElements = (nodes: GraphNode[], edges: GraphEdge[]) => {
   // Apply positions with centering offset
   const layoutedNodes = nodes.map((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
-    const width = node.type === 'issue' ? 360 : 200;
-    const height = node.type === 'issue' ? 200 : 120;
+    const width = node.type === 'issue' ? 280 : 180;
+    const height = node.type === 'issue' ? 160 : 100;
 
     return {
       ...node,
@@ -100,7 +100,7 @@ export function FlowCanvas() {
   });
   const reactFlowInstance = useRef<any>(null);
   const { prefersReducedMotion, prefersHighContrast } = useAccessibilityPreferences();
-  const { isMobile, isTablet, screenSize } = useResponsiveLayout();
+  const { isMobile, isTablet } = useResponsiveLayout();
   const [visualMode, setVisualMode] = useState<'rich' | 'light'>(prefersReducedMotion ? 'light' : 'rich');
   const [showPerformanceStats, setShowPerformanceStats] = useState(false);
 
@@ -1100,7 +1100,7 @@ export function FlowCanvas() {
         )}
 
         {/* React Flow Canvas */}
-        <div className={`flex-1 ${selectedNode ? 'lg:pr-80' : ''}`}>
+        <div className={`flex-1 ${selectedNode && !isMobile ? 'lg:pr-80' : ''}`}>
           <ReactFlow
             nodes={filteredNodes}
             edges={edges}
@@ -1114,21 +1114,28 @@ export function FlowCanvas() {
             nodeTypes={nodeTypes}
             fitView
             attributionPosition="bottom-left"
+            minZoom={isMobile ? 0.3 : 0.5}
+            maxZoom={isMobile ? 1.5 : 2}
           >
             <Background variant={BackgroundVariant.Dots} gap={20} size={2} color="#4F46E5" />
-            <Controls className="!bg-white/90 !backdrop-blur !border !border-gray-200 !shadow-xl" />
-            <MiniMap
-              className="!bg-gray-900/90 !border !border-gray-700"
-              nodeColor={(node) => {
-                if (node.type === 'agent') {
-                  const data = node.data as any;
-                  if (data.status === 'running') return '#8B5CF6';
-                  if (data.status === 'completed') return '#10B981';
-                  if (data.status === 'error') return '#EF4444';
-                }
-                return '#6B7280';
-              }}
+            <Controls
+              className="!bg-white/90 !backdrop-blur !border !border-gray-200 !shadow-xl"
+              showInteractive={!isMobile}
             />
+            {!isMobile && (
+              <MiniMap
+                className="!bg-gray-900/90 !border !border-gray-700"
+                nodeColor={(node) => {
+                  if (node.type === 'agent') {
+                    const data = node.data as any;
+                    if (data.status === 'running') return '#8B5CF6';
+                    if (data.status === 'completed') return '#10B981';
+                    if (data.status === 'error') return '#EF4444';
+                  }
+                  return '#6B7280';
+                }}
+              />
+            )}
           </ReactFlow>
 
           {/* NEW: Particle Flow Animation */}
@@ -1192,6 +1199,24 @@ export function FlowCanvas() {
         nodeCount={nodes.length}
         edgeCount={edges.length}
         visualMode={visualMode}
+      />
+
+      {/* Welcome Tour */}
+      <WelcomeTour
+        steps={tourSteps}
+        onComplete={() => {
+          console.log('✅ Welcome tour completed');
+          addActivity({
+            type: 'graph:update',
+            message: 'Welcome tour completed - Ready to explore!',
+            timestamp: new Date().toISOString(),
+            icon: '🎓',
+            color: '#10B981',
+          });
+        }}
+        onSkip={() => {
+          console.log('⏭️ Welcome tour skipped');
+        }}
       />
     </div>
   );

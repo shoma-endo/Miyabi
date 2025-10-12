@@ -20,13 +20,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Process new discussion
         if: github.event_name == 'discussion' && github.event.action == 'created'
@@ -35,7 +41,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          npx tsx scripts/discussion-bot.ts process ${{ github.event.discussion.number }}
+          npx tsx scripts/github/discussion-bot.ts process ${{ github.event.discussion.number }}
 
       - name: Notify on failure
         if: failure()
@@ -57,20 +63,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Convert Idea to Issue
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          npx tsx scripts/convert-idea-to-issue.ts ${{ github.event.discussion.number }}
+          npx tsx scripts/github/convert-idea-to-issue.ts ${{ github.event.discussion.number }}
 
       - name: Comment on success
         if: success()

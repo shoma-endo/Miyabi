@@ -16,10 +16,13 @@ import { status } from './commands/status.js';
 import { config } from './commands/config.js';
 import { setup } from './commands/setup.js';
 import { docs } from './commands/docs.js';
+import { doctor } from './commands/doctor.js';
+import { onboard } from './commands/onboard.js';
 import { registerAgentCommand } from './commands/agent.js';
 import { registerAutoModeCommand } from './commands/auto.js';
 import { registerTodosCommand } from './commands/todos.js';
 import { registerAuthCommand } from './commands/auth.js';
+import { registerDashboardCommand } from './commands/dashboard.js';
 import { loadConfig, applyConfigToEnvironment } from './config/loader.js';
 import {
   reportIssueToMiyabi,
@@ -91,9 +94,14 @@ program
       console.log(chalk.cyan('  npx miyabi auto') + chalk.gray('              - 全自動モード (Water Spider)'));
       console.log(chalk.cyan('  npx miyabi todos') + chalk.gray('             - TODOコメント自動検出'));
       console.log(chalk.cyan('  npx miyabi status') + chalk.gray('             - ステータス確認'));
+      console.log(chalk.cyan('  npx miyabi dashboard refresh') + chalk.gray('  - ダッシュボードリフレッシュ'));
+      console.log(chalk.cyan('  npx miyabi dashboard status') + chalk.gray('   - ダッシュボード状態確認'));
+      console.log(chalk.cyan('  npx miyabi dashboard open') + chalk.gray('     - ダッシュボードを開く'));
       console.log(chalk.cyan('  npx miyabi docs') + chalk.gray('               - ドキュメント生成'));
       console.log(chalk.cyan('  npx miyabi config') + chalk.gray('             - 設定管理'));
-      console.log(chalk.cyan('  npx miyabi setup') + chalk.gray('              - セットアップガイド\n'));
+      console.log(chalk.cyan('  npx miyabi setup') + chalk.gray('              - セットアップガイド'));
+      console.log(chalk.cyan('  npx miyabi onboard') + chalk.gray('            - 初回セットアップウィザード'));
+      console.log(chalk.cyan('  npx miyabi doctor') + chalk.gray('             - ヘルスチェック・診断\n'));
       console.log(chalk.gray('詳細: npx miyabi --help\n'));
       process.exit(0);
     }
@@ -124,10 +132,12 @@ program
         name: 'action',
         message: '何をしますか？',
         choices: [
-          { name: '🌸 初めての方（セットアップガイド）', value: 'setup' },
+          { name: '🌸 初めての方（初回セットアップ）', value: 'onboard' },
           { name: '🆕 新しいプロジェクトを作成', value: 'init' },
           { name: '📦 既存プロジェクトに追加', value: 'install' },
           { name: '📊 ステータス確認', value: 'status' },
+          { name: '🩺 ヘルスチェック・診断', value: 'doctor' },
+          { name: '🎨 ダッシュボード管理', value: 'dashboard' },
           { name: '📚 ドキュメント生成', value: 'docs' },
           { name: '⚙️  設定', value: 'config' },
           { name: '❌ 終了', value: 'exit' },
@@ -142,6 +152,11 @@ program
 
     try {
       switch (action) {
+        case 'onboard': {
+          await onboard({});
+          break;
+        }
+
         case 'setup': {
           await setup({});
           break;
@@ -238,6 +253,50 @@ program
 
         case 'config': {
           await config({});
+          break;
+        }
+
+        case 'doctor': {
+          const { verbose } = await inquirer.prompt([
+            {
+              type: 'confirm',
+              name: 'verbose',
+              message: '詳細な診断情報を表示しますか？',
+              default: false,
+            },
+          ]);
+
+          await doctor({ verbose });
+          break;
+        }
+
+        case 'dashboard': {
+          const { dashboardAction } = await inquirer.prompt([
+            {
+              type: 'list',
+              name: 'dashboardAction',
+              message: 'ダッシュボード操作を選択してください:',
+              choices: [
+                { name: '🔄 リフレッシュ', value: 'refresh' },
+                { name: '📊 状態確認', value: 'status' },
+                { name: '🌐 ブラウザで開く', value: 'open' },
+              ],
+            },
+          ]);
+
+          // Import dashboard functions dynamically
+          const { registerDashboardCommand } = await import('./commands/dashboard.js');
+          const dashboardCmd = new Command('dashboard');
+          registerDashboardCommand(dashboardCmd);
+
+          if (dashboardAction === 'refresh') {
+            console.log(chalk.cyan.bold('\n🔄 ダッシュボードをリフレッシュ中...\n'));
+            await dashboardCmd.parse(['node', 'miyabi', 'dashboard', 'refresh']);
+          } else if (dashboardAction === 'status') {
+            await dashboardCmd.parse(['node', 'miyabi', 'dashboard', 'status']);
+          } else if (dashboardAction === 'open') {
+            await dashboardCmd.parse(['node', 'miyabi', 'dashboard', 'open']);
+          }
           break;
         }
       }
@@ -358,6 +417,27 @@ program
     await setup(options);
   });
 
+program
+  .command('doctor')
+  .description('システムヘルスチェックと診断')
+  .option('-v, --verbose', '詳細な診断情報を表示')
+  .action(async (options: { verbose?: boolean }, command: Command) => {
+    // Get global --json option from parent command
+    const json = command.parent?.opts().json || false;
+    await doctor({ ...options, json });
+  });
+
+program
+  .command('onboard')
+  .description('初回セットアップウィザード')
+  .option('--skip-demo', 'デモプロジェクト作成をスキップ')
+  .option('--skip-tour', '機能紹介をスキップ')
+  .option('--non-interactive', '非対話モード')
+  .option('-y, --yes', 'すべてのプロンプトを自動承認')
+  .action(async (options: { skipDemo?: boolean; skipTour?: boolean; nonInteractive?: boolean; yes?: boolean }) => {
+    await onboard(options);
+  });
+
 // Register agent command
 registerAgentCommand(program);
 
@@ -369,6 +449,9 @@ registerAutoModeCommand(program);
 
 // Register todos command
 registerTodosCommand(program);
+
+// Register dashboard command
+registerDashboardCommand(program);
 
 /**
  * Handle error and report to Miyabi repository

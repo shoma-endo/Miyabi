@@ -4,7 +4,90 @@
 
 ## 📊 利用可能な図
 
-### 1. システムアーキテクチャ (`system-architecture.puml`)
+### Entity-Relation Model 図（新規追加）
+
+#### 1. Entity-Relation Model - 完全版 (`entity-relation-model.puml`) ⭐ NEW
+**概要:** 12種類のEntity定義と27の関係性を完全に可視化
+
+**内容:**
+- 12種類のEntity完全定義（属性・メソッド）
+- 27の関係性マップ
+- 6種類のAgent詳細
+- 53ラベル体系サマリー
+- 9コマンド一覧
+- 統計情報
+
+**対象読者:** アーキテクト、システム設計者、Entity探索が必要な開発者
+
+**ファイル参照:**
+- Entity定義: `agents/types/index.ts`
+- 詳細ドキュメント: `docs/ENTITY_RELATION_MODEL.md`
+
+---
+
+#### 2. Entity-Relation Model - 簡易版 (`entity-relation-simplified.puml`) ⭐ NEW
+**概要:** コアワークフローに焦点を当てた簡易図
+
+**内容:**
+- コアEntity（8種類）
+- 主要な関係性
+- ワークフロー概要
+- 注釈付き
+
+**対象読者:** 初心者、クイックリファレンスが必要な人
+
+**使用シーン:** プレゼンテーション、クイック確認
+
+---
+
+#### 3. Agent Workflow (`agent-workflow.puml`) ⭐ NEW
+**概要:** Issue → PR の完全な実行フロー
+
+**内容:**
+- IssueAgent → CoordinatorAgent → CodeGenAgent → ReviewAgent → PRAgent
+- 並列実行（Worktree）
+- 品質チェック（QualityReport）
+- エスカレーションフロー
+- LDDログ記録
+
+**対象読者:** Agent運用担当者、デバッグが必要な開発者
+
+**ハイライト:**
+- Git Worktree並列実行
+- 品質スコア80点基準
+- 自動エスカレーション
+
+---
+
+#### 4. Label System (`label-system.puml`) ⭐ NEW
+**概要:** 53ラベル体系の完全マップ
+
+**内容:**
+- 10カテゴリ × 53ラベル
+- 状態遷移（STATE Labels）
+- Agent割り当て（AGENT Labels）
+- 品質スコアリング（QUALITY Labels）
+- エスカレーションルート（SEVERITY Labels）
+
+**対象読者:** Label管理者、Issue/PRトリアージ担当者
+
+**カテゴリ:**
+1. STATE (8) - ライフサイクル
+2. AGENT (6) - Agent割り当て
+3. PRIORITY (4) - 優先度
+4. TYPE (7) - 分類
+5. SEVERITY (4) - 深刻度
+6. PHASE (5) - フェーズ
+7. SPECIAL (7) - 特殊操作
+8. TRIGGER (4) - 自動化トリガー
+9. QUALITY (4) - 品質スコア
+10. COMMUNITY (4) - コミュニティ
+
+---
+
+### システム図（既存）
+
+#### 5. システムアーキテクチャ (`system-architecture.puml`)
 **概要:** Agentic OS 全体のコンポーネント構成と相互関係
 
 **内容:**
@@ -18,7 +101,7 @@
 
 ---
 
-### 2. ワークフローシーケンス (`workflow-sequence.puml`)
+#### 6. ワークフローシーケンス (`workflow-sequence.puml`)
 **概要:** Issue 作成から本番デプロイまでの完全な自律フロー
 
 **内容:**
@@ -37,7 +120,7 @@
 
 ---
 
-### 3. 並列実行フロー (`parallel-execution.puml`)
+#### 7. 並列実行フロー (`parallel-execution.puml`)
 **概要:** マルチワーカーによる並列タスク実行の詳細
 
 **内容:**
@@ -56,7 +139,7 @@
 
 ---
 
-### 4. コンポーネント構造 (`component-structure.puml`)
+#### 8. コンポーネント構造 (`component-structure.puml`)
 **概要:** プロジェクトのファイル構成と依存関係
 
 **内容:**
@@ -77,7 +160,7 @@
 
 ---
 
-### 5. データフロー図 (`data-flow.puml`)
+#### 9. データフロー図 (`data-flow.puml`)
 **概要:** システム全体のデータの流れ
 
 **内容:**
@@ -97,7 +180,7 @@
 
 ---
 
-### 6. 状態遷移図 (`state-machine.puml`)
+#### 10. 状態遷移図 (`state-machine.puml`)
 **概要:** Issue のライフサイクルと状態遷移
 
 **内容:**
@@ -115,6 +198,56 @@
 3. **Quality Check** - 自動QA
 4. **Ready for Review** - 人間によるレビュー待ち
 5. **Deployed** - 本番環境へデプロイ
+
+---
+
+### .claude/ ディレクトリ図（新規追加）
+
+#### 11. Claude ディレクトリ構造図 (`claude-directory-structure.puml`) ⭐ NEW
+**概要:** `.claude` ディレクトリの階層構造を可視化
+
+**内容:**
+- ディレクトリ階層（agents/specs, agents/prompts, commands, mcp-servers等）
+- ファイル数と行数統計
+- ファイル種別（.md, .json, .sh, .js）
+- 総ファイル数: 55ファイル
+- 総行数: 20,437行
+
+**対象読者:** Claude Code利用者、.claude/ディレクトリをカスタマイズする開発者
+
+**主要セクション:**
+- `agents/specs/` - Agent仕様定義（21ファイル）
+- `agents/prompts/` - Worktree実行プロンプト（20ファイル）
+- `commands/` - スラッシュコマンド（9ファイル）
+- `mcp-servers/` - MCPサーバー実装（5ファイル）
+- `hooks/` - Git hooks（4ファイル）
+
+---
+
+#### 12. MCP統合アーキテクチャ図 (`mcp-integration.puml`) ⭐ NEW
+**概要:** MCPサーバーとClaude Code統合を可視化
+
+**内容:**
+- 5つのMCPサーバー詳細
+- 提供ツール一覧
+- 環境変数設定
+- Claude Codeとの統合フロー
+
+**対象読者:** MCP開発者、統合担当者、システム管理者
+
+**MCPサーバー一覧:**
+1. **miyabi-integration** - プロジェクト統合・Agent制御
+2. **discord-community** - コミュニティ管理・通知
+3. **github-enhanced** - GitHub拡張操作
+4. **filesystem** - ファイルシステムアクセス
+5. **ide-integration** - IDE統合
+
+**提供ツール例（miyabi-integration）:**
+- `miyabi_status` - プロジェクトステータス取得
+- `miyabi_agent_run` - Agent実行制御
+- `miyabi_issue_analyze` - Issue分析
+- `miyabi_pr_create` - PR作成
+- `miyabi_deploy` - デプロイ実行
 
 ---
 
@@ -233,8 +366,38 @@ end note
 
 ---
 
+## 📚 ダイアグラム選択ガイド
+
+### 用途別推奨
+
+| 用途 | 推奨ダイアグラム |
+|------|----------------|
+| **Entity理解** | entity-relation-model.puml |
+| **クイック確認** | entity-relation-simplified.puml |
+| **Agent運用** | agent-workflow.puml |
+| **Label管理** | label-system.puml |
+| **システム全体** | system-architecture.puml |
+| **ワークフロー** | workflow-sequence.puml |
+
+### 対象読者別推奨
+
+| 読者 | 推奨ダイアグラム |
+|------|----------------|
+| **初心者** | entity-relation-simplified.puml → system-architecture.puml |
+| **開発者** | entity-relation-model.puml → agent-workflow.puml |
+| **PM/PO** | agent-workflow.puml → label-system.puml |
+| **アーキテクト** | entity-relation-model.puml → system-architecture.puml |
+
+---
+
 ## 🔗 関連リンク
 
+**Miyabiドキュメント:**
+- [ENTITY_RELATION_MODEL.md](../ENTITY_RELATION_MODEL.md) - Entity-Relationモデル定義
+- [TEMPLATE_MASTER_INDEX.md](../TEMPLATE_MASTER_INDEX.md) - テンプレート統合インデックス
+- [LABEL_SYSTEM_GUIDE.md](../LABEL_SYSTEM_GUIDE.md) - 53ラベル体系完全ガイド
+
+**PlantUML:**
 - [PlantUML 公式サイト](https://plantuml.com/)
 - [PlantUML Language Reference Guide](https://plantuml.com/guide)
 - [GitHub PlantUML Support](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams)
@@ -246,7 +409,12 @@ end note
 
 | 日付 | 図 | 変更内容 |
 |------|-----|----------|
-| 2025-10-08 | すべて | 初版作成 |
+| 2025-10-12 | .claude/ディレクトリ図（2図） | claude-directory-structure, mcp-integration追加 ⭐ |
+| 2025-10-12 | Entity-Relation関連（6図） | Entity-Relationモデル図大幅改善・統合 ⭐ |
+| 2025-10-08 | システム図（4図） | 初版作成 |
+
+**総PlantUML図数**: 12図（統合後）
+**統合完了**: 2025-10-12 - `.claude/diagrams/`から2図を`docs/diagrams/`へ統合
 
 ---
 

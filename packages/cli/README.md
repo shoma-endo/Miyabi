@@ -98,6 +98,8 @@ npx miyabi init my-project
 
 ## 🚀 Quick Start
 
+> **📝 Note:** Miyabi is currently optimized for **TypeScript/Node.js** projects. For other languages (Python, Go, Rust, etc.), see [Language & Framework Support](#-language--framework-support) below for adaptation instructions.
+
 ### For Humans 👨‍💻
 
 #### Interactive Mode (Easiest)
@@ -107,14 +109,21 @@ npx miyabi
 ```
 
 Then select from the menu:
-- 🌸 **Setup Guide** (for beginners)
+- 🌸 **First-Time Setup** (onboarding wizard)
 - 🆕 **Create New Project**
 - 📦 **Add to Existing Project**
 - 📊 **Check Status**
+- 🩺 **Health Check** (diagnostics)
 
 #### Direct Commands (Fastest)
 
 ```bash
+# First-time setup wizard
+npx miyabi onboard
+
+# Health check & diagnostics
+npx miyabi doctor
+
 # Create new project
 npx miyabi init my-awesome-project
 
@@ -322,6 +331,134 @@ What happens:
 
 ---
 
+## 🌍 Language & Framework Support
+
+### Current Implementation (v0.13.0)
+
+**Primary Support: TypeScript/Node.js**
+
+Miyabi's GitHub Actions and workflows are currently optimized for:
+- **Language**: TypeScript, JavaScript
+- **Runtime**: Node.js ≥18
+- **Package Manager**: npm
+- **Testing**: Vitest
+- **Build Tools**: tsc, esbuild
+
+**Workflows affected:**
+- `autonomous-agent.yml` - Uses `npm run typecheck`, `npm run agents:parallel:exec`
+- `deploy-pages.yml` - Node.js app deployment
+- `weekly-report.yml` - TypeScript/Node.js implementation
+- `weekly-kpi-report.yml` - TypeScript/Node.js KPI reporting
+
+### Multi-Language Roadmap
+
+**Phase 1 (Current)**: TypeScript/Node.js optimized templates
+**Phase 2 (v0.14+)**: Language-agnostic workflow templates
+**Phase 3 (2026+)**: Fully autonomous language detection
+
+### Adapting for Other Languages/Frameworks
+
+**You can easily adapt Miyabi for your stack using Claude Code:**
+
+<details>
+<summary><strong>Example: Python + FastAPI</strong></summary>
+
+```bash
+# 1. Install Miyabi (creates TypeScript templates)
+npx miyabi install
+
+# 2. Ask Claude Code to adapt
+# In Claude Code, run:
+```
+
+**Prompt for Claude Code:**
+```
+.claude/commands と .claude/agents について、
+元の指示の意図を変えずに、Python と FastAPI 用に書き換えてください。
+
+以下を変更:
+- npm → pip/poetry
+- TypeScript → Python
+- Vitest → pytest
+- tsc → mypy
+- Node.js → Python 3.11+
+
+ワークフローファイルも同様に書き換えてください。
+```
+
+**Result:** All workflows adapted for Python!
+</details>
+
+<details>
+<summary><strong>Example: Go + Gin</strong></summary>
+
+**Prompt for Claude Code:**
+```
+.claude/commands と .claude/agents について、
+Go言語とGinフレームワーク用に書き換えてください。
+
+以下を変更:
+- npm → go mod
+- TypeScript → Go
+- Vitest → go test
+- tsc → go build
+- Node.js → Go 1.21+
+
+ワークフローファイルも同様に書き換えてください。
+```
+</details>
+
+<details>
+<summary><strong>Example: Rust + Actix</strong></summary>
+
+**Prompt for Claude Code:**
+```
+.claude/commands と .claude/agents について、
+Rust言語とActixフレームワーク用に書き換えてください。
+
+以下を変更:
+- npm → cargo
+- TypeScript → Rust
+- Vitest → cargo test
+- tsc → cargo build
+- Node.js → Rust 1.70+
+
+ワークフローファイルも同様に書き換えてください。
+```
+</details>
+
+### Supported Stacks (with adaptation)
+
+| Language | Framework | Package Manager | Testing | Status |
+|----------|-----------|----------------|---------|--------|
+| TypeScript | Express/Next.js | npm/yarn/pnpm | Vitest | ✅ Native |
+| JavaScript | React/Vue | npm/yarn/pnpm | Jest | ✅ Native |
+| Python | FastAPI/Django | pip/poetry | pytest | 🔄 Adapt |
+| Go | Gin/Echo | go mod | go test | 🔄 Adapt |
+| Rust | Actix/Rocket | cargo | cargo test | 🔄 Adapt |
+| Ruby | Rails/Sinatra | bundler | rspec | 🔄 Adapt |
+| Java | Spring Boot | maven/gradle | junit | 🔄 Adapt |
+| C# | .NET | nuget | xunit | 🔄 Adapt |
+
+**Legend:**
+- ✅ Native: Works out-of-the-box
+- 🔄 Adapt: Use Claude Code to adapt workflows
+
+### Best Practices for Adaptation
+
+1. **Keep workflow intentions intact** - Don't change what workflows do, only how they do it
+2. **Preserve label system** - The 53-label system is language-agnostic
+3. **Maintain agent roles** - CoordinatorAgent, CodeGenAgent, etc. work with any language
+4. **Update documentation** - Document your language-specific setup
+
+### Contributing Multi-Language Templates
+
+We welcome contributions for other languages! See:
+- [CONTRIBUTING.md](../../CONTRIBUTING.md) - Contribution guidelines
+- [docs/MULTI_LANGUAGE_GUIDE.md](../../docs/MULTI_LANGUAGE_GUIDE.md) - Template creation guide
+
+---
+
 ## 📊 Commands Reference
 
 ### `init <project-name>`
@@ -526,6 +663,131 @@ npx miyabi setup --skip-token --skip-config
 3. ✅ Token creation
 4. ✅ Configuration
 5. ✅ First project creation
+
+---
+
+### `onboard`
+
+Comprehensive first-run wizard for new users.
+
+```bash
+# Interactive onboarding
+npx miyabi onboard
+
+# Skip optional features
+npx miyabi onboard --skip-demo --skip-tour
+```
+
+**Options:**
+- `--skip-demo` - Skip demo project creation
+- `--skip-tour` - Skip feature tour
+- `--non-interactive` - Exit (requires interactive mode)
+- `-y, --yes` - Same as --non-interactive
+
+**What it does:**
+1. ✅ Welcome & introduction
+2. ✅ System health check (calls `doctor`)
+3. ✅ 30-second "What is Miyabi?" overview
+4. ✅ Demo project creation (optional)
+5. ✅ Interactive feature tour
+6. ✅ Quick commands reference
+7. ✅ Resource links
+
+**Perfect for:**
+- 🆕 First-time Miyabi users
+- 📚 Learning the system
+- 🎓 Understanding capabilities
+- 🚀 Quick start
+
+---
+
+### `doctor`
+
+System health check and diagnostics.
+
+```bash
+# Basic health check
+npx miyabi doctor
+
+# Detailed diagnostics
+npx miyabi doctor --verbose
+
+# JSON output (for AI agents)
+npx miyabi doctor --json
+```
+
+**Health Checks Performed:**
+
+| Check | Description | Fix Suggestions |
+|-------|-------------|-----------------|
+| **Node.js** | Version ≥18.0.0 | Upgrade Node.js |
+| **Git** | Installation & version | Install Git |
+| **GitHub CLI** | `gh` authentication | Run `gh auth login` |
+| **GITHUB_TOKEN** | Token format validation | Set env var or use gh CLI |
+| **Token Permissions** | Required scopes check | Add `repo`, `workflow`, `project` |
+| **Network** | GitHub API connectivity | Check internet connection |
+| **Repository** | Git repo detection | Initialize git repo |
+| **.miyabi.yml** | Config file validation | Fix YAML syntax |
+| **Claude Code** | Environment detection | N/A (informational) |
+
+**Output Example:**
+
+```
+🩺 Miyabi Health Check
+
+  ✓ Node.js: v20.10.0 (OK)
+  ✓ Git: git version 2.42.0 (OK)
+  ✓ GitHub CLI: gh version 2.40.0 (Authenticated)
+  ✓ GITHUB_TOKEN: Valid token format
+  ⚠ Token Permissions: Missing recommended scopes: project
+    💡 Add recommended scopes for full functionality: https://github.com/settings/tokens
+  ✓ Network Connectivity: GitHub API accessible
+  ✓ Repository: Git repository detected
+  ✓ Claude Code: Standard terminal
+
+Summary:
+  ✓ 7 checks passed
+  ⚠ 1 warnings
+  8 total checks
+
+⚠ Overall: Issues detected (but not critical)
+
+Next Steps:
+  1. Review the suggestions above to fix issues
+  2. Run this command again to verify fixes
+  3. For help: https://github.com/ShunsukeHayashi/Miyabi/issues
+```
+
+**JSON Mode:**
+
+```bash
+npx miyabi doctor --json
+```
+
+```json
+{
+  "checks": [
+    {
+      "name": "Node.js",
+      "status": "pass",
+      "message": "v20.10.0 (OK)",
+      "details": "Node.js v20.10.0 meets minimum requirement (≥18)"
+    },
+    ...
+  ],
+  "summary": {
+    "passed": 7,
+    "warned": 1,
+    "failed": 0,
+    "total": 8
+  },
+  "overallStatus": "issues"
+}
+```
+
+**Exit Codes:**
+- `0` - Healthy or minor issues
+- `1` - Critical issues found
 
 ---
 

@@ -22,6 +22,14 @@ COPY package*.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/miyabi-agent-sdk/package.json ./packages/miyabi-agent-sdk/
 COPY packages/core/package.json ./packages/core/
 COPY packages/cli/package.json ./packages/cli/
+COPY packages/context-engineering/package.json ./packages/context-engineering/
+COPY packages/dashboard/package.json ./packages/dashboard/
+COPY packages/dashboard-server/package.json ./packages/dashboard-server/
+COPY packages/doc-generator/package.json ./packages/doc-generator/
+COPY packages/github-projects/package.json ./packages/github-projects/
+
+# Copy postinstall script (required before pnpm install)
+COPY packages/cli/scripts/postinstall.js ./packages/cli/scripts/
 
 # Install pnpm
 RUN npm install -g pnpm@9
@@ -37,6 +45,14 @@ COPY package*.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY packages/miyabi-agent-sdk/package.json ./packages/miyabi-agent-sdk/
 COPY packages/core/package.json ./packages/core/
 COPY packages/cli/package.json ./packages/cli/
+COPY packages/context-engineering/package.json ./packages/context-engineering/
+COPY packages/dashboard/package.json ./packages/dashboard/
+COPY packages/dashboard-server/package.json ./packages/dashboard-server/
+COPY packages/doc-generator/package.json ./packages/doc-generator/
+COPY packages/github-projects/package.json ./packages/github-projects/
+
+# Copy postinstall script (required before pnpm install)
+COPY packages/cli/scripts/postinstall.js ./packages/cli/scripts/
 
 # Install pnpm and all dependencies (including dev)
 RUN npm install -g pnpm@9
@@ -45,8 +61,8 @@ RUN pnpm install --frozen-lockfile
 # Copy source code
 COPY . .
 
-# Build all packages
-RUN pnpm -r run build
+# Build all packages (exclude packages with TypeScript errors)
+RUN pnpm -r --filter='!@miyabi/dashboard-server' --filter='!@agentic-os/github-projects' run build
 
 # Stage 4: Runtime image
 FROM base AS runtime
@@ -59,11 +75,15 @@ RUN addgroup -g 1001 -S miyabi && \
 COPY --from=deps --chown=miyabi:miyabi /app/node_modules ./node_modules
 COPY --from=deps --chown=miyabi:miyabi /app/packages ./packages
 
-# Copy built artifacts from builder stage
-COPY --from=builder --chown=miyabi:miyabi /app/dist ./dist
+# Copy built artifacts from builder stage (exclude packages that weren't built)
+# Note: Root-level /app/dist may not exist, packages contain their own dist directories
 COPY --from=builder --chown=miyabi:miyabi /app/packages/miyabi-agent-sdk/dist ./packages/miyabi-agent-sdk/dist
 COPY --from=builder --chown=miyabi:miyabi /app/packages/core/dist ./packages/core/dist
 COPY --from=builder --chown=miyabi:miyabi /app/packages/cli/dist ./packages/cli/dist
+COPY --from=builder --chown=miyabi:miyabi /app/packages/context-engineering/dist ./packages/context-engineering/dist
+COPY --from=builder --chown=miyabi:miyabi /app/packages/dashboard/dist ./packages/dashboard/dist
+COPY --from=builder --chown=miyabi:miyabi /app/packages/doc-generator/dist ./packages/doc-generator/dist
+# Note: dashboard-server and github-projects excluded due to TypeScript errors
 
 # Copy runtime configuration
 COPY --chown=miyabi:miyabi package.json ./

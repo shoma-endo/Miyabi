@@ -596,6 +596,7 @@ A ──┤      ├─ F         (26時間)
 
 | ドキュメント | 説明 |
 |:------------|:-----|
+| 📊 [Entity-Relationグラフ](https://shunsukehayashi.github.io/Miyabi/entity-graph.html) | リアルタイムセッション活動の可視化 |
 | 📱 [Termux環境ガイド](docs/TERMUX_GUIDE.md) | Android/Termux環境での使用方法 |
 | 🔒 [セキュリティポリシー](SECURITY.md) | セキュリティ脆弱性の報告方法 |
 | 🔐 [プライバシーポリシー](PRIVACY.md) | データ収集とプライバシー保護 |
@@ -611,12 +612,40 @@ A ──┤      ├─ F         (26時間)
 
 <div align="center">
 
-[![Discord](https://img.shields.io/badge/Discord-Coming%20Soon-5865F2?style=for-the-badge&logo=discord&logoColor=white)](#)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/miyabi)
 [![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-181717?style=for-the-badge&logo=github)](https://github.com/ShunsukeHayashi/Miyabi/discussions)
 
-**Discord サーバー準備中！** 詳細は [Discord Community Plan](docs/DISCORD_COMMUNITY_PLAN.md) をご覧ください。
-
 </div>
+
+#### 💬 **Discord Community**
+
+**Miyabi Community Discord** で開発者と交流しましょう！
+
+<table>
+<tr>
+<td width="50%">
+
+**🌟 コミュニティで得られるもの:**
+- ✅ 初心者から上級者まで歓迎
+- ✅ 週次 Office Hours（ライブQ&A）
+- ✅ 月次ハッカソン
+- ✅ 学習リソースとチュートリアル
+- ✅ AI/ML開発の最新情報
+
+</td>
+<td width="50%">
+
+**📚 準備中のドキュメント:**
+- 📖 [Welcome Guide](docs/discord/welcome.md)
+- 📜 [Community Rules](docs/discord/rules.md)
+- ❓ [FAQ](docs/discord/faq.md)
+- ⚙️ [Server Configuration](discord-config.json)
+
+</td>
+</tr>
+</table>
+
+**詳細計画**: [Discord Community Plan](DISCORD_COMMUNITY_PLAN.md) • **Status**: 準備中（Phase 1）
 
 ---
 
@@ -680,12 +709,6 @@ gh auth login
 export GITHUB_TOKEN=ghp_xxxxx
 ```
 
-### 🤖 **Anthropic API Key（Agent実行時に必要）**
-
-```bash
-export ANTHROPIC_API_KEY=sk-ant-xxxxx
-```
-
 ### 🎛️ **オプション設定**
 
 ```bash
@@ -713,7 +736,6 @@ export MIYABI_PARALLEL_AGENTS=3
 ### 🌟 **オプション**
 
 - **gh CLI** - GitHub CLI（推奨）
-- **Anthropic API Key** - Agent実行時に必要
 
 ### 🖥️ **サポート環境**
 
@@ -1189,7 +1211,6 @@ AI agents automatically:
 #### 🌟 **Optional**
 
 - **gh CLI** - GitHub CLI (recommended)
-- **Anthropic API Key** - Required for agent execution
 
 #### 🖥️ **Supported Environments**
 
@@ -1206,6 +1227,7 @@ AI agents automatically:
 
 | Documentation | Description |
 |:-------------|:------------|
+| 📊 [Entity-Relation Graph](https://shunsukehayashi.github.io/Miyabi/entity-graph.html) | Real-time session activity visualization |
 | 📱 [Termux Guide](docs/TERMUX_GUIDE.md) | Usage in Android/Termux environment |
 | 🔒 [Security Policy](SECURITY.md) | Security vulnerability reporting |
 | 🔐 [Privacy Policy](PRIVACY.md) | Data collection and privacy protection |
@@ -1314,3 +1336,4 @@ npx miyabi
 **[⬆ Back to Top](#-miyabi)**
 
 </div>
+# Test webhook integration

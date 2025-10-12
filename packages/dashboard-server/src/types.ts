@@ -58,7 +58,7 @@ export interface StateNode extends BaseNode {
   data: StateNodeData;
 }
 
-export type GraphNode = IssueNode | AgentNode | StateNode;
+export type GraphNode = IssueNode | AgentNode | StateNode | DeviceNode;
 
 // ============================================================================
 // Edge Types
@@ -79,7 +79,13 @@ export type EdgeType =
   | 'state-flow'
   | 'depends-on'    // Issue dependency
   | 'blocks'        // Issue blocks another
-  | 'related-to';   // Related issues
+  | 'related-to'    // Related issues
+  // ReactFlow visual edge types
+  | 'default'
+  | 'straight'
+  | 'step'
+  | 'smoothstep'
+  | 'simplebezier';
 
 export interface GraphEdge extends BaseEdge {
   type: EdgeType;
@@ -87,6 +93,19 @@ export interface GraphEdge extends BaseEdge {
     stroke?: string;
     strokeWidth?: number;
     strokeDasharray?: string;
+  };
+  markerEnd?: {
+    type: 'arrow' | 'arrowclosed';
+    color?: string;
+  };
+  labelBgStyle?: {
+    fill?: string;
+    fillOpacity?: number;
+  };
+  labelStyle?: {
+    fill?: string;
+    fontSize?: number;
+    fontWeight?: number;
   };
 }
 
@@ -304,6 +323,55 @@ export const AGENT_CONFIGS: Record<AgentType, AgentConfig> = {
 };
 
 // ============================================================================
+// Device Tracking (Multi-Device Development)
+// ============================================================================
+
+export interface DeviceInfo {
+  identifier: string;
+  hostname: string;
+  platform: string;
+  arch: string;
+  nodeVersion: string;
+}
+
+export interface DeviceActivity {
+  event: 'pre-push' | 'post-push' | 'pre-commit' | 'post-commit';
+  timestamp: string;
+  git: {
+    branch: string;
+    commit: {
+      hash: string;
+      short_hash: string;
+      message: string;
+    };
+  };
+}
+
+export interface DeviceState {
+  device: DeviceInfo;
+  status: 'online' | 'offline' | 'idle';
+  lastActivity: string;
+  recentActivities: DeviceActivity[];
+  currentBranch?: string;
+  totalEvents: number;
+}
+
+export interface DeviceNodeData {
+  identifier: string;
+  hostname: string;
+  platform: string;
+  status: 'online' | 'offline' | 'idle';
+  lastActivity: string;
+  currentBranch?: string;
+  totalEvents: number;
+}
+
+export interface DeviceNode extends BaseNode {
+  type: 'device';
+  data: DeviceNodeData;
+}
+
+// ============================================================================
 // Label State Machine
 // ============================================================================
 
@@ -364,3 +432,65 @@ export const STATE_LABELS: Record<string, LabelStateConfig> = {
     description: 'Paused - waiting',
   },
 };
+
+// ============================================================================
+// Task Hierarchy Types
+// ============================================================================
+
+/**
+ * Task階層のノードタイプ
+ */
+export type TaskNodeType = 'issue' | 'task' | 'subtask' | 'todo';
+
+/**
+ * Task階層ノード
+ */
+export interface TaskNode {
+  id: string; // "issue-100-task-1-subtask-1"
+  type: TaskNodeType; // "subtask"
+  parentId: string | null; // "issue-100-task-1"
+  position: { x: number; y: number };
+  data: {
+    title: string;
+    description?: string;
+    status: 'pending' | 'in_progress' | 'completed' | 'blocked';
+    assignee?: string;
+    dueDate?: string;
+    dependencies: string[]; // ["issue-100-task-1-subtask-1"]
+    estimatedHours?: number;
+    actualHours?: number;
+    tags?: string[];
+  };
+}
+
+/**
+ * Task階層エッジ
+ */
+export interface TaskEdge {
+  id: string;
+  source: string; // 親ノードID or 依存元
+  target: string; // 子ノードID or 依存先
+  type: 'hierarchy' | 'dependency' | 'blocking';
+  label?: string;
+  style?: {
+    stroke: string;
+    strokeWidth: number;
+    strokeDasharray?: string;
+  };
+}
+
+/**
+ * Issue全体のTask階層データ
+ */
+export interface TaskHierarchyData {
+  issueId: string;
+  nodes: TaskNode[];
+  edges: TaskEdge[];
+  metadata: {
+    totalTasks: number;
+    completedTasks: number;
+    blockedTasks: number;
+    estimatedTotalHours: number;
+    actualTotalHours: number;
+  };
+}

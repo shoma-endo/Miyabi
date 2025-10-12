@@ -18,6 +18,7 @@ import { throttleEventMiddleware } from './middleware/throttle.js';
 import { globalRateLimiter } from './middleware/rate-limiter.js';
 import { GraphDebouncer } from './services/graph-debouncer.js';
 import { LayoutEngine } from '../../dashboard/src/services/LayoutEngine.js';
+import { getImprovementMetrics } from './utils/improvements-parser.js';
 import type {
   AgentStartedEvent,
   AgentProgressEvent,
@@ -102,6 +103,129 @@ function addToEventHistory(event: any): void {
   if (eventHistory.length > MAX_HISTORY_SIZE) {
     eventHistory.splice(MAX_HISTORY_SIZE);
   }
+}
+
+// ============================================================================
+// Device Tracking (Multi-Device Development)
+// ============================================================================
+
+interface DeviceState {
+  device: {
+    identifier: string;
+    hostname: string;
+    platform: string;
+    arch: string;
+    nodeVersion: string;
+  };
+  status: 'online' | 'offline' | 'idle';
+  lastActivity: string;
+  recentActivities: Array<{
+    event: string;
+    timestamp: string;
+    branch: string;
+    commit: string;
+  }>;
+  currentBranch?: string;
+  totalEvents: number;
+}
+
+const deviceStates = new Map<string, DeviceState>();
+const DEVICE_TIMEOUT_MS = 300000; // 5 minutes - mark as idle
+const DEVICE_OFFLINE_MS = 600000; // 10 minutes - mark as offline
+const MAX_RECENT_ACTIVITIES = 20;
+
+/**
+ * Update device state from webhook payload
+ */
+function updateDeviceState(payload: any): void {
+  const { device, event, timestamp, git } = payload;
+
+  if (!device || !device.identifier) {
+    console.warn('⚠️  No device identifier in payload');
+    return;
+  }
+
+  const identifier = device.identifier;
+  const existingState = deviceStates.get(identifier);
+
+  const activity = {
+    event,
+    timestamp,
+    branch: git?.branch || 'unknown',
+    commit: git?.commit?.short_hash || 'unknown',
+  };
+
+  const newState: DeviceState = {
+    device: {
+      identifier: device.identifier,
+      hostname: device.hostname || 'unknown',
+      platform: device.platform || 'unknown',
+      arch: device.arch || 'unknown',
+      nodeVersion: device.nodeVersion || 'unknown',
+    },
+    status: 'online',
+    lastActivity: timestamp,
+    recentActivities: existingState
+      ? [activity, ...existingState.recentActivities].slice(0, MAX_RECENT_ACTIVITIES)
+      : [activity],
+    currentBranch: git?.branch,
+    totalEvents: existingState ? existingState.totalEvents + 1 : 1,
+  };
+
+  deviceStates.set(identifier, newState);
+
+  console.log(`📱 Device updated: ${identifier} (${device.platform}) - ${event} on ${git?.branch}`);
+
+  // Broadcast device state update
+  io.emit('device:update', {
+    identifier,
+    state: newState,
+    timestamp: new Date().toISOString(),
+  });
+}
+
+/**
+ * Check device status and update to idle/offline
+ */
+function checkDeviceStatus(): void {
+  const now = Date.now();
+
+  for (const [identifier, state] of deviceStates.entries()) {
+    const lastActivityTime = new Date(state.lastActivity).getTime();
+    const timeSinceActivity = now - lastActivityTime;
+
+    let newStatus: 'online' | 'offline' | 'idle' = state.status;
+
+    if (timeSinceActivity > DEVICE_OFFLINE_MS) {
+      newStatus = 'offline';
+    } else if (timeSinceActivity > DEVICE_TIMEOUT_MS) {
+      newStatus = 'idle';
+    }
+
+    if (newStatus !== state.status) {
+      state.status = newStatus;
+      deviceStates.set(identifier, state);
+
+      console.log(`📱 Device status changed: ${identifier} → ${newStatus}`);
+
+      io.emit('device:status-change', {
+        identifier,
+        status: newStatus,
+        lastActivity: state.lastActivity,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+}
+
+// Check device status every minute
+setInterval(checkDeviceStatus, 60000);
+
+/**
+ * Get all device states
+ */
+function getAllDeviceStates(): DeviceState[] {
+  return Array.from(deviceStates.values());
 }
 
 // ============================================================================
@@ -686,7 +810,48 @@ app.post('/api/layout/recalculate', async (req, res) => {
   }
 });
 
-// 4. GET /api/events/history - Event history with pagination
+// 4. GET /api/devices - Get all connected devices
+app.get('/api/devices', (req, res) => {
+  try {
+    const devices = getAllDeviceStates();
+
+    res.json({
+      success: true,
+      devices,
+      total: devices.length,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: any) {
+    console.error('❌ Error fetching devices:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 5. GET /api/devices/:identifier - Get specific device state
+app.get('/api/devices/:identifier', (req, res) => {
+  try {
+    const { identifier } = req.params;
+    const device = deviceStates.get(identifier);
+
+    if (!device) {
+      return res.status(404).json({
+        success: false,
+        error: `Device not found: ${identifier}`,
+      });
+    }
+
+    res.json({
+      success: true,
+      device,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: any) {
+    console.error('❌ Error fetching device:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 6. GET /api/events/history - Event history with pagination
 app.get('/api/events/history', (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
@@ -730,7 +895,197 @@ app.get('/api/events/history', (req, res) => {
   }
 });
 
-// GitHub WebHook endpoint
+// 7. GET /api/statistics - System statistics including cache, performance, and improvements
+app.get('/api/statistics', async (req, res) => {
+  try {
+    // Get cache stats from GraphBuilder
+    const graphStats = graphBuilder.getStats();
+
+    // Get improvement metrics from IMPROVEMENTS_SUMMARY.md
+    const improvementMetrics = await getImprovementMetrics();
+
+    // Calculate uptime
+    const uptime = process.uptime();
+
+    // Memory usage
+    const memoryUsage = process.memoryUsage();
+
+    // Connected clients
+    const clientCount = connectedClients.size;
+
+    // Device stats
+    const devices = getAllDeviceStates();
+    const onlineDevices = devices.filter(d => d.status === 'online').length;
+
+    // Event stats
+    const eventCount = eventHistory.length;
+
+    // TODO: Load actual metrics from IMPROVEMENTS_SUMMARY.md or test results
+    // For now, return basic stats that can be expanded
+    const statistics = {
+      success: true,
+      timestamp: new Date().toISOString(),
+      system: {
+        uptime,
+        memory: {
+          heapUsed: memoryUsage.heapUsed,
+          heapTotal: memoryUsage.heapTotal,
+          external: memoryUsage.external,
+          rss: memoryUsage.rss,
+        },
+        connectedClients: clientCount,
+        onlineDevices,
+        totalDevices: devices.length,
+        eventHistorySize: eventCount,
+      },
+      cache: graphStats.cache,
+      improvements: {
+        // Phase 1: Type Safety (from IMPROVEMENTS_SUMMARY.md)
+        typeSafety: {
+          anyTypeCount: improvementMetrics.typeSafety.anyTypeCount,
+          interfaceCount: improvementMetrics.typeSafety.interfaceCount,
+          typeCheckPassed: improvementMetrics.typeSafety.typeCheckPassed,
+          circularDepsResolved: improvementMetrics.typeSafety.circularDepsResolved,
+        },
+        // Phase 2: Error Handling (from IMPROVEMENTS_SUMMARY.md)
+        errorHandling: {
+          totalRetries: 0, // Runtime metric, not from summary
+          successfulRetries: 0,
+          failedRetries: 0,
+          avgRetryTime: 0,
+          errorClassesUsed: improvementMetrics.errorHandling.errorClassesUsed,
+        },
+        // Phase 3: Cache (real data from GraphBuilder)
+        cache: graphStats.cache,
+        // Phase 4: Tests (from IMPROVEMENTS_SUMMARY.md)
+        tests: {
+          totalTests: improvementMetrics.tests.totalTests,
+          passedTests: improvementMetrics.tests.passedTests,
+          failedTests: improvementMetrics.tests.failedTests,
+          successRate: improvementMetrics.tests.successRate,
+          avgDuration: improvementMetrics.tests.avgDuration,
+          coverage: 0, // Not documented in summary
+        },
+        // Phase 5: Security (from IMPROVEMENTS_SUMMARY.md)
+        security: {
+          scansPerformed: 0, // Runtime metric
+          issuesDetected: 0,
+          criticalIssues: 0,
+          avgSecurityScore: 0,
+          patternsDetected: improvementMetrics.security.patternsDetected,
+        },
+        // Overall metrics
+        overall: improvementMetrics.overall,
+      },
+    };
+
+    res.json(statistics);
+  } catch (error: any) {
+    console.error('❌ Error fetching statistics:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ============================================================================
+// Local WebHook Endpoint (for Git Hooks)
+// ============================================================================
+
+/**
+ * Local WebHook endpoint for receiving events from local Git hooks
+ * This endpoint receives pre-push, post-push, pre-commit, post-commit events
+ */
+app.post('/api/webhook/local', express.json(), (req, res) => {
+  try {
+    const payload = req.body;
+    const { event, timestamp, device, git, project } = payload;
+
+    if (!event || !timestamp) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid payload: event and timestamp are required',
+      });
+    }
+
+    console.log(`\n📥 Local WebHook Received`);
+    console.log(`   Event: ${event}`);
+    console.log(`   Device: ${device?.identifier || 'unknown'}`);
+    console.log(`   Branch: ${git?.branch || 'unknown'}`);
+    console.log(`   Commit: ${git?.commit?.short_hash || 'unknown'}`);
+    console.log(`   Timestamp: ${timestamp}\n`);
+
+    // Store event in history
+    const historyEntry = {
+      eventType: `local:${event}`,
+      ...payload,
+    };
+    addToEventHistory(historyEntry);
+
+    // Update device state
+    updateDeviceState(payload);
+
+    // Broadcast to all connected clients
+    io.emit('local:webhook', {
+      eventType: `local:${event}`,
+      ...payload,
+    });
+
+    // For post-push events, trigger a graph refresh
+    if (event === 'post-push' && !isRateLimited()) {
+      console.log('🔄 Triggering graph refresh after post-push event');
+
+      // Debounced graph update
+      if (!pendingGraphUpdate) {
+        pendingGraphUpdate = setTimeout(async () => {
+          try {
+            const graph = await graphBuilder.buildFullGraph();
+            io.emit('graph:update', {
+              nodes: graph.nodes,
+              edges: graph.edges,
+              timestamp: new Date().toISOString(),
+            });
+            console.log('✅ Graph refreshed after post-push');
+          } catch (error: any) {
+            console.error('❌ Error refreshing graph:', error);
+            const { useMock } = handleGitHubError(error);
+            if (useMock) {
+              io.emit('graph:update', {
+                ...getMockGraph(),
+                timestamp: new Date().toISOString(),
+              });
+            }
+          } finally {
+            pendingGraphUpdate = null;
+          }
+        }, GRAPH_UPDATE_DEBOUNCE);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: `Local webhook ${event} received`,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: any) {
+    console.error('❌ Error processing local webhook:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+// GitHub WebHook info endpoint (GET)
+app.get('/api/webhook/github', (req, res) => {
+  res.json({
+    status: 'ready',
+    message: 'GitHub WebHook endpoint is active. Use POST requests only.',
+    repository: REPOSITORY,
+    events: ['issues', 'pull_request', 'issue_comment'],
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// GitHub WebHook endpoint (POST)
 app.use(webhookHandler.getMiddleware());
 
 // ============================================================================
@@ -803,6 +1158,13 @@ io.on('connection', (socket) => {
 
   // Send initial graph data (debounced)
   scheduleGraphUpdate(socket);
+
+  // Send current device states
+  const devices = getAllDeviceStates();
+  socket.emit('devices:initial', {
+    devices,
+    timestamp: new Date().toISOString(),
+  });
 
   // Subscribe to specific issue
   socket.on('subscribe', (data: { issueNumber?: number }) => {
@@ -897,9 +1259,16 @@ httpServer.listen(PORT, async () => {
   console.log('─'.repeat(50));
   console.log(`📡 HTTP Server:     http://localhost:${PORT}`);
   console.log(`🔌 WebSocket:       ws://localhost:${PORT}`);
-  console.log(`🪝 WebHook:         http://localhost:${PORT}/api/webhook/github`);
+  console.log(`🪝 GitHub WebHook:  http://localhost:${PORT}/api/webhook/github`);
+  console.log(`🔗 Local WebHook:   http://localhost:${PORT}/api/webhook/local`);
   console.log(`📊 Repository:      ${REPOSITORY}`);
   console.log(`🎨 Frontend:        ${DASHBOARD_URL}`);
+  console.log('─'.repeat(50));
+  console.log('📊 Monitoring Mode: ACTIVE');
+  console.log('🎧 Listening for:');
+  console.log('   • Git Hook Events (pre-push, post-push, pre-commit, post-commit)');
+  console.log('   • Agent Events (started, progress, completed, error)');
+  console.log('   • GitHub WebHook Events (issues, PRs, labels)');
   console.log('─'.repeat(50));
   console.log('');
 

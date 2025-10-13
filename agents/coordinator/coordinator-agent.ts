@@ -29,6 +29,7 @@ import {
 import { IssueAnalyzer } from '../utils/issue-analyzer.js';
 import { DAGManager } from '../utils/dag-manager.js';
 import { PlansGenerator } from '../utils/plans-generator.js';
+import { IssueTraceLogger } from '../logging/issue-trace-logger.js';
 import * as path from 'path';
 
 export class CoordinatorAgent extends BaseAgent {
@@ -52,8 +53,26 @@ export class CoordinatorAgent extends BaseAgent {
         };
       }
 
+      // Initialize Issue Trace Logger for this Issue
+      const issueLogger = new IssueTraceLogger(
+        issue.number,
+        issue.title,
+        issue.url,
+        this.config.deviceIdentifier || 'unknown'
+      );
+      issueLogger.startTrace();
+
+      // Set logger for this agent and future specialist agents
+      this.setTraceLogger(issueLogger);
+
+      // Record state transition: pending → analyzing
+      this.recordStateTransition('pending', 'analyzing', 'Starting Issue decomposition');
+
       // 2. Decompose Issue into Tasks
       const decomposition = await this.decomposeIssue(issue);
+
+      // Update task statistics
+      issueLogger.updateTaskStats(decomposition.tasks.length, 0, 0);
 
       // 3. Build DAG and check for cycles
       const dag = decomposition.dag;
@@ -66,6 +85,9 @@ export class CoordinatorAgent extends BaseAgent {
         );
       }
 
+      // Record state transition: analyzing → implementing
+      this.recordStateTransition('analyzing', 'implementing', 'Starting task execution');
+
       // 4. Create execution plan
       const plan = await this.createExecutionPlan(decomposition.tasks, dag);
 
@@ -73,7 +95,13 @@ export class CoordinatorAgent extends BaseAgent {
       await this.generatePlansFile(decomposition, plan);
 
       // 5. Execute tasks in parallel (respecting dependencies)
-      const report = await this.executeParallel(plan);
+      const report = await this.executeParallel(plan, issueLogger);
+
+      // Record state transition: implementing → done
+      this.recordStateTransition('implementing', 'done', 'All tasks completed');
+
+      // End trace
+      issueLogger.endTrace('done', 'Issue orchestration completed successfully');
 
       this.log(`✅ Orchestration complete: ${report.summary.successRate}% success rate`);
 
@@ -89,6 +117,13 @@ export class CoordinatorAgent extends BaseAgent {
       };
     } catch (error) {
       this.log(`❌ Orchestration failed: ${(error as Error).message}`);
+
+      // Record failure in trace
+      if (this.traceLogger) {
+        this.recordStateTransition('implementing', 'failed', (error as Error).message);
+        this.traceLogger.endTrace('failed', (error as Error).message);
+      }
+
       throw error;
     }
   }
@@ -273,7 +308,7 @@ export class CoordinatorAgent extends BaseAgent {
   /**
    * Execute tasks in parallel (respecting DAG levels)
    */
-  private async executeParallel(plan: ExecutionPlan): Promise<ExecutionReport> {
+  private async executeParallel(plan: ExecutionPlan, issueLogger: IssueTraceLogger): Promise<ExecutionReport> {
     this.log(`⚡ Starting parallel execution (concurrency: ${plan.concurrency})`);
 
     const results: TaskResult[] = [];
@@ -288,10 +323,16 @@ export class CoordinatorAgent extends BaseAgent {
       const levelResults = await this.executeLevelParallel(
         level,
         plan.tasks,
-        plan.concurrency
+        plan.concurrency,
+        issueLogger
       );
 
       results.push(...levelResults);
+
+      // Update task statistics in trace
+      const completed = results.filter((r) => r.status === 'completed').length;
+      const failed = results.filter((r) => r.status === 'failed').length;
+      issueLogger.updateTaskStats(plan.tasks.length, completed, failed);
 
       // Update progress
       this.logProgress(results, plan.tasks.length);
@@ -332,7 +373,8 @@ export class CoordinatorAgent extends BaseAgent {
   private async executeLevelParallel(
     taskIds: string[],
     allTasks: Task[],
-    _concurrency: number
+    _concurrency: number,
+    issueLogger: IssueTraceLogger
   ): Promise<TaskResult[]> {
     const tasks = taskIds
       .map((id) => allTasks.find((t) => t.id === id))
@@ -347,8 +389,19 @@ export class CoordinatorAgent extends BaseAgent {
         try {
           // Instantiate and execute the appropriate specialist agent
           const agent = await this.createSpecialistAgent(task.assignedAgent);
+
+          // Pass Issue Trace Logger to specialist agent
+          agent.setTraceLogger(issueLogger);
+
           const result = await agent.execute(task);
           const durationMs = Date.now() - startTime;
+
+          // Update task completed count
+          if (result.status === 'success') {
+            issueLogger.incrementCompletedTasks();
+          } else {
+            issueLogger.incrementFailedTasks();
+          }
 
           return {
             taskId: task.id,
@@ -360,6 +413,9 @@ export class CoordinatorAgent extends BaseAgent {
         } catch (error) {
           const durationMs = Date.now() - startTime;
           this.log(`   ❌ Task ${task.id} failed: ${(error as Error).message}`);
+
+          // Update failed task count
+          issueLogger.incrementFailedTasks();
 
           return {
             taskId: task.id,

@@ -30,6 +30,7 @@ import { IssueAnalyzer } from '../utils/issue-analyzer.js';
 import { DAGManager } from '../utils/dag-manager.js';
 import { PlansGenerator } from '../utils/plans-generator.js';
 import { IssueTraceLogger } from '../logging/issue-trace-logger.js';
+import { TaskToolExecutor } from '../../scripts/operations/task-tool-executor.js';
 import * as path from 'path';
 
 export class CoordinatorAgent extends BaseAgent {
@@ -95,7 +96,10 @@ export class CoordinatorAgent extends BaseAgent {
       await this.generatePlansFile(decomposition, plan);
 
       // 5. Execute tasks in parallel (respecting dependencies)
-      const report = await this.executeParallel(plan, issueLogger);
+      // Use Task Tool executor if enabled in config
+      const report = this.config.useTaskTool
+        ? await this.executeWithTaskTool(decomposition.tasks, dag, issueLogger)
+        : await this.executeParallel(plan, issueLogger);
 
       // Record state transition: implementing → done
       this.recordStateTransition('implementing', 'done', 'All tasks completed');
@@ -432,6 +436,47 @@ export class CoordinatorAgent extends BaseAgent {
     );
 
     return results;
+  }
+
+  /**
+   * Execute tasks using Task Tool parallel executor (NEW)
+   *
+   * Uses Claude Code Task tool for true parallel execution across
+   * multiple isolated Git worktrees.
+   *
+   * Benefits:
+   * - True parallel execution (not limited by single process)
+   * - Isolated worktrees prevent conflicts
+   * - Leverages Claude Code's Task tool
+   * - Better scalability for large task sets
+   */
+  private async executeWithTaskTool(
+    tasks: Task[],
+    dag: DAG,
+    _issueLogger: IssueTraceLogger
+  ): Promise<ExecutionReport> {
+    this.log('🚀 Starting Task Tool parallel execution');
+    this.log(`   Using Task Tool executor for ${tasks.length} tasks`);
+
+    // Create Task Tool executor
+    const executor = new TaskToolExecutor({
+      worktreeBasePath: this.config.worktreeBasePath || '.worktrees',
+      maxConcurrentGroups: 5,
+      sessionTimeoutMs: 3600000,  // 1 hour
+      enableProgressReporting: true,
+      progressReportIntervalMs: 30000,  // 30 seconds
+    });
+
+    // Execute tasks in parallel
+    const report = await executor.execute(tasks, dag);
+
+    this.log(`✅ Task Tool execution completed`);
+    this.log(`   Success rate: ${report.summary.successRate.toFixed(1)}%`);
+
+    // Save report
+    await this.saveExecutionReport(report);
+
+    return report;
   }
 
   /**

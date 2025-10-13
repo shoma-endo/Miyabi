@@ -575,3 +575,9 @@ export interface IssueTraceLog {
     lastUpdated: string;
   };
 }
+
+// ============================================================================
+// Performance Metrics Types (E15)
+// ============================================================================
+
+export * from './performance-metrics.js';

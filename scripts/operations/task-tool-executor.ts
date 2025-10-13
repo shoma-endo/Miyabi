@@ -14,7 +14,9 @@
 import { TaskGrouper, type TaskGroup } from './task-grouper.js';
 import { TaskScheduler } from '../../agents/coordinator/task-scheduler.js';
 import { ClaudeCodeSessionManager } from '../../utils/claude-code-session-manager.js';
+import { PerformanceMonitor } from '../../utils/performance-monitor.js';
 import type { Task, DAG, AgentResult, ExecutionReport } from '../../agents/types/index.js';
+import type { PerformanceReport } from '../../agents/types/performance-metrics.js';
 
 export interface TaskToolExecutorConfig {
   worktreeBasePath: string;
@@ -22,6 +24,8 @@ export interface TaskToolExecutorConfig {
   sessionTimeoutMs: number;
   enableProgressReporting: boolean;
   progressReportIntervalMs: number;
+  enablePerformanceMonitoring: boolean;
+  performanceReportPath?: string;
 }
 
 const DEFAULT_EXECUTOR_CONFIG: TaskToolExecutorConfig = {
@@ -30,6 +34,8 @@ const DEFAULT_EXECUTOR_CONFIG: TaskToolExecutorConfig = {
   sessionTimeoutMs: 3600000,  // 1 hour
   enableProgressReporting: true,
   progressReportIntervalMs: 30000,  // 30 seconds
+  enablePerformanceMonitoring: true,
+  performanceReportPath: 'reports/performance',
 };
 
 export class TaskToolExecutor {
@@ -37,6 +43,7 @@ export class TaskToolExecutor {
   private grouper: TaskGrouper;
   private scheduler: TaskScheduler | null;
   private sessionManager: ClaudeCodeSessionManager;
+  private performanceMonitor: PerformanceMonitor | null;
   private progressInterval: NodeJS.Timeout | null;
 
   constructor(config?: Partial<TaskToolExecutorConfig>) {
@@ -50,6 +57,7 @@ export class TaskToolExecutor {
       sessionTimeoutMs: this.config.sessionTimeoutMs,
       maxConcurrentSessions: this.config.maxConcurrentGroups,
     });
+    this.performanceMonitor = null;
     this.progressInterval = null;
   }
 
@@ -61,6 +69,22 @@ export class TaskToolExecutor {
 
     console.log('🚀 Starting Task Tool parallel execution');
     console.log(`   Total tasks: ${tasks.length}`);
+
+    // Initialize performance monitor
+    if (this.config.enablePerformanceMonitoring) {
+      this.performanceMonitor = new PerformanceMonitor(`task-tool-${Date.now()}`, {
+        enableRealtimeMonitoring: true,
+        monitoringIntervalMs: 10000,  // 10 seconds
+        enableAlerts: true,
+      });
+
+      this.performanceMonitor.updateExecutionState({
+        totalTasks: tasks.length,
+      });
+
+      this.performanceMonitor.startMonitoring();
+      console.log('📊 Performance monitoring enabled');
+    }
 
     // Phase 1: Group tasks
     console.log('\n📊 Phase 1: Grouping tasks...');
@@ -103,6 +127,45 @@ export class TaskToolExecutor {
     console.log('\n📄 Phase 4: Generating execution report...');
     const endTime = Date.now();
     const report = this.generateExecutionReport(tasks, results, startTime, endTime);
+
+    // Phase 7: Generate performance report
+    if (this.performanceMonitor) {
+      this.performanceMonitor.stopMonitoring();
+      const perfReport = this.performanceMonitor.generateReport();
+
+      // Display alerts
+      const alerts = perfReport.alerts;
+      if (alerts.length > 0) {
+        console.log('\n⚠️  Performance Alerts:');
+        for (const alert of alerts) {
+          const icon = alert.severity === 'critical' ? '🔴' : alert.severity === 'warning' ? '🟡' : 'ℹ️';
+          console.log(`   ${icon} [${alert.severity.toUpperCase()}] ${alert.message}`);
+          if (alert.suggestion) {
+            console.log(`      💡 ${alert.suggestion}`);
+          }
+        }
+      }
+
+      // Display recommendations
+      if (perfReport.recommendations.length > 0) {
+        console.log('\n💡 Performance Recommendations:');
+        for (const rec of perfReport.recommendations) {
+          console.log(`   • ${rec}`);
+        }
+      }
+
+      // Save performance report
+      if (this.config.performanceReportPath) {
+        const reportPath = `${this.config.performanceReportPath}/perf-${Date.now()}.json`;
+        await this.performanceMonitor.saveReport(perfReport, reportPath);
+        console.log(`\n📊 Performance report saved: ${reportPath}`);
+      }
+
+      console.log(`\n📈 Performance Summary:`);
+      console.log(`   Success Rate: ${perfReport.summary.successRate.toFixed(1)}%`);
+      console.log(`   Throughput: ${perfReport.summary.averageThroughput.toFixed(2)} tasks/min`);
+      console.log(`   Total Cost: $${perfReport.summary.totalCostUSD.toFixed(4)}`);
+    }
 
     // Cleanup
     await this.cleanup();
@@ -175,6 +238,8 @@ export class TaskToolExecutor {
   private async launchSession(group: TaskGroup): Promise<AgentResult> {
     console.log(`\n🚀 Launching session for ${group.groupId} (${group.tasks.length} tasks)`);
 
+    const sessionStartTime = Date.now();
+
     try {
       // Create session
       const session = await this.sessionManager.createSession(group);
@@ -187,6 +252,13 @@ export class TaskToolExecutor {
 
       console.log(`   📝 Prompt generated (${prompt.length} chars)`);
 
+      // Update performance monitor - running tasks
+      if (this.performanceMonitor) {
+        this.performanceMonitor.updateExecutionState({
+          runningTasks: group.tasks.length,
+        });
+      }
+
       // NOTE: In real implementation, this would use Claude Code's Task tool
       // For now, we simulate execution and return mock result
       const result = await this.simulateClaudeCodeExecution(group, session.worktreePath);
@@ -194,11 +266,39 @@ export class TaskToolExecutor {
       // Complete session
       this.sessionManager.completeSession(session.sessionId, result, new Map());
 
+      // Record task completion in performance monitor
+      const durationMs = Date.now() - sessionStartTime;
+      const qualityScore = typeof result.data === 'object' && result.data
+        ? (result.data as { qualityScore?: number }).qualityScore
+        : undefined;
+
+      if (this.performanceMonitor) {
+        for (let i = 0; i < group.tasks.length; i++) {
+          this.performanceMonitor.recordTaskCompletion(
+            durationMs / group.tasks.length,
+            result.status === 'success',
+            qualityScore
+          );
+        }
+      }
+
       console.log(`   ✅ Session ${session.sessionId} completed`);
 
       return result;
     } catch (error) {
       console.error(`   ❌ Session failed: ${(error as Error).message}`);
+
+      // Record task failures
+      const durationMs = Date.now() - sessionStartTime;
+      if (this.performanceMonitor) {
+        for (let i = 0; i < group.tasks.length; i++) {
+          this.performanceMonitor.recordTaskCompletion(
+            durationMs / group.tasks.length,
+            false
+          );
+        }
+      }
+
       throw error;
     }
   }
@@ -317,6 +417,14 @@ export class TaskToolExecutor {
     return {
       scheduler: this.scheduler?.getState(),
       sessions: this.sessionManager.getStatistics(),
+      performance: this.performanceMonitor?.collectMetrics(),
     };
+  }
+
+  /**
+   * Get performance report
+   */
+  public getPerformanceReport(): PerformanceReport | null {
+    return this.performanceMonitor?.generateReport() || null;
   }
 }

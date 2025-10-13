@@ -465,6 +465,8 @@ export class PerformanceMonitor {
    */
   private getCPUUsage(): number {
     const cpus = os.cpus();
+    if (cpus.length === 0) return 0;
+
     let totalIdle = 0;
     let totalTick = 0;
 
@@ -475,11 +477,13 @@ export class PerformanceMonitor {
       totalIdle += cpu.times.idle;
     }
 
+    if (totalTick === 0) return 0;
+
     const idle = totalIdle / cpus.length;
     const total = totalTick / cpus.length;
     const usage = 100 - (100 * idle / total);
 
-    return Math.max(0, Math.min(100, usage));
+    return Math.max(0, Math.min(100, isNaN(usage) ? 0 : usage));
   }
 
   /**

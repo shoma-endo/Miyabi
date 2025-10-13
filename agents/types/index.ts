@@ -461,3 +461,117 @@ export interface BotCommand {
   description: string;
   usage: string;
 }
+
+// ============================================================================
+// Issue Trace Log Types (E14)
+// ============================================================================
+
+/**
+ * Issue State - 8 types covering complete lifecycle
+ */
+export type IssueState =
+  | 'pending'      // Issue created, awaiting triage
+  | 'analyzing'    // CoordinatorAgent analyzing
+  | 'implementing' // Specialist Agents working
+  | 'reviewing'    // ReviewAgent checking quality
+  | 'deploying'    // DeploymentAgent deploying
+  | 'done'         // Completed successfully
+  | 'blocked'      // Blocked - requires intervention
+  | 'failed';      // Execution failed
+
+/**
+ * State Transition - tracks state changes
+ */
+export interface StateTransition {
+  from: IssueState;
+  to: IssueState;
+  timestamp: string;
+  triggeredBy: string; // Agent or user
+  reason?: string;
+}
+
+/**
+ * Agent Execution Record - tracks individual agent runs
+ */
+export interface AgentExecution {
+  agentType: AgentType;
+  taskId?: string;
+  startTime: string;
+  endTime?: string;
+  durationMs?: number;
+  status: AgentStatus;
+  result?: AgentResult;
+  error?: string;
+}
+
+/**
+ * Label Change Record - tracks label modifications
+ */
+export interface LabelChange {
+  timestamp: string;
+  action: 'added' | 'removed';
+  label: string;
+  performedBy: string; // Agent or user
+}
+
+/**
+ * Trace Note - manual annotations
+ */
+export interface TraceNote {
+  timestamp: string;
+  author: string; // Agent or user
+  content: string;
+  tags?: string[];
+}
+
+/**
+ * Issue Trace Log - complete lifecycle tracking
+ */
+export interface IssueTraceLog {
+  // Identification
+  issueNumber: number;
+  issueTitle: string;
+  issueUrl: string;
+
+  // Lifecycle tracking
+  createdAt: string;
+  closedAt?: string;
+  currentState: IssueState;
+  stateTransitions: StateTransition[];
+
+  // Agent execution tracking
+  agentExecutions: AgentExecution[];
+
+  // Task decomposition
+  totalTasks: number;
+  completedTasks: number;
+  failedTasks: number;
+
+  // Label tracking
+  labelChanges: LabelChange[];
+  currentLabels: string[];
+
+  // Quality & metrics
+  qualityReports: QualityReport[];
+  finalQualityScore?: number;
+
+  // Pull Request tracking
+  pullRequests: PRResult[];
+
+  // Deployment tracking
+  deployments: DeploymentResult[];
+
+  // Escalations
+  escalations: EscalationInfo[];
+
+  // Notes & annotations
+  notes: TraceNote[];
+
+  // Metadata
+  metadata: {
+    deviceIdentifier: string;
+    sessionIds: string[];
+    totalDurationMs?: number;
+    lastUpdated: string;
+  };
+}

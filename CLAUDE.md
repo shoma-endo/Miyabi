@@ -46,6 +46,48 @@
    - Source: [codex repository](https://github.com/ShunsukeHayashi/codex)
    - Dependencies: `@anthropic-ai/sdk`, `@octokit/rest`
 
+   **🎮 キャラクター名システム - 小中学生でも分かるAgent名**
+
+   全21個のAgentには、親しみやすい日本語のキャラクター名が付けられています。
+   技術的な名前（CoordinatorAgent等）の代わりに、「しきるん」「つくるん」といった
+   覚えやすい名前で呼び出すことができます。
+
+   **色分けルール（4色）**:
+   - 🔴 **リーダー**（2キャラ）: しきるん, あきんどさん - 指示を出す、全体を見る
+   - 🟢 **実行役**（12キャラ）: つくるん, めだまん, かくちゃん等 - 実際に作業する、並列実行可能 ✅
+   - 🔵 **分析役**（5キャラ）: みつけるん, しらべるん, かぞえるん等 - 調べる、考える、並列実行可能 ✅
+   - 🟡 **サポート役**（3キャラ）: まとめるん, はこぶん, つなぐん - 手伝う、つなぐ、条件付き実行 ⚠️
+
+   **使用例**:
+   ```
+   # 技術名で呼び出す（従来）
+   「CoordinatorAgentでIssue #270を処理」
+
+   # キャラクター名で呼び出す（新方式・推奨）
+   「しきるん で Issue #270 を処理」
+   「つくるん と めだまん を並列実行して」
+   ```
+
+   **並列実行ルール**:
+   - ✅ 🟢実行役 + 🟢実行役: 同時実行OK（つくるん + めだまん）
+   - ✅ 🟢実行役 + 🔵分析役: 同時実行OK（つくるん + しらべるん）
+   - ✅ 🔵分析役 + 🔵分析役: 同時実行OK（みつけるん + かぞえるん）
+   - ❌ 🔴リーダー + 🔴リーダー: 同時実行NG（しきるん + あきんどさん）
+   - ⚠️ 🟡サポート役: 依存関係に応じて実行（他のAgentの完了後）
+
+   **キャラクター図鑑**:
+   - [AGENT_CHARACTERS.md](.claude/agents/AGENT_CHARACTERS.md) - 全21キャラの詳細図鑑（ポケモン図鑑風）
+   - [USAGE_GUIDE_SIMPLE.md](.claude/agents/USAGE_GUIDE_SIMPLE.md) - かんたん使い方ガイド
+   - [agent-name-mapping.json](.claude/agents/agent-name-mapping.json) - 技術名⇔キャラ名マッピング（JSON）
+
+   **オフィスメタファー**:
+   各キャラクターは「見えないスタッフ」としてオフィスで働くイメージです：
+   - しきるん: 👔 統括スタッフ（プロジェクトマネージャー）
+   - つくるん: ✍️ 作業スタッフ（実務担当者）
+   - めだまん: 🔍 検査スタッフ（品質管理担当）
+   - まとめるん: ✍️ ドキュメント担当（アシスタント）
+   - はこぶん: 📦 配達スタッフ（デプロイ担当）
+
 2. **GitHub OS Integration**
    - Projects V2: データ永続化層
    - Webhooks: イベントバス
@@ -106,7 +148,7 @@
 ### コミット規約
 - Conventional Commits準拠
 - `feat:`, `fix:`, `chore:`, `docs:`, etc.
-- Co-Authored-By: Claude <noreply@anthropic.com>
+
 
 ### セキュリティ
 - トークンは環境変数
@@ -256,6 +298,35 @@ DEVICE_IDENTIFIER=MacBook   # デバイス識別子
 - `.claude/agents/prompts/coding/deployment-agent-prompt.md` - DeploymentAgent実行ガイド（デプロイ）
 - `.claude/agents/prompts/coding/pr-agent-prompt.md` - PRAgent実行ガイド（PR作成）
 - `.claude/agents/prompts/coding/issue-agent-prompt.md` - IssueAgent実行ガイド（Issue分析・ラベリング）
+
+### Agent Assignment & Execution Context
+
+**自動Agent割り当て**: CoordinatorAgentがWorktree作成時に各Taskに最適なAgentを自動割り当て
+
+**実行コンテキストファイル**（各Worktreeに自動生成）:
+1. **`.agent-context.json`** - 機械可読コンテキスト
+   ```json
+   {
+     "agentType": "CodeGenAgent",
+     "agentStatus": "executing",
+     "task": { /* Task詳細 */ },
+     "issue": { /* Issue詳細 */ },
+     "config": { /* Agent設定 */ },
+     "promptPath": ".claude/agents/prompts/coding/codegen-agent-prompt.md",
+     "worktreeInfo": { /* Worktree情報 */ }
+   }
+   ```
+
+2. **`EXECUTION_CONTEXT.md`** - 人間可読コンテキスト
+   - Issue情報（タイトル、URL、ラベル）
+   - Task情報（依存関係、推定時間）
+   - Agent情報（種別、ステータス、プロンプトパス）
+   - Worktree情報（パス、ブランチ、セッションID）
+
+**Agent状態管理**:
+- `idle` → `executing` → `completed` / `failed`
+- WorktreeManagerがリアルタイムで状態を追跡
+- Agent統計情報の取得可能（byAgent, byStatus）
 
 **Agent仕様ドキュメント** (`.claude/agents/specs/coding/` | `.claude/agents/specs/business/`): 各Agentの役割・権限・エスカレーション条件を定義
 

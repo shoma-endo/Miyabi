@@ -65,6 +65,17 @@ export class ReviewAgent extends BaseAgent {
         securityIssues
       );
 
+      // 3.5. Record quality report to trace logger (if issue context available)
+      if (task.metadata?.issueNumber && this.traceLogger) {
+        try {
+          this.traceLogger.recordQualityReport(qualityReport);
+          this.log(`📋 Quality report recorded to trace log`);
+        } catch (error) {
+          // Trace logger not initialized - continue without logging
+          this.log(`⚠️  Failed to record quality report: ${(error as Error).message}`);
+        }
+      }
+
       // 4. Generate review comments
       const comments = this.generateReviewComments(
         eslintIssues,

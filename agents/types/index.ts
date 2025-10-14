@@ -19,7 +19,8 @@ export type AgentType =
   | 'IssueAgent'
   | 'PRAgent'
   | 'DeploymentAgent'
-  | 'AutoFixAgent';
+  | 'AutoFixAgent'
+  | 'WaterSpiderAgent';
 
 export type Severity =
   | 'Sev.1-Critical'
@@ -581,3 +582,16 @@ export interface IssueTraceLog {
 // ============================================================================
 
 export * from './performance-metrics.js';
+
+// ============================================================================
+// Feedback Loop System Types
+// ============================================================================
+
+export * from './feedback-loop-types.js';
+
+// ============================================================================
+// Re-exports from other modules
+// ============================================================================
+
+// Worktree types (conditional export - only if module exists)
+export type { WorktreeInfo, WorktreeManagerConfig, WorktreeExecutionContext } from '../worktree/worktree-manager.js';

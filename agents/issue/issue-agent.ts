@@ -192,6 +192,19 @@ export class IssueAgent extends BaseAgent {
         `Applied labels: ${labels.join(', ')}`,
         labels.join(', ')
       );
+
+      // Record label changes to trace logger
+      if (this.traceLogger) {
+        try {
+          for (const label of labels) {
+            this.traceLogger.recordLabelChange('added', label, 'IssueAgent');
+          }
+          this.log(`📋 ${labels.length} label changes recorded to trace log`);
+        } catch (error) {
+          // Trace logger not initialized - continue without logging
+          this.log(`⚠️  Failed to record label changes: ${(error as Error).message}`);
+        }
+      }
     } catch (error) {
       await this.logToolInvocation(
         'github_api_add_labels',
@@ -407,6 +420,7 @@ export class IssueAgent extends BaseAgent {
       PRAgent: '🔀PRAgent',
       DeploymentAgent: '🚀DeploymentAgent',
       AutoFixAgent: '🔧AutoFixAgent',
+      WaterSpiderAgent: '🕷️WaterSpiderAgent',
     };
     labels.push(agentLabels[analysis.agentType]);
 

@@ -97,6 +97,17 @@ export class PRAgent extends BaseAgent {
         await this.requestReviewers(pr.number, prRequest.reviewers);
       }
 
+      // 6. Record PR to trace logger (if issue context available)
+      if (task.metadata?.issueNumber && this.traceLogger) {
+        try {
+          this.traceLogger.recordPullRequest(pr);
+          this.log(`📋 PR recorded to trace log`);
+        } catch (error) {
+          // Trace logger not initialized - continue without logging
+          this.log(`⚠️  Failed to record PR: ${(error as Error).message}`);
+        }
+      }
+
       this.log(`✅ PR created: #${pr.number} - ${pr.url}`);
 
       return {

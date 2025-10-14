@@ -66,6 +66,17 @@ export class DeploymentAgent extends BaseAgent {
       // 7. Update deployment history
       this.deploymentHistory.push(deploymentResult);
 
+      // 7.5. Record deployment to trace logger (if issue context available)
+      if (task.metadata?.issueNumber && this.traceLogger) {
+        try {
+          this.traceLogger.recordDeployment(deploymentResult);
+          this.log(`📋 Deployment recorded to trace log`);
+        } catch (error) {
+          // Trace logger not initialized - continue without logging
+          this.log(`⚠️  Failed to record deployment: ${(error as Error).message}`);
+        }
+      }
+
       // 8. Notify stakeholders
       await this.notifyDeployment(deploymentResult, deploymentConfig);
 

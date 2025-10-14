@@ -33,7 +33,8 @@
   "include": [
     "scripts/**/*",
     "utils/**/*",
-    "tests/**/*"
+    "tests/**/*",
+    "vitest.config.ts"
   ],
   "exclude": [
     "node_modules",

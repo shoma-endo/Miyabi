@@ -11,11 +11,11 @@
  * 4. Monitor progress and aggregate results
  */
 
-import { TaskGrouper, type TaskGroup } from './task-grouper';
+import { TaskGrouper } from './task-grouper';
 import { TaskScheduler } from '../../packages/coding-agents/coordinator/task-scheduler';
 import { ClaudeCodeSessionManager } from '../../utils/claude-code-session-manager';
 import { PerformanceMonitor } from '../../utils/performance-monitor';
-import type { Task, DAG, AgentResult, ExecutionReport } from '../../packages/coding-agents/types/index';
+import type { Task, DAG, TaskGroup, AgentResult, ExecutionReport } from '../../packages/coding-agents/types/index';
 import type { PerformanceReport } from '../../packages/coding-agents/types/performance-metrics';
 
 export interface TaskToolExecutorConfig {
@@ -321,7 +321,7 @@ export class TaskToolExecutor {
       status: 'success',
       data: {
         groupId: group.groupId,
-        completedTasks: group.tasks.map((t) => t.id),
+        completedTasks: group.tasks.map((t: Task) => t.id),
         failedTasks: [],
         qualityScore: 85,
         summary: `Completed ${group.tasks.length} tasks successfully`,

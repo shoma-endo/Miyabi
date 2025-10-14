@@ -8,7 +8,7 @@
  * - Running vs waiting groups
  */
 
-import type { TaskGroup } from '../../scripts/operations/task-grouper';
+import type { TaskGroup } from '../types/index';
 
 export type SchedulerStatus = 'idle' | 'running' | 'paused' | 'completed' | 'failed';
 

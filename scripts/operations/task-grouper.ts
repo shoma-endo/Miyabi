@@ -10,26 +10,13 @@
  * Optimal group size: 5-10 tasks per group for balanced parallelism
  */
 
-import type { Task, DAG, AgentType } from '../../packages/coding-agents/types/index';
-
-export interface TaskGroup {
-  groupId: string;
-  tasks: Task[];
-  agent: AgentType;
-  priority: number;
-  estimatedDurationMs: number;
-  worktreePath: string;
-  level: number; // DAG level for dependency ordering
-}
-
-export interface GroupingConfig {
-  minGroupSize: number;  // Default: 3
-  maxGroupSize: number;  // Default: 10
-  maxConcurrentGroups: number;  // Default: 5
-  priorityWeight: number;  // Default: 0.3
-  durationWeight: number;  // Default: 0.4
-  agentWeight: number;  // Default: 0.3
-}
+import type {
+  Task,
+  DAG,
+  AgentType,
+  TaskGroup,
+  GroupingConfig
+} from '../../packages/coding-agents/types/index';
 
 const DEFAULT_CONFIG: GroupingConfig = {
   minGroupSize: 3,

@@ -24,7 +24,9 @@
       "@miyabi/coding-agents": ["./packages/coding-agents"],
       "@miyabi/coding-agents/*": ["./packages/coding-agents/*"],
       "@miyabi/business-agents": ["./packages/business-agents/src"],
-      "@miyabi/business-agents/*": ["./packages/business-agents/src/*"]
+      "@miyabi/business-agents/*": ["./packages/business-agents/src/*"],
+      "@miyabi/shared-utils": ["./packages/shared-utils/src"],
+      "@miyabi/shared-utils/*": ["./packages/shared-utils/src/*"]
     },
     "baseUrl": "."
   },
@@ -47,6 +49,7 @@
     { "path": "./packages/coding-agents" },
     { "path": "./packages/business-agents" },
     { "path": "./packages/core" },
-    { "path": "./packages/cli" }
+    { "path": "./packages/cli" },
+    { "path": "./packages/shared-utils" }
   ]
 }

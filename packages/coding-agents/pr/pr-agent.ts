@@ -22,9 +22,9 @@ import {
   PRResult,
 } from '../types/index';
 import { Octokit } from '@octokit/rest';
-import { withRetry } from '../../utils/retry';
+import { withRetry } from '@miyabi/shared-utils/retry';
 import { GitRepository } from '../utils/git-repository';
-import { getGitHubClient } from '../../utils/api-client';
+import { getGitHubClient } from '@miyabi/shared-utils/api-client';
 
 export class PRAgent extends BaseAgent {
   private octokit: Octokit;

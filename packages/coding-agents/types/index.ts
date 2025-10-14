@@ -71,6 +71,29 @@ export interface DAG {
 }
 
 // ============================================================================
+// Task Grouping Types
+// ============================================================================
+
+export interface TaskGroup {
+  groupId: string;
+  tasks: Task[];
+  agent: AgentType;
+  priority: number;
+  estimatedDurationMs: number;
+  worktreePath: string;
+  level: number; // DAG level for dependency ordering
+}
+
+export interface GroupingConfig {
+  minGroupSize: number;  // Default: 3
+  maxGroupSize: number;  // Default: 10
+  maxConcurrentGroups: number;  // Default: 5
+  priorityWeight: number;  // Default: 0.3
+  durationWeight: number;  // Default: 0.4
+  agentWeight: number;  // Default: 0.3
+}
+
+// ============================================================================
 // Agent Result Types
 // ============================================================================
 

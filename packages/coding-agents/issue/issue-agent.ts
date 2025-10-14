@@ -24,10 +24,10 @@ import {
   AgentType,
 } from '../types/index';
 import { Octokit } from '@octokit/rest';
-import { withRetry } from '../../utils/retry';
+import { withRetry } from '@miyabi/shared-utils/retry';
 import { IssueAnalyzer } from '../utils/issue-analyzer';
 import { GitRepository } from '../utils/git-repository';
-import { getGitHubClient, withGitHubCache } from '../../utils/api-client';
+import { getGitHubClient, withGitHubCache } from '@miyabi/shared-utils/api-client';
 
 export class IssueAgent extends BaseAgent {
   private octokit: Octokit;

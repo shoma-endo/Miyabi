@@ -80,6 +80,48 @@ const GITHUB_OWNER = process.env.GITHUB_OWNER || 'ShunsukeHayashi';
 const PROJECT_NUMBER = parseInt(process.env.PROJECT_NUMBER || '1');
 
 // ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Read quality scores from LDD logs in .ai/logs directory
+ */
+function getQualityScoresFromLogs(): number[] {
+  const logsDir = path.join(process.cwd(), '.ai', 'logs');
+  const scores: number[] = [];
+
+  try {
+    if (!fs.existsSync(logsDir)) {
+      return scores;
+    }
+
+    const logFiles = fs.readdirSync(logsDir).filter(f => f.endsWith('.jsonl'));
+
+    for (const file of logFiles) {
+      const filePath = path.join(logsDir, file);
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const lines = content.split('\n').filter(l => l.trim());
+
+      for (const line of lines) {
+        try {
+          const log = JSON.parse(line);
+          // Look for ReviewAgent quality scores
+          if (log.agentType === 'ReviewAgent' && log.qualityScore !== undefined) {
+            scores.push(log.qualityScore);
+          }
+        } catch (e) {
+          // Skip invalid JSON lines
+        }
+      }
+    }
+  } catch (error) {
+    console.warn(`⚠️  Failed to read quality scores from logs: ${(error as Error).message}`);
+  }
+
+  return scores;
+}
+
+// ============================================================================
 // Metrics Calculation
 // ============================================================================
 
@@ -146,12 +188,33 @@ async function generateMetrics(): Promise<DashboardData> {
     stateMap.get(state)!.push(item);
   });
 
-  const states: StateMetrics[] = Array.from(stateMap.entries()).map(([state, stateItems]) => ({
-    state,
-    count: stateItems.length,
-    percentage: (stateItems.length / items.length) * 100,
-    avgTimeInState: 0, // TODO: Calculate from state transition history
-  }));
+  const states: StateMetrics[] = Array.from(stateMap.entries()).map(([state, stateItems]) => {
+    // Calculate average time in state
+    const durations = stateItems
+      .map((item) => {
+        if (!item.content.createdAt) return null;
+
+        const startTime = new Date(item.content.createdAt).getTime();
+        const endTime = item.content.closedAt
+          ? new Date(item.content.closedAt).getTime()
+          : Date.now();
+
+        // Return duration in hours
+        return (endTime - startTime) / (1000 * 60 * 60);
+      })
+      .filter((d) => d !== null && d >= 0);
+
+    const avgTimeInState = durations.length > 0
+      ? durations.reduce((a, b) => a + b, 0) / durations.length
+      : 0;
+
+    return {
+      state,
+      count: stateItems.length,
+      percentage: (stateItems.length / items.length) * 100,
+      avgTimeInState: Math.round(avgTimeInState * 10) / 10, // Round to 1 decimal
+    };
+  });
 
   // Priority metrics
   const priorityMap = new Map<string, any[]>();
@@ -196,7 +259,7 @@ async function generateMetrics(): Promise<DashboardData> {
         state: (stateField)?.name || item.content.state,
         agent: (agentField)?.name || 'Unknown',
         duration: (durationField)?.number || null,
-        timestamp: new Date().toISOString(), // TODO: Get actual completion time
+        timestamp: item.content.closedAt || new Date().toISOString(),
       };
     });
 
@@ -223,6 +286,14 @@ async function generateMetrics(): Promise<DashboardData> {
 
   const totalCost = avgDuration * items.length * 0.015;
 
+  // Calculate average quality score from LDD logs
+  const qualityScores = getQualityScoresFromLogs();
+  const avgQualityScore = qualityScores.length > 0
+    ? qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length
+    : 0;
+
+  console.log(`✅ Found ${qualityScores.length} quality scores from ReviewAgent logs`);
+
   return {
     timestamp: new Date().toISOString(),
     summary: {
@@ -232,7 +303,7 @@ async function generateMetrics(): Promise<DashboardData> {
       completionRate: items.length > 0 ? (completedItems.length / items.length) * 100 : 0,
       avgDuration,
       totalCost,
-      avgQualityScore: 92.5, // TODO: Calculate from actual quality scores
+      avgQualityScore: Math.round(avgQualityScore * 10) / 10, // Round to 1 decimal
     },
     agents: agents.sort((a, b) => b.totalIssues - a.totalIssues),
     states: states.sort((a, b) => b.count - a.count),

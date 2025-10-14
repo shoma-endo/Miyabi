@@ -20,6 +20,8 @@ interface ProjectItem {
     number: number;
     title: string;
     state: string;
+    createdAt?: string;
+    closedAt?: string | null;
   };
   fieldValues: {
     nodes: Array<{
@@ -208,11 +210,15 @@ export async function getProjectItems(
                   number
                   title
                   state
+                  createdAt
+                  closedAt
                 }
                 ... on PullRequest {
                   number
                   title
                   state
+                  createdAt
+                  closedAt
                 }
               }
               fieldValues(first: 20) {

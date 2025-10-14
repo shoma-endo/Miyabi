@@ -93,7 +93,7 @@
    - Webhooks: イベントバス
    - Actions: 実行エンジン
    - Discussions: メッセージキュー
-   - Pages: ダッシュボード
+   - Pages: 静的サイトホスティング
    - Packages: パッケージ配布
 
 3. **CLI Package** (`packages/cli/`)
@@ -404,6 +404,28 @@ cd .worktrees/issue-272
 4. **デバッグが容易** - 各Worktreeで独立したログ
 5. **スケーラビリティ** - Worktree数に制限なし
 
+### Worktreeライフサイクルプロトコル
+
+**完全なシーケンスプロトコル**: Worktree作成からクリーンナップまでの標準化された手順
+
+**詳細仕様**: **[docs/WORKTREE_PROTOCOL.md](docs/WORKTREE_PROTOCOL.md)** ⭐⭐⭐
+
+**4つのPhase**:
+1. **Phase 1: Worktree Creation** - `createWorktree()` + `writeExecutionContext()`
+2. **Phase 2: Agent Assignment** - Task typeベースの自動Agent割り当て
+3. **Phase 3: Execution** - Claude Code実行 + git commit
+4. **Phase 4: Cleanup** - `pushWorktree()` + `mergeWorktree()` + `removeWorktree()`
+
+**プロトコル準拠の実装**:
+- `packages/coding-agents/worktree/worktree-manager.ts` - WorktreeManagerクラス
+- `packages/coding-agents/coordinator/coordinator-agent.ts` - CoordinatorAgent統合
+
+**エラーハンドリング**: マージコンフリクト、実行失敗、クリーンナップ失敗時のロールバック手順
+
+**監視**: Worktree統計情報（active, idle, completed, failed）とAgent統計情報（byAgent, byStatus）
+
+このプロトコルはすべてのWorktree操作で**必須**です。
+
 ### トラブルシューティング
 
 **Worktreeが残ったままの場合**
@@ -486,7 +508,6 @@ npm run agents:parallel:exec -- --issues=270,271,272,273,274 --concurrency=5
 ## 関連リンク
 
 **プロジェクト**:
-- **Dashboard**: https://shunsukehayashi.github.io/Miyabi/
 - **Repository (Miyabi)**: https://github.com/ShunsukeHayashi/Miyabi
 - **Repository (Codex)**: https://github.com/ShunsukeHayashi/codex
 - **Landing Page**: https://shunsukehayashi.github.io/Miyabi/landing.html

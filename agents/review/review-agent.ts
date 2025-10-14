@@ -73,25 +73,26 @@ export class ReviewAgent extends BaseAgent {
       );
 
       // 5. Determine if escalation is needed
-      const escalationRequired = await this.checkEscalation(qualityReport);
+      const escalationInfo = await this.checkEscalation(qualityReport, securityIssues);
 
       const reviewResult: ReviewResult = {
         qualityReport,
         approved: qualityReport.passed,
-        escalationRequired,
-        escalationTarget: escalationRequired ? this.determineEscalationTarget('security') : undefined,
+        escalationRequired: escalationInfo.required,
+        escalationTarget: escalationInfo.required ? this.determineEscalationTarget('security') : undefined,
         comments,
       };
 
-      // 6. Escalate if critical security issues found
-      if (escalationRequired) {
+      // 6. Escalate if needed
+      if (escalationInfo.required) {
         await this.escalate(
-          `Critical security issues found: ${securityIssues.filter(i => i.severity === 'critical').length} critical vulnerabilities`,
+          escalationInfo.message,
           'CISO',
           'Sev.1-Critical',
           {
             qualityScore: qualityReport.score,
             criticalIssues: securityIssues.filter(i => i.severity === 'critical').length,
+            reason: escalationInfo.reason,
           }
         );
       }
@@ -99,7 +100,7 @@ export class ReviewAgent extends BaseAgent {
       this.log(`✅ Review complete: Score ${qualityReport.score}/100 (${qualityReport.passed ? 'PASSED' : 'FAILED'})`);
 
       return {
-        status: escalationRequired ? 'escalated' : 'success',
+        status: escalationInfo.required ? 'escalated' : 'success',
         data: reviewResult,
         metrics: {
           taskId: task.id,
@@ -480,7 +481,10 @@ export class ReviewAgent extends BaseAgent {
   /**
    * Check if escalation is required
    */
-  private async checkEscalation(qualityReport: QualityReport): Promise<boolean> {
+  private async checkEscalation(
+    qualityReport: QualityReport,
+    securityIssues: QualityIssue[]
+  ): Promise<{ required: boolean; message: string; reason: string }> {
     // Escalate if critical security issues found
     const criticalSecurityIssues = qualityReport.issues.filter(
       i => i.type === 'security' && i.severity === 'critical'
@@ -488,15 +492,27 @@ export class ReviewAgent extends BaseAgent {
 
     if (criticalSecurityIssues.length > 0) {
       this.log(`🚨 ${criticalSecurityIssues.length} critical security issues require escalation`);
-      return true;
+      return {
+        required: true,
+        message: `Critical security issues found: ${criticalSecurityIssues.length} critical vulnerabilities`,
+        reason: 'critical-security-issues',
+      };
     }
 
     // Escalate if quality score is very low (<50)
     if (qualityReport.score < 50) {
       this.log(`🚨 Quality score ${qualityReport.score} is critically low - escalation required`);
-      return true;
+      return {
+        required: true,
+        message: `Quality score critically low: ${qualityReport.score}/100 (threshold: 50). Issues: ${qualityReport.issues.length} total`,
+        reason: 'low-quality-score',
+      };
     }
 
-    return false;
+    return {
+      required: false,
+      message: '',
+      reason: 'none',
+    };
   }
 }

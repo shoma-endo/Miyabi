@@ -39,6 +39,14 @@ describe('ReviewAgent - Test Coverage Integration', () => {
 
     agent = new ReviewAgent(config);
 
+    // Mock analysis methods to prevent actual scans
+    // @ts-ignore - accessing private methods for testing
+    vi.spyOn(agent as any, 'runESLint').mockResolvedValue([]);
+    // @ts-ignore - accessing private methods for testing
+    vi.spyOn(agent as any, 'runTypeScriptCheck').mockResolvedValue([]);
+    // @ts-ignore - accessing private methods for testing
+    vi.spyOn(agent as any, 'runSecurityScan').mockResolvedValue([]);
+
     // Reset mocks before each test
     vi.clearAllMocks();
   });
@@ -288,7 +296,8 @@ describe('ReviewAgent - Test Coverage Integration', () => {
         testCoverageScore: expect.any(Number),
       });
 
-      expect(result.data.qualityReport.breakdown!.testCoverageScore).toBeCloseTo(86, 0);
+      // Expected: 85*0.4 + 88*0.3 + 80*0.2 + 90*0.1 = 34 + 26.4 + 16 + 9 = 85.4
+      expect(result.data.qualityReport.breakdown!.testCoverageScore).toBeCloseTo(85, 0);
     });
   });
 });

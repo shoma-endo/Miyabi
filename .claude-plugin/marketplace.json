@@ -1,5 +1,5 @@
 {
-  "name": "Miyabi Official Plugins",
+  "name": "miyabi-official-plugins",
   "description": "完全自律型AI開発プラットフォーム Miyabi の公式プラグインコレクション",
   "owner": {
     "name": "Shunsuke Hayashi",
@@ -10,12 +10,16 @@
   "plugins": [
     {
       "name": "miyabi",
-      "source": ".",
+      "source": "./.claude-plugin",
       "version": "0.8.2",
       "description": "Miyabi 完全パッケージ - 7つのAgent、7つのコマンド、4つのHook",
       "category": "automation",
       "tags": ["ai", "agents", "devops", "automation", "github"],
-      "author": "Shunsuke Hayashi",
+      "author": {
+        "name": "Shunsuke Hayashi",
+        "email": "supernovasyun@gmail.com",
+        "url": "https://github.com/ShunsukeHayashi"
+      },
       "license": "Apache-2.0",
       "featured": true
     },
@@ -26,7 +30,11 @@
       "description": "Miyabi コア機能のみ（init, status, auto）",
       "category": "productivity",
       "tags": ["ai", "automation"],
-      "author": "Shunsuke Hayashi",
+      "author": {
+        "name": "Shunsuke Hayashi",
+        "email": "supernovasyun@gmail.com",
+        "url": "https://github.com/ShunsukeHayashi"
+      },
       "license": "Apache-2.0"
     },
     {
@@ -36,7 +44,11 @@
       "description": "Miyabi の7つのAgent定義のみ",
       "category": "agents",
       "tags": ["ai", "agents"],
-      "author": "Shunsuke Hayashi",
+      "author": {
+        "name": "Shunsuke Hayashi",
+        "email": "supernovasyun@gmail.com",
+        "url": "https://github.com/ShunsukeHayashi"
+      },
       "license": "Apache-2.0"
     }
   ]

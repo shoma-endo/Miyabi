@@ -1,19 +1,54 @@
-// src/types.ts
-export interface Command {
-  name: string;
-  description: string;
-  command: string;
-  category: string;
-}
-
-export interface Workflow {
-  name: string;
-  description: string;
-  commands: string[];
-  category: string;
-}
-
-export interface ProjectConfig {
-  commands: Command[];
-  workflows: Workflow[];
+{
+  "commands": [
+    {
+      "name": "miyabi-init",
+      "description": "新規プロジェクト作成 - 53ラベル、26ワークフロー自動セットアップ",
+      "category": "setup"
+    },
+    {
+      "name": "miyabi-status",
+      "description": "ステータス確認 - リアルタイムIssue/PR状態表示",
+      "category": "monitoring"
+    },
+    {
+      "name": "miyabi-auto",
+      "description": "Water Spider全自動モード - Issue自動処理",
+      "category": "automation"
+    },
+    {
+      "name": "miyabi-amembo",
+      "description": "Amembo監視モード - 軽量な観測専用モード",
+      "category": "monitoring"
+    },
+    {
+      "name": "miyabi-watch",
+      "description": "Watch監視モード - Webhook即時通知",
+      "category": "monitoring"
+    },
+    {
+      "name": "miyabi-todos",
+      "description": "TODO検出→Issue化 - コード内TODOを自動Issue化",
+      "category": "automation"
+    },
+    {
+      "name": "miyabi-agent",
+      "description": "Agent実行 - 7つのAgentから選択実行",
+      "category": "execution"
+    },
+    {
+      "name": "miyabi-docs",
+      "description": "ドキュメント生成 - README/API/Architecture docs生成",
+      "category": "documentation"
+    },
+    {
+      "name": "miyabi-deploy",
+      "description": "デプロイ実行 - staging/production デプロイ",
+      "category": "deployment"
+    },
+    {
+      "name": "miyabi-test",
+      "description": "テスト実行 - unit/integration/e2e テスト",
+      "category": "testing"
+    }
+  ]
 }

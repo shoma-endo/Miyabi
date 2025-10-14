@@ -19,22 +19,34 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@miyabi/coding-agents": ["./packages/coding-agents"],
+      "@miyabi/coding-agents/*": ["./packages/coding-agents/*"],
+      "@miyabi/business-agents": ["./packages/business-agents/src"],
+      "@miyabi/business-agents/*": ["./packages/business-agents/src/*"]
+    },
+    "baseUrl": "."
   },
   "include": [
-    "agents/**/*",
     "scripts/**/*",
-    "utils/**/*"
+    "utils/**/*",
+    "tests/**/*"
   ],
   "exclude": [
     "node_modules",
     "dist",
-    "packages",
     "**/*.test.ts",
     "**/*.spec.ts",
     "**/__tests__/**",
     "**/*.d.ts",
     "**/*.js",
     "**/*.js.map"
+  ],
+  "references": [
+    { "path": "./packages/coding-agents" },
+    { "path": "./packages/business-agents" },
+    { "path": "./packages/core" },
+    { "path": "./packages/cli" }
   ]
 }

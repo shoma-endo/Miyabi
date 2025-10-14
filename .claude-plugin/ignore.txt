@@ -1,83 +1,99 @@
-import * as fs from 'fs';
-import * as path from 'path';
+# Miyabi Plugin Ignore Patterns
+# Files and directories that should be excluded from plugin distribution
 
-export class GitignoreParser {
-  private patterns: string[] = [];
-  private compiledPatterns: RegExp[] = [];
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-  constructor(gitignoreContent?: string) {
-    if (gitignoreContent) {
-      this.parseContent(gitignoreContent);
-    }
-  }
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+*.js.map
+*.d.ts.map
 
-  public static fromFile(filePath: string): GitignoreParser {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    return new GitignoreParser(content);
-  }
+# Environment variables
+.env
+.env.*
+!.env.example
 
-  public parseContent(content: string): void {
-    this.patterns = content
-      .split('\n')
-      .map(line => line.trim())
-      .filter(line => line.length > 0 && !line.startsWith('#'));
-    
-    this.compilePatterns();
-  }
+# Configuration files with secrets
+.miyabi.yml
+.webhook-config.json
 
-  public isIgnored(filePath: string): boolean {
-    const normalizedPath = this.normalizePath(filePath);
-    
-    return this.compiledPatterns.some(pattern => pattern.test(normalizedPath));
-  }
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-  public getPatterns(): string[] {
-    return [...this.patterns];
-  }
+# AI Agent outputs
+.ai/logs/*.md
+.ai/parallel-reports/*.json
+.ai/parallel-reports/escalations/
+.ai/issues/*.json
+.ai/*.mjs
 
-  public addPattern(pattern: string): void {
-    if (!this.patterns.includes(pattern)) {
-      this.patterns.push(pattern);
-      this.compilePatterns();
-    }
-  }
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+test-results/
+playwright-report/
 
-  public removePattern(pattern: string): boolean {
-    const index = this.patterns.indexOf(pattern);
-    if (index !== -1) {
-      this.patterns.splice(index, 1);
-      this.compilePatterns();
-      return true;
-    }
-    return false;
-  }
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
 
-  public clear(): void {
-    this.patterns = [];
-    this.compiledPatterns = [];
-  }
+# OS
+.DS_Store
+Thumbs.db
 
-  private compilePatterns(): void {
-    this.compiledPatterns = this.patterns.map(pattern => {
-      // Convert gitignore pattern to regex
-      let regexPattern = pattern
-        .replace(/\./g, '\\.')
-        .replace(/\*/g, '[^/]*')
-        .replace(/\*\*/g, '.*')
-        .replace(/\?/g, '[^/]');
+# Temporary files
+tmp/
+temp/
+*.tmp
 
-      // Handle directory patterns
-      if (pattern.endsWith('/')) {
-        regexPattern = regexPattern.slice(0, -1) + '(/.*)?$';
-      } else {
-        regexPattern = `^${regexPattern}$|^${regexPattern}/.*$`;
-      }
+# Git worktrees
+.worktrees/
+worktrees/
 
-      return new RegExp(regexPattern);
-    });
-  }
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
 
-  private normalizePath(filePath: string): string {
-    return filePath.replace(/\\/g, '/').replace(/^\/+/, '');
-  }
-}
+# Vitest
+.vitest/
+
+# Vite
+.vite/
+
+# Generated files
+generated/
+.archive/
+reports/
+data/
+
+# Package specific compiled files
+packages/**/dist/
+packages/**/build/
+packages/**/*.tsbuildinfo
+
+# Large documentation files (use external links instead)
+docs/SAAS_BUSINESS_MODEL.md
+docs/MARKET_ANALYSIS_2025.md
+
+# Legacy/unused directories
+packages/dashboard/
+packages/dashboard-server/
+packages/vscode-extension/

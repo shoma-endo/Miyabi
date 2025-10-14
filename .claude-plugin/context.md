@@ -1,395 +1,188 @@
-// tests/BaseAgent.test.ts
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { BaseAgent } from '../src/BaseAgent';
-import { AgentMetrics } from '../src/types/AgentMetrics';
-import { AgentConfig } from '../src/types/AgentConfig';
-import { EscalationHandler } from '../src/EscalationHandler';
+# Miyabi Plugin Context
 
-// Mock the EscalationHandler
-vi.mock('../src/EscalationHandler');
+## Project Overview
 
-// Concrete implementation for testing
-class TestAgent extends BaseAgent {
-  constructor(config: AgentConfig) {
-    super(config);
-  }
+**Miyabi** is a fully autonomous AI development operations platform based on the "GitHub as OS" architecture. It automates the entire development lifecycle from Issue creation to code implementation, PR creation, and deployment.
 
-  async execute(task: any): Promise<any> {
-    if (task?.shouldFail) {
-      throw new Error('Task execution failed');
-    }
-    if (task?.shouldEscalate) {
-      return await this.escalate(task);
-    }
-    return { success: true, result: task?.data || 'completed' };
-  }
+## Architecture
 
-  protected getAgentType(): string {
-    return 'TestAgent';
-  }
-}
+### Core Components
 
-describe('BaseAgent', () => {
-  let agent: TestAgent;
-  let mockEscalationHandler: EscalationHandler;
-  let mockConfig: AgentConfig;
+1. **Agent System** (7 Agents)
+   - **CoordinatorAgent**: Task orchestration and parallel execution control
+   - **CodeGenAgent**: AI-driven code generation using Claude Sonnet 4
+   - **ReviewAgent**: Code quality assessment with 100-point scoring
+   - **IssueAgent**: Issue analysis and label management (53-label system)
+   - **PRAgent**: Automatic Pull Request creation (Conventional Commits)
+   - **DeploymentAgent**: CI/CD deployment automation
+   - **TestAgent**: Automated test execution
 
-  beforeEach(() => {
-    mockConfig = {
-      name: 'test-agent',
-      maxRetries: 3,
-      timeout: 5000,
-      escalationEnabled: true,
-      metricsEnabled: true,
-    };
+2. **Label System** (53 Labels, 10 Categories)
+   - STATE (8): Lifecycle management
+   - AGENT (6): Agent assignment
+   - PRIORITY (4): Priority management
+   - TYPE (7): Issue classification
+   - SEVERITY (4): Severity levels
+   - PHASE (5): Project phases
+   - SPECIAL (7): Special operations
+   - TRIGGER (4): Automation triggers
+   - QUALITY (4): Quality scores
+   - COMMUNITY (4): Community labels
 
-    mockEscalationHandler = {
-      handle: vi.fn().mockResolvedValue({ escalated: true, result: 'handled' }),
-      canHandle: vi.fn().mockReturnValue(true),
-      setPriority: vi.fn(),
-    } as any;
+3. **GitHub OS Integration**
+   - Projects V2: Data persistence layer
+   - Webhooks: Event bus
+   - Actions: Execution engine
+   - Discussions: Message queue
+   - Pages: Static site hosting
+   - Packages: Package distribution
 
-    agent = new TestAgent(mockConfig);
-    (agent as any).escalationHandler = mockEscalationHandler;
-  });
+## Key Features
 
-  afterEach(() => {
-    vi.clearAllMocks();
-  });
+### Autonomous Development
+- Issue → PR in 10-15 minutes (fully automated)
+- 95%+ success rate for automatic PR creation
+- 83.78% test coverage (target: 80%+)
+- Quality score threshold: 80+ points for approval
 
-  describe('Constructor', () => {
-    it('should initialize with provided configuration', () => {
-      expect(agent.getName()).toBe('test-agent');
-      expect(agent.getConfig()).toEqual(mockConfig);
-    });
+### Parallel Execution
+- Git Worktree-based isolation
+- 72% efficiency improvement (36h → 26h)
+- DAG-based task decomposition
+- Conflict-free parallel execution
 
-    it('should initialize with default configuration when none provided', () => {
-      const defaultAgent = new TestAgent({});
-      const config = defaultAgent.getConfig();
-      
-      expect(config.maxRetries).toBe(1);
-      expect(config.timeout).toBe(30000);
-      expect(config.escalationEnabled).toBe(false);
-      expect(config.metricsEnabled).toBe(true);
-    });
+### Quality Assurance
+- ESLint + TypeScript strict mode
+- Security scanning (Gitleaks, CodeQL)
+- Automated testing (Vitest/Jest/Playwright)
+- Quality scoring (100-point scale)
 
-    it('should generate unique ID for each agent instance', () => {
-      const agent1 = new TestAgent(mockConfig);
-      const agent2 = new TestAgent(mockConfig);
-      
-      expect(agent1.getId()).not.toBe(agent2.getId());
-      expect(agent1.getId()).toMatch(/^[a-f0-9-]{36}$/); // UUID format
-    });
-  });
+## Workflow
 
-  describe('Basic Operations', () => {
-    it('should return agent name', () => {
-      expect(agent.getName()).toBe('test-agent');
-    });
+```
+Issue Created
+    ↓
+IssueAgent (Auto-labeling)
+    ↓
+CoordinatorAgent (DAG decomposition, parallel planning)
+    ↓
+CodeGenAgent (Code implementation)
+    ↓
+TestAgent (Test execution, 80%+ coverage)
+    ↓
+ReviewAgent (Quality check, 80+ points required)
+    ↓
+PRAgent (Draft PR creation)
+    ↓
+DeploymentAgent (Auto-deploy after merge)
+```
 
-    it('should return agent ID', () => {
-      expect(agent.getId()).toBeTruthy();
-      expect(typeof agent.getId()).toBe('string');
-    });
+## Technical Stack
 
-    it('should return agent configuration', () => {
-      expect(agent.getConfig()).toEqual(mockConfig);
-    });
+- **Runtime**: Node.js >= 18.0.0
+- **Language**: TypeScript (Strict mode, ESM)
+- **Package Manager**: npm
+- **Testing**: Vitest
+- **AI Model**: Claude Sonnet 4 (claude-sonnet-4-20250514)
+- **GitHub Integration**: @octokit/rest
+- **Git Strategy**: Worktree-based parallel execution
 
-    it('should return agent type', () => {
-      expect(agent.getAgentType()).toBe('TestAgent');
-    });
+## File Structure
 
-    it('should indicate if agent is active', () => {
-      expect(agent.isActive()).toBe(false);
-      // Assuming setActive method exists
-      (agent as any).setActive(true);
-      expect(agent.isActive()).toBe(true);
-    });
-  });
+```
+.
+├── packages/
+│   ├── cli/                    # CLI package (miyabi)
+│   ├── coding-agents/          # Coding agents (7 agents)
+│   └── business-agents/        # Business agents (14 agents)
+├── .claude/
+│   ├── agents/                 # Agent specifications
+│   │   ├── specs/              # Agent role definitions
+│   │   └── prompts/            # Execution prompts
+│   ├── commands/               # Slash commands
+│   └── prompts/                # General prompts
+├── .github/
+│   ├── workflows/              # 26 GitHub Actions workflows
+│   └── labels.yml              # 53-label system definition
+└── docs/                       # Documentation
+    ├── ENTITY_RELATION_MODEL.md        # ⭐⭐⭐
+    ├── TEMPLATE_MASTER_INDEX.md        # ⭐⭐⭐
+    ├── LABEL_SYSTEM_GUIDE.md           # ⭐⭐⭐
+    └── WORKTREE_PROTOCOL.md            # ⭐⭐⭐
+```
 
-  describe('Task Execution', () => {
-    it('should execute task successfully', async () => {
-      const task = { data: 'test-data' };
-      const result = await agent.execute(task);
-      
-      expect(result).toEqual({ success: true, result: 'test-data' });
-    });
+## Entity-Relation Model
 
-    it('should handle task execution without data', async () => {
-      const result = await agent.execute({});
-      
-      expect(result).toEqual({ success: true, result: 'completed' });
-    });
+Miyabi uses a structured Entity-Relation model with 12 core entities:
 
-    it('should handle null/undefined task', async () => {
-      const result1 = await agent.execute(null);
-      const result2 = await agent.execute(undefined);
-      
-      expect(result1).toEqual({ success: true, result: 'completed' });
-      expect(result2).toEqual({ success: true, result: 'completed' });
-    });
+1. **Issue** - GitHub Issue
+2. **Task** - Decomposed task
+3. **Agent** - Autonomous agent
+4. **PR** - Pull Request
+5. **Label** - GitHub Label (53 types)
+6. **QualityReport** - Quality assessment
+7. **Command** - Claude Code command
+8. **Escalation** - Escalation record
+9. **Deployment** - Deployment information
+10. **LDDLog** - LDD (Language-Driven Development) log
+11. **DAG** - Task dependency graph
+12. **Worktree** - Git worktree
 
-    it('should retry failed tasks based on configuration', async () => {
-      const failingAgent = new TestAgent({ ...mockConfig, maxRetries: 2 });
-      let attemptCount = 0;
-      
-      // Mock execute to fail first two times, succeed third time
-      const originalExecute = failingAgent.execute;
-      failingAgent.execute = vi.fn().mockImplementation(async (task) => {
-        attemptCount++;
-        if (attemptCount < 3) {
-          throw new Error(`Attempt ${attemptCount} failed`);
-        }
-        return originalExecute.call(failingAgent, task);
-      });
+27 relationships connect these entities (see docs/ENTITY_RELATION_MODEL.md).
 
-      const result = await failingAgent.run({ data: 'retry-test' });
-      
-      expect(attemptCount).toBe(3);
-      expect(result.success).toBe(true);
-    });
+## Character Name System
 
-    it('should fail after max retries exceeded', async () => {
-      const failingTask = { shouldFail: true };
-      
-      await expect(agent.run(failingTask)).rejects.toThrow('Task execution failed');
-    });
+All 21 agents have friendly Japanese character names for easy understanding:
 
-    it('should timeout long-running tasks', async () => {
-      const timeoutAgent = new TestAgent({ ...mockConfig, timeout: 100 });
-      
-      // Mock a long-running task
-      timeoutAgent.execute = vi.fn().mockImplementation(async () => {
-        return new Promise(resolve => setTimeout(resolve, 200));
-      });
+- 🔴 **Leaders** (2): しきるん (Coordinator), あきんどさん (AIEntrepreneur)
+- 🟢 **Executors** (12): つくるん (CodeGen), めだまん (Review), etc.
+- 🔵 **Analysts** (5): みつけるん (Issue), しらべるん (MarketResearch), etc.
+- 🟡 **Supporters** (3): まとめるん (PR), はこぶん (Deployment), etc.
 
-      await expect(timeoutAgent.run({})).rejects.toThrow('timeout');
-    }, 10000);
-  });
+## Performance Targets
 
-  describe('Escalation Mechanism', () => {
-    it('should escalate complex tasks when enabled', async () => {
-      const escalationTask = { shouldEscalate: true, complexity: 'high' };
-      
-      const result = await agent.execute(escalationTask);
-      
-      expect(mockEscalationHandler.handle).toHaveBeenCalledWith(escalationTask);
-      expect(result).toEqual({ escalated: true, result: 'handled' });
-    });
+- **Agent Execution**: < 5 minutes per Issue
+- **Parallel Efficiency**: 70%+ (measured via Critical Path)
+- **API Response Time**: < 2 seconds (95th percentile)
+- **Test Coverage**: 80%+ minimum
+- **Quality Score**: 80+ points for approval
+- **Success Rate**: 95%+ for automatic PR creation
 
-    it('should not escalate when escalation is disabled', async () => {
-      const noEscalationAgent = new TestAgent({ ...mockConfig, escalationEnabled: false });
-      const escalationTask = { shouldEscalate: true };
-      
-      // Should handle locally instead of escalating
-      const result = await noEscalationAgent.execute(escalationTask);
-      
-      expect(result).toEqual({ escalated: true, result: 'handled' });
-    });
+## Security Considerations
 
-    it('should handle escalation failures gracefully', async () => {
-      mockEscalationHandler.handle.mockRejectedValueOnce(new Error('Escalation failed'));
-      
-      const escalationTask = { shouldEscalate: true };
-      
-      await expect(agent.execute(escalationTask)).rejects.toThrow('Escalation failed');
-    });
+- CodeQL (GitHub Advanced Security)
+- ESLint security rules
+- Gitleaks integration (secret scanning)
+- Dependabot automatic PRs
+- SBOM generation (CycloneDX)
+- OpenSSF Scorecard
 
-    it('should check if escalation handler can handle task', async () => {
-      mockEscalationHandler.canHandle.mockReturnValue(false);
-      
-      const escalationTask = { shouldEscalate: true, unsupported: true };
-      
-      await expect(agent.execute(escalationTask)).rejects.toThrow('Cannot escalate task');
-    });
-  });
+## Best Practices
 
-  describe('Metrics Collection', () => {
-    it('should collect execution metrics when enabled', async () => {
-      const task = { data: 'metrics-test' };
-      
-      await agent.run(task);
-      
-      const metrics = agent.getMetrics();
-      expect(metrics.totalExecutions).toBe(1);
-      expect(metrics.successfulExecutions).toBe(1);
-      expect(metrics.failedExecutions).toBe(0);
-      expect(metrics.averageExecutionTime).toBeGreaterThan(0);
-    });
+1. **Always check Issue labels** before executing agents
+2. **Update STATE labels** as work progresses
+3. **Use PRIORITY labels** to determine execution order
+4. **Respect TRIGGER labels** for automation conditions
+5. **Report QUALITY scores** after code generation/review
+6. **Follow Conventional Commits** for all PRs
+7. **Maintain 80%+ test coverage** as minimum quality bar
 
-    it('should track failed executions in metrics', async () => {
-      const failingTask = { shouldFail: true };
-      
-      try {
-        await agent.run(failingTask);
-      } catch (error) {
-        // Expected to fail
-      }
-      
-      const metrics = agent.getMetrics();
-      expect(metrics.totalExecutions).toBe(1);
-      expect(metrics.successfulExecutions).toBe(0);
-      expect(metrics.failedExecutions).toBe(1);
-    });
+## Environment Variables
 
-    it('should track escalation metrics', async () => {
-      const escalationTask = { shouldEscalate: true };
-      
-      await agent.execute(escalationTask);
-      
-      const metrics = agent.getMetrics();
-      expect(metrics.escalationCount).toBe(1);
-    });
+```bash
+GITHUB_TOKEN=ghp_xxx        # GitHub access token
+ANTHROPIC_API_KEY=sk-ant-xxx # Anthropic API key
+REPOSITORY=owner/repo       # GitHub repository
+DEVICE_IDENTIFIER=MacBook   # Device identifier
+```
 
-    it('should not collect metrics when disabled', async () => {
-      const noMetricsAgent = new TestAgent({ ...mockConfig, metricsEnabled: false });
-      const task = { data: 'no-metrics-test' };
-      
-      await noMetricsAgent.run(task);
-      
-      const metrics = noMetricsAgent.getMetrics();
-      expect(metrics.totalExecutions).toBe(0);
-    });
+## Links
 
-    it('should reset metrics when requested', async () => {
-      await agent.run({ data: 'test' });
-      
-      let metrics = agent.getMetrics();
-      expect(metrics.totalExecutions).toBe(1);
-      
-      agent.resetMetrics();
-      
-      metrics = agent.getMetrics();
-      expect(metrics.totalExecutions).toBe(0);
-      expect(metrics.successfulExecutions).toBe(0);
-      expect(metrics.failedExecutions).toBe(0);
-    });
-  });
+- **Repository**: https://github.com/ShunsukeHayashi/Miyabi
+- **NPM CLI**: https://www.npmjs.com/package/miyabi
+- **NPM SDK**: https://www.npmjs.com/package/miyabi-agent-sdk
+- **Landing Page**: https://shunsukehayashi.github.io/Miyabi/landing.html
 
-  describe('Error Handling', () => {
-    it('should handle synchronous errors in execute method', async () => {
-      const errorAgent = new TestAgent(mockConfig);
-      errorAgent.execute = vi.fn().mockImplementation(() => {
-        throw new Error('Synchronous error');
-      });
+---
 
-      await expect(errorAgent.run({})).rejects.toThrow('Synchronous error');
-    });
-
-    it('should handle promise rejection in execute method', async () => {
-      const errorAgent = new TestAgent(mockConfig);
-      errorAgent.execute = vi.fn().mockRejectedValue(new Error('Async error'));
-
-      await expect(errorAgent.run({})).rejects.toThrow('Async error');
-    });
-
-    it('should handle invalid task input gracefully', async () => {
-      const circularTask = {} as any;
-      circularTask.self = circularTask; // Create circular reference
-      
-      // Should not throw during execution
-      const result = await agent.execute(circularTask);
-      expect(result).toBeDefined();
-    });
-  });
-
-  describe('Lifecycle Management', () => {
-    it('should initialize agent correctly', async () => {
-      await agent.initialize();
-      
-      expect(agent.isInitialized()).toBe(true);
-    });
-
-    it('should shutdown agent gracefully', async () => {
-      await agent.initialize();
-      await agent.shutdown();
-      
-      expect(agent.isActive()).toBe(false);
-    });
-
-    it('should handle multiple initialization calls', async () => {
-      await agent.initialize();
-      await agent.initialize(); // Should not throw
-      
-      expect(agent.isInitialized()).toBe(true);
-    });
-
-    it('should handle shutdown before initialization', async () => {
-      await expect(agent.shutdown()).resolves.not.toThrow();
-    });
-  });
-
-  describe('Configuration Updates', () => {
-    it('should update configuration dynamically', () => {
-      const newConfig = { ...mockConfig, maxRetries: 5, timeout: 10000 };
-      
-      agent.updateConfig(newConfig);
-      
-      expect(agent.getConfig().maxRetries).toBe(5);
-      expect(agent.getConfig().timeout).toBe(10000);
-    });
-
-    it('should validate configuration updates', () => {
-      const invalidConfig = { ...mockConfig, maxRetries: -1 };
-      
-      expect(() => agent.updateConfig(invalidConfig))
-        .toThrow('Invalid configuration');
-    });
-
-    it('should merge partial configuration updates', () => {
-      const partialConfig = { timeout: 15000 };
-      
-      agent.updateConfig(partialConfig);
-      
-      expect(agent.getConfig().timeout).toBe(15000);
-      expect(agent.getConfig().maxRetries).toBe(3); // Original value preserved
-    });
-  });
-
-  describe('Event Handling', () => {
-    it('should emit events during execution', async () => {
-      const eventHandler = vi.fn();
-      agent.on('taskStarted', eventHandler);
-      agent.on('taskCompleted', eventHandler);
-      
-      await agent.run({ data: 'event-test' });
-      
-      expect(eventHandler).toHaveBeenCalledWith(
-        expect.objectContaining({ type: 'taskStarted' })
-      );
-      expect(eventHandler).toHaveBeenCalledWith(
-        expect.objectContaining({ type: 'taskCompleted' })
-      );
-    });
-
-    it('should emit error events on failures', async () => {
-      const errorHandler = vi.fn();
-      agent.on('taskFailed', errorHandler);
-      
-      try {
-        await agent.run({ shouldFail: true });
-      } catch (error) {
-        // Expected
-      }
-      
-      expect(errorHandler).toHaveBeenCalledWith(
-        expect.objectContaining({ 
-          type: 'taskFailed',
-          error: expect.any(Error)
-        })
-      );
-    });
-
-    it('should remove event listeners', () => {
-      const handler = vi.fn();
-      
-      agent.on('taskStarted', handler);
-      agent.off('taskStarted', handler);
-      
-      agent.run({ data: 'test' });
-      
-      expect(handler).not.toHaveBeenCalled();
-    });
-  });
-});
+🌸 **Miyabi** - Beauty in Autonomous Development

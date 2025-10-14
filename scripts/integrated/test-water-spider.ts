@@ -8,10 +8,10 @@
  * - Webhook integration
  */
 
-import { WaterSpiderAgent } from '../../packages/coding-agents/water-spider/water-spider-agent';
-import type { WaterSpiderConfig } from '../../packages/coding-agents/water-spider/water-spider-agent';
-import { SessionManager } from '../../packages/coding-agents/water-spider/session-manager';
-import { WebhookClient } from '../../packages/coding-agents/water-spider/webhook-client';
+import { WaterSpiderAgent } from '@miyabi/coding-agents/water-spider/water-spider-agent';
+import type { WaterSpiderConfig } from '@miyabi/coding-agents/water-spider/water-spider-agent';
+import { SessionManager } from '@miyabi/coding-agents/water-spider/session-manager';
+import { WebhookClient } from '@miyabi/coding-agents/water-spider/webhook-client';
 import { execSync } from 'child_process';
 
 async function main() {

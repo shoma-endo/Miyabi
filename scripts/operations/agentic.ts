@@ -9,7 +9,7 @@
  *   npx tsx scripts/agentic.ts
  */
 
-import { logger, theme } from '../../packages/coding-agents/ui/index';
+import { logger, theme } from '@miyabi/coding-agents/ui/index';
 import { execSync } from 'child_process';
 import * as readline from 'readline/promises';
 

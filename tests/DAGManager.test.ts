@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { DAGManager } from '../packages/coding-agents/utils/dag-manager';
-import { Task } from '../packages/coding-agents/types/index';
+import { DAGManager } from '@miyabi/coding-agents/utils/dag-manager';
+import { Task } from '@miyabi/coding-agents/types/index';
 
 describe('DAGManager', () => {
   // Helper function to create mock tasks

@@ -6,11 +6,11 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { CodeGenAgent } from '../packages/coding-agents/codegen/codegen-agent';
-import { ReviewAgent } from '../packages/coding-agents/review/review-agent';
-import { ReviewLoop } from '../packages/coding-agents/review/review-loop';
-import { DeploymentAgent } from '../packages/coding-agents/deployment/deployment-agent';
-import { AgentConfig, Task } from '../packages/coding-agents/types/index';
+import { CodeGenAgent } from '@miyabi/coding-agents/codegen/codegen-agent';
+import { ReviewAgent } from '@miyabi/coding-agents/review/review-agent';
+import { ReviewLoop } from '@miyabi/coding-agents/review/review-loop';
+import { DeploymentAgent } from '@miyabi/coding-agents/deployment/deployment-agent';
+import { AgentConfig, Task } from '@miyabi/coding-agents/types/index';
 
 describe('Agent Verification - E2E Tests', () => {
   let config: AgentConfig;

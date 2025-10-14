@@ -25,7 +25,7 @@ vi.mock('../src/ui/index.js', () => ({
 // Import mocked classes and logger after mocking
 import { ClaudeToAgentsMigration } from './migrate-claude-to-agents';
 import { MigrationValidator } from './post-migration-validator';
-import { logger } from '../../packages/coding-agents/ui/index';
+import { logger } from '@miyabi/coding-agents/ui/index';
 
 describe('Migration Script', () => {
   let mockMigration: any;

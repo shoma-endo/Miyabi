@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { TaskScheduler } from '../../packages/coding-agents/coordinator/task-scheduler';
+import { TaskScheduler } from '@miyabi/coding-agents/coordinator/task-scheduler';
 import type { TaskGroup } from '../../scripts/operations/task-grouper';
 
 describe('TaskScheduler', () => {

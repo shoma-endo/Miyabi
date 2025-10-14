@@ -1,5 +1,5 @@
-import { BaseAgent } from '../packages/coding-agents/base-agent';
-import { AgentType, Task, AgentConfig } from '../packages/coding-agents/types/index';
+import { BaseAgent } from '@miyabi/coding-agents/base-agent';
+import { AgentType, Task, AgentConfig } from '@miyabi/coding-agents/types/index';
 
 // Mock implementation for testing
 class TestAgent extends BaseAgent {

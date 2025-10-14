@@ -7,7 +7,7 @@
  * - Integration with WorktreeManager
  */
 
-import { ParallelExecutionManager } from '../../packages/coding-agents/execution/parallel-execution-manager';
+import { ParallelExecutionManager } from '@miyabi/coding-agents/execution/parallel-execution-manager';
 
 async function main() {
   console.log('╔══════════════════════════════════════════════════════════════╗');

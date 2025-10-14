@@ -6,7 +6,7 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { TaskGrouper } from '../../scripts/operations/task-grouper';
-import type { Task, DAG } from '../../packages/coding-agents/types/index';
+import type { Task, DAG } from '@miyabi/coding-agents/types/index';
 
 describe('TaskGrouper', () => {
   let grouper: TaskGrouper;

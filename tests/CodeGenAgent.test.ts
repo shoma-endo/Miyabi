@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { CodeGenAgent } from '../packages/coding-agents/codegen/codegen-agent';
-import { Task, AgentConfig } from '../packages/coding-agents/types/index';
+import { CodeGenAgent } from '@miyabi/coding-agents/codegen/codegen-agent';
+import { Task, AgentConfig } from '@miyabi/coding-agents/types/index';
 
 describe('CodeGenAgent - Template Generation', () => {
   let agent: CodeGenAgent;

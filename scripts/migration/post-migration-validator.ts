@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { logger } from '../../packages/coding-agents/ui/index';
+import { logger } from '@miyabi/coding-agents/ui/index';
 
 /**
  * Validator to ensure migration was successful

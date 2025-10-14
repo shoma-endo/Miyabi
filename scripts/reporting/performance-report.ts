@@ -6,7 +6,7 @@
  * Shows bottlenecks, recommendations, and improvement suggestions
  */
 
-import { PerformanceMonitor } from '../../packages/coding-agents/monitoring/performance-monitor';
+import { PerformanceMonitor } from '@miyabi/coding-agents/monitoring/performance-monitor';
 import * as path from 'path';
 
 async function main() {

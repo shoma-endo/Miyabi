@@ -12,7 +12,7 @@
  * Phase I: Issue #5 - Scalability & Performance Optimization
  */
 
-import { AgentConfig, Task, AgentResult, AgentType } from '../agents/types/index';
+import { AgentConfig, Task, AgentResult, AgentType } from '@miyabi/coding-agents/types/index';
 import { PerformanceOptimizer, createPerformanceOptimizer } from './performance-optimizer';
 import { Octokit } from '@octokit/rest';
 

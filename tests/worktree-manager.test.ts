@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { WorktreeManager } from '../packages/coding-agents/worktree/worktree-manager';
-import type { Issue, Task, AgentConfig } from '../packages/coding-agents/types/index';
+import { WorktreeManager } from '@miyabi/coding-agents/worktree/worktree-manager';
+import type { Issue, Task, AgentConfig } from '@miyabi/coding-agents/types/index';
 import * as fs from 'fs';
 import * as path from 'path';
 

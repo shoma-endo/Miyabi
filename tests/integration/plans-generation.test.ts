@@ -6,8 +6,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { PlansGenerator } from '../../packages/coding-agents/utils/plans-generator';
-import { TaskDecomposition, Issue, Task, DAG } from '../../packages/coding-agents/types/index';
+import { PlansGenerator } from '@miyabi/coding-agents/utils/plans-generator';
+import { TaskDecomposition, Issue, Task, DAG } from '@miyabi/coding-agents/types/index';
 
 describe('Plans.md Generation', () => {
   const mockIssue: Issue = {

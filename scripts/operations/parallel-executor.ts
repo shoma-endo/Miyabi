@@ -8,8 +8,8 @@
  *   npm run agents:parallel:exec -- --help
  */
 
-import { CoordinatorAgent } from '../../packages/coding-agents/coordinator/coordinator-agent';
-import { AgentConfig, Issue, Task } from '../../packages/coding-agents/types/index';
+import { CoordinatorAgent } from '@miyabi/coding-agents/coordinator/coordinator-agent';
+import { AgentConfig, Issue, Task } from '@miyabi/coding-agents/types/index';
 import { Octokit } from '@octokit/rest';
 import * as fs from 'fs';
 import * as path from 'path';

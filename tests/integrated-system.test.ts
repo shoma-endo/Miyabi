@@ -5,10 +5,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { GoalManager } from '../packages/coding-agents/feedback-loop/goal-manager';
-import { ConsumptionValidator } from '../packages/coding-agents/feedback-loop/consumption-validator';
-import { InfiniteLoopOrchestrator } from '../packages/coding-agents/feedback-loop/infinite-loop-orchestrator';
-import { MetricsCollector } from '../packages/coding-agents/feedback-loop/metrics-collector';
+import { GoalManager } from '@miyabi/coding-agents/feedback-loop/goal-manager';
+import { ConsumptionValidator } from '@miyabi/coding-agents/feedback-loop/consumption-validator';
+import { InfiniteLoopOrchestrator } from '@miyabi/coding-agents/feedback-loop/infinite-loop-orchestrator';
+import { MetricsCollector } from '@miyabi/coding-agents/feedback-loop/metrics-collector';
 import * as fs from 'fs';
 import * as path from 'path';
 import { execSync } from 'child_process';

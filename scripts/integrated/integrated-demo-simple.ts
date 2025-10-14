@@ -4,10 +4,10 @@
  * Demonstrates Water Spider + Feedback Loop integration without external dependencies
  */
 
-import { GoalManager } from '../../packages/coding-agents/feedback-loop/goal-manager';
-import { ConsumptionValidator } from '../../packages/coding-agents/feedback-loop/consumption-validator';
-import { InfiniteLoopOrchestrator } from '../../packages/coding-agents/feedback-loop/infinite-loop-orchestrator';
-import type { ActualMetrics } from '../../packages/coding-agents/types/index';
+import { GoalManager } from '@miyabi/coding-agents/feedback-loop/goal-manager';
+import { ConsumptionValidator } from '@miyabi/coding-agents/feedback-loop/consumption-validator';
+import { InfiniteLoopOrchestrator } from '@miyabi/coding-agents/feedback-loop/infinite-loop-orchestrator';
+import type { ActualMetrics } from '@miyabi/coding-agents/types/index';
 
 async function demo() {
   console.log('╔══════════════════════════════════════════════════════════════╗');

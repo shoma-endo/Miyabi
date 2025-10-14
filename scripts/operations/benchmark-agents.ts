@@ -6,7 +6,7 @@
  * Compares with expected performance targets
  */
 
-import { PerformanceMonitor } from '../../packages/coding-agents/monitoring/performance-monitor';
+import { PerformanceMonitor } from '@miyabi/coding-agents/monitoring/performance-monitor';
 
 interface BenchmarkResult {
   testName: string;

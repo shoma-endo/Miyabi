@@ -16,7 +16,7 @@ import type {
   AgentType,
   TaskGroup,
   GroupingConfig
-} from '../../packages/coding-agents/types/index';
+} from '@miyabi/coding-agents/types/index';
 
 const DEFAULT_CONFIG: GroupingConfig = {
   minGroupSize: 3,

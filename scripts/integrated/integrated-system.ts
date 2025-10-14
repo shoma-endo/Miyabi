@@ -6,17 +6,17 @@
  * - Feedback Loop System (quality improvement)
  */
 
-import { WaterSpiderAgent } from '../../packages/coding-agents/water-spider/water-spider-agent';
-import { GoalManager } from '../../packages/coding-agents/feedback-loop/goal-manager';
-import { ConsumptionValidator } from '../../packages/coding-agents/feedback-loop/consumption-validator';
-import { InfiniteLoopOrchestrator } from '../../packages/coding-agents/feedback-loop/infinite-loop-orchestrator';
-import { MetricsCollector } from '../../packages/coding-agents/feedback-loop/metrics-collector';
+import { WaterSpiderAgent } from '@miyabi/coding-agents/water-spider/water-spider-agent';
+import { GoalManager } from '@miyabi/coding-agents/feedback-loop/goal-manager';
+import { ConsumptionValidator } from '@miyabi/coding-agents/feedback-loop/consumption-validator';
+import { InfiniteLoopOrchestrator } from '@miyabi/coding-agents/feedback-loop/infinite-loop-orchestrator';
+import { MetricsCollector } from '@miyabi/coding-agents/feedback-loop/metrics-collector';
 import type {
   GoalDefinition,
   ActualMetrics,
   FeedbackLoop,
   Task,
-} from '../../packages/coding-agents/types/index';
+} from '@miyabi/coding-agents/types/index';
 import { startServer as startWebhookServer } from '../webhook/webhook-server';
 import { TmuxManager } from '../tmux/tmux-manager';
 

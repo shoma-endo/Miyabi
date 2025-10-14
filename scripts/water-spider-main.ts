@@ -7,8 +7,8 @@
  *   npm run water-spider:start
  */
 
-import { WaterSpiderAgent } from '../packages/coding-agents/water-spider/water-spider-agent';
-import type { WaterSpiderConfig } from '../packages/coding-agents/water-spider/water-spider-agent';
+import { WaterSpiderAgent } from '@miyabi/coding-agents/water-spider/water-spider-agent';
+import type { WaterSpiderConfig } from '@miyabi/coding-agents/water-spider/water-spider-agent';
 import { startServer as startWebhookServer } from './webhook/webhook-server';
 import { TmuxManager } from './tmux/tmux-manager';
 

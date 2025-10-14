@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ReviewAgent } from '../packages/coding-agents/review/review-agent';
-import { AgentConfig, Task } from '../packages/coding-agents/types/index';
+import { ReviewAgent } from '@miyabi/coding-agents/review/review-agent';
+import { AgentConfig, Task } from '@miyabi/coding-agents/types/index';
 import * as fs from 'fs';
 import * as path from 'path';
 

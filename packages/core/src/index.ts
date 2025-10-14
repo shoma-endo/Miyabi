@@ -4,7 +4,7 @@
  * This is a placeholder implementation. Full implementation coming soon.
  */
 
-export * from './agents/index';
+export * from '@miyabi/coding-agents/index';
 export * from './types/index';
 
 /**

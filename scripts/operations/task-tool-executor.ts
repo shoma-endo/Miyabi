@@ -12,11 +12,11 @@
  */
 
 import { TaskGrouper } from './task-grouper';
-import { TaskScheduler } from '../../packages/coding-agents/coordinator/task-scheduler';
+import { TaskScheduler } from '@miyabi/coding-agents/coordinator/task-scheduler';
 import { ClaudeCodeSessionManager } from '../../utils/claude-code-session-manager';
 import { PerformanceMonitor } from '../../utils/performance-monitor';
-import type { Task, DAG, TaskGroup, AgentResult, ExecutionReport } from '../../packages/coding-agents/types/index';
-import type { PerformanceReport } from '../../packages/coding-agents/types/performance-metrics';
+import type { Task, DAG, TaskGroup, AgentResult, ExecutionReport } from '@miyabi/coding-agents/types/index';
+import type { PerformanceReport } from '@miyabi/coding-agents/types/performance-metrics';
 
 export interface TaskToolExecutorConfig {
   worktreeBasePath: string;

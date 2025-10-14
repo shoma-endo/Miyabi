@@ -24,7 +24,7 @@ import {
   type AgentStatus,
   type KPIMetric,
   type TaskNode,
-} from '../../packages/coding-agents/ui/index';
+} from '@miyabi/coding-agents/ui/index';
 
 async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));

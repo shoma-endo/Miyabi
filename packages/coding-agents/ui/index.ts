@@ -5,7 +5,7 @@
  *
  * Usage:
  * ```typescript
- * import { logger, theme } from './agents/ui/index';
+ * import { logger, theme } from '@miyabi/coding-agents/ui/index';
  *
  * logger.header('Agentic OS');
  * logger.agent('CoordinatorAgent', 'Starting execution...');

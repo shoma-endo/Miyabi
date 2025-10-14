@@ -437,7 +437,7 @@ export class ReviewLoop {
  *
  * Usage:
  * ```typescript
- * import { runReviewLoop } from './agents/review/review-loop';
+ * import { runReviewLoop } from '@miyabi/coding-agents/review/review-loop';
  *
  * const result = await runReviewLoop(config, options);
  * ```

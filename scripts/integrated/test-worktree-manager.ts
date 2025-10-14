@@ -8,8 +8,8 @@
  * - Worktree cleanup
  */
 
-import { WorktreeManager } from '../../packages/coding-agents/worktree/worktree-manager';
-import type { Issue } from '../../packages/coding-agents/types/index';
+import { WorktreeManager } from '@miyabi/coding-agents/worktree/worktree-manager';
+import type { Issue } from '@miyabi/coding-agents/types/index';
 
 async function main() {
   console.log('╔══════════════════════════════════════════════════════════════╗');

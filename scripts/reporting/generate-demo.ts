@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { logger } from '../../packages/coding-agents/ui/index';
+import { logger } from '@miyabi/coding-agents/ui/index';
 
 /**
  * Demo generation script for creating screenshots and GIFs

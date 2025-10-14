@@ -2,7 +2,7 @@
 
 import { ClaudeToAgentsMigration } from './migrate-claude-to-agents';
 import { MigrationValidator } from './post-migration-validator';
-import { logger } from '../../packages/coding-agents/ui/index';
+import { logger } from '@miyabi/coding-agents/ui/index';
 
 /**
  * Main migration script

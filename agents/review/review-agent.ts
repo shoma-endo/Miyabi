@@ -58,8 +58,8 @@ export class ReviewAgent extends BaseAgent {
         this.runSecurityScan(reviewRequest.files),
       ]);
 
-      // 3. Calculate quality score
-      const qualityReport = this.calculateQualityScore(
+      // 3. Calculate quality score (includes actual test coverage)
+      const qualityReport = await this.calculateQualityScore(
         eslintIssues,
         typeScriptIssues,
         securityIssues
@@ -325,11 +325,11 @@ export class ReviewAgent extends BaseAgent {
   /**
    * Calculate overall quality score
    */
-  private calculateQualityScore(
+  private async calculateQualityScore(
     eslintIssues: QualityIssue[],
     typeScriptIssues: QualityIssue[],
     securityIssues: QualityIssue[]
-  ): QualityReport {
+  ): Promise<QualityReport> {
     this.log('📊 Calculating quality score');
 
     let score = 100;
@@ -348,11 +348,15 @@ export class ReviewAgent extends BaseAgent {
     const typeScriptScore = 100 - typeScriptIssues.reduce((sum, i) => sum + i.scoreImpact, 0);
     const securityScore = 100 - securityIssues.reduce((sum, i) => sum + i.scoreImpact, 0);
 
+    // Get actual test coverage
+    const testCoverageScore = await this.getTestCoverageScore();
+
     // Generate recommendations
     const recommendations: string[] = [];
     if (eslintScore < 80) recommendations.push('Fix ESLint errors to improve code quality');
     if (typeScriptScore < 80) recommendations.push('Fix TypeScript errors for type safety');
     if (securityScore < 80) recommendations.push('Address security vulnerabilities immediately');
+    if (testCoverageScore < 80) recommendations.push('Increase test coverage to meet 80% threshold');
     if (score < 80) recommendations.push('Overall quality below threshold - review all issues');
 
     return {
@@ -364,9 +368,59 @@ export class ReviewAgent extends BaseAgent {
         eslintScore: Math.max(0, Math.round(eslintScore)),
         typeScriptScore: Math.max(0, Math.round(typeScriptScore)),
         securityScore: Math.max(0, Math.round(securityScore)),
-        testCoverageScore: 100, // TODO: Implement actual coverage check
+        testCoverageScore: Math.max(0, Math.round(testCoverageScore)),
       },
     };
+  }
+
+  /**
+   * Get test coverage score from coverage report
+   */
+  private async getTestCoverageScore(): Promise<number> {
+    this.log('📊 Reading test coverage report');
+
+    const coveragePath = path.join(process.cwd(), 'coverage', 'coverage-summary.json');
+
+    try {
+      // Check if coverage report exists
+      if (!fs.existsSync(coveragePath)) {
+        this.log('⚠️  Coverage report not found - run tests with --coverage first');
+        return 0;
+      }
+
+      // Read coverage report
+      const coverageData = await fs.promises.readFile(coveragePath, 'utf-8');
+      const coverage = JSON.parse(coverageData);
+
+      // Get total coverage (aggregate all files)
+      const total = coverage.total;
+
+      if (!total) {
+        this.log('⚠️  No coverage data found in report');
+        return 0;
+      }
+
+      // Calculate average coverage across all metrics
+      // Priority: statements > branches > functions > lines
+      const statementsPct = total.statements?.pct || 0;
+      const branchesPct = total.branches?.pct || 0;
+      const functionsPct = total.functions?.pct || 0;
+      const linesPct = total.lines?.pct || 0;
+
+      // Weighted average: statements (40%), lines (30%), branches (20%), functions (10%)
+      const weightedCoverage =
+        statementsPct * 0.4 +
+        linesPct * 0.3 +
+        branchesPct * 0.2 +
+        functionsPct * 0.1;
+
+      this.log(`   Coverage: ${Math.round(weightedCoverage)}% (statements: ${statementsPct}%, lines: ${linesPct}%, branches: ${branchesPct}%, functions: ${functionsPct}%)`);
+
+      return weightedCoverage;
+    } catch (error) {
+      this.log(`⚠️  Failed to read coverage report: ${(error as Error).message}`);
+      return 0;
+    }
   }
 
   // ============================================================================

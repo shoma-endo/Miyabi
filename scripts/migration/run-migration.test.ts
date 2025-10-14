@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { main } from './migrate.js';
+import { main } from './migrate';
 
 // Mock external dependencies
 vi.mock('./migrate-claude-to-agents.js', () => ({
@@ -23,9 +23,9 @@ vi.mock('../src/ui/index.js', () => ({
 }));
 
 // Import mocked classes and logger after mocking
-import { ClaudeToAgentsMigration } from './migrate-claude-to-agents.js';
-import { MigrationValidator } from './post-migration-validator.js';
-import { logger } from '../../agents/ui/index.js';
+import { ClaudeToAgentsMigration } from './migrate-claude-to-agents';
+import { MigrationValidator } from './post-migration-validator';
+import { logger } from '../../packages/coding-agents/ui/index';
 
 describe('Migration Script', () => {
   let mockMigration: any;

@@ -11,7 +11,7 @@ import {
   VulnerabilityScanner,
   NpmAuditScanner,
   SecurityScannerRegistry,
-} from '../agents/review/security-scanner.js';
+} from '../packages/coding-agents/review/security-scanner';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';

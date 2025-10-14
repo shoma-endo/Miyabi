@@ -4,13 +4,13 @@
  * Tests all components of the intelligent agent system
  */
 
-import { AgentAnalyzer } from '../agent-analyzer.js';
-import { AgentFactory } from '../agent-factory.js';
-import { ToolFactory } from '../tool-factory.js';
-import { DynamicToolCreator } from '../dynamic-tool-creator.js';
-import { AgentRegistry } from '../agent-registry.js';
-import { AgentTemplate, AgentExecutionContext } from '../types/agent-template.js';
-import { Task, AgentResult, AgentConfig } from '../types/index.js';
+import { AgentAnalyzer } from '../agent-analyzer';
+import { AgentFactory } from '../agent-factory';
+import { ToolFactory } from '../tool-factory';
+import { DynamicToolCreator } from '../dynamic-tool-creator';
+import { AgentRegistry } from '../agent-registry';
+import { AgentTemplate, AgentExecutionContext } from '../types/agent-template';
+import { Task, AgentResult, AgentConfig } from '../types/index';
 
 // Test configuration
 const config: AgentConfig = {

@@ -16,7 +16,7 @@ import {
   FunctionInfo,
   ClassInfo,
   InterfaceInfo,
-} from '../analyzer/CodeAnalyzer.js';
+} from '../analyzer/CodeAnalyzer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

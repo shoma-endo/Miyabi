@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { PerformanceMonitor } from '../../utils/performance-monitor.js';
+import { PerformanceMonitor } from '../../utils/performance-monitor';
 
 describe('PerformanceMonitor', () => {
   let monitor: PerformanceMonitor;

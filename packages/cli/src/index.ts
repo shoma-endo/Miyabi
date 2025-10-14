@@ -10,28 +10,28 @@ import inquirer from 'inquirer';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { init } from './commands/init.js';
-import { install } from './commands/install.js';
-import { status } from './commands/status.js';
-import { config } from './commands/config.js';
-import { setup } from './commands/setup.js';
-import { docs } from './commands/docs.js';
-import { doctor } from './commands/doctor.js';
-import { onboard } from './commands/onboard.js';
-import { registerAgentCommand } from './commands/agent.js';
-import { registerAutoModeCommand } from './commands/auto.js';
-import { registerTodosCommand } from './commands/todos.js';
-import { registerAuthCommand } from './commands/auth.js';
-import { registerDashboardCommand } from './commands/dashboard.js';
-import { loadConfig, applyConfigToEnvironment } from './config/loader.js';
+import { init } from './commands/init';
+import { install } from './commands/install';
+import { status } from './commands/status';
+import { config } from './commands/config';
+import { setup } from './commands/setup';
+import { docs } from './commands/docs';
+import { doctor } from './commands/doctor';
+import { onboard } from './commands/onboard';
+import { registerAgentCommand } from './commands/agent';
+import { registerAutoModeCommand } from './commands/auto';
+import { registerTodosCommand } from './commands/todos';
+import { registerAuthCommand } from './commands/auth';
+import { registerDashboardCommand } from './commands/dashboard';
+import { loadConfig, applyConfigToEnvironment } from './config/loader';
 import {
   reportIssueToMiyabi,
   gatherEnvironmentInfo,
   gatherProjectContext,
   inferUserIntent,
   type FeedbackContext,
-} from './feedback/issue-reporter.js';
-import { isJsonMode, outputError } from './utils/agent-output.js';
+} from './feedback/issue-reporter';
+import { isJsonMode, outputError } from './utils/agent-output';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

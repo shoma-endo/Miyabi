@@ -2,8 +2,8 @@
  * EnvironmentCheckHook - Validates required environment variables
  */
 
-import { PreHook, HookContext } from '../../types/hooks.js';
-import { logger } from '../../ui/index.js';
+import { PreHook, HookContext } from '../../types/hooks';
+import { logger } from '../../ui/index';
 
 export class EnvironmentCheckHook implements PreHook {
   name = 'environment-check';

@@ -4,15 +4,15 @@
  * Demonstrates how to integrate agents with dashboard using DashboardWebhookHook
  */
 
-import { BaseAgent } from '../../base-agent.js';
-import { Task, AgentResult, AgentConfig } from '../../types/index.js';
+import { BaseAgent } from '../../base-agent';
+import { Task, AgentResult, AgentConfig } from '../../types/index';
 import {
   HookManager,
   DashboardWebhookHook,
   EnvironmentCheckHook,
   CleanupHook,
-} from '../index.js';
-import { HookContext } from '../../types/hooks.js';
+} from '../index';
+import { HookContext } from '../../types/hooks';
 
 /**
  * Example Agent with Dashboard Integration

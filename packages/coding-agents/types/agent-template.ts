@@ -4,9 +4,9 @@
  * Defines structures for dynamic agent creation and assignment
  */
 
-import { Task, AgentResult, AgentConfig } from './index.js';
-import { HookManager } from '../hooks/hook-manager.js';
-import type { IToolCreator } from './tool-creator-interface.js';
+import { Task, AgentResult, AgentConfig } from './index';
+import { HookManager } from '../hooks/hook-manager';
+import type { IToolCreator } from './tool-creator-interface';
 
 /**
  * Agent execution function signature

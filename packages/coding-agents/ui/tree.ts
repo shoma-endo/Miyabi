@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import { theme } from './theme.js';
+import { theme } from './theme';
 
 export interface TreeNode {
   label: string;

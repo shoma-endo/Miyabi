@@ -14,10 +14,10 @@
  * Ref: OpenAI Dev Day - Autonomous Development Patterns
  */
 
-import { BaseAgent } from '../base-agent.js';
-import { AgentConfig, AgentResult, Task } from '../types/index.js';
-import { SessionManager } from './session-manager.js';
-import { WebhookClient } from './webhook-client.js';
+import { BaseAgent } from '../base-agent';
+import { AgentConfig, AgentResult, Task } from '../types/index';
+import { SessionManager } from './session-manager';
+import { WebhookClient } from './webhook-client';
 
 export interface WaterSpiderConfig extends AgentConfig {
   monitorInterval?: number; // 監視間隔 (ms) default: 5000

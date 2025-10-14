@@ -12,9 +12,9 @@ import {
   HookExecutionResult,
   HookOptions,
   HookRegistryEntry,
-} from '../types/hooks.js';
-import { AgentResult } from '../types/index.js';
-import { logger } from '../ui/index.js';
+} from '../types/hooks';
+import { AgentResult } from '../types/index';
+import { logger } from '../ui/index';
 
 export class HookManager {
   private preHooks: Map<string, HookRegistryEntry<PreHook>> = new Map();

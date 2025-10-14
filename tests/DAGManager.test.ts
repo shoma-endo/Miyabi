@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { DAGManager } from '../agents/utils/dag-manager.js';
-import { Task } from '../agents/types/index.js';
+import { DAGManager } from '../packages/coding-agents/utils/dag-manager';
+import { Task } from '../packages/coding-agents/types/index';
 
 describe('DAGManager', () => {
   // Helper function to create mock tasks

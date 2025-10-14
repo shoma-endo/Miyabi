@@ -5,7 +5,7 @@
  */
 
 import { Octokit } from '@octokit/rest';
-import { DocGenerator, FunctionDoc, ClassDoc, InterfaceDoc } from './doc-generator.js';
+import { DocGenerator, FunctionDoc, ClassDoc, InterfaceDoc } from './doc-generator';
 import * as fs from 'fs';
 import * as path from 'path';
 

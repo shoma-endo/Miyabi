@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { FileMigrationAgent } from '../../src/agents/FileMigrationAgent.js';
-import { AgentConfig, Task, TaskType, AgentType } from '../../src/types/index.js';
+import { FileMigrationAgent } from '../../src/agents/FileMigrationAgent';
+import { AgentConfig, Task, TaskType, AgentType } from '../../src/types/index';
 import * as fs from 'fs/promises';
 import * as fsSync from 'fs';
 import * as path from 'path';

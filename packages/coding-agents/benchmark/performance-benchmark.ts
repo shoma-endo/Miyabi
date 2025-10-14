@@ -8,11 +8,11 @@
  *   npm run benchmark:performance
  */
 
-import { DynamicToolCreator } from '../dynamic-tool-creator.js';
-import { TTLCache } from '../utils/cache.js';
-import { retryWithBackoff } from '../utils/retry.js';
-import { SecurityValidator } from '../utils/security-validator.js';
-import type { IToolCreator } from '../types/tool-creator-interface.js';
+import { DynamicToolCreator } from '../dynamic-tool-creator';
+import { TTLCache } from '../utils/cache';
+import { retryWithBackoff } from '../utils/retry';
+import { SecurityValidator } from '../utils/security-validator';
+import type { IToolCreator } from '../types/tool-creator-interface';
 
 // ベンチマーク結果
 interface BenchmarkResult {

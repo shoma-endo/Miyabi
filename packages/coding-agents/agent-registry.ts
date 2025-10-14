@@ -5,20 +5,20 @@
  * Uses AI-based analysis to determine optimal agent configuration
  */
 
-import { DynamicAgent } from './dynamic-agent.js';
-import { AgentFactory } from './agent-factory.js';
-import { AgentAnalyzer } from './agent-analyzer.js';
-import { ToolFactory } from './tool-factory.js';
-import { Task, AgentConfig } from './types/index.js';
+import { DynamicAgent } from './dynamic-agent';
+import { AgentFactory } from './agent-factory';
+import { AgentAnalyzer } from './agent-analyzer';
+import { ToolFactory } from './tool-factory';
+import { Task, AgentConfig } from './types/index';
 import {
   AgentAssignmentCriteria,
   AgentAssignmentResult,
   AgentInstance,
-} from './types/agent-template.js';
-import { AgentAnalysisResult } from './types/agent-analysis.js';
-import { HookManager } from './hooks/hook-manager.js';
-import { TTLCache } from './utils/cache.js';
-import { logger } from './ui/index.js';
+} from './types/agent-template';
+import { AgentAnalysisResult } from './types/agent-analysis';
+import { HookManager } from './hooks/hook-manager';
+import { TTLCache } from './utils/cache';
+import { logger } from './ui/index';
 
 export class AgentRegistry {
   private static instance: AgentRegistry;

@@ -18,7 +18,7 @@ import {
   TaskDecomposition,
   ExecutionReport,
   Issue,
-} from '../types/index.js';
+} from '../types/index';
 
 export class PlansGenerator {
   /**

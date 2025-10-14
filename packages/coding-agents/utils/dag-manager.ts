@@ -12,7 +12,7 @@
  * - DFS for cycle detection
  */
 
-import { Task, DAG } from '../types/index.js';
+import { Task, DAG } from '../types/index';
 
 /**
  * DAG Manager - Centralized graph operations

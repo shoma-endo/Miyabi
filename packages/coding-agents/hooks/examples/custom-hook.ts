@@ -4,9 +4,9 @@
  * Demonstrates creating a custom hook for specific use cases
  */
 
-import { PreHook, PostHook, HookContext } from '../../types/hooks.js';
-import { AgentResult } from '../../types/index.js';
-import { logger } from '../../ui/index.js';
+import { PreHook, PostHook, HookContext } from '../../types/hooks';
+import { AgentResult } from '../../types/index';
+import { logger } from '../../ui/index';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -217,7 +217,7 @@ export class ArtifactArchiveHook implements PostHook {
 }
 
 // Usage Example
-import { HookManager } from '../hook-manager.js';
+import { HookManager } from '../hook-manager';
 
 const hookManager = new HookManager();
 

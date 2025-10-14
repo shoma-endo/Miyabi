@@ -7,8 +7,8 @@
 import {
   SecurityValidator,
   SecurityIssueType,
-} from '../utils/security-validator.js';
-import { logger } from '../ui/index.js';
+} from '../utils/security-validator';
+import { logger } from '../ui/index';
 
 // Test counters
 let totalTests = 0;

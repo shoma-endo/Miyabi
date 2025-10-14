@@ -7,7 +7,7 @@
  * - Integration with WorktreeManager
  */
 
-import { ParallelExecutionManager } from '../../agents/execution/parallel-execution-manager.js';
+import { ParallelExecutionManager } from '../../packages/coding-agents/execution/parallel-execution-manager';
 
 async function main() {
   console.log('╔══════════════════════════════════════════════════════════════╗');

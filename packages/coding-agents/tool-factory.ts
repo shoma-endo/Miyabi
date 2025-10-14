@@ -9,10 +9,10 @@ import {
   HookRequirement,
   DynamicToolSpec,
   ToolCreationResult,
-} from './types/agent-analysis.js';
-import { PreHook, PostHook, ErrorHook, HookContext } from './types/hooks.js';
-import { AgentResult } from './types/index.js';
-import { logger } from './ui/index.js';
+} from './types/agent-analysis';
+import { PreHook, PostHook, ErrorHook, HookContext } from './types/hooks';
+import { AgentResult } from './types/index';
+import { logger } from './ui/index';
 
 export class ToolFactory {
   private static instance: ToolFactory;

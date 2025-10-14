@@ -4,7 +4,7 @@
  * Tests real-time metrics collection without starting the full integrated system
  */
 
-import { MetricsCollector } from '../../agents/feedback-loop/metrics-collector.js';
+import { MetricsCollector } from '../../packages/coding-agents/feedback-loop/metrics-collector';
 
 async function main() {
   console.log('╔══════════════════════════════════════════════════════════════╗');

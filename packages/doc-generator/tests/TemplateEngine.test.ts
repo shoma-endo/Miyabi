@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { TemplateEngine } from '../src/generator/TemplateEngine.js';
-import { AnalysisResult } from '../src/analyzer/CodeAnalyzer.js';
+import { TemplateEngine } from '../src/generator/TemplateEngine';
+import { AnalysisResult } from '../src/analyzer/CodeAnalyzer';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';

@@ -7,7 +7,7 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import type { SessionStatus, WaterSpiderConfig } from './water-spider-agent.js';
+import type { SessionStatus, WaterSpiderConfig } from './water-spider-agent';
 
 export class SessionManager {
   private sessions: Map<string, SessionStatus> = new Map();

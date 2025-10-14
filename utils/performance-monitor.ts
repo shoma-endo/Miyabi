@@ -16,7 +16,7 @@ import type {
   PerformanceAlert,
   PerformanceReport,
   MetricsTrend,
-} from '../agents/types/performance-metrics.js';
+} from '../packages/coding-agents/types/performance-metrics';
 import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';

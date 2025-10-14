@@ -16,8 +16,8 @@ import type {
   AddElementRequest,
   AnalyzeRequest,
   ContextEngineeringError as ContextEngineeringErrorType,
-} from './types.js';
-import { ContextEngineeringError } from './types.js';
+} from './types';
+import { ContextEngineeringError } from './types';
 
 /**
  * HTTP client for Miyabi Context Engineering API

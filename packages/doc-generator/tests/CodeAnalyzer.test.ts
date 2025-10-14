@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, beforeAll } from 'vitest';
-import { CodeAnalyzer } from '../src/analyzer/CodeAnalyzer.js';
+import { CodeAnalyzer } from '../src/analyzer/CodeAnalyzer';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';

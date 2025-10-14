@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { CoordinatorAgent } from '../agents/coordinator/coordinator-agent.js';
-import { Task, AgentConfig, Issue } from '../agents/types/index.js';
+import { CoordinatorAgent } from '../packages/coding-agents/coordinator/coordinator-agent';
+import { Task, AgentConfig, Issue } from '../packages/coding-agents/types/index';
 
 describe('CoordinatorAgent', () => {
   let agent: CoordinatorAgent;

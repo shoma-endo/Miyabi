@@ -4,8 +4,8 @@
  * Supports PreHook, PostHook, and ErrorHook interfaces for complete lifecycle tracking
  */
 
-import { PreHook, PostHook, ErrorHook, HookContext } from '../../types/hooks.js';
-import { AgentResult } from '../../types/index.js';
+import { PreHook, PostHook, ErrorHook, HookContext } from '../../types/hooks';
+import { AgentResult } from '../../types/index';
 import {
   DashboardEvent,
   DashboardWebhookResponse,
@@ -13,8 +13,8 @@ import {
   AgentProgressEvent,
   AgentCompletedEvent,
   AgentErrorEvent,
-} from '../../types/dashboard-events.js';
-import { logger } from '../../ui/index.js';
+} from '../../types/dashboard-events';
+import { logger } from '../../ui/index';
 
 export interface DashboardWebhookConfig {
   /** Dashboard URL */

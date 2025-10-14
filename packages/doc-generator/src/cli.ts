@@ -12,8 +12,8 @@ import chalk from 'chalk';
 import ora from 'ora';
 import path from 'path';
 import fs from 'fs';
-import { CodeAnalyzer } from './analyzer/CodeAnalyzer.js';
-import { TemplateEngine } from './generator/TemplateEngine.js';
+import { CodeAnalyzer } from './analyzer/CodeAnalyzer';
+import { TemplateEngine } from './generator/TemplateEngine';
 
 const program = new Command();
 

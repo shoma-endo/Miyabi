@@ -4,7 +4,7 @@
  * This module provides utility functions for agent operations.
  */
 
-import type { AgentContext, AgentConfig } from './types.js';
+import type { AgentContext, AgentConfig } from './types';
 
 /**
  * Create agent context from environment variables

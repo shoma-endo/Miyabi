@@ -6,8 +6,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { PlansGenerator } from '../../agents/utils/plans-generator.js';
-import { TaskDecomposition, Issue, Task, DAG } from '../../agents/types/index.js';
+import { PlansGenerator } from '../../packages/coding-agents/utils/plans-generator';
+import { TaskDecomposition, Issue, Task, DAG } from '../../packages/coding-agents/types/index';
 
 describe('Plans.md Generation', () => {
   const mockIssue: Issue = {

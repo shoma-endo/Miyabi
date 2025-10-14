@@ -4,7 +4,7 @@
  * Posts session status to webhook server and receives responses
  */
 
-import type { SessionStatus } from './water-spider-agent.js';
+import type { SessionStatus } from './water-spider-agent';
 
 export class WebhookClient {
   private webhookUrl: string;

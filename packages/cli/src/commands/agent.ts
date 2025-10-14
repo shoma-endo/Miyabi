@@ -9,7 +9,7 @@ import chalk from 'chalk';
 import ora from 'ora';
 import Table from 'cli-table3';
 import { Command } from 'commander';
-import { isJsonMode, outputSuccess, outputError } from '../utils/agent-output.js';
+import { isJsonMode, outputSuccess, outputError } from '../utils/agent-output';
 import {
   IssueAgent,
   type IssueInput,
@@ -28,14 +28,14 @@ import {
 import {
   getGitHubToken,
   verifyTokenAccess,
-} from '../auth/credentials.js';
+} from '../auth/credentials';
 import {
   saveCodeGenOutput,
   loadCodeGenOutput,
   saveReviewOutput,
   loadReviewOutput,
   checkIssueStorage,
-} from '../utils/storage.js';
+} from '../utils/storage';
 
 /**
  * 利用可能なAgent種別

@@ -4,6 +4,6 @@
  * Exports all hook-related functionality
  */
 
-export { HookManager } from './hook-manager.js';
-export * from './built-in/index.js';
-export * from '../types/hooks.js';
+export { HookManager } from './hook-manager';
+export * from './built-in/index';
+export * from '../types/hooks';

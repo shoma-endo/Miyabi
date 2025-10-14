@@ -13,7 +13,7 @@ import {
   NON_RETRYABLE_ERROR_CODES,
   DEFAULT_RETRY_CONFIG,
   type GitHubRetryConfig,
-} from '../retry-config.js';
+} from '../retry-config';
 
 describe('retry-config', () => {
   beforeEach(() => {

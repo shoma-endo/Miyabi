@@ -5,9 +5,9 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ReviewLoop, ReviewLoopOptions } from '../agents/review/review-loop.js';
-import { ReviewAgent } from '../agents/review/review-agent.js';
-import { AgentConfig, QualityReport, QualityIssue } from '../agents/types/index.js';
+import { ReviewLoop, ReviewLoopOptions } from '../packages/coding-agents/review/review-loop';
+import { ReviewAgent } from '../packages/coding-agents/review/review-agent';
+import { AgentConfig, QualityReport, QualityIssue } from '../packages/coding-agents/types/index';
 
 describe('ReviewLoop - E2E Tests', () => {
   let config: AgentConfig;

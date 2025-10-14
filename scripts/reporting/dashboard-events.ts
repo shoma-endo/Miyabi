@@ -129,7 +129,7 @@ export async function withAgentTracking<T>(
 }
 
 // Usage example:
-// import { withAgentTracking } from './dashboard-events.js';
+// import { withAgentTracking } from './dashboard-events';
 //
 // await withAgentTracking('coordinator', 47, async (progress) => {
 //   progress(10, 'Analyzing issue...');

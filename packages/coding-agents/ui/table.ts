@@ -7,7 +7,7 @@
 
 import Table from 'cli-table3';
 import chalk from 'chalk';
-import { theme } from './theme.js';
+import { theme } from './theme';
 
 export interface TableColumn {
   key: string;

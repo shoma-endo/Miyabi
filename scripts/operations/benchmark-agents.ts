@@ -6,7 +6,7 @@
  * Compares with expected performance targets
  */
 
-import { PerformanceMonitor } from '../../agents/monitoring/performance-monitor.js';
+import { PerformanceMonitor } from '../../packages/coding-agents/monitoring/performance-monitor';
 
 interface BenchmarkResult {
   testName: string;

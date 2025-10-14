@@ -29,7 +29,7 @@
  * @packageDocumentation
  */
 
-import { ContextEngineeringClient } from './client.js';
+import { ContextEngineeringClient } from './client';
 import type {
   ContextEngineeringConfig,
   ContextSession,
@@ -47,8 +47,8 @@ import type {
   AddElementRequest,
   AnalyzeRequest,
   OptimizationGoal,
-} from './types.js';
-import { ContextEngineeringError } from './types.js';
+} from './types';
+import { ContextEngineeringError } from './types';
 
 /**
  * Main Context Engineering SDK class

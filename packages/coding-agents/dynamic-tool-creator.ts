@@ -8,11 +8,11 @@ import {
   ToolRequirement,
   DynamicToolSpec,
   ToolCreationResult,
-} from './types/agent-analysis.js';
-import type { IToolCreator } from './types/tool-creator-interface.js';
-import { ToolFactory } from './tool-factory.js';
-import { SecurityValidator } from './utils/security-validator.js';
-import { logger } from './ui/index.js';
+} from './types/agent-analysis';
+import type { IToolCreator } from './types/tool-creator-interface';
+import { ToolFactory } from './tool-factory';
+import { SecurityValidator } from './utils/security-validator';
+import { logger } from './ui/index';
 
 /**
  * Dynamic tool execution context

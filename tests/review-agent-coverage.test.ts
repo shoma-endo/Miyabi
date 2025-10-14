@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ReviewAgent } from '../agents/review/review-agent.js';
-import { AgentConfig, Task } from '../agents/types/index.js';
+import { ReviewAgent } from '../packages/coding-agents/review/review-agent';
+import { AgentConfig, Task } from '../packages/coding-agents/types/index';
 import * as fs from 'fs';
 import * as path from 'path';
 

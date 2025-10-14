@@ -7,8 +7,8 @@
  * Issue #5 Phase A: Data Persistence Layer
  */
 
-export { GitHubProjectsClient } from './client.js';
-export { GitHubProjectSetup } from './setup.js';
+export { GitHubProjectsClient } from './client';
+export { GitHubProjectSetup } from './setup';
 export type {
   ProjectConfig,
   CustomField,
@@ -22,4 +22,4 @@ export type {
   TextField,
   DateField,
   IterationField,
-} from './types.js';
+} from './types';

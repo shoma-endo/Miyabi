@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { analyzeProject } from '../project.js';
+import { analyzeProject } from '../project';
 import * as fs from 'fs';
 import { execSync } from 'child_process';
 

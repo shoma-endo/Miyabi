@@ -6,19 +6,19 @@
  * @module doc-generator
  */
 
-export { CodeAnalyzer } from './analyzer/CodeAnalyzer.js';
+export { CodeAnalyzer } from './analyzer/CodeAnalyzer';
 export type {
   FunctionInfo,
   ClassInfo,
   InterfaceInfo,
   AnalysisResult,
-} from './analyzer/CodeAnalyzer.js';
+} from './analyzer/CodeAnalyzer';
 
-export { TemplateEngine } from './generator/TemplateEngine.js';
+export { TemplateEngine } from './generator/TemplateEngine';
 export type {
   TemplateType,
   GenerationOptions,
-} from './generator/TemplateEngine.js';
+} from './generator/TemplateEngine';
 
 /**
  * パッケージバージョン

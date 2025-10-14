@@ -7,7 +7,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { hello } from '../src/index.js';
+import { hello } from '../src/index';
 
 describe('{{PROJECT_NAME}}', () => {
   it('should return greeting message', () => {

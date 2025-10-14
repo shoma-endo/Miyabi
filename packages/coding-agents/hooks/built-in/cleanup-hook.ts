@@ -2,9 +2,9 @@
  * CleanupHook - Cleans up temporary files and resources after execution
  */
 
-import { PostHook, HookContext } from '../../types/hooks.js';
-import { AgentResult } from '../../types/index.js';
-import { logger } from '../../ui/index.js';
+import { PostHook, HookContext } from '../../types/hooks';
+import { AgentResult } from '../../types/index';
+import { logger } from '../../ui/index';
 import * as fs from 'fs';
 import * as path from 'path';
 

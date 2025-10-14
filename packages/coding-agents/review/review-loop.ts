@@ -10,13 +10,13 @@
  * OpenAI Results: 70% increase in PR count due to pre-PR quality assurance
  */
 
-import { ReviewAgent } from './review-agent.js';
+import { ReviewAgent } from './review-agent';
 import {
   Task,
   QualityReport,
   QualityIssue,
   AgentConfig,
-} from '../types/index.js';
+} from '../types/index';
 import { execSync } from 'child_process';
 import * as readline from 'readline';
 
@@ -437,7 +437,7 @@ export class ReviewLoop {
  *
  * Usage:
  * ```typescript
- * import { runReviewLoop } from './agents/review/review-loop.js';
+ * import { runReviewLoop } from './agents/review/review-loop';
  *
  * const result = await runReviewLoop(config, options);
  * ```

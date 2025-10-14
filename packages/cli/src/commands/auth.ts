@@ -6,13 +6,13 @@
 
 import chalk from 'chalk';
 import { Command } from 'commander';
-import { githubOAuth } from '../auth/github-oauth.js';
+import { githubOAuth } from '../auth/github-oauth';
 import {
   saveCredentials,
   loadCredentials,
   deleteCredentials,
   verifyToken,
-} from '../auth/credentials.js';
+} from '../auth/credentials';
 import { Octokit } from '@octokit/rest';
 
 /**

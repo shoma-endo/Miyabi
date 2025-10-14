@@ -4,7 +4,7 @@
  */
 
 import { vi } from 'vitest';
-import * as fixtures from '../fixtures/github-responses.js';
+import * as fixtures from '../fixtures/github-responses';
 
 /**
  * Mock Octokit client
@@ -67,7 +67,7 @@ export const createMockOctokit = () => ({
         repository: {
           projectV2: {
             id: fixtures.mockProjectInfo.projectId,
-            title: fixtures.mockProjectInfo.title,
+            title: fixtures.mockProjectInfo._title,
             number: fixtures.mockProjectInfo.number,
             fields: {
               nodes: fixtures.mockProjectInfo.fields,
@@ -113,9 +113,9 @@ export class MockWebhookEventRouter {
  */
 export class MockLabelStateMachine {
   constructor(
-    private token: string,
-    private owner: string,
-    private repo: string
+    private _token: string,
+    private _owner: string,
+    private _repo: string
   ) {}
 
   getValidTransitions(): string[] {
@@ -132,9 +132,9 @@ export class MockLabelStateMachine {
  */
 export class MockWorkflowOrchestrator {
   constructor(
-    private token: string,
-    private owner: string,
-    private repo: string
+    private _token: string,
+    private _owner: string,
+    private _repo: string
   ) {}
 
   async createWorkflow(issueNumber: number, type: string): Promise<any> {
@@ -147,9 +147,9 @@ export class MockWorkflowOrchestrator {
  */
 export class MockKnowledgeBaseSync {
   constructor(
-    private token: string,
-    private owner: string,
-    private repo: string
+    private _token: string,
+    private _owner: string,
+    private _repo: string
   ) {}
 
   async initialize(): Promise<void> {
@@ -166,9 +166,9 @@ export class MockKnowledgeBaseSync {
  */
 export class MockCICDIntegration {
   constructor(
-    private token: string,
-    private owner: string,
-    private repo: string
+    private _token: string,
+    private _owner: string,
+    private _repo: string
   ) {}
 
   async triggerWorkflow(workflowId: string): Promise<void> {
@@ -181,9 +181,9 @@ export class MockCICDIntegration {
  */
 export class MockSecurityManager {
   constructor(
-    private token: string,
-    private owner: string,
-    private repo: string
+    private _token: string,
+    private _owner: string,
+    private _repo: string
   ) {}
 
   async scanSecrets(path: string): Promise<any[]> {
@@ -239,9 +239,9 @@ export class MockDocGenerator {
  */
 export class MockTrainingMaterialGenerator {
   constructor(
-    private token: string,
-    private owner: string,
-    private repo: string
+    private _token: string,
+    private _owner: string,
+    private _repo: string
   ) {}
 
   async generateMaterial(topic: string): Promise<string> {

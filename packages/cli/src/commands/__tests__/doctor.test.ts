@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { doctor, type HealthCheck, type DoctorResult } from '../doctor.js';
+import { doctor, type HealthCheck, type DoctorResult } from '../doctor';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 

@@ -12,7 +12,7 @@ import type {
   GapAnalysis,
   NextAction,
   SuccessCriteria,
-} from '../types/index.js';
+} from '../types/index';
 import * as fs from 'fs';
 import * as path from 'path';
 

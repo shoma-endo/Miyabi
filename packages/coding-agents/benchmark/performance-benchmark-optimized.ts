@@ -8,11 +8,11 @@
  *   npm run benchmark:optimized
  */
 
-import { DynamicToolCreator } from '../dynamic-tool-creator.js';
-import { TTLCache } from '../utils/cache.js';
-import { SecurityValidator } from '../utils/security-validator.js';
-import type { IToolCreator } from '../types/tool-creator-interface.js';
-import type { DynamicToolSpec } from '../types/agent-analysis.js';
+import { DynamicToolCreator } from '../dynamic-tool-creator';
+import { TTLCache } from '../utils/cache';
+import { SecurityValidator } from '../utils/security-validator';
+import type { IToolCreator } from '../types/tool-creator-interface';
+import type { DynamicToolSpec } from '../types/agent-analysis';
 
 // 共通モジュールをインポート
 import {
@@ -20,7 +20,7 @@ import {
   displayComparison,
   displayBenchmarkHeader,
   type BenchmarkResult,
-} from './common.js';
+} from './common';
 
 const profiler = new PerformanceProfiler();
 

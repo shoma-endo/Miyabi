@@ -12,7 +12,7 @@
  * Issue #5 Phase A: Data Persistence Layer
  */
 
-import GitHubProjectAPI, { type WeeklyReport, type AgentMetrics } from './github-project-api.js';
+import GitHubProjectAPI, { type WeeklyReport, type AgentMetrics } from './github-project-api';
 import { Octokit } from '@octokit/rest';
 
 // ============================================================================

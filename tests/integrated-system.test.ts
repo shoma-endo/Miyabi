@@ -5,10 +5,10 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { GoalManager } from '../agents/feedback-loop/goal-manager.js';
-import { ConsumptionValidator } from '../agents/feedback-loop/consumption-validator.js';
-import { InfiniteLoopOrchestrator } from '../agents/feedback-loop/infinite-loop-orchestrator.js';
-import { MetricsCollector } from '../agents/feedback-loop/metrics-collector.js';
+import { GoalManager } from '../packages/coding-agents/feedback-loop/goal-manager';
+import { ConsumptionValidator } from '../packages/coding-agents/feedback-loop/consumption-validator';
+import { InfiniteLoopOrchestrator } from '../packages/coding-agents/feedback-loop/infinite-loop-orchestrator';
+import { MetricsCollector } from '../packages/coding-agents/feedback-loop/metrics-collector';
 import * as fs from 'fs';
 import * as path from 'path';
 import { execSync } from 'child_process';

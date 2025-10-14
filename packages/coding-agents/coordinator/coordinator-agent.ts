@@ -12,7 +12,7 @@
  * This is the MOST IMPORTANT agent in the hierarchy.
  */
 
-import { BaseAgent } from '../base-agent.js';
+import { BaseAgent } from '../base-agent';
 import {
   AgentType,
   AgentResult,
@@ -26,14 +26,14 @@ import {
   TaskResult,
   AgentStatus,
   WorktreeExecutionContext,
-} from '../types/index.js';
-import { IssueAnalyzer } from '../utils/issue-analyzer.js';
-import { DAGManager } from '../utils/dag-manager.js';
-import { PlansGenerator } from '../utils/plans-generator.js';
-import { IssueTraceLogger } from '../logging/issue-trace-logger.js';
-import { TaskToolExecutor } from '../../scripts/operations/task-tool-executor.js';
-import { WorktreeManager } from '../worktree/worktree-manager.js';
-import { GitHubClient } from '../utils/github-client.js';
+} from '../types/index';
+import { IssueAnalyzer } from '../utils/issue-analyzer';
+import { DAGManager } from '../utils/dag-manager';
+import { PlansGenerator } from '../utils/plans-generator';
+import { IssueTraceLogger } from '../logging/issue-trace-logger';
+import { TaskToolExecutor } from '../../scripts/operations/task-tool-executor';
+import { WorktreeManager } from '../worktree/worktree-manager';
+import { GitHubClient } from '../utils/github-client';
 import * as path from 'path';
 
 export class CoordinatorAgent extends BaseAgent {

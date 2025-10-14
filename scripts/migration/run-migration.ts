@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { ClaudeToAgentsMigration } from './migrate-claude-to-agents.js';
-import { MigrationValidator } from './post-migration-validator.js';
-import { logger } from '../../agents/ui/index.js';
+import { ClaudeToAgentsMigration } from './migrate-claude-to-agents';
+import { MigrationValidator } from './post-migration-validator';
+import { logger } from '../../packages/coding-agents/ui/index';
 
 /**
  * Main migration script

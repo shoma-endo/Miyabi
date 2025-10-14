@@ -15,7 +15,7 @@ vi.mock('../src/ui/index.js', () => ({
 }));
 
 // Import mocked logger
-import { logger } from '../src/ui/index.js';
+import { logger } from '../src/ui/index';
 
 const mockedFs = vi.mocked(fs);
 const mockedPath = vi.mocked(path);

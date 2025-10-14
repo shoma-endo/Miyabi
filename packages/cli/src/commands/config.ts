@@ -4,7 +4,7 @@
 
 import chalk from 'chalk';
 import inquirer from 'inquirer';
-import { loadConfig, saveConfig, mergeConfig, validateConfig, getDefaultConfig } from '../config/loader.js';
+import { loadConfig, saveConfig, mergeConfig, validateConfig, getDefaultConfig } from '../config/loader';
 
 export interface ConfigOptions {
   init?: boolean;

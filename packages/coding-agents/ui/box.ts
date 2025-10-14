@@ -7,7 +7,7 @@
 
 import boxen from 'boxen';
 import chalk from 'chalk';
-import { theme } from './theme.js';
+import { theme } from './theme';
 
 export type BoxStyle = 'single' | 'double' | 'round' | 'bold' | 'classic';
 export type BoxAlign = 'left' | 'center' | 'right';

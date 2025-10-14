@@ -1,6 +1,6 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { logger } from '../../agents/ui/index.js';
+import { logger } from '../../packages/coding-agents/ui/index';
 
 /**
  * Migration script to move files from .claude/ to agents/
@@ -110,7 +110,7 @@ export class ClaudeToAgentsMigration {
       
       // Update import paths
       const updatedContent = content
-        .replace(/from\s+['"]\.claude\//g, "from '../agents/")
+        .replace(/from\s+['"]\.claude\//g, "from '../packages/coding-agents/")
         .replace(/import\s+['"]\.claude\//g, "import '../agents/")
         .replace(/require\(['"]\.claude\//g, "require('../agents/");
       

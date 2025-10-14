@@ -8,8 +8,8 @@
  * - Worktree cleanup
  */
 
-import { WorktreeManager } from '../../agents/worktree/worktree-manager.js';
-import type { Issue } from '../../agents/types/index.js';
+import { WorktreeManager } from '../../packages/coding-agents/worktree/worktree-manager';
+import type { Issue } from '../../packages/coding-agents/types/index';
 
 async function main() {
   console.log('╔══════════════════════════════════════════════════════════════╗');

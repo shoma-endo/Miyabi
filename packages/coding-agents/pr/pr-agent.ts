@@ -13,18 +13,18 @@
  * Issue #41: Added retry logic with exponential backoff for all GitHub API calls
  */
 
-import { BaseAgent } from '../base-agent.js';
+import { BaseAgent } from '../base-agent';
 import {
   AgentResult,
   AgentConfig,
   Task,
   PRRequest,
   PRResult,
-} from '../types/index.js';
+} from '../types/index';
 import { Octokit } from '@octokit/rest';
-import { withRetry } from '../../utils/retry.js';
-import { GitRepository } from '../utils/git-repository.js';
-import { getGitHubClient } from '../../utils/api-client.js';
+import { withRetry } from '../../utils/retry';
+import { GitRepository } from '../utils/git-repository';
+import { getGitHubClient } from '../../utils/api-client';
 
 export class PRAgent extends BaseAgent {
   private octokit: Octokit;

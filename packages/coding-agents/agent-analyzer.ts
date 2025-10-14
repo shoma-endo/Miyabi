@@ -7,8 +7,8 @@
  * - Optimal assignment strategy
  */
 
-import { Task } from './types/index.js';
-import { AgentTemplate } from './types/agent-template.js';
+import { Task } from './types/index';
+import { AgentTemplate } from './types/agent-template';
 import {
   AgentAnalysisResult,
   TaskComplexityAnalysis,
@@ -18,8 +18,8 @@ import {
   ToolRequirement,
   HookRequirement,
   TemplateRequirement,
-} from './types/agent-analysis.js';
-import { logger } from './ui/index.js';
+} from './types/agent-analysis';
+import { logger } from './ui/index';
 
 export class AgentAnalyzer {
   private static instance: AgentAnalyzer;

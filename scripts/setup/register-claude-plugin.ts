@@ -6,8 +6,8 @@
  */
 
 // TODO: Implement PluginRegistrationManager
-// import { PluginRegistrationManager } from '../../packages/core/plugin/registration.js';
-import { logger } from '../../agents/ui/index.js';
+// import { PluginRegistrationManager } from '../../packages/core/plugin/registration';
+import { logger } from '../../packages/coding-agents/ui/index';
 
 async function main(): Promise<void> {
   logger.warning('⚠️  Plugin Registration Not Implemented');

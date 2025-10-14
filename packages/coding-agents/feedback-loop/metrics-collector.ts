@@ -12,7 +12,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
-import type { ActualMetrics } from '../types/index.js';
+import type { ActualMetrics } from '../types/index';
 
 const execAsync = promisify(exec);
 

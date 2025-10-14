@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { logger } from '../../agents/ui/index.js';
+import { logger } from '../../packages/coding-agents/ui/index';
 
 /**
  * Updates README.md to include screenshots and demo GIFs

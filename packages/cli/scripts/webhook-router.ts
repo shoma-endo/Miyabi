@@ -20,7 +20,7 @@
 
 import { Octokit } from '@octokit/rest';
 // Security functions available for future use
-// import { verifyWebhookSignature, performSecurityCheck } from './webhook-security.js';
+// import { verifyWebhookSignature, performSecurityCheck } from './webhook-security';
 
 // ============================================================================
 // Types

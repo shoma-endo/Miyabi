@@ -8,7 +8,7 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import type { Issue, AgentType, Task, AgentConfig } from '../types/index.js';
+import type { Issue, AgentType, Task, AgentConfig } from '../types/index';
 
 /**
  * Worktree execution context

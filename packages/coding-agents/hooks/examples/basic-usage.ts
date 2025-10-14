@@ -4,13 +4,13 @@
  * Demonstrates simple prehook/posthook setup
  */
 
-import { BaseAgent } from '../../base-agent.js';
-import { Task, AgentResult, AgentConfig } from '../../types/index.js';
+import { BaseAgent } from '../../base-agent';
+import { Task, AgentResult, AgentConfig } from '../../types/index';
 import {
   HookManager,
   EnvironmentCheckHook,
   CleanupHook,
-} from '../index.js';
+} from '../index';
 
 class BasicAgent extends BaseAgent {
   private hookManager: HookManager;

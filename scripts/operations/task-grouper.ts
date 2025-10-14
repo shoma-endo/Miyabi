@@ -10,7 +10,7 @@
  * Optimal group size: 5-10 tasks per group for balanced parallelism
  */
 
-import type { Task, DAG, AgentType } from '../../agents/types/index.js';
+import type { Task, DAG, AgentType } from '../../packages/coding-agents/types/index';
 
 export interface TaskGroup {
   groupId: string;

@@ -12,18 +12,18 @@
 
 import ora from 'ora';
 import chalk from 'chalk';
-import { analyzeProject } from '../analyze/project.js';
-import { githubOAuth } from '../auth/github-oauth.js';
-import { setupLabels } from '../setup/labels.js';
-import { autoLabelIssues } from '../analyze/issues.js';
-import { deployWorkflows } from '../setup/workflows.js';
-import { deployClaudeConfig, verifyClaudeConfig } from '../setup/claude-config.js';
+import { analyzeProject } from '../analyze/project';
+import { githubOAuth } from '../auth/github-oauth';
+import { setupLabels } from '../setup/labels';
+import { autoLabelIssues } from '../analyze/issues';
+import { deployWorkflows } from '../setup/workflows';
+import { deployClaudeConfig, verifyClaudeConfig } from '../setup/claude-config';
 
 // @ts-ignore - inquirer is an ESM-only module
 import inquirer from 'inquirer';
-import { linkToProject } from '../setup/projects.js';
-import { confirmOrDefault } from '../utils/interactive.js';
-import { getGitHubToken, isGhCliAuthenticated } from '../utils/github-token.js';
+import { linkToProject } from '../setup/projects';
+import { confirmOrDefault } from '../utils/interactive';
+import { getGitHubToken, isGhCliAuthenticated } from '../utils/github-token';
 
 export interface InstallOptions {
   dryRun?: boolean;

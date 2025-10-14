@@ -18,7 +18,7 @@ import ora, { Ora } from 'ora';
 import gradient from 'gradient-string';
 import figlet from 'figlet';
 import logSymbols from 'log-symbols';
-import { theme, agentColors, type AgentName } from './theme.js';
+import { theme, agentColors, type AgentName } from './theme';
 
 export interface LogOptions {
   prefix?: string;

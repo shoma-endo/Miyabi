@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { verifyWebhookSignature, validateTimestamp, performSecurityCheck } from '../scripts/webhook-security.js';
+import { verifyWebhookSignature, validateTimestamp, performSecurityCheck } from '../scripts/webhook-security';
 import { createHmac } from 'crypto';
 
 // ============================================================================

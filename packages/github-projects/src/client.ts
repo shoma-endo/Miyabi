@@ -18,11 +18,11 @@ import type {
   WeeklyReport,
   UpdateFieldValueInput,
   RateLimitInfo,
-} from './types.js';
+} from './types';
 import {
   ProjectNotFoundError,
   FieldNotFoundError,
-} from './types.js';
+} from './types';
 import { withRetry, type GitHubRetryConfig } from '@miyabi/agent-sdk';
 
 // ============================================================================

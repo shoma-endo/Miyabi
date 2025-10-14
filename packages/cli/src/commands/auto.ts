@@ -8,8 +8,8 @@
 import chalk from 'chalk';
 import ora from 'ora';
 import { Command } from 'commander';
-import type { AgentType } from './agent.js';
-import { runAgent } from './agent.js';
+import type { AgentType } from './agent';
+import { runAgent } from './agent';
 import { Octokit } from '@octokit/rest';
 import { execSync } from 'child_process';
 

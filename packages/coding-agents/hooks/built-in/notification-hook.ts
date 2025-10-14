@@ -2,9 +2,9 @@
  * NotificationHook - Sends notifications on agent completion/failure
  */
 
-import { PostHook, ErrorHook, HookContext } from '../../types/hooks.js';
-import { AgentResult } from '../../types/index.js';
-import { logger } from '../../ui/index.js';
+import { PostHook, ErrorHook, HookContext } from '../../types/hooks';
+import { AgentResult } from '../../types/index';
+import { logger } from '../../ui/index';
 
 export interface NotificationConfig {
   /** Slack webhook URL */

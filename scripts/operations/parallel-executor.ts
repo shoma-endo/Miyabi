@@ -8,14 +8,14 @@
  *   npm run agents:parallel:exec -- --help
  */
 
-import { CoordinatorAgent } from '../../agents/coordinator/coordinator-agent.js';
-import { AgentConfig, Issue, Task } from '../../agents/types/index.js';
+import { CoordinatorAgent } from '../../packages/coding-agents/coordinator/coordinator-agent';
+import { AgentConfig, Issue, Task } from '../../packages/coding-agents/types/index';
 import { Octokit } from '@octokit/rest';
 import * as fs from 'fs';
 import * as path from 'path';
-import { getGitHubTokenSync } from './github-token-helper.js';
-import { getGitHubClient, withGitHubCache } from '../../utils/api-client.js';
-import { logConcurrencyRecommendation, getSafeConcurrency } from '../../utils/system-optimizer.js';
+import { getGitHubTokenSync } from './github-token-helper';
+import { getGitHubClient, withGitHubCache } from '../../utils/api-client';
+import { logConcurrencyRecommendation, getSafeConcurrency } from '../../utils/system-optimizer';
 
 // ============================================================================
 // CLI Arguments

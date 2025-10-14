@@ -4,16 +4,16 @@
  * Allows runtime creation of agents without predefined classes
  */
 
-import { BaseAgent } from './base-agent.js';
-import { Task, AgentResult, AgentConfig, AgentType } from './types/index.js';
+import { BaseAgent } from './base-agent';
+import { Task, AgentResult, AgentConfig, AgentType } from './types/index';
 import {
   AgentTemplate,
   AgentExecutionContext,
   AgentInstance,
   AgentExecutionRecord,
-} from './types/agent-template.js';
-import { HookManager } from './hooks/hook-manager.js';
-import { DynamicToolCreator } from './dynamic-tool-creator.js';
+} from './types/agent-template';
+import { HookManager } from './hooks/hook-manager';
+import { DynamicToolCreator } from './dynamic-tool-creator';
 
 export class DynamicAgent extends BaseAgent {
   private template: AgentTemplate;

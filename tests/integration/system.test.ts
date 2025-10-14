@@ -5,9 +5,9 @@
  */
 
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
-import { TaskOrchestrator } from '../../agents/coordination/task-orchestrator.js';
-import { WorkerRegistry } from '../../agents/coordination/worker-registry.js';
-import { LockManager } from '../../agents/coordination/lock-manager.js';
+import { TaskOrchestrator } from '../../packages/coding-agents/coordination/task-orchestrator';
+import { WorkerRegistry } from '../../packages/coding-agents/coordination/worker-registry';
+import { LockManager } from '../../packages/coding-agents/coordination/lock-manager';
 
 describe('Agentic OS - System Integration', () => {
   let orchestrator: TaskOrchestrator;

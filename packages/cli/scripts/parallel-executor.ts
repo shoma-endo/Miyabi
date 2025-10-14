@@ -8,12 +8,12 @@
  *   npm run agents:parallel:exec -- --help
  */
 
-import { CoordinatorAgent } from '../agents/coordinator/coordinator-agent.js';
-import { AgentConfig, Issue, Task } from '../agents/types/index.js';
+import { CoordinatorAgent } from '../agents/coordinator/coordinator-agent';
+import { AgentConfig, Issue, Task } from '../agents/types/index';
 import { Octokit } from '@octokit/rest';
 import * as fs from 'fs';
 import * as path from 'path';
-import { getGitHubTokenSync } from './github-token-helper.js';
+import { getGitHubTokenSync } from './github-token-helper';
 
 // ============================================================================
 // CLI Arguments

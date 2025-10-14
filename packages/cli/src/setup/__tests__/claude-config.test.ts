@@ -20,7 +20,7 @@ import {
   deployClaudeConfigToGitHub,
   verifyClaudeConfig,
   type ClaudeConfigOptions,
-} from '../claude-config.js';
+} from '../claude-config';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Octokit } from '@octokit/rest';

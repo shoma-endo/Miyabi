@@ -12,7 +12,7 @@ import {
   outputError,
   logVerbose,
   getGitHubToken
-} from '../utils/agent-output.js';
+} from '../utils/agent-output';
 
 export interface StatusOptions {
   watch?: boolean;

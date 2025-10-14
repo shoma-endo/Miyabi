@@ -4,11 +4,11 @@
  * Factory for creating agent instances from templates
  */
 
-import { DynamicAgent } from './dynamic-agent.js';
-import { AgentConfig } from './types/index.js';
-import { AgentTemplate, AgentInstance } from './types/agent-template.js';
-import { HookManager } from './hooks/hook-manager.js';
-import { logger } from './ui/index.js';
+import { DynamicAgent } from './dynamic-agent';
+import { AgentConfig } from './types/index';
+import { AgentTemplate, AgentInstance } from './types/agent-template';
+import { HookManager } from './hooks/hook-manager';
+import { logger } from './ui/index';
 
 export class AgentFactory {
   private static instance: AgentFactory;

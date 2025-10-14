@@ -5,7 +5,7 @@
  *
  * Usage:
  * ```typescript
- * import { logger, theme } from './agents/ui/index.js';
+ * import { logger, theme } from './agents/ui/index';
  *
  * logger.header('Agentic OS');
  * logger.agent('CoordinatorAgent', 'Starting execution...');
@@ -14,16 +14,16 @@
  */
 
 // Core exports
-export { RichLogger, logger } from './logger.js';
-export { theme, agentColors, severityColors, phaseColors } from './theme.js';
-export type { Theme, AgentName, SeverityLevel, PhaseLevel } from './theme.js';
-export type { LogOptions, BoxOptions } from './logger.js';
+export { RichLogger, logger } from './logger';
+export { theme, agentColors, severityColors, phaseColors } from './theme';
+export type { Theme, AgentName, SeverityLevel, PhaseLevel } from './theme';
+export type { LogOptions, BoxOptions } from './logger';
 
 // Phase 2: Formatters
-export * from './table.js';
-export * from './box.js';
-export * from './progress.js';
-export * from './tree.js';
+export * from './table';
+export * from './box';
+export * from './progress';
+export * from './tree';
 
 // Re-export commonly used types from dependencies
 export type { Ora } from 'ora';

@@ -4,11 +4,11 @@
  * Demonstrates how to use AgentTemplate, DynamicAgent, AgentFactory, and AgentRegistry
  */
 
-import { AgentFactory } from '../agent-factory.js';
-import { AgentRegistry } from '../agent-registry.js';
-import { AgentTemplate, AgentExecutionContext } from '../types/agent-template.js';
-import { Task, AgentResult, AgentConfig } from '../types/index.js';
-import { HookManager, DashboardWebhookHook } from '../hooks/index.js';
+import { AgentFactory } from '../agent-factory';
+import { AgentRegistry } from '../agent-registry';
+import { AgentTemplate, AgentExecutionContext } from '../types/agent-template';
+import { Task, AgentResult, AgentConfig } from '../types/index';
+import { HookManager, DashboardWebhookHook } from '../hooks/index';
 
 // ============================================================================
 // Example 1: Simple Agent Template

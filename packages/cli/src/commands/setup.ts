@@ -6,8 +6,8 @@
 import inquirer from 'inquirer';
 import chalk from 'chalk';
 import open from 'open';
-import { config } from './config.js';
-import { confirmOrDefault, isNonInteractive } from '../utils/interactive.js';
+import { config } from './config';
+import { confirmOrDefault, isNonInteractive } from '../utils/interactive';
 
 export interface SetupOptions {
   skipToken?: boolean;

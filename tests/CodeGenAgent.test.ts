@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { CodeGenAgent } from '../agents/codegen/codegen-agent.js';
-import { Task, AgentConfig } from '../agents/types/index.js';
+import { CodeGenAgent } from '../packages/coding-agents/codegen/codegen-agent';
+import { Task, AgentConfig } from '../packages/coding-agents/types/index';
 
 describe('CodeGenAgent - Template Generation', () => {
   let agent: CodeGenAgent;

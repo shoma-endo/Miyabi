@@ -7,9 +7,9 @@ import chalk from 'chalk';
 import inquirer from 'inquirer';
 import ora from 'ora';
 import open from 'open';
-import { doctor } from './doctor.js';
-import { init } from './init.js';
-import { isNonInteractive } from '../utils/interactive.js';
+import { doctor } from './doctor';
+import { init } from './init';
+import { isNonInteractive } from '../utils/interactive';
 
 export interface OnboardOptions {
   skipDemo?: boolean;

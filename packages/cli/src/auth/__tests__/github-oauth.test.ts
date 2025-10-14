@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
-import { githubOAuth } from '../github-oauth.js';
+import { githubOAuth } from '../github-oauth';
 
 // Mock dependencies
 vi.mock('open', () => ({

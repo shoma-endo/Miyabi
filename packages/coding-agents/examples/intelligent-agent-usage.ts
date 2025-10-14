@@ -8,13 +8,13 @@
  * - Runtime tool creation by agents
  */
 
-import { AgentFactory } from '../agent-factory.js';
-import { AgentRegistry } from '../agent-registry.js';
-import { AgentAnalyzer } from '../agent-analyzer.js';
-import { ToolFactory } from '../tool-factory.js';
-import { AgentTemplate, AgentExecutionContext } from '../types/agent-template.js';
-import { Task, AgentResult, AgentConfig } from '../types/index.js';
-import { ToolRequirement } from '../types/agent-analysis.js';
+import { AgentFactory } from '../agent-factory';
+import { AgentRegistry } from '../agent-registry';
+import { AgentAnalyzer } from '../agent-analyzer';
+import { ToolFactory } from '../tool-factory';
+import { AgentTemplate, AgentExecutionContext } from '../types/agent-template';
+import { Task, AgentResult, AgentConfig } from '../types/index';
+import { ToolRequirement } from '../types/agent-analysis';
 
 // ============================================================================
 // Example 1: Intelligent Task Analysis

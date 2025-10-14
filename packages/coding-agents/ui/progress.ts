@@ -7,7 +7,7 @@
 
 import chalk from 'chalk';
 import ora, { Ora } from 'ora';
-import { theme } from './theme.js';
+import { theme } from './theme';
 
 export interface ProgressBarOptions {
   total: number;

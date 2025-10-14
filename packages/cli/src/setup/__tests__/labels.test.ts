@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { setupLabels } from '../labels.js';
+import { setupLabels } from '../labels';
 import * as fs from 'fs';
 
 // Mock Octokit

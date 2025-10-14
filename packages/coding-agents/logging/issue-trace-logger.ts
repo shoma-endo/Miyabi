@@ -31,7 +31,7 @@ import type {
   AgentType,
   AgentStatus,
   AgentResult,
-} from '../types/index.js';
+} from '../types/index';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

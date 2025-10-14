@@ -6,19 +6,19 @@
  * - Feedback Loop System (quality improvement)
  */
 
-import { WaterSpiderAgent } from '../../agents/water-spider/water-spider-agent.js';
-import { GoalManager } from '../../agents/feedback-loop/goal-manager.js';
-import { ConsumptionValidator } from '../../agents/feedback-loop/consumption-validator.js';
-import { InfiniteLoopOrchestrator } from '../../agents/feedback-loop/infinite-loop-orchestrator.js';
-import { MetricsCollector } from '../../agents/feedback-loop/metrics-collector.js';
+import { WaterSpiderAgent } from '../../packages/coding-agents/water-spider/water-spider-agent';
+import { GoalManager } from '../../packages/coding-agents/feedback-loop/goal-manager';
+import { ConsumptionValidator } from '../../packages/coding-agents/feedback-loop/consumption-validator';
+import { InfiniteLoopOrchestrator } from '../../packages/coding-agents/feedback-loop/infinite-loop-orchestrator';
+import { MetricsCollector } from '../../packages/coding-agents/feedback-loop/metrics-collector';
 import type {
   GoalDefinition,
   ActualMetrics,
   FeedbackLoop,
   Task,
-} from '../../agents/types/index.js';
-import { startServer as startWebhookServer } from '../webhook/webhook-server.js';
-import { TmuxManager } from '../tmux/tmux-manager.js';
+} from '../../packages/coding-agents/types/index';
+import { startServer as startWebhookServer } from '../webhook/webhook-server';
+import { TmuxManager } from '../tmux/tmux-manager';
 
 export interface IntegratedSystemConfig {
   // Water Spider config

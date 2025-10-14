@@ -8,12 +8,12 @@
  * - MetricsCollector: Real-time metrics
  */
 
-import { WorktreeManager, type WorktreeInfo } from '../worktree/worktree-manager.js';
-import { InfiniteLoopOrchestrator } from '../feedback-loop/infinite-loop-orchestrator.js';
-import { GoalManager } from '../feedback-loop/goal-manager.js';
-import { ConsumptionValidator } from '../feedback-loop/consumption-validator.js';
-import { MetricsCollector } from '../feedback-loop/metrics-collector.js';
-import type { Issue, GoalDefinition, FeedbackLoop } from '../types/index.js';
+import { WorktreeManager, type WorktreeInfo } from '../worktree/worktree-manager';
+import { InfiniteLoopOrchestrator } from '../feedback-loop/infinite-loop-orchestrator';
+import { GoalManager } from '../feedback-loop/goal-manager';
+import { ConsumptionValidator } from '../feedback-loop/consumption-validator';
+import { MetricsCollector } from '../feedback-loop/metrics-collector';
+import type { Issue, GoalDefinition, FeedbackLoop } from '../types/index';
 
 /**
  * Execution task for an issue

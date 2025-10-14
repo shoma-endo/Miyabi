@@ -4,8 +4,8 @@
  * Provides intelligent retry logic for transient failures
  */
 
-import { ErrorUtils } from '../types/errors.js';
-import { logger } from '../ui/index.js';
+import { ErrorUtils } from '../types/errors';
+import { logger } from '../ui/index';
 
 /**
  * Retry options

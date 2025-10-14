@@ -9,8 +9,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { ReviewAgent } from '../../agents/review/review-agent.js';
-import { Task, AgentConfig } from '../../agents/types/index.js';
+import { ReviewAgent } from '../../packages/coding-agents/review/review-agent';
+import { Task, AgentConfig } from '../../packages/coding-agents/types/index';
 
 describe('/review Command E2E', () => {
   let agent: ReviewAgent;

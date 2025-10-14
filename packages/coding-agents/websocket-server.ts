@@ -6,12 +6,12 @@
 
 // @ts-expect-error - ws package needs to be installed: npm install ws @types/ws
 import { WebSocketServer, WebSocket } from 'ws';
-import { AgentRegistry } from './agent-registry.js';
-import { AgentAnalyzer } from './agent-analyzer.js';
-import { SecurityValidator } from './utils/security-validator.js';
-import { TTLCache } from './utils/cache.js';
-import { logger } from './ui/index.js';
-import type { AgentConfig, Task } from './types/index.js';
+import { AgentRegistry } from './agent-registry';
+import { AgentAnalyzer } from './agent-analyzer';
+import { SecurityValidator } from './utils/security-validator';
+import { TTLCache } from './utils/cache';
+import { logger } from './ui/index';
+import type { AgentConfig, Task } from './types/index';
 
 interface DashboardMessage {
   type: 'command' | 'query' | 'ping';

@@ -9,7 +9,7 @@ import type {
   AgentConfig,
   AgentResult,
   AgentMetrics,
-} from './types.js';
+} from './types';
 
 /**
  * Base class for all Miyabi agents

@@ -8,7 +8,7 @@
  * This utility provides consistent Issue type, severity, impact, and duration estimation.
  */
 
-import { Issue, Task, Severity, ImpactLevel } from '../types/index.js';
+import { Issue, Task, Severity, ImpactLevel } from '../types/index';
 
 export class IssueAnalyzer {
   /**

@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { TaskGrouper } from '../../scripts/operations/task-grouper.js';
-import type { Task, DAG } from '../../agents/types/index.js';
+import { TaskGrouper } from '../../scripts/operations/task-grouper';
+import type { Task, DAG } from '../../packages/coding-agents/types/index';
 
 describe('TaskGrouper', () => {
   let grouper: TaskGrouper;

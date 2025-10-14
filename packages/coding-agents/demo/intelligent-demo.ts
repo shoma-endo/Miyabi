@@ -7,15 +7,15 @@
  *   npm run demo:intelligent
  */
 
-import { DynamicToolCreator } from '../dynamic-tool-creator.js';
-import { TTLCache, memoize } from '../utils/cache.js';
-import { retryWithBackoff } from '../utils/retry.js';
-import { SecurityValidator } from '../utils/security-validator.js';
+import { DynamicToolCreator } from '../dynamic-tool-creator';
+import { TTLCache, memoize } from '../utils/cache';
+import { retryWithBackoff } from '../utils/retry';
+import { SecurityValidator } from '../utils/security-validator';
 import {
   AnalysisError,
   ToolCreationError,
-} from '../types/errors.js';
-import type { IToolCreator } from '../types/tool-creator-interface.js';
+} from '../types/errors';
+import type { IToolCreator } from '../types/tool-creator-interface';
 
 // Demo色付きログ
 const demoLog = {

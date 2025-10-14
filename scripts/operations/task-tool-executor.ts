@@ -11,12 +11,12 @@
  * 4. Monitor progress and aggregate results
  */
 
-import { TaskGrouper, type TaskGroup } from './task-grouper.js';
-import { TaskScheduler } from '../../agents/coordinator/task-scheduler.js';
-import { ClaudeCodeSessionManager } from '../../utils/claude-code-session-manager.js';
-import { PerformanceMonitor } from '../../utils/performance-monitor.js';
-import type { Task, DAG, AgentResult, ExecutionReport } from '../../agents/types/index.js';
-import type { PerformanceReport } from '../../agents/types/performance-metrics.js';
+import { TaskGrouper, type TaskGroup } from './task-grouper';
+import { TaskScheduler } from '../../packages/coding-agents/coordinator/task-scheduler';
+import { ClaudeCodeSessionManager } from '../../utils/claude-code-session-manager';
+import { PerformanceMonitor } from '../../utils/performance-monitor';
+import type { Task, DAG, AgentResult, ExecutionReport } from '../../packages/coding-agents/types/index';
+import type { PerformanceReport } from '../../packages/coding-agents/types/performance-metrics';
 
 export interface TaskToolExecutorConfig {
   worktreeBasePath: string;

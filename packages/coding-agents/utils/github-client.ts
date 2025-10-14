@@ -9,7 +9,7 @@
  */
 import { Octokit } from '@octokit/rest';
 import { execSync } from 'child_process';
-import type { Issue } from '../types/index.js';
+import type { Issue } from '../types/index';
 
 export interface GitHubClientOptions {
   /**

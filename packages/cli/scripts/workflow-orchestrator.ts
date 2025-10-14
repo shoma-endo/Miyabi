@@ -7,7 +7,7 @@
  */
 
 import { Octokit } from '@octokit/rest';
-import { LabelStateMachine } from './label-state-machine.js';
+import { LabelStateMachine } from './label-state-machine';
 
 // ============================================================================
 // Types

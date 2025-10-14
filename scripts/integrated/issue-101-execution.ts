@@ -4,10 +4,10 @@
  * Tests Feedback Loop with interactive review loop (Daniel's approach)
  */
 
-import { GoalManager } from '../../agents/feedback-loop/goal-manager.js';
-import { ConsumptionValidator } from '../../agents/feedback-loop/consumption-validator.js';
-import { InfiniteLoopOrchestrator } from '../../agents/feedback-loop/infinite-loop-orchestrator.js';
-import type { ActualMetrics } from '../../agents/types/index.js';
+import { GoalManager } from '../../packages/coding-agents/feedback-loop/goal-manager';
+import { ConsumptionValidator } from '../../packages/coding-agents/feedback-loop/consumption-validator';
+import { InfiniteLoopOrchestrator } from '../../packages/coding-agents/feedback-loop/infinite-loop-orchestrator';
+import type { ActualMetrics } from '../../packages/coding-agents/types/index';
 
 async function executeIssue101() {
   console.log('╔══════════════════════════════════════════════════════════════╗');

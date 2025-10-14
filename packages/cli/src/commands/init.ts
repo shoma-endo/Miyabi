@@ -14,14 +14,14 @@
 
 import ora from 'ora';
 import chalk from 'chalk';
-import { githubOAuth } from '../auth/github-oauth.js';
-import { createRepository } from '../setup/repository.js';
-import { setupLabels } from '../setup/labels.js';
-import { createProjectV2 } from '../setup/projects.js';
-import { deployWorkflows } from '../setup/workflows.js';
-import { cloneAndSetup } from '../setup/local.js';
-import { createWelcomeIssue } from '../setup/welcome.js';
-import { deployClaudeConfig, deployClaudeConfigToGitHub, verifyClaudeConfig } from '../setup/claude-config.js';
+import { githubOAuth } from '../auth/github-oauth';
+import { createRepository } from '../setup/repository';
+import { setupLabels } from '../setup/labels';
+import { createProjectV2 } from '../setup/projects';
+import { deployWorkflows } from '../setup/workflows';
+import { cloneAndSetup } from '../setup/local';
+import { createWelcomeIssue } from '../setup/welcome';
+import { deployClaudeConfig, deployClaudeConfigToGitHub, verifyClaudeConfig } from '../setup/claude-config';
 
 export interface InitOptions {
   private?: boolean;

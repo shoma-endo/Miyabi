@@ -4,12 +4,12 @@
  * Complete demonstration of the feedback loop system
  */
 
-import { GoalManager } from './goal-manager.js';
-import { ConsumptionValidator } from './consumption-validator.js';
-import { InfiniteLoopOrchestrator } from './infinite-loop-orchestrator.js';
+import { GoalManager } from './goal-manager';
+import { ConsumptionValidator } from './consumption-validator';
+import { InfiniteLoopOrchestrator } from './infinite-loop-orchestrator';
 import type {
   ActualMetrics,
-} from '../types/index.js';
+} from '../types/index';
 
 /**
  * Demo: Goal-Oriented TDD + Consumption-Driven + Infinite Feedback Loop

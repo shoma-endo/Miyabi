@@ -10,14 +10,14 @@
  * - CTO escalation for production deployments
  */
 
-import { BaseAgent } from '../base-agent.js';
+import { BaseAgent } from '../base-agent';
 import {
   AgentResult,
   AgentConfig,
   Task,
   DeploymentConfig,
   DeploymentResult,
-} from '../types/index.js';
+} from '../types/index';
 import * as fs from 'fs';
 
 export class DeploymentAgent extends BaseAgent {

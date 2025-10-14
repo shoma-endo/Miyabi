@@ -22,11 +22,11 @@ import {
   CodexPromptChain,
   ToolInvocation,
   IssueState,
-} from './types/index.js';
-import { logger, type AgentName } from './ui/index.js';
-import { PerformanceMonitor } from './monitoring/performance-monitor.js';
-import { IssueTraceLogger } from './logging/issue-trace-logger.js';
-import { writeFileAsync, appendFileAsync } from '../utils/async-file-writer.js';
+} from './types/index';
+import { logger, type AgentName } from './ui/index';
+import { PerformanceMonitor } from './monitoring/performance-monitor';
+import { IssueTraceLogger } from './logging/issue-trace-logger';
+import { writeFileAsync, appendFileAsync } from '../../utils/async-file-writer';
 import * as fs from 'fs';
 import * as path from 'path';
 

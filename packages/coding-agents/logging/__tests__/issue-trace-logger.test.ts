@@ -6,8 +6,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { IssueTraceLogger } from '../issue-trace-logger.js';
-import type { IssueState, QualityReport, PRResult, DeploymentResult, EscalationInfo } from '../../types/index.js';
+import { IssueTraceLogger } from '../issue-trace-logger';
+import type { IssueState, QualityReport, PRResult, DeploymentResult, EscalationInfo } from '../../types/index';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';

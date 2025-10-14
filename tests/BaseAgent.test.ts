@@ -1,5 +1,5 @@
-import { BaseAgent } from '../agents/base-agent.js';
-import { AgentType, Task, AgentConfig } from '../agents/types/index.js';
+import { BaseAgent } from '../packages/coding-agents/base-agent';
+import { AgentType, Task, AgentConfig } from '../packages/coding-agents/types/index';
 
 // Mock implementation for testing
 class TestAgent extends BaseAgent {

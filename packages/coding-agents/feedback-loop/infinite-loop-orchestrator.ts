@@ -14,9 +14,9 @@ import type {
   GoalRefinement,
   ActualMetrics,
   Escalation,
-} from '../types/index.js';
-import { GoalManager } from './goal-manager.js';
-import { ConsumptionValidator } from './consumption-validator.js';
+} from '../types/index';
+import { GoalManager } from './goal-manager';
+import { ConsumptionValidator } from './consumption-validator';
 import { Octokit } from '@octokit/rest';
 import * as fs from 'fs';
 import * as path from 'path';

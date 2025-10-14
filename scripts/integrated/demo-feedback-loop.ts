@@ -4,10 +4,10 @@
  * Demonstrates the complete Goal-Oriented TDD + Consumption-Driven + Infinite Feedback Loop
  */
 
-import { GoalManager } from '../../agents/feedback-loop/goal-manager.js';
-import { ConsumptionValidator } from '../../agents/feedback-loop/consumption-validator.js';
-import { InfiniteLoopOrchestrator } from '../../agents/feedback-loop/infinite-loop-orchestrator.js';
-import { MetricsCollector } from '../../agents/feedback-loop/metrics-collector.js';
+import { GoalManager } from '../../packages/coding-agents/feedback-loop/goal-manager';
+import { ConsumptionValidator } from '../../packages/coding-agents/feedback-loop/consumption-validator';
+import { InfiniteLoopOrchestrator } from '../../packages/coding-agents/feedback-loop/infinite-loop-orchestrator';
+import { MetricsCollector } from '../../packages/coding-agents/feedback-loop/metrics-collector';
 import * as fs from 'fs';
 
 async function sleep(ms: number): Promise<void> {
@@ -232,7 +232,7 @@ async function main() {
     console.log('');
 
     console.log('📈 Score History:');
-    finalLoop.iterations.forEach((iter, idx) => {
+    finalLoop.iterations.forEach((iter: any, idx: number) => {
       const score = iter.consumptionReport.overallScore;
       const bar = '█'.repeat(Math.floor(score / 2));
       console.log(`   ${idx + 1}. Score: ${score}/100 ${bar}`);

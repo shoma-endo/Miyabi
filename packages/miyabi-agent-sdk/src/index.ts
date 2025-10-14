@@ -22,17 +22,17 @@ export type {
   HealthCheckConfig,
   RetryConfig,
   EscalationConfig,
-} from './types.js';
+} from './types';
 
 // Export base agent class
-export { AgentBase } from './agent-base.js';
+export { AgentBase } from './agent-base';
 
 // Export GitHub client
-export { GitHubClient } from './github-client.js';
-export type { GitHubClientOptions } from './github-client.js';
+export { GitHubClient } from './github-client';
+export type { GitHubClientOptions } from './github-client';
 
 // Export utilities
-export { createAgentContext, validateContext } from './utils.js';
+export { createAgentContext, validateContext } from './utils';
 
 // Export retry configuration
 export {
@@ -43,5 +43,5 @@ export {
   DEFAULT_RETRY_CONFIG,
   RETRYABLE_ERROR_CODES,
   NON_RETRYABLE_ERROR_CODES,
-} from './retry-config.js';
-export type { GitHubRetryConfig } from './retry-config.js';
+} from './retry-config';
+export type { GitHubRetryConfig } from './retry-config';

@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { GitHubProjectsClient } from './client.js';
-import type { ProjectConfig, ProjectInfo, ProjectItem } from './types.js';
+import { GitHubProjectsClient } from './client';
+import type { ProjectConfig, ProjectInfo, ProjectItem } from './types';
 
 // Mock @octokit modules
 vi.mock('@octokit/graphql', () => ({

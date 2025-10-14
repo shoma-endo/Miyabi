@@ -7,10 +7,10 @@
  *   npm run water-spider:start
  */
 
-import { WaterSpiderAgent } from '../agents/water-spider/water-spider-agent.js';
-import type { WaterSpiderConfig } from '../agents/water-spider/water-spider-agent.js';
-import { startServer as startWebhookServer } from './webhook/webhook-server.js';
-import { TmuxManager } from './tmux/tmux-manager.js';
+import { WaterSpiderAgent } from '../packages/coding-agents/water-spider/water-spider-agent';
+import type { WaterSpiderConfig } from '../packages/coding-agents/water-spider/water-spider-agent';
+import { startServer as startWebhookServer } from './webhook/webhook-server';
+import { TmuxManager } from './tmux/tmux-manager';
 
 async function main() {
   console.log('╔══════════════════════════════════════════════════════════════╗');

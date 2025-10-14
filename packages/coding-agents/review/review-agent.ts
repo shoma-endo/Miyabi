@@ -16,7 +16,7 @@
  * - Passing threshold: ≥80 points
  */
 
-import { BaseAgent } from '../base-agent.js';
+import { BaseAgent } from '../base-agent';
 import {
   AgentResult,
   AgentConfig,
@@ -26,8 +26,8 @@ import {
   QualityReport,
   QualityIssue,
   ReviewComment,
-} from '../types/index.js';
-import { SecurityScannerRegistry } from './security-scanner.js';
+} from '../types/index';
+import { SecurityScannerRegistry } from './security-scanner';
 import * as fs from 'fs';
 import * as path from 'path';
 

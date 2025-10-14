@@ -9,7 +9,7 @@
  * Target: 50 test cases
  */
 
-import { DynamicToolCreator } from '../dynamic-tool-creator.js';
+import { DynamicToolCreator } from '../dynamic-tool-creator';
 import {
   AgentError,
   AnalysisError,
@@ -18,14 +18,14 @@ import {
   ExecutionError,
   TimeoutError,
   ErrorUtils
-} from '../types/errors.js';
+} from '../types/errors';
 import {
   retryWithBackoff,
   retryUntil,
   retryBatch,
-} from '../utils/retry.js';
-import { TTLCache, memoize } from '../utils/cache.js';
-import { logger } from '../ui/index.js';
+} from '../utils/retry';
+import { TTLCache, memoize } from '../utils/cache';
+import { logger } from '../ui/index';
 
 // Test counters
 let totalTests = 0;

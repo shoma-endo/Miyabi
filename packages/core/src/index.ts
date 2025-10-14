@@ -4,8 +4,8 @@
  * This is a placeholder implementation. Full implementation coming soon.
  */
 
-export * from './agents/index.js';
-export * from './types/index.js';
+export * from './agents/index';
+export * from './types/index';
 
 /**
  * Core package version

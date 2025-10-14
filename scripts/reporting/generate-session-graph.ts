@@ -15,7 +15,7 @@ import {
   EntityEdge,
   SessionActivity,
   ToolInvocation,
-} from '../../agents/types/entity-relation-graph.js';
+} from '../../packages/coding-agents/types/entity-relation-graph';
 import * as fs from 'fs';
 import * as path from 'path';
 import { randomUUID } from 'crypto';

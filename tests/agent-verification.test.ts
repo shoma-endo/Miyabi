@@ -6,11 +6,11 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { CodeGenAgent } from '../agents/codegen/codegen-agent.js';
-import { ReviewAgent } from '../agents/review/review-agent.js';
-import { ReviewLoop } from '../agents/review/review-loop.js';
-import { DeploymentAgent } from '../agents/deployment/deployment-agent.js';
-import { AgentConfig, Task } from '../agents/types/index.js';
+import { CodeGenAgent } from '../packages/coding-agents/codegen/codegen-agent';
+import { ReviewAgent } from '../packages/coding-agents/review/review-agent';
+import { ReviewLoop } from '../packages/coding-agents/review/review-loop';
+import { DeploymentAgent } from '../packages/coding-agents/deployment/deployment-agent';
+import { AgentConfig, Task } from '../packages/coding-agents/types/index';
 
 describe('Agent Verification - E2E Tests', () => {
   let config: AgentConfig;

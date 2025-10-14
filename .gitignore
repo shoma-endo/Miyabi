@@ -123,3 +123,9 @@ claude-plugin/
 data/
 .ai/
 reports/
+
+# External context directory
+external/.env
+external/data/*.csv
+external/data/*.json
+external/data/*.db

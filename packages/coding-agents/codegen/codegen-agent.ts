@@ -11,7 +11,7 @@
  * Uses Claude Code integration via Worktree execution
  */
 
-import { BaseAgent } from '../base-agent.js';
+import { BaseAgent } from '../base-agent';
 import {
   AgentResult,
   AgentConfig,
@@ -19,7 +19,7 @@ import {
   CodeSpec,
   GeneratedCode,
   AgentMetrics,
-} from '../types/index.js';
+} from '../types/index';
 import * as fs from 'fs';
 import * as path from 'path';
 

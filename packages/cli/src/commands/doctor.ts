@@ -10,7 +10,7 @@ import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import yaml from 'yaml';
 import { Octokit } from '@octokit/rest';
-import { getGitHubToken } from '../utils/github-token.js';
+import { getGitHubToken } from '../utils/github-token';
 
 /**
  * Get GitHub token without throwing error

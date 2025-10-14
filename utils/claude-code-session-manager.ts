@@ -10,8 +10,8 @@
  * - description: Short summary of task group
  */
 
-import type { TaskGroup } from '../scripts/operations/task-grouper.js';
-import type { AgentResult } from '../agents/types/index.js';
+import type { TaskGroup } from '../scripts/operations/task-grouper';
+import type { AgentResult } from '../packages/coding-agents/types/index';
 import * as fs from 'fs';
 import * as path from 'path';
 

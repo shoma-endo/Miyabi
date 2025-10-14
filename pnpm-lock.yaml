@@ -238,6 +238,9 @@ importers:
       '@anthropic-ai/sdk':
         specifier: ^0.30.0
         version: 0.30.1
+      '@miyabi/coding-agents':
+        specifier: workspace:*
+        version: link:../coding-agents
       '@octokit/graphql':
         specifier: ^7.0.2
         version: 7.1.1

@@ -4,7 +4,11 @@
  * This is a placeholder implementation. Full implementation coming soon.
  */
 
-export * from '@miyabi/coding-agents/index';
+// Re-export coding agents
+export type { BaseAgent } from '@miyabi/coding-agents';
+export { AgentFactory, AgentRegistry } from '@miyabi/coding-agents';
+
+// Re-export core types
 export * from './types/index';
 
 /**

@@ -25,6 +25,7 @@
   "author": "Agentic OS Team",
   "license": "MIT",
   "dependencies": {
+    "@miyabi/coding-agents": "workspace:*",
     "@anthropic-ai/sdk": "^0.30.0",
     "@octokit/rest": "^20.0.0",
     "@octokit/graphql": "^7.0.2",

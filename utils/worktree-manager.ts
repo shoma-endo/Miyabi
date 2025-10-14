@@ -65,6 +65,7 @@ export class WorktreeManager {
    * Remove a worktree
    */
   async removeWorktree(issueNumber: number): Promise<void> {
+    await Promise.resolve(); // Ensure async for consistency
     const info = this.worktrees.get(issueNumber);
     if (!info) {
       // Try to remove by path even if not in map
@@ -114,6 +115,7 @@ export class WorktreeManager {
     issueNumber: number,
     command: string,
   ): Promise<{ stdout: string; stderr: string }> {
+    await Promise.resolve(); // Ensure async for consistency
     const info = this.worktrees.get(issueNumber);
     if (!info) {
       throw new Error(`Worktree not found for issue #${issueNumber}`);

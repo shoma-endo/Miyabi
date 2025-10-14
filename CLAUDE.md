@@ -110,6 +110,10 @@
 
 ### ドキュメント
 
+**クイックスタート（初心者向け）**:
+- `.claude/QUICK_START.md`: **3分で始めるMiyabi - Quick Start Guide** ⭐⭐⭐
+- `.claude/TROUBLESHOOTING.md`: **トラブルシューティングガイド** ⭐⭐⭐
+
 **コアドキュメント（必読）**:
 - `docs/ENTITY_RELATION_MODEL.md`: **Entity-Relationモデル定義** ⭐⭐⭐
 - `docs/TEMPLATE_MASTER_INDEX.md`: **テンプレート統合インデックス** ⭐⭐⭐

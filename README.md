@@ -30,6 +30,11 @@ npx miyabi
 
 **たったこれだけ。** 全て自動で完結します。
 
+### 📚 詳細ガイド
+
+- **🚀 初心者向け**: [3分で始めるMiyabi - Quick Start Guide](.claude/QUICK_START.md)
+- **🔧 困ったときは**: [トラブルシューティングガイド](.claude/TROUBLESHOOTING.md)
+
 <div align="center">
 
 ![Demo](https://img.shields.io/badge/Demo-Coming%20Soon-orange?style=for-the-badge)

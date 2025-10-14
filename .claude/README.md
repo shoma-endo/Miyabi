@@ -2,11 +2,19 @@
 
 このディレクトリには、Autonomous Operations プロジェクトで Claude Code による開発を最適化するための設定ファイルとツールが含まれています。
 
+## 🚀 クイックスタート
+
+**初めての方はこちら**: [QUICK_START.md](QUICK_START.md) - 3分で始めるMiyabi
+
+**トラブル時は**: [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - よくある問題と解決策
+
 ## 📁 ディレクトリ構造
 
 ```
 .claude/
 ├── README.md                    # このファイル
+├── QUICK_START.md              # 🚀 3分で始めるMiyabi（初心者向け）
+├── TROUBLESHOOTING.md          # 🔧 トラブルシューティングガイド
 ├── settings.example.json        # 設定テンプレート
 ├── settings.local.json          # ローカル設定（Git管理外）
 │
@@ -296,6 +304,11 @@ chmod +x .git/hooks/pre-commit
 
 ## 📚 関連ドキュメント
 
+### 🚀 入門ガイド
+- **[QUICK_START.md](QUICK_START.md)** - 3分で始めるMiyabi（初心者向け） ⭐⭐⭐
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - よくある問題と解決策 ⭐⭐⭐
+
+### 📖 詳細ドキュメント
 - [README.md](../README.md) - プロジェクト概要
 - [docs/diagrams/README.md](../docs/diagrams/README.md) - PlantUML図一覧
 - [docs/AGENT_OPERATIONS_MANUAL.md](../docs/AGENT_OPERATIONS_MANUAL.md) - 完全運用マニュアル

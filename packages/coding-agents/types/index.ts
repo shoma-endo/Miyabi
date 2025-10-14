@@ -581,17 +581,27 @@ export interface IssueTraceLog {
 // Performance Metrics Types (E15)
 // ============================================================================
 
-export * from './performance-metrics.js';
+export * from './performance-metrics';
 
 // ============================================================================
 // Feedback Loop System Types
 // ============================================================================
 
-export * from './feedback-loop-types.js';
+export * from './feedback-loop-types';
 
 // ============================================================================
 // Re-exports from other modules
 // ============================================================================
 
 // Worktree types (conditional export - only if module exists)
-export type { WorktreeInfo, WorktreeManagerConfig, WorktreeExecutionContext } from '../worktree/worktree-manager.js';
+export type { WorktreeInfo, WorktreeManagerConfig, WorktreeExecutionContext } from '../worktree/worktree-manager';
+
+// Entity Relation Mapping types (N1/N2/N3 notation)
+export {
+  EntityLevel,
+  RelationStrength,
+  EntityRelationMap,
+  WorkflowTemplate,
+  type Entity,
+  type Relation
+} from './entity-relation-mapping';

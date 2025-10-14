@@ -489,6 +489,96 @@ npm run agents:parallel:exec -- --issues=270,271,272,273,274 --concurrency=5
 
 **詳細**: [ENTITY_RELATION_MODEL.md](docs/ENTITY_RELATION_MODEL.md)
 
+### 🔤 N1/N2/N3記法 - LLM最適化ワークフロー表記
+
+**Entity Relation Mapping** - 階層的なワークフロー表記システム
+
+Pythonベースの`workflow-automation`から移植された、LLMが容易に解釈可能なワークフロー表記法です。
+N1/N2/N3の階層構造と$H/$Lの依存度マーカーにより、複雑なワークフローを簡潔に表現します。
+
+**型定義**: `packages/coding-agents/types/entity-relation-mapping.ts`
+
+#### 記法構造
+
+```
+N1:EntityName $H→ N2:ProcessingEntity $L→ N3:OutputEntity
+```
+
+**階層定義**:
+- **N1 (Primary)**: ルートEntity - Issue, UserRequest, Keyword等（エントリーポイント）
+- **N2 (Processing)**: 処理Entity - Agent, Task, Query等（ビジネスロジック層）
+- **N3 (Output)**: 出力Entity - PR, QualityReport, Results等（成果物）
+
+**依存度マーカー**:
+- **$H (High)**: 必須依存 - これなしではワークフロー継続不可（クリティカルパス）
+- **$L (Low)**: オプション依存 - あれば品質向上、なくても継続可能（拡張機能）
+
+#### 使用例
+
+**Issue処理ワークフロー**:
+```
+N1:Issue $H→ N2:IssueAgent $H→ N3:LabeledIssue
+N1:Issue $H→ N2:CoordinatorAgent $H→ N3:TaskDecomposition
+```
+
+**コード生成ワークフロー**:
+```
+N1:Task $H→ N2:CodeGenAgent $H→ N3:GeneratedCode
+N2:CodeGenAgent $H→ N2:ReviewAgent $H→ N3:QualityReport
+```
+
+**デプロイワークフロー**:
+```
+N1:PR $H→ N2:DeploymentAgent $H→ N3:DeployedArtifact
+N2:DeploymentAgent $L→ N2:HealthCheck $L→ N3:HealthReport
+```
+
+#### TypeScript API
+
+```typescript
+import { EntityRelationMap, EntityLevel, RelationStrength } from '@/types/entity-relation-mapping';
+
+// マップ作成
+const map = new EntityRelationMap();
+
+// Entity追加
+const issue = map.addEntity('Issue', EntityLevel.N1_PRIMARY);
+const coordinator = map.addEntity('CoordinatorAgent', EntityLevel.N2_PROCESSING);
+const tasks = map.addEntity('TaskDecomposition', EntityLevel.N3_OUTPUT);
+
+// 関係追加
+map.addRelation(issue, coordinator, RelationStrength.HIGH);
+map.addRelation(coordinator, tasks, RelationStrength.HIGH);
+
+// 記法出力
+console.log(map.toNotation());
+// 出力: N1:Issue $H→ N2:CoordinatorAgent
+//       N2:CoordinatorAgent $H→ N3:TaskDecomposition
+```
+
+#### テンプレート
+
+**WorkflowTemplate**クラスで頻出パターンを提供：
+```typescript
+import { WorkflowTemplate } from '@/types/entity-relation-mapping';
+
+// Issue処理ワークフロー
+const issueFlow = WorkflowTemplate.issueProcessing();
+
+// コード生成ワークフロー
+const codegenFlow = WorkflowTemplate.codeGeneration();
+
+// デプロイワークフロー
+const deployFlow = WorkflowTemplate.deployment();
+```
+
+#### 既存システムとの統合
+
+- **R1-R35関係性** (`entity-relation-graph.ts`): ダッシュボード可視化用の詳細な型付き関係
+- **N1/N2/N3記法** (`entity-relation-mapping.ts`): LLM解釈用の簡潔な階層表記
+
+両システムは補完的に機能し、R1-R35は厳密な型安全性、N1/N2/N3は柔軟な記述性を提供します。
+
 ### 📁 88ファイルの統合テンプレート
 
 すべてのテンプレートはEntity-Relationモデルに基づいて整合的に管理されています：

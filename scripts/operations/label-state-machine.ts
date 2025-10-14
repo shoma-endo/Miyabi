@@ -163,7 +163,7 @@ export class LabelStateMachine {
     });
 
     const labels = issue.labels.map((label) =>
-      typeof label === 'string' ? label : label.name || ''
+      typeof label === 'string' ? label : label.name || '',
     );
 
     const state = this.extractState(labels);
@@ -190,7 +190,7 @@ export class LabelStateMachine {
   async transitionState(
     issueNumber: number,
     newState: State,
-    reason?: string
+    reason?: string,
   ): Promise<void> {
     const currentState = await this.getIssueState(issueNumber);
 
@@ -199,19 +199,19 @@ export class LabelStateMachine {
     } else {
       // Validate transition
       const transition = STATE_TRANSITIONS.find(
-        (t) => t.from === currentState.state && t.to === newState
+        (t) => t.from === currentState.state && t.to === newState,
       );
 
       if (!transition) {
         throw new Error(
-          `Invalid state transition: ${currentState.state} → ${newState}`
+          `Invalid state transition: ${currentState.state} → ${newState}`,
         );
       }
 
       // Check validation function
       if (transition.validation && !transition.validation(currentState)) {
         throw new Error(
-          `Transition validation failed: ${transition.trigger}`
+          `Transition validation failed: ${transition.trigger}`,
         );
       }
 
@@ -229,7 +229,7 @@ export class LabelStateMachine {
       label.startsWith('✅ state:') ||
       label.startsWith('🔴 state:') ||
       label.startsWith('🛑 state:') ||
-      label.startsWith('⏸️ state:')
+      label.startsWith('⏸️ state:'),
     );
 
     for (const label of stateLabels) {
@@ -278,7 +278,7 @@ ${reason ? `**Reason**: ${reason}` : ''}
 
     // Remove old agent labels
     const agentLabels = currentState.labels.filter((label) =>
-      label.startsWith('🤖 agent:')
+      label.startsWith('🤖 agent:'),
     );
 
     for (const label of agentLabels) {
@@ -305,10 +305,10 @@ ${reason ? `**Reason**: ${reason}` : ''}
    * Check if issue can transition to target state
    */
   canTransition(currentState: State | null, targetState: State): boolean {
-    if (!currentState) return true; // Allow any state if no current state
+    if (!currentState) {return true;} // Allow any state if no current state
 
     return STATE_TRANSITIONS.some(
-      (t) => t.from === currentState && t.to === targetState
+      (t) => t.from === currentState && t.to === targetState,
     );
   }
 
@@ -318,54 +318,54 @@ ${reason ? `**Reason**: ${reason}` : ''}
 
   private extractState(labels: string[]): State | null {
     const stateLabel = labels.find((label) => label.includes('state:'));
-    if (!stateLabel) return null;
+    if (!stateLabel) {return null;}
 
-    if (stateLabel.includes('pending')) return 'pending';
-    if (stateLabel.includes('analyzing')) return 'analyzing';
-    if (stateLabel.includes('implementing')) return 'implementing';
-    if (stateLabel.includes('reviewing')) return 'reviewing';
-    if (stateLabel.includes('done')) return 'done';
-    if (stateLabel.includes('blocked')) return 'blocked';
-    if (stateLabel.includes('failed')) return 'failed';
-    if (stateLabel.includes('paused')) return 'paused';
+    if (stateLabel.includes('pending')) {return 'pending';}
+    if (stateLabel.includes('analyzing')) {return 'analyzing';}
+    if (stateLabel.includes('implementing')) {return 'implementing';}
+    if (stateLabel.includes('reviewing')) {return 'reviewing';}
+    if (stateLabel.includes('done')) {return 'done';}
+    if (stateLabel.includes('blocked')) {return 'blocked';}
+    if (stateLabel.includes('failed')) {return 'failed';}
+    if (stateLabel.includes('paused')) {return 'paused';}
 
     return null;
   }
 
   private extractAgent(labels: string[]): AgentType | null {
     const agentLabel = labels.find((label) => label.includes('agent:'));
-    if (!agentLabel) return null;
+    if (!agentLabel) {return null;}
 
-    if (agentLabel.includes('coordinator')) return 'coordinator';
-    if (agentLabel.includes('codegen')) return 'codegen';
-    if (agentLabel.includes('review')) return 'review';
-    if (agentLabel.includes('issue')) return 'issue';
-    if (agentLabel.includes('pr')) return 'pr';
-    if (agentLabel.includes('deployment')) return 'deployment';
+    if (agentLabel.includes('coordinator')) {return 'coordinator';}
+    if (agentLabel.includes('codegen')) {return 'codegen';}
+    if (agentLabel.includes('review')) {return 'review';}
+    if (agentLabel.includes('issue')) {return 'issue';}
+    if (agentLabel.includes('pr')) {return 'pr';}
+    if (agentLabel.includes('deployment')) {return 'deployment';}
 
     return null;
   }
 
   private extractPriority(labels: string[]): Priority | null {
     const priorityLabel = labels.find((label) => label.includes('priority:'));
-    if (!priorityLabel) return null;
+    if (!priorityLabel) {return null;}
 
-    if (priorityLabel.includes('P0-Critical')) return 'P0-Critical';
-    if (priorityLabel.includes('P1-High')) return 'P1-High';
-    if (priorityLabel.includes('P2-Medium')) return 'P2-Medium';
-    if (priorityLabel.includes('P3-Low')) return 'P3-Low';
+    if (priorityLabel.includes('P0-Critical')) {return 'P0-Critical';}
+    if (priorityLabel.includes('P1-High')) {return 'P1-High';}
+    if (priorityLabel.includes('P2-Medium')) {return 'P2-Medium';}
+    if (priorityLabel.includes('P3-Low')) {return 'P3-Low';}
 
     return null;
   }
 
   private extractSeverity(labels: string[]): Severity | null {
     const severityLabel = labels.find((label) => label.includes('severity:'));
-    if (!severityLabel) return null;
+    if (!severityLabel) {return null;}
 
-    if (severityLabel.includes('Sev.1-Critical')) return 'Sev.1-Critical';
-    if (severityLabel.includes('Sev.2-High')) return 'Sev.2-High';
-    if (severityLabel.includes('Sev.3-Medium')) return 'Sev.3-Medium';
-    if (severityLabel.includes('Sev.4-Low')) return 'Sev.4-Low';
+    if (severityLabel.includes('Sev.1-Critical')) {return 'Sev.1-Critical';}
+    if (severityLabel.includes('Sev.2-High')) {return 'Sev.2-High';}
+    if (severityLabel.includes('Sev.3-Medium')) {return 'Sev.3-Medium';}
+    if (severityLabel.includes('Sev.4-Low')) {return 'Sev.4-Low';}
 
     return null;
   }

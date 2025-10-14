@@ -277,7 +277,7 @@ export class TaskToolExecutor {
           this.performanceMonitor.recordTaskCompletion(
             durationMs / group.tasks.length,
             result.status === 'success',
-            qualityScore
+            qualityScore,
           );
         }
       }
@@ -294,7 +294,7 @@ export class TaskToolExecutor {
         for (let i = 0; i < group.tasks.length; i++) {
           this.performanceMonitor.recordTaskCompletion(
             durationMs / group.tasks.length,
-            false
+            false,
           );
         }
       }
@@ -310,7 +310,7 @@ export class TaskToolExecutor {
    */
   private async simulateClaudeCodeExecution(
     group: TaskGroup,
-    _worktreePath: string
+    _worktreePath: string,
   ): Promise<AgentResult> {
     // Simulate execution time based on estimated duration
     const executionTimeMs = Math.min(group.estimatedDurationMs, 10000);
@@ -363,7 +363,7 @@ export class TaskToolExecutor {
     tasks: Task[],
     results: Map<string, AgentResult>,
     startTime: number,
-    endTime: number
+    endTime: number,
   ): ExecutionReport {
     const completed = Array.from(results.values()).filter((r) => r.status === 'success').length;
     const failed = Array.from(results.values()).filter((r) => r.status === 'failed').length;

@@ -146,7 +146,7 @@ export class KnowledgeBaseSync {
     decision: string,
     consequences: string,
     alternatives: string[],
-    relatedIssues: number[]
+    relatedIssues: number[],
   ): Promise<void> {
     console.log(`\n📋 Recording technical decision: ${title}`);
 
@@ -294,14 +294,14 @@ ${relatedIssues.map((num) => `- #${num}`).join('\n')}
     const tags: string[] = [];
 
     // Extract technology tags
-    if (labels.some((l: string) => l.includes('typescript'))) tags.push('typescript');
-    if (labels.some((l: string) => l.includes('github'))) tags.push('github-api');
-    if (labels.some((l: string) => l.includes('agent'))) tags.push('agents');
+    if (labels.some((l: string) => l.includes('typescript'))) {tags.push('typescript');}
+    if (labels.some((l: string) => l.includes('github'))) {tags.push('github-api');}
+    if (labels.some((l: string) => l.includes('agent'))) {tags.push('agents');}
 
     // Extract type tags
-    if (labels.some((l: string) => l.includes('bug'))) tags.push('bugfix');
-    if (labels.some((l: string) => l.includes('feature'))) tags.push('feature');
-    if (labels.some((l: string) => l.includes('refactor'))) tags.push('refactor');
+    if (labels.some((l: string) => l.includes('bug'))) {tags.push('bugfix');}
+    if (labels.some((l: string) => l.includes('feature'))) {tags.push('feature');}
+    if (labels.some((l: string) => l.includes('refactor'))) {tags.push('refactor');}
 
     return tags.length > 0 ? tags : ['general'];
   }
@@ -319,7 +319,7 @@ ${relatedIssues.map((num) => `- #${num}`).join('\n')}
     });
 
     return pulls.filter((pr) =>
-      pr.body?.includes(`#${issueNumber}`) || pr.title.includes(`#${issueNumber}`)
+      pr.body?.includes(`#${issueNumber}`) || pr.title.includes(`#${issueNumber}`),
     );
   }
 
@@ -333,7 +333,7 @@ ${relatedIssues.map((num) => `- #${num}`).join('\n')}
     });
 
     return issues.filter((issue) => {
-      if (!issue.closed_at) return false;
+      if (!issue.closed_at) {return false;}
       const closedDate = new Date(issue.closed_at);
       return closedDate >= startDate && closedDate <= endDate;
     });
@@ -384,7 +384,7 @@ async function main() {
         process.argv[5] || 'Decision not provided',
         process.argv[6] || 'Consequences not provided',
         process.argv.slice(7).map((alt) => alt),
-        []
+        [],
       );
       break;
 

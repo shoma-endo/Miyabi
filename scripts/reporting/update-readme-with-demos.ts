@@ -16,11 +16,11 @@ export class ReadmeUpdater {
     try {
       const currentContent = fs.readFileSync(this.readmePath, 'utf-8');
       const updatedContent = this.insertDemoContent(currentContent);
-      
+
       // Backup original
       fs.writeFileSync(`${this.readmePath}.backup`, currentContent);
       fs.writeFileSync(this.readmePath, updatedContent);
-      
+
       logger.success('README.md updated with demo content');
     } catch (error) {
       logger.error('Failed to update README:', error instanceof Error ? error : new Error(String(error)));
@@ -34,7 +34,7 @@ export class ReadmeUpdater {
   private insertDemoContent(content: string): string {
     // Replace the existing demo placeholder
     const demoPlaceholder = '![Demo](https://img.shields.io/badge/Demo-Coming%20Soon-orange?style=for-the-badge)';
-    
+
     const demoSection = `
 ## 🎬 デモンストレーション
 
@@ -137,8 +137,8 @@ graph LR
     const englishHeaderRegex = /(## 🎯 English\s*<details[^>]*>)/;
     if (englishHeaderRegex.test(updatedContent)) {
       updatedContent = updatedContent.replace(
-        englishHeaderRegex, 
-        `$1\n\n${englishDemoSection}`
+        englishHeaderRegex,
+        `$1\n\n${englishDemoSection}`,
       );
     }
 
@@ -210,7 +210,7 @@ This directory contains screenshots and demo GIFs for the Miyabi project.
 `;
 
     fs.writeFileSync(path.join(this.assetsPath, 'README.md'), assetReadme);
-    
+
     logger.success('Asset directory structure created');
   }
 }

@@ -15,7 +15,7 @@ import type {
   DAG,
   AgentType,
   TaskGroup,
-  GroupingConfig
+  GroupingConfig,
 } from '@miyabi/coding-agents/types/index';
 
 const DEFAULT_CONFIG: GroupingConfig = {
@@ -63,7 +63,7 @@ export class TaskGrouper {
           const groupId = `group-${groupCounter++}`;
           const estimatedDurationMs = groupTasks.reduce(
             (sum, t) => sum + (t.estimatedDuration || 0) * 60000,
-            0
+            0,
           );
           const avgPriority = groupTasks.reduce((sum, t) => sum + t.priority, 0) / groupTasks.length;
 
@@ -184,7 +184,7 @@ export class TaskGrouper {
       cpuBasedConcurrency,
       memoryBasedConcurrency,
       this.config.maxConcurrentGroups,
-      groups.length
+      groups.length,
     );
 
     return Math.max(1, optimalConcurrency);
@@ -236,17 +236,17 @@ export class TaskGrouper {
     const oversizedGroups = groups.filter(g => g.tasks.length > this.config.maxGroupSize);
     if (oversizedGroups.length > 0) {
       warnings.push(
-        `Found ${oversizedGroups.length} groups exceeding max size (${this.config.maxGroupSize})`
+        `Found ${oversizedGroups.length} groups exceeding max size (${this.config.maxGroupSize})`,
       );
     }
 
     // Check for undersized groups
     const undersizedGroups = groups.filter(
-      g => g.tasks.length < this.config.minGroupSize && g.tasks.length > 0
+      g => g.tasks.length < this.config.minGroupSize && g.tasks.length > 0,
     );
     if (undersizedGroups.length > 0) {
       warnings.push(
-        `Found ${undersizedGroups.length} groups below min size (${this.config.minGroupSize})`
+        `Found ${undersizedGroups.length} groups below min size (${this.config.minGroupSize})`,
       );
     }
 
@@ -296,22 +296,22 @@ Estimated Duration:
 
 Groups by Agent:
 ${Array.from(agentCounts.entries())
-  .map(([agent, count]) => `  ${agent}: ${count} tasks`)
-  .join('\n')}
+    .map(([agent, count]) => `  ${agent}: ${count} tasks`)
+    .join('\n')}
 
 Groups by DAG Level:
 ${Array.from(levelCounts.entries())
-  .sort((a, b) => a[0] - b[0])
-  .map(([level, count]) => `  Level ${level}: ${count} tasks`)
-  .join('\n')}
+    .sort((a, b) => a[0] - b[0])
+    .map(([level, count]) => `  Level ${level}: ${count} tasks`)
+    .join('\n')}
 
 Group Details:
 ${groups
-  .map(
-    g =>
-      `  ${g.groupId}: ${g.tasks.length} tasks, ${g.agent}, Level ${g.level}, ${this.formatDuration(g.estimatedDurationMs)}`
-  )
-  .join('\n')}
+    .map(
+      g =>
+        `  ${g.groupId}: ${g.tasks.length} tasks, ${g.agent}, Level ${g.level}, ${this.formatDuration(g.estimatedDurationMs)}`,
+    )
+    .join('\n')}
     `.trim();
   }
 

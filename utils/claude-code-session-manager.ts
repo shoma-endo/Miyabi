@@ -63,7 +63,7 @@ export class ClaudeCodeSessionManager {
     // Check concurrent session limit
     if (this.activeSessions.size >= this.config.maxConcurrentSessions) {
       throw new Error(
-        `Max concurrent sessions (${this.config.maxConcurrentSessions}) reached`
+        `Max concurrent sessions (${this.config.maxConcurrentSessions}) reached`,
       );
     }
 
@@ -115,7 +115,7 @@ export class ClaudeCodeSessionManager {
   public completeSession(
     sessionId: string,
     result: AgentResult,
-    taskResults: Map<string, AgentResult>
+    taskResults: Map<string, AgentResult>,
   ): void {
     const session = this.activeSessions.get(sessionId);
     if (!session) {
@@ -314,8 +314,8 @@ Start execution now.
 ## Tasks
 
 ${group.tasks
-  .map(
-    (task, i) => `
+    .map(
+      (task, i) => `
 ### Task ${i + 1}: ${task.title}
 
 - **ID**: ${task.id}
@@ -331,9 +331,9 @@ ${task.dependencies.length > 0 ? `- **Dependencies**: ${task.dependencies.join('
 3. Write tests
 4. Update documentation
 5. Commit changes
-`
-  )
-  .join('\n')}
+`,
+    )
+    .join('\n')}
 
 ## Execution Checklist
 

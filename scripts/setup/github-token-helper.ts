@@ -19,7 +19,7 @@ export async function getGitHubToken(): Promise<string> {
   try {
     const token = execSync('gh auth token', {
       encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'ignore'] // Suppress stderr
+      stdio: ['pipe', 'pipe', 'ignore'], // Suppress stderr
     }).trim();
 
     if (token && (token.startsWith('ghp_') || token.startsWith('github_pat_') || token.startsWith('gho_'))) {
@@ -46,7 +46,7 @@ export async function getGitHubToken(): Promise<string> {
     'GitHub token not found. Please authenticate using one of these methods:\n' +
     '  1. Run: gh auth login (recommended)\n' +
     '  2. Set GITHUB_TOKEN environment variable\n' +
-    '  3. Create .env file with GITHUB_TOKEN=ghp_xxx'
+    '  3. Create .env file with GITHUB_TOKEN=ghp_xxx',
   );
 }
 
@@ -60,7 +60,7 @@ export function getGitHubTokenSync(): string {
   try {
     const token = execSync('gh auth token', {
       encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'ignore']
+      stdio: ['pipe', 'pipe', 'ignore'],
     }).trim();
 
     if (token && (token.startsWith('ghp_') || token.startsWith('github_pat_') || token.startsWith('gho_'))) {
@@ -79,7 +79,7 @@ export function getGitHubTokenSync(): string {
   // No valid token found
   throw new Error(
     'GitHub token not found. Please authenticate using:\n' +
-    '  gh auth login  (or)  export GITHUB_TOKEN=ghp_xxx'
+    '  gh auth login  (or)  export GITHUB_TOKEN=ghp_xxx',
   );
 }
 
@@ -91,7 +91,7 @@ export function isGhCliAuthenticated(): boolean {
   try {
     execSync('gh auth status', {
       encoding: 'utf-8',
-      stdio: 'ignore'
+      stdio: 'ignore',
     });
     return true;
   } catch (error) {

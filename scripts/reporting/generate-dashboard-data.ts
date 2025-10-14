@@ -18,19 +18,19 @@ interface DashboardData {
     totalCost: number;
     avgQualityScore: number;
   };
-  trends: {
+  trends: Array<{
     date: string;
     completed: number;
     inProgress: number;
     cost: number;
-  }[];
-  agents: {
+  }>;
+  agents: Array<{
     name: string;
     tasksCompleted: number;
     avgDuration: number;
     avgCost: number;
     avgQuality: number;
-  }[];
+  }>;
 }
 
 async function main() {

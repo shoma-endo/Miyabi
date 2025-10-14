@@ -159,7 +159,7 @@ export class CICDIntegration {
   async createDeployment(
     ref: string,
     environment: string,
-    description?: string
+    description?: string,
   ): Promise<number | null> {
     try {
       const { data } = await this.octokit.rest.repos.createDeployment({
@@ -193,7 +193,7 @@ export class CICDIntegration {
     deploymentId: number,
     state: 'success' | 'failure' | 'pending' | 'in_progress',
     targetUrl?: string,
-    description?: string
+    description?: string,
   ): Promise<boolean> {
     try {
       await this.octokit.rest.repos.createDeploymentStatus({
@@ -266,7 +266,7 @@ export class CICDIntegration {
     state: 'success' | 'failure' | 'pending' | 'error',
     context: string,
     description?: string,
-    targetUrl?: string
+    targetUrl?: string,
   ): Promise<boolean> {
     try {
       await this.octokit.rest.repos.createCommitStatus({

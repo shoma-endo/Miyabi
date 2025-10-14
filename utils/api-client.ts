@@ -109,7 +109,7 @@ export function resetGitHubClient(): void {
  */
 export async function withGitHubCache<T>(
   key: string,
-  fetcher: () => Promise<T>
+  fetcher: () => Promise<T>,
 ): Promise<T> {
   // Check cache
   const cached = githubCache.get(key);

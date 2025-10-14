@@ -250,7 +250,7 @@ export class GitHubProjectAPI {
   async setCustomField(
     itemId: string,
     fieldId: string,
-    value: string | number
+    value: string | number,
   ): Promise<void> {
     const mutation = `
       mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $value: ProjectV2FieldValue!) {
@@ -290,7 +290,7 @@ export class GitHubProjectAPI {
   async setSingleSelectField(
     itemId: string,
     fieldId: string,
-    optionId: string
+    optionId: string,
   ): Promise<void> {
     const mutation = `
       mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
@@ -335,13 +335,13 @@ export class GitHubProjectAPI {
     const items = await this.getProjectItems();
 
     const agentData: Record<
-      string,
-      {
-        count: number;
-        totalDuration: number;
-        totalCost: number;
-        totalQuality: number;
-      }
+    string,
+    {
+      count: number;
+      totalDuration: number;
+      totalCost: number;
+      totalQuality: number;
+    }
     > = {};
 
     for (const item of items) {
@@ -350,7 +350,7 @@ export class GitHubProjectAPI {
       const cost = this.getFieldValue(item, 'Cost') as number;
       const quality = this.getFieldValue(item, 'Quality Score') as number;
 
-      if (!agent || agent === 'N/A') continue;
+      if (!agent || agent === 'N/A') {continue;}
 
       if (!agentData[agent]) {
         agentData[agent] = {
@@ -362,9 +362,9 @@ export class GitHubProjectAPI {
       }
 
       agentData[agent].count++;
-      if (duration) agentData[agent].totalDuration += duration;
-      if (cost) agentData[agent].totalCost += cost;
-      if (quality) agentData[agent].totalQuality += quality;
+      if (duration) {agentData[agent].totalDuration += duration;}
+      if (cost) {agentData[agent].totalCost += cost;}
+      if (quality) {agentData[agent].totalQuality += quality;}
     }
 
     return Object.entries(agentData).map(([agent, data]) => ({
@@ -389,7 +389,7 @@ export class GitHubProjectAPI {
 
     const completedIssues = items.filter(
       (item) =>
-        item.content.state === 'CLOSED' || item.content.state === 'MERGED'
+        item.content.state === 'CLOSED' || item.content.state === 'MERGED',
     );
 
     const topQualityIssues = items
@@ -404,7 +404,7 @@ export class GitHubProjectAPI {
 
     const totalCost = agentMetrics.reduce(
       (sum, metric) => sum + metric.totalCost,
-      0
+      0,
     );
 
     return {
@@ -423,13 +423,13 @@ export class GitHubProjectAPI {
 
   private getFieldValue(
     item: ProjectItem,
-    fieldName: string
+    fieldName: string,
   ): string | number | null {
     const fieldValue = item.fieldValues.nodes.find(
-      (node) => node.field.name === fieldName
+      (node) => node.field.name === fieldName,
     );
 
-    if (!fieldValue) return null;
+    if (!fieldValue) {return null;}
 
     return fieldValue.name || fieldValue.number || fieldValue.date || null;
   }

@@ -115,7 +115,7 @@ export class MockLabelStateMachine {
   constructor(
     _token: string,
     _owner: string,
-    _repo: string
+    _repo: string,
   ) {}
 
   getValidTransitions(): string[] {
@@ -134,7 +134,7 @@ export class MockWorkflowOrchestrator {
   constructor(
     _token: string,
     _owner: string,
-    _repo: string
+    _repo: string,
   ) {}
 
   async createWorkflow(_issueNumber: number, _type: string): Promise<any> {
@@ -149,7 +149,7 @@ export class MockKnowledgeBaseSync {
   constructor(
     _token: string,
     _owner: string,
-    _repo: string
+    _repo: string,
   ) {}
 
   async initialize(): Promise<void> {
@@ -168,7 +168,7 @@ export class MockCICDIntegration {
   constructor(
     _token: string,
     _owner: string,
-    _repo: string
+    _repo: string,
   ) {}
 
   async triggerWorkflow(_workflowId: string): Promise<void> {
@@ -183,7 +183,7 @@ export class MockSecurityManager {
   constructor(
     _token: string,
     _owner: string,
-    _repo: string
+    _repo: string,
   ) {}
 
   async scanSecrets(_path: string): Promise<any[]> {
@@ -241,7 +241,7 @@ export class MockTrainingMaterialGenerator {
   constructor(
     _token: string,
     _owner: string,
-    _repo: string
+    _repo: string,
   ) {}
 
   async generateMaterial(topic: string): Promise<string> {

@@ -207,9 +207,9 @@ export class SecurityManager {
         branch: rule.branch,
         required_status_checks: rule.requireStatusChecks
           ? {
-              strict: true,
-              contexts: rule.requiredStatusChecks,
-            }
+            strict: true,
+            contexts: rule.requiredStatusChecks,
+          }
           : null as any,
         enforce_admins: rule.enforceAdmins,
         required_pull_request_reviews: {
@@ -220,10 +220,10 @@ export class SecurityManager {
         },
         restrictions: rule.restrictPushes
           ? {
-              users: rule.allowedPushers,
-              teams: [],
-              apps: [],
-            }
+            users: rule.allowedPushers,
+            teams: [],
+            apps: [],
+          }
           : null as any,
       });
 
@@ -272,7 +272,7 @@ export class SecurityManager {
                 file,
                 line: i + 1,
                 type,
-                detected: match[0].substring(0, 20) + '...',
+                detected: `${match[0].substring(0, 20)  }...`,
               });
             }
           }
@@ -464,8 +464,8 @@ export class SecurityManager {
       const packageJson = JSON.parse(
         await fs.promises.readFile(
           path.join(this.projectRoot, 'package.json'),
-          'utf-8'
-        )
+          'utf-8',
+        ),
       );
 
       const sbom = {
@@ -525,7 +525,7 @@ export class SecurityManager {
     const report = this.formatSecurityReport(
       secrets,
       vulnerabilities,
-      policyResult
+      policyResult,
     );
 
     // GitHub Issue に投稿
@@ -550,7 +550,7 @@ export class SecurityManager {
   private formatSecurityReport(
     secrets: SecretScanResult[],
     vulnerabilities: VulnerabilityReport[],
-    policyResult: { passed: boolean; violations: string[] }
+    policyResult: { passed: boolean; violations: string[] },
   ): string {
     const date = new Date().toISOString().split('T')[0];
 

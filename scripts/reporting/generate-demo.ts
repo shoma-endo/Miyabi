@@ -31,13 +31,13 @@ export class DemoGenerator {
    */
   public async generateAll(): Promise<void> {
     logger.info('Generating demo assets...');
-    
+
     try {
       await this.captureQuickStart();
       await this.captureAgentWorkflow();
       await this.captureProjectStructure();
       await this.generateArchitectureDiagram();
-      
+
       logger.success('Demo assets generated successfully!');
     } catch (error) {
       logger.error('Failed to generate demo assets:', error instanceof Error ? error : new Error(String(error)));
@@ -76,7 +76,7 @@ cd demo-project && npx miyabi
 
     fs.writeFileSync(scriptPath, script);
     fs.chmodSync(scriptPath, '755');
-    
+
     logger.info('Quick start demo script generated');
   }
 
@@ -121,7 +121,7 @@ echo "🎉 Feature completed successfully!"
     const scriptPath = path.join(this.assetsDir, 'workflow-demo.sh');
     fs.writeFileSync(scriptPath, workflowScript);
     fs.chmodSync(scriptPath, '755');
-    
+
     logger.info('Agent workflow demo script generated');
   }
 
@@ -160,7 +160,7 @@ echo "└── 📚 docs/ (auto-generated documentation)"
     const scriptPath = path.join(this.assetsDir, 'structure-demo.sh');
     fs.writeFileSync(scriptPath, structureDemo);
     fs.chmodSync(scriptPath, '755');
-    
+
     logger.info('Project structure demo script generated');
   }
 
@@ -236,7 +236,7 @@ sequenceDiagram
 
     const diagramPath = path.join(this.assetsDir, 'architecture.md');
     fs.writeFileSync(diagramPath, diagram);
-    
+
     logger.info('Architecture diagram generated');
   }
 
@@ -319,7 +319,7 @@ assets/
 
     const instructionsPath = path.join(this.assetsDir, 'RECORDING.md');
     fs.writeFileSync(instructionsPath, instructions);
-    
+
     logger.info('Recording instructions generated');
   }
 }

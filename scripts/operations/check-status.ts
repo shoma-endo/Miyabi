@@ -42,10 +42,10 @@ class AgentStatusChecker {
     const statuses: AgentStatus[] = metrics.map(metric => {
       // Calculate success rate based on completed items
       const agentItems = items.filter(item =>
-        this.getFieldValue(item, 'Agent') === metric.agent
+        this.getFieldValue(item, 'Agent') === metric.agent,
       );
       const completedItems = agentItems.filter(item =>
-        item.content.state === 'CLOSED' || item.content.state === 'MERGED'
+        item.content.state === 'CLOSED' || item.content.state === 'MERGED',
       );
 
       const successRate = agentItems.length > 0
@@ -55,13 +55,13 @@ class AgentStatusChecker {
       // Determine current status
       const runningItems = agentItems.filter(item =>
         item.content.state === 'OPEN' &&
-        this.getFieldValue(item, 'Status') === 'in-progress'
+        this.getFieldValue(item, 'Status') === 'in-progress',
       );
 
       const status: AgentStatus['status'] =
         runningItems.length > 0 ? 'running' :
-        successRate >= 80 ? 'completed' :
-        successRate < 50 ? 'error' : 'idle';
+          successRate >= 80 ? 'completed' :
+            successRate < 50 ? 'error' : 'idle';
 
       return {
         name: metric.agent,
@@ -107,7 +107,7 @@ class AgentStatusChecker {
     for (const agent of statuses) {
       const statusIcon = this.getStatusIcon(agent.status);
       const statusText = chalk[this.getStatusColor(agent.status)](
-        `${statusIcon} ${agent.status.toUpperCase()}`
+        `${statusIcon} ${agent.status.toUpperCase()}`,
       );
 
       const durationText = this.formatDuration(agent.avgDuration);
@@ -168,9 +168,9 @@ class AgentStatusChecker {
    * Format duration
    */
   private formatDuration(ms: number): string {
-    if (ms < 1000) return `${ms.toFixed(0)}ms`;
-    if (ms < 60000) return chalk.green(`${(ms / 1000).toFixed(1)}s`);
-    if (ms < 3600000) return chalk.yellow(`${(ms / 60000).toFixed(1)}m`);
+    if (ms < 1000) {return `${ms.toFixed(0)}ms`;}
+    if (ms < 60000) {return chalk.green(`${(ms / 1000).toFixed(1)}s`);}
+    if (ms < 3600000) {return chalk.yellow(`${(ms / 60000).toFixed(1)}m`);}
     return chalk.red(`${(ms / 3600000).toFixed(1)}h`);
   }
 
@@ -179,8 +179,8 @@ class AgentStatusChecker {
    */
   private formatSuccessRate(rate: number): string {
     const rateText = `${rate.toFixed(1)}%`;
-    if (rate >= 80) return chalk.green(rateText);
-    if (rate >= 60) return chalk.yellow(rateText);
+    if (rate >= 80) {return chalk.green(rateText);}
+    if (rate >= 60) {return chalk.yellow(rateText);}
     return chalk.red(rateText);
   }
 
@@ -188,10 +188,10 @@ class AgentStatusChecker {
    * Get overall health status
    */
   private getHealthStatus(avgSuccessRate: number): string {
-    if (avgSuccessRate >= 90) return chalk.green('✅ Excellent');
-    if (avgSuccessRate >= 80) return chalk.green('✅ Good');
-    if (avgSuccessRate >= 70) return chalk.yellow('⚠️ Fair');
-    if (avgSuccessRate >= 60) return chalk.yellow('⚠️ Poor');
+    if (avgSuccessRate >= 90) {return chalk.green('✅ Excellent');}
+    if (avgSuccessRate >= 80) {return chalk.green('✅ Good');}
+    if (avgSuccessRate >= 70) {return chalk.yellow('⚠️ Fair');}
+    if (avgSuccessRate >= 60) {return chalk.yellow('⚠️ Poor');}
     return chalk.red('❌ Critical');
   }
 
@@ -200,10 +200,10 @@ class AgentStatusChecker {
    */
   private getFieldValue(item: any, fieldName: string): string | number | null {
     const fieldValue = item.fieldValues.nodes.find(
-      (node: any) => node.field?.name === fieldName
+      (node: any) => node.field?.name === fieldName,
     );
 
-    if (!fieldValue) return null;
+    if (!fieldValue) {return null;}
 
     return fieldValue.name || fieldValue.number || fieldValue.date || null;
   }

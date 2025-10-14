@@ -16,13 +16,13 @@ export class ClaudeToAgentsMigration {
   async execute(): Promise<void> {
     try {
       logger.info('Starting migration from .claude/ to agents/');
-      
+
       await this.validateDirectories();
       await this.createBackup();
       await this.migrateFiles();
       await this.updateImports();
       await this.cleanup();
-      
+
       logger.success('Migration completed successfully');
     } catch (error) {
       logger.error(`Migration failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -75,14 +75,14 @@ export class ClaudeToAgentsMigration {
    */
   private async migrateFiles(): Promise<void> {
     const files = await this.getAllFiles(this.sourceDir);
-    
+
     for (const file of files) {
       const relativePath = path.relative(this.sourceDir, file);
       const targetPath = path.join(this.targetDir, relativePath);
-      
+
       // Ensure target directory exists
       await fs.mkdir(path.dirname(targetPath), { recursive: true });
-      
+
       // Copy file
       await fs.copyFile(file, targetPath);
       logger.info(`Migrated: ${relativePath}`);
@@ -95,7 +95,7 @@ export class ClaudeToAgentsMigration {
   private async updateImports(): Promise<void> {
     const files = await this.getAllFiles(this.targetDir);
     const tsFiles = files.filter(file => file.endsWith('.ts') || file.endsWith('.js'));
-    
+
     for (const file of tsFiles) {
       await this.updateFileImports(file);
     }
@@ -107,13 +107,13 @@ export class ClaudeToAgentsMigration {
   private async updateFileImports(filePath: string): Promise<void> {
     try {
       const content = await fs.readFile(filePath, 'utf-8');
-      
+
       // Update import paths
       const updatedContent = content
         .replace(/from\s+['"]\.claude\//g, "from '.claude/")
         .replace(/import\s+['"]\.claude\//g, "import '.claude/")
         .replace(/require\(['"]\.claude\//g, "require('.claude/");
-      
+
       if (content !== updatedContent) {
         await fs.writeFile(filePath, updatedContent, 'utf-8');
         logger.info(`Updated imports in: ${path.relative(process.cwd(), filePath)}`);
@@ -141,16 +141,16 @@ export class ClaudeToAgentsMigration {
   private async rollback(): Promise<void> {
     try {
       logger.warn('Rolling back migration...');
-      
+
       // Remove agents directory if it was created
       await fs.rm(this.targetDir, { recursive: true, force: true });
-      
+
       // Restore from backup
       if (await this.exists(this.backupDir)) {
         await this.copyDirectory(this.backupDir, this.sourceDir);
         await fs.rm(this.backupDir, { recursive: true, force: true });
       }
-      
+
       logger.info('Rollback completed');
     } catch (error) {
       logger.error(`Rollback failed: ${error}`);
@@ -163,17 +163,17 @@ export class ClaudeToAgentsMigration {
   private async getAllFiles(dir: string): Promise<string[]> {
     const files: string[] = [];
     const entries = await fs.readdir(dir, { withFileTypes: true });
-    
+
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
-      
+
       if (entry.isDirectory()) {
         files.push(...await this.getAllFiles(fullPath));
       } else {
         files.push(fullPath);
       }
     }
-    
+
     return files;
   }
 
@@ -183,11 +183,11 @@ export class ClaudeToAgentsMigration {
   private async copyDirectory(src: string, dest: string): Promise<void> {
     await fs.mkdir(dest, { recursive: true });
     const entries = await fs.readdir(src, { withFileTypes: true });
-    
+
     for (const entry of entries) {
       const srcPath = path.join(src, entry.name);
       const destPath = path.join(dest, entry.name);
-      
+
       if (entry.isDirectory()) {
         await this.copyDirectory(srcPath, destPath);
       } else {

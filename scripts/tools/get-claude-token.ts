@@ -62,7 +62,7 @@ function findSessionToken(): string | null {
     'Code',
     'User',
     'globalStorage',
-    'anthropics.claude-code'
+    'anthropics.claude-code',
   );
 
   if (existsSync(vscodeStorage)) {

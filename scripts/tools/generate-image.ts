@@ -121,7 +121,7 @@ export async function generateImage(options: GenerateImageOptions): Promise<stri
   if (!apiKey) {
     throw new Error(
       'GOOGLE_API_KEY is required. Set it as environment variable or pass via --api-key option.\n' +
-      'Get your API key from: https://aistudio.google.com/apikey'
+      'Get your API key from: https://aistudio.google.com/apikey',
     );
   }
 

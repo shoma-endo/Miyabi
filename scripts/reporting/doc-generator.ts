@@ -80,7 +80,7 @@ export class DocGenerator {
       filePath,
       sourceCode,
       ts.ScriptTarget.Latest,
-      true
+      true,
     );
 
     const docs: Array<FunctionDoc | ClassDoc | InterfaceDoc> = [];
@@ -121,7 +121,7 @@ export class DocGenerator {
    * Extract documentation from a function declaration
    */
   private extractFunctionDoc(node: ts.FunctionDeclaration): FunctionDoc | null {
-    if (!node.name) return null;
+    if (!node.name) {return null;}
 
     const jsDocTags = ts.getJSDocTags(node);
     const jsDocComments = ts.getJSDocCommentsAndTags(node);
@@ -143,7 +143,7 @@ export class DocGenerator {
       // Find @param tag for this parameter
       const paramTag = jsDocTags.find(
         tag => tag.tagName.text === 'param' &&
-        tag.comment && tag.comment.toString().includes(paramName)
+        tag.comment && tag.comment.toString().includes(paramName),
       );
 
       const paramDesc = paramTag?.comment ?
@@ -153,7 +153,7 @@ export class DocGenerator {
       return {
         name: paramName,
         type: paramType,
-        description: paramDesc
+        description: paramDesc,
       };
     });
 
@@ -166,7 +166,7 @@ export class DocGenerator {
     // Extract examples
     const exampleTags = jsDocTags.filter(tag => tag.tagName.text === 'example');
     const examples = exampleTags.map(tag =>
-      typeof tag.comment === 'string' ? tag.comment : ''
+      typeof tag.comment === 'string' ? tag.comment : '',
     ).filter(ex => ex);
 
     const isAsync = node.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword) || false;
@@ -180,7 +180,7 @@ export class DocGenerator {
       returnDescription,
       examples: examples.length > 0 ? examples : undefined,
       isAsync,
-      isExported
+      isExported,
     };
   }
 
@@ -188,7 +188,7 @@ export class DocGenerator {
    * Extract documentation from a class declaration
    */
   private extractClassDoc(node: ts.ClassDeclaration): ClassDoc | null {
-    if (!node.name) return null;
+    if (!node.name) {return null;}
 
     const jsDocComments = ts.getJSDocCommentsAndTags(node);
     let description = '';
@@ -227,7 +227,7 @@ export class DocGenerator {
       description,
       methods,
       properties,
-      isExported
+      isExported,
     };
   }
 
@@ -252,7 +252,7 @@ export class DocGenerator {
       const paramType = param.type ? param.type.getText() : 'any';
       return {
         name: paramName,
-        type: paramType
+        type: paramType,
       };
     });
 
@@ -265,7 +265,7 @@ export class DocGenerator {
       parameters,
       returnType,
       isAsync,
-      isExported: false
+      isExported: false,
     };
   }
 
@@ -287,7 +287,7 @@ export class DocGenerator {
     return {
       name: node.name.getText(),
       type: node.type ? node.type.getText() : 'any',
-      description: description || undefined
+      description: description || undefined,
     };
   }
 
@@ -323,7 +323,7 @@ export class DocGenerator {
           name: member.name.getText(),
           type: member.type ? member.type.getText() : 'any',
           description: propDesc || undefined,
-          optional: !!member.questionToken
+          optional: !!member.questionToken,
         };
       }
       return null;
@@ -335,7 +335,7 @@ export class DocGenerator {
       name: node.name.getText(),
       description,
       properties,
-      isExported
+      isExported,
     };
   }
 
@@ -346,7 +346,7 @@ export class DocGenerator {
    */
   async generateMarkdown(
     docs: Array<FunctionDoc | ClassDoc | InterfaceDoc>,
-    outputPath: string
+    outputPath: string,
   ): Promise<void> {
     let markdown = '# API Documentation\n\n';
     markdown += `*Generated on ${new Date().toISOString()}*\n\n`;
@@ -354,7 +354,7 @@ export class DocGenerator {
 
     // Separate by type
     const functions = docs.filter(d => 'parameters' in d && !('methods' in d)) as FunctionDoc[];
-    const classes = docs.filter(d => 'methods' in d) as ClassDoc[];
+    const classes = docs.filter(d => 'methods' in d);
     const interfaces = docs.filter(d => 'properties' in d && !('methods' in d)) as InterfaceDoc[];
 
     // Functions
@@ -514,7 +514,7 @@ export class DocGenerator {
   async generateDocsForDirectory(
     dirPath: string,
     outputPath: string,
-    recursive: boolean = true
+    recursive: boolean = true,
   ): Promise<void> {
     const files = this.getTypeScriptFiles(dirPath, recursive);
     const allDocs: Array<FunctionDoc | ClassDoc | InterfaceDoc> = [];

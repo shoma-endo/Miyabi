@@ -235,9 +235,9 @@ function printResults(results: CheckResult[]): void {
   const successCount = results.filter((r) => r.success).length;
   const failCount = results.filter((r) => !r.success).length;
 
-  console.log('\n' + '='.repeat(80));
+  console.log(`\n${  '='.repeat(80)}`);
   console.log('📊 Check Results Summary');
-  console.log('='.repeat(80) + '\n');
+  console.log(`${'='.repeat(80)  }\n`);
 
   // Individual results
   for (const result of results) {

@@ -89,7 +89,7 @@ async function parallelExecutionDemo() {
         } finally {
           await client.close();
         }
-      })
+      }),
     );
 
     const endTime = Date.now();
@@ -193,7 +193,7 @@ async function limitedConcurrencyDemo() {
           } finally {
             await client.close();
           }
-        })
+        }),
       );
 
       results.push(...batchResults);

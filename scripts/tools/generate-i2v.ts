@@ -73,7 +73,7 @@ export async function generateI2V(options: GenerateI2VOptions): Promise<string> 
   if (!apiKey) {
     throw new Error(
       'ARK_API_KEY is required. Set it as environment variable or pass via --api-key option.\n' +
-      'Get your API key from ByteDance ARK platform'
+      'Get your API key from ByteDance ARK platform',
     );
   }
 
@@ -95,7 +95,7 @@ export async function generateI2V(options: GenerateI2VOptions): Promise<string> 
     // For simplicity, we'll throw an error for now and require URL
     throw new Error(
       'Local image upload not yet implemented. Please use --url with a public image URL.\n' +
-      'You can upload your image to a public hosting service (e.g., Imgur, Cloudinary) and use the URL.'
+      'You can upload your image to a public hosting service (e.g., Imgur, Cloudinary) and use the URL.',
     );
   } else {
     throw new Error('Image URL is required');

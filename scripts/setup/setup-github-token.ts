@@ -17,7 +17,7 @@ const rl = readline.createInterface({
 });
 
 async function ask(question: string): Promise<string> {
-  return await rl.question(question);
+  return rl.question(question);
 }
 
 const REQUIRED_SCOPES = [
@@ -54,7 +54,7 @@ async function checkTokenScopes(token: string): Promise<{ scopes: string[], vali
   try {
     const result = execSync(
       `curl -sI -H "Authorization: token ${token}" https://api.github.com/user`,
-      { encoding: 'utf-8' }
+      { encoding: 'utf-8' },
     );
 
     const scopeLine = result.split('\n').find(line => line.toLowerCase().startsWith('x-oauth-scopes:'));
@@ -70,7 +70,7 @@ async function checkTokenScopes(token: string): Promise<{ scopes: string[], vali
       .filter(s => s);
 
     const hasRequired = REQUIRED_SCOPES.every(req =>
-      scopes.some(scope => scope === req.name || scope.startsWith(req.name + ':'))
+      scopes.some(scope => scope === req.name || scope.startsWith(`${req.name  }:`)),
     );
 
     return { scopes, valid: hasRequired };
@@ -105,9 +105,9 @@ function loadEnvFile(): Record<string, string> {
 
 function saveEnvFile(env: Record<string, string>): void {
   const envPath = getEnvPath();
-  const content = Object.entries(env)
+  const content = `${Object.entries(env)
     .map(([key, value]) => `${key}=${value}`)
-    .join('\n') + '\n';
+    .join('\n')  }\n`;
 
   writeFileSync(envPath, content, 'utf-8');
   logger.success(`.env ファイルを更新しました: ${envPath}`);
@@ -138,7 +138,7 @@ async function main() {
   logger.divider();
 
   // ===== Token のチェック =====
-  let tokenToCheck = envToken || ghToken;
+  const tokenToCheck = envToken || ghToken;
 
   if (tokenToCheck) {
     logger.section('🔍', 'Token のスコープを検証中...');

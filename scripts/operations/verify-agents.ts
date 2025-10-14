@@ -92,7 +92,7 @@ function getAgentList(specificAgent?: string): string[] {
  */
 function executeCommand(
   command: string,
-  options: { cwd?: string; silent?: boolean } = {}
+  options: { cwd?: string; silent?: boolean } = {},
 ): { success: boolean; output: string } {
   try {
     const output = execSync(command, {
@@ -104,7 +104,7 @@ function executeCommand(
   } catch (error: any) {
     return {
       success: false,
-      output: error.stdout || error.message || 'Command failed'
+      output: error.stdout || error.message || 'Command failed',
     };
   }
 }
@@ -125,7 +125,7 @@ function verifyLint(agent: string, verbose: boolean): { passed: boolean; error?:
 
   const result = executeCommand(
     `npx eslint "${agentPath}/**/*.ts" --ext .ts`,
-    { silent: !verbose }
+    { silent: !verbose },
   );
 
   if (!result.success) {
@@ -150,7 +150,7 @@ function verifyTypecheck(_agent: string, verbose: boolean): { passed: boolean; e
   // Run tsc on the entire project (agents share types)
   const result = executeCommand(
     'npx tsc --noEmit',
-    { silent: !verbose }
+    { silent: !verbose },
   );
 
   if (!result.success) {
@@ -175,7 +175,7 @@ function verifyTests(agent: string, verbose: boolean): { passed: boolean; error?
   // Run tests matching agent name pattern
   const result = executeCommand(
     `npx vitest run --reporter=verbose --run tests/**/*${agent}*.test.ts`,
-    { silent: !verbose }
+    { silent: !verbose },
   );
 
   if (!result.success) {
@@ -217,7 +217,7 @@ function verifyAgent(agent: string, options: VerificationOptions): VerificationR
   result.lint = lintResult.passed;
   if (!lintResult.passed && lintResult.error) {
     result.errors.push(`Lint error: ${lintResult.error}`);
-    if (options.bail) return result;
+    if (options.bail) {return result;}
   }
 
   // Run typecheck
@@ -225,7 +225,7 @@ function verifyAgent(agent: string, options: VerificationOptions): VerificationR
   result.typecheck = typecheckResult.passed;
   if (!typecheckResult.passed && typecheckResult.error) {
     result.errors.push(`Type error: ${typecheckResult.error}`);
-    if (options.bail) return result;
+    if (options.bail) {return result;}
   }
 
   // Run tests
@@ -233,7 +233,7 @@ function verifyAgent(agent: string, options: VerificationOptions): VerificationR
   result.test = testResult.passed;
   if (!testResult.passed && testResult.error) {
     result.errors.push(`Test error: ${testResult.error}`);
-    if (options.bail) return result;
+    if (options.bail) {return result;}
   }
 
   // Overall pass/fail
@@ -246,7 +246,7 @@ function verifyAgent(agent: string, options: VerificationOptions): VerificationR
  * Print verification summary
  */
 function printSummary(results: VerificationResult[]): void {
-  console.log('\n' + '='.repeat(60));
+  console.log(`\n${  '='.repeat(60)}`);
   console.log('📊 Agent Verification Summary\n');
 
   const maxAgentLength = Math.max(...results.map(r => r.agent.length));
@@ -272,9 +272,9 @@ function printSummary(results: VerificationResult[]): void {
   const totalPassed = results.filter(r => r.passed).length;
   const totalFailed = results.filter(r => !r.passed).length;
 
-  console.log('\n' + '='.repeat(60));
+  console.log(`\n${  '='.repeat(60)}`);
   console.log(`Total: ${totalPassed} passed, ${totalFailed} failed`);
-  console.log('='.repeat(60) + '\n');
+  console.log(`${'='.repeat(60)  }\n`);
 }
 
 /**

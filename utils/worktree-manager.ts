@@ -56,7 +56,7 @@ export class WorktreeManager {
       return info;
     } catch (error) {
       throw new Error(
-        `Failed to create worktree for issue #${issueNumber}: ${(error as Error).message}`
+        `Failed to create worktree for issue #${issueNumber}: ${(error as Error).message}`,
       );
     }
   }
@@ -88,7 +88,7 @@ export class WorktreeManager {
       this.worktrees.delete(issueNumber);
     } catch (error) {
       console.warn(
-        `Warning: Failed to remove worktree for issue #${issueNumber}: ${(error as Error).message}`
+        `Warning: Failed to remove worktree for issue #${issueNumber}: ${(error as Error).message}`,
       );
     }
   }
@@ -112,7 +112,7 @@ export class WorktreeManager {
    */
   async execInWorktree(
     issueNumber: number,
-    command: string
+    command: string,
   ): Promise<{ stdout: string; stderr: string }> {
     const info = this.worktrees.get(issueNumber);
     if (!info) {

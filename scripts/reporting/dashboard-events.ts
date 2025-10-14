@@ -24,7 +24,7 @@ async function sendAgentEvent(
   eventType: 'started' | 'progress' | 'completed' | 'error',
   agentId: AgentId,
   issueNumber: number,
-  data?: any
+  data?: any,
 ): Promise<void> {
   // Fire-and-forget: don't block on response
   const controller = new AbortController();
@@ -76,7 +76,7 @@ export async function emitAgentProgress(
   agentId: AgentId,
   issueNumber: number,
   progress: number,
-  message?: string
+  message?: string,
 ): Promise<void> {
   await sendAgentEvent('progress', agentId, issueNumber, { progress, message });
 }
@@ -87,7 +87,7 @@ export async function emitAgentProgress(
 export async function emitAgentCompleted(
   agentId: AgentId,
   issueNumber: number,
-  result?: { success: boolean; [key: string]: any }
+  result?: { success: boolean; [key: string]: any },
 ): Promise<void> {
   await sendAgentEvent('completed', agentId, issueNumber, { result: result || { success: true } });
 }
@@ -98,7 +98,7 @@ export async function emitAgentCompleted(
 export async function emitAgentError(
   agentId: AgentId,
   issueNumber: number,
-  error: string | Error
+  error: string | Error,
 ): Promise<void> {
   const errorMsg = error instanceof Error ? error.message : error;
   await sendAgentEvent('error', agentId, issueNumber, { error: errorMsg });
@@ -110,7 +110,7 @@ export async function emitAgentError(
 export async function withAgentTracking<T>(
   agentId: AgentId,
   issueNumber: number,
-  fn: (progress: (p: number, msg?: string) => void) => Promise<T>
+  fn: (progress: (p: number, msg?: string) => void) => Promise<T>,
 ): Promise<T> {
   await emitAgentStarted(agentId, issueNumber);
 

@@ -40,7 +40,7 @@ async function executeIssue101() {
       autoSave: true,
     },
     goalManager,
-    validator
+    validator,
   );
 
   console.log('✅ Components initialized');
@@ -238,7 +238,7 @@ Task 3.4: Testing & Polish
     const iteration = await orchestrator.executeIteration(
       loop.loopId,
       sessionId,
-      metrics
+      metrics,
     );
 
     console.log(`   📊 Score: ${iteration.consumptionReport.overallScore.toFixed(1)}/100`);

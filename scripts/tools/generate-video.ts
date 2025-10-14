@@ -180,7 +180,7 @@ async function createVideoFromImages(
     fps: number;
     duration: number;
     transition: 'fade' | 'slide' | 'none';
-  }
+  },
 ): Promise<string> {
   const tempOutput = path.join(DEFAULT_OUTPUT_DIR, `temp-${Date.now()}.mp4`);
   ensureDirectoryExists(path.dirname(tempOutput));
@@ -228,7 +228,7 @@ function createFadeTransitionFilter(
   duration: number,
   transitionDuration: number,
   width: number,
-  height: number
+  height: number,
 ): { filter: string; map: string } {
   let filter = '';
   const segments: string[] = [];
@@ -248,7 +248,7 @@ function createFadeTransitionFilter(
 
   // Build final concat if multiple segments
   if (numImages > 2) {
-    filter += segments.map((s) => `[${s}]`).join('') + `concat=n=${segments.length}:v=1:a=0[outv]`;
+    filter += `${segments.map((s) => `[${s}]`).join('')  }concat=n=${segments.length}:v=1:a=0[outv]`;
     return { filter, map: '[outv]' };
   } else if (numImages === 2) {
     return { filter, map: `[${segments[segments.length - 1]}]` };
@@ -265,7 +265,7 @@ function createSlideTransitionFilter(
   duration: number,
   transitionDuration: number,
   width: number,
-  height: number
+  height: number,
 ): { filter: string; map: string } {
   let filter = '';
 
@@ -316,7 +316,7 @@ async function addAudioToVideo(videoPath: string, audioPath: string, outputPath:
  */
 async function addTextOverlay(
   videoPath: string,
-  text: { title?: string; subtitle?: string }
+  text: { title?: string; subtitle?: string },
 ): Promise<string> {
   if (!text.title && !text.subtitle) {
     return videoPath;

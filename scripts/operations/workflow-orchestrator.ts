@@ -162,7 +162,7 @@ export class WorkflowOrchestrator {
     console.log(`🔄 Executing parallel workflows for ${issueNumbers.length} issues`);
 
     const workflows = await Promise.all(
-      issueNumbers.map((num) => this.createWorkflow(num, workflowType))
+      issueNumbers.map((num) => this.createWorkflow(num, workflowType)),
     );
 
     await Promise.all(workflows.map((workflow) => this.executeWorkflow(workflow.id)));
@@ -378,7 +378,7 @@ export class WorkflowOrchestrator {
       await this.stateMachine.transitionState(
         workflow.issueNumber,
         newState,
-        `Workflow step: ${step.name}`
+        `Workflow step: ${step.name}`,
       );
     }
   }
@@ -400,7 +400,7 @@ export class WorkflowOrchestrator {
   }
 
   private getTaskDuration(task: Task): number {
-    if (!task.startTime || !task.endTime) return 0;
+    if (!task.startTime || !task.endTime) {return 0;}
     return Math.round((task.endTime.getTime() - task.startTime.getTime()) / 1000 / 60);
   }
 

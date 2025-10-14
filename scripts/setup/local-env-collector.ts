@@ -251,7 +251,7 @@ class LocalEnvCollector {
       return;
     }
 
-    const promises: Promise<void>[] = [];
+    const promises: Array<Promise<void>> = [];
 
     for (const [name, target] of Object.entries(this.config.webhook_targets)) {
       if (!target.enabled || !target.events.includes(payload.event)) {
@@ -279,7 +279,7 @@ class LocalEnvCollector {
           })
           .catch((error) => {
             console.error(`❌ Failed to send webhook to ${name}:`, error.message);
-          })
+          }),
       );
     }
 

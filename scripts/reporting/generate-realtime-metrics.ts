@@ -92,7 +92,7 @@ async function generateMetrics(): Promise<DashboardData> {
 
   // Summary metrics
   const completedItems = items.filter(
-    (item: any) => item.content.state === 'CLOSED' || item.content.state === 'MERGED'
+    (item: any) => item.content.state === 'CLOSED' || item.content.state === 'MERGED',
   );
   const inProgressItems = items.filter((item: any) => item.content.state === 'OPEN');
 
@@ -100,7 +100,7 @@ async function generateMetrics(): Promise<DashboardData> {
   const agentMap = new Map<string, any[]>();
   items.forEach((item: any) => {
     const agentField = item.fieldValues.nodes.find((fv: any) => fv.field?.name === 'Agent');
-    const agent = (agentField as any)?.name || 'Unassigned';
+    const agent = (agentField)?.name || 'Unassigned';
 
     if (!agentMap.has(agent)) {
       agentMap.set(agent, []);
@@ -110,12 +110,12 @@ async function generateMetrics(): Promise<DashboardData> {
 
   const agents: AgentMetrics[] = Array.from(agentMap.entries()).map(([name, agentItems]) => {
     const completed = agentItems.filter(
-      (item: any) => item.content.state === 'CLOSED' || item.content.state === 'MERGED'
+      (item: any) => item.content.state === 'CLOSED' || item.content.state === 'MERGED',
     );
     const durations = agentItems
       .map((item: any) => {
         const durationField = item.fieldValues.nodes.find((fv: any) => fv.field?.name === 'Duration');
-        return (durationField as any)?.number || null;
+        return (durationField)?.number || null;
       })
       .filter((d: any) => d !== null);
 
@@ -138,7 +138,7 @@ async function generateMetrics(): Promise<DashboardData> {
   const stateMap = new Map<string, any[]>();
   items.forEach((item: any) => {
     const stateField = item.fieldValues.nodes.find((fv: any) => fv.field?.name === 'State');
-    const state = (stateField as any)?.name || item.content.state;
+    const state = (stateField)?.name || item.content.state;
 
     if (!stateMap.has(state)) {
       stateMap.set(state, []);
@@ -157,7 +157,7 @@ async function generateMetrics(): Promise<DashboardData> {
   const priorityMap = new Map<string, any[]>();
   items.forEach((item: any) => {
     const priorityField = item.fieldValues.nodes.find((fv: any) => fv.field?.name === 'Priority');
-    const priority = (priorityField as any)?.name || 'P2-Medium';
+    const priority = (priorityField)?.name || 'P2-Medium';
 
     if (!priorityMap.has(priority)) {
       priorityMap.set(priority, []);
@@ -168,7 +168,7 @@ async function generateMetrics(): Promise<DashboardData> {
   const priorities: PriorityMetrics[] = Array.from(priorityMap.entries()).map(
     ([priority, priorityItems]) => {
       const completed = priorityItems.filter(
-        (item: any) => item.content.state === 'CLOSED' || item.content.state === 'MERGED'
+        (item: any) => item.content.state === 'CLOSED' || item.content.state === 'MERGED',
       );
       return {
         priority,
@@ -178,7 +178,7 @@ async function generateMetrics(): Promise<DashboardData> {
           ? (completed.length / priorityItems.length) * 100
           : 0,
       };
-    }
+    },
   );
 
   // Recent activity (last 10 completed items)
@@ -193,9 +193,9 @@ async function generateMetrics(): Promise<DashboardData> {
       return {
         number: item.content.number,
         title: item.content.title,
-        state: (stateField as any)?.name || item.content.state,
-        agent: (agentField as any)?.name || 'Unknown',
-        duration: (durationField as any)?.number || null,
+        state: (stateField)?.name || item.content.state,
+        agent: (agentField)?.name || 'Unknown',
+        duration: (durationField)?.number || null,
         timestamp: new Date().toISOString(), // TODO: Get actual completion time
       };
     });
@@ -213,7 +213,7 @@ async function generateMetrics(): Promise<DashboardData> {
   const allDurations = items
     .map((item: any) => {
       const durationField = item.fieldValues.nodes.find((fv: any) => fv.field?.name === 'Duration');
-      return (durationField as any)?.number || null;
+      return (durationField)?.number || null;
     })
     .filter((d: any) => d !== null);
 

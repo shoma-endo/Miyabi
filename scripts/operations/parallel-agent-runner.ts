@@ -12,9 +12,10 @@
  * Phase I: Issue #5 - Scalability & Performance Optimization
  */
 
-import { AgentConfig, Task, AgentResult, AgentType } from '@miyabi/coding-agents/types/index';
-import { PerformanceOptimizer, createPerformanceOptimizer } from '../cicd/performance-optimizer';
-import { Octokit } from '@octokit/rest';
+import type { AgentConfig, Task, AgentResult, AgentType } from '@miyabi/coding-agents/types/index';
+import type { PerformanceOptimizer} from '../cicd/performance-optimizer';
+import { createPerformanceOptimizer } from '../cicd/performance-optimizer';
+import type { Octokit } from '@octokit/rest';
 
 // ============================================================================
 // Types & Interfaces
@@ -96,7 +97,7 @@ export class ParallelAgentRunner {
     private poolConfig: WorkerPoolConfig,
     private distributionStrategy: TaskDistributionStrategy,
     private retryConfig: RetryConfig,
-    octokit?: Octokit
+    octokit?: Octokit,
   ) {
     this.optimizer = createPerformanceOptimizer({
       maxConcurrency: poolConfig.maxWorkers,
@@ -201,7 +202,7 @@ export class ParallelAgentRunner {
     if (loadRatio >= this.poolConfig.scaleUpThreshold && stats.totalWorkers < this.poolConfig.maxWorkers) {
       const workersToAdd = Math.min(
         Math.ceil(stats.totalWorkers * 0.5),
-        this.poolConfig.maxWorkers - stats.totalWorkers
+        this.poolConfig.maxWorkers - stats.totalWorkers,
       );
 
       console.log(`[ParallelAgentRunner] Scaling up: adding ${workersToAdd} workers (load: ${(loadRatio * 100).toFixed(1)}%)`);
@@ -215,7 +216,7 @@ export class ParallelAgentRunner {
     if (loadRatio <= this.poolConfig.scaleDownThreshold && stats.totalWorkers > this.poolConfig.minWorkers) {
       const workersToRemove = Math.min(
         Math.ceil((stats.totalWorkers - stats.activeWorkers) * 0.5),
-        stats.totalWorkers - this.poolConfig.minWorkers
+        stats.totalWorkers - this.poolConfig.minWorkers,
       );
 
       console.log(`[ParallelAgentRunner] Scaling down: removing ${workersToRemove} workers (load: ${(loadRatio * 100).toFixed(1)}%)`);
@@ -374,7 +375,7 @@ export class ParallelAgentRunner {
    */
   private selectLeastLoaded(workers: WorkerConfig[]): WorkerConfig {
     return workers.reduce((min, worker) =>
-      worker.currentLoad < min.currentLoad ? worker : min
+      worker.currentLoad < min.currentLoad ? worker : min,
     );
   }
 
@@ -385,7 +386,7 @@ export class ParallelAgentRunner {
     const requiredSkills = this.getRequiredSkills(task);
 
     const matchingWorkers = workers.filter(w =>
-      requiredSkills.every(skill => w.skills.includes(skill))
+      requiredSkills.every(skill => w.skills.includes(skill)),
     );
 
     return matchingWorkers.length > 0
@@ -398,7 +399,7 @@ export class ParallelAgentRunner {
    */
   private selectByPriority(workers: WorkerConfig[]): WorkerConfig {
     return workers.reduce((max, worker) =>
-      worker.priority > max.priority ? worker : max
+      worker.priority > max.priority ? worker : max,
     );
   }
 
@@ -448,7 +449,7 @@ export class ParallelAgentRunner {
       // Execute with performance profiling
       const result = await this.optimizer.profile(
         `task-${task.type}`,
-        () => this.executeAgentTask(task, worker)
+        () => this.executeAgentTask(task, worker),
       );
 
       const endTime = Date.now();
@@ -758,7 +759,7 @@ export function createParallelAgentRunner(
   poolConfig?: Partial<WorkerPoolConfig>,
   distributionStrategy?: Partial<TaskDistributionStrategy>,
   retryConfig?: Partial<RetryConfig>,
-  octokit?: Octokit
+  octokit?: Octokit,
 ): ParallelAgentRunner {
   const defaultPoolConfig: WorkerPoolConfig = {
     minWorkers: 2,
@@ -788,6 +789,6 @@ export function createParallelAgentRunner(
     { ...defaultPoolConfig, ...poolConfig },
     { ...defaultDistributionStrategy, ...distributionStrategy },
     { ...defaultRetryConfig, ...retryConfig },
-    octokit
+    octokit,
   );
 }

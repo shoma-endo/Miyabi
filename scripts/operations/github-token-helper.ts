@@ -23,7 +23,7 @@ export function getGitHubTokenSync(): string {
   try {
     const token = execSync('gh auth token', {
       encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'] // Suppress stderr
+      stdio: ['pipe', 'pipe', 'pipe'], // Suppress stderr
     }).trim();
 
     if (token && token.length > 0) {
@@ -48,7 +48,7 @@ export function getGitHubTokenSync(): string {
     'GitHub token not found. Please either:\n' +
     '  1. Authenticate with GitHub CLI: gh auth login\n' +
     '  2. Set GITHUB_TOKEN environment variable\n' +
-    '  3. Set GH_TOKEN environment variable'
+    '  3. Set GH_TOKEN environment variable',
   );
 }
 

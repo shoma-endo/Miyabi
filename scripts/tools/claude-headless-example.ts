@@ -142,7 +142,7 @@ async function example5Parallel() {
       } finally {
         await client.close();
       }
-    })
+    }),
   );
 
   console.log('\n結果:');

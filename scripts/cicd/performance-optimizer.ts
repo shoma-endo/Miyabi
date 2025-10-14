@@ -13,7 +13,7 @@
  * Phase I: Issue #5 - Scalability & Performance Optimization
  */
 
-import { Octokit } from '@octokit/rest';
+import type { Octokit } from '@octokit/rest';
 
 // ============================================================================
 // Types & Interfaces
@@ -87,12 +87,12 @@ export class PerformanceOptimizer {
   private rateLimits: Map<string, RateLimitInfo> = new Map();
   private metrics: PerformanceMetrics[] = [];
   private activeOperations: Map<string, Promise<any>> = new Map();
-  private queue: QueueTask<any>[] = [];
+  private queue: Array<QueueTask<any>> = [];
   private loadBalancerState: Map<string, number> = new Map();
 
   constructor(
     private config: OptimizerConfig,
-    private octokit?: Octokit
+    private octokit?: Octokit,
   ) {
     this.startCacheCleanup();
   }
@@ -107,7 +107,7 @@ export class PerformanceOptimizer {
   async withCache<T>(
     key: string,
     fn: () => Promise<T>,
-    ttlMs?: number
+    ttlMs?: number,
   ): Promise<T> {
     const cached = this.getFromCache<T>(key);
 
@@ -222,7 +222,7 @@ export class PerformanceOptimizer {
    */
   async withRateLimit<T>(
     resource: string,
-    fn: () => Promise<T>
+    fn: () => Promise<T>,
   ): Promise<T> {
     await this.waitForRateLimit(resource);
 
@@ -293,7 +293,7 @@ export class PerformanceOptimizer {
    * Process items in batches with rate limiting
    */
   async batchProcess<T, R>(
-    operation: BatchOperation<T, R>
+    operation: BatchOperation<T, R>,
   ): Promise<R[]> {
     const results: R[] = [];
     const batches = this.createBatches(operation.items, operation.batchSize);
@@ -343,15 +343,13 @@ export class PerformanceOptimizer {
   async batchGitHubOperations<T>(
     operations: Array<() => Promise<T>>,
     batchSize: number = 10,
-    delayMs: number = 1000
+    delayMs: number = 1000,
   ): Promise<T[]> {
     return this.batchProcess({
       id: `github-batch-${Date.now()}`,
       items: operations,
       batchSize,
-      processor: async (batch) => {
-        return Promise.all(batch.map(op => op()));
-      },
+      processor: async (batch) => Promise.all(batch.map(op => op())),
       delayMs,
     });
   }
@@ -365,11 +363,11 @@ export class PerformanceOptimizer {
    */
   async parallelExecute<T>(
     tasks: Array<() => Promise<T>>,
-    concurrency?: number
+    concurrency?: number,
   ): Promise<T[]> {
     const limit = concurrency || this.config.maxConcurrency;
     const results: T[] = [];
-    const executing: Promise<void>[] = [];
+    const executing: Array<Promise<void>> = [];
 
     for (const task of tasks) {
       const promise = task().then(result => {
@@ -382,7 +380,7 @@ export class PerformanceOptimizer {
         await Promise.race(executing);
         executing.splice(
           executing.findIndex(p => p === promise),
-          1
+          1,
         );
       }
     }
@@ -396,7 +394,7 @@ export class PerformanceOptimizer {
    */
   async withDeduplication<T>(
     key: string,
-    fn: () => Promise<T>
+    fn: () => Promise<T>,
   ): Promise<T> {
     const existing = this.activeOperations.get(key);
 
@@ -517,7 +515,7 @@ export class PerformanceOptimizer {
     id: string,
     data: T,
     priority: number = 5,
-    maxRetries: number = 3
+    maxRetries: number = 3,
   ): void {
     if (this.queue.length >= this.config.queueMaxSize) {
       throw new Error('Queue is full');
@@ -615,7 +613,7 @@ export class PerformanceOptimizer {
    */
   async profile<T>(
     operationName: string,
-    fn: () => Promise<T>
+    fn: () => Promise<T>,
   ): Promise<T> {
     const startTime = Date.now();
 
@@ -636,7 +634,7 @@ export class PerformanceOptimizer {
     operationName: string,
     cacheHit: boolean,
     throttled: boolean = false,
-    startTime?: number
+    startTime?: number,
   ): void {
     if (!this.config.metricsEnabled) {
       return;
@@ -783,7 +781,7 @@ export class PerformanceOptimizer {
  */
 export function createPerformanceOptimizer(
   config?: Partial<OptimizerConfig>,
-  octokit?: Octokit
+  octokit?: Octokit,
 ): PerformanceOptimizer {
   const defaultConfig: OptimizerConfig = {
     cacheTTLMs: 5 * 60 * 1000, // 5 minutes
@@ -798,6 +796,6 @@ export function createPerformanceOptimizer(
 
   return new PerformanceOptimizer(
     { ...defaultConfig, ...config },
-    octokit
+    octokit,
   );
 }

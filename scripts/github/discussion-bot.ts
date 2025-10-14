@@ -143,7 +143,7 @@ class DiscussionBot {
     console.log(chalk.gray(`  Reasoning: ${analysis.reasoning}\n`));
 
     // Execute bot actions
-    const actions: Promise<void>[] = [];
+    const actions: Array<Promise<void>> = [];
 
     if (this.config.enableWelcomeMessage) {
       actions.push(this.sendWelcomeMessage(discussion));

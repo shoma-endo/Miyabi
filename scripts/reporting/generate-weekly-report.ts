@@ -20,9 +20,9 @@ import { Octokit } from '@octokit/rest';
 // ============================================================================
 
 function formatDuration(ms: number): string {
-  if (ms < 1000) return `${ms}ms`;
-  if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
-  if (ms < 3600000) return `${(ms / 60000).toFixed(1)}m`;
+  if (ms < 1000) {return `${ms}ms`;}
+  if (ms < 60000) {return `${(ms / 1000).toFixed(1)}s`;}
+  if (ms < 3600000) {return `${(ms / 60000).toFixed(1)}m`;}
   return `${(ms / 3600000).toFixed(1)}h`;
 }
 
@@ -118,7 +118,7 @@ function formatAgentTable(metrics: AgentMetrics[]): string {
 }
 
 function formatTopQualityTable(
-  issues: Array<{ number: number; title: string; score: number }>
+  issues: Array<{ number: number; title: string; score: number }>,
 ): string {
   if (issues.length === 0) {
     return '_No quality scores recorded this week_';
@@ -153,13 +153,13 @@ function formatCostChart(metrics: AgentMetrics[]): string {
 }
 
 function calculateAvgQuality(metrics: AgentMetrics[]): number {
-  if (metrics.length === 0) return 0;
+  if (metrics.length === 0) {return 0;}
   const sum = metrics.reduce((acc, m) => acc + m.avgQualityScore, 0);
   return sum / metrics.length;
 }
 
 function calculateAvgDuration(metrics: AgentMetrics[]): number {
-  if (metrics.length === 0) return 0;
+  if (metrics.length === 0) {return 0;}
   const sum = metrics.reduce((acc, m) => acc + m.avgDuration, 0);
   return sum / metrics.length;
 }
@@ -198,11 +198,11 @@ function generateInsights(report: WeeklyReport): string {
 
   // Agent insight
   const mostActive = report.agentMetrics.sort(
-    (a, b) => b.executionCount - a.executionCount
+    (a, b) => b.executionCount - a.executionCount,
   )[0];
   if (mostActive) {
     insights.push(
-      `🤖 **Most active**: ${mostActive.agent} (${mostActive.executionCount} executions)`
+      `🤖 **Most active**: ${mostActive.agent} (${mostActive.executionCount} executions)`,
     );
   }
 
@@ -216,7 +216,7 @@ function generateRecommendations(report: WeeklyReport): string {
   const avgQuality = calculateAvgQuality(report.agentMetrics);
   if (avgQuality < 80) {
     recommendations.push(
-      '1. **Quality Improvement**: Consider adding more test coverage and stricter linting rules'
+      '1. **Quality Improvement**: Consider adding more test coverage and stricter linting rules',
     );
   }
 
@@ -225,14 +225,14 @@ function generateRecommendations(report: WeeklyReport): string {
   if (avgDuration > 300000) {
     // > 5 minutes
     recommendations.push(
-      '2. **Performance**: Review agent execution times - consider optimizing long-running tasks'
+      '2. **Performance**: Review agent execution times - consider optimizing long-running tasks',
     );
   }
 
   // Cost recommendations
   if (report.totalCost > 10) {
     recommendations.push(
-      '3. **Cost Optimization**: High API usage detected - review caching strategies and API call patterns'
+      '3. **Cost Optimization**: High API usage detected - review caching strategies and API call patterns',
     );
   }
 
@@ -240,7 +240,7 @@ function generateRecommendations(report: WeeklyReport): string {
   const completionRate = (report.completedIssues / report.totalIssues) * 100;
   if (completionRate < 70) {
     recommendations.push(
-      '4. **Delivery**: Low completion rate - consider breaking down complex issues into smaller tasks'
+      '4. **Delivery**: Low completion rate - consider breaking down complex issues into smaller tasks',
     );
   }
 
@@ -259,7 +259,7 @@ async function createWeeklyReportIssue(
   token: string,
   owner: string,
   repo: string,
-  report: WeeklyReport
+  report: WeeklyReport,
 ): Promise<number> {
   const octokit = new Octokit({ auth: token });
 
@@ -307,7 +307,7 @@ async function main() {
   try {
     const report = await api.generateWeeklyReport();
 
-    console.log('\n' + formatMarkdownReport(report));
+    console.log(`\n${  formatMarkdownReport(report)}`);
 
     // Check if should create Issue
     const createIssue = process.argv.includes('--create-issue');

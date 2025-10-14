@@ -212,7 +212,7 @@ async function main() {
       console.log(`   📊 Session statuses:`);
       sessions.forEach((s) => {
         console.log(
-          `      - ${s.sessionId}: ${s.status} (idle: ${s.idleTime}ms)`
+          `      - ${s.sessionId}: ${s.status} (idle: ${s.idleTime}ms)`,
         );
       });
 
@@ -255,7 +255,7 @@ async function main() {
       message: 'WebhookClient handles server unavailability gracefully',
     });
     console.log(
-      '   ✅ WebhookClient gracefully handles unavailable server'
+      '   ✅ WebhookClient gracefully handles unavailable server',
     );
   } catch (error: any) {
     testResults.push({
@@ -285,7 +285,7 @@ async function main() {
 
   console.log('');
   console.log(
-    `   Total: ${passedCount}/${totalCount} passed (${passRate.toFixed(1)}%)`
+    `   Total: ${passedCount}/${totalCount} passed (${passRate.toFixed(1)}%)`,
   );
   console.log('');
 
@@ -293,11 +293,11 @@ async function main() {
     console.log('🎉 All tests passed! Water Spider is ready to use.');
   } else if (passRate >= 80) {
     console.log(
-      '✅ Most tests passed. Water Spider is functional with minor issues.'
+      '✅ Most tests passed. Water Spider is functional with minor issues.',
     );
   } else {
     console.log(
-      '⚠️  Some tests failed. Check the results above for details.'
+      '⚠️  Some tests failed. Check the results above for details.',
     );
   }
 

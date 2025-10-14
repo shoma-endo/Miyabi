@@ -25,7 +25,7 @@ const DEFAULT_OPTIONS: Required<RetryOptions> = {
  */
 export async function withRetry<T>(
   fn: () => Promise<T>,
-  options: RetryOptions = {}
+  options: RetryOptions = {},
 ): Promise<T> {
   const opts = { ...DEFAULT_OPTIONS, ...options };
   let lastError: Error | undefined;
@@ -40,7 +40,7 @@ export async function withRetry<T>(
 
       // Check if error is retryable
       const isRetryable = opts.retryableErrors.some((retryableError) =>
-        errorMessage.includes(retryableError.toLowerCase())
+        errorMessage.includes(retryableError.toLowerCase()),
       );
 
       // Don't retry on last attempt or non-retryable errors

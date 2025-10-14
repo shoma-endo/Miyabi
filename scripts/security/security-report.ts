@@ -501,17 +501,12 @@ async function main() {
     // Update summary
     report.dependabotAlerts.forEach(alert => {
       const severity = alert.security_advisory.severity.toLowerCase();
-      if (severity === 'critical') report.summary.criticalCount++;
-      else if (severity === 'high') report.summary.highCount++;
-      else if (severity === 'moderate') report.summary.moderateCount++;
-      else if (severity === 'low') report.summary.lowCount++;
+      if (severity === 'critical') {report.summary.criticalCount++;} else if (severity === 'high') {report.summary.highCount++;} else if (severity === 'moderate') {report.summary.moderateCount++;} else if (severity === 'low') {report.summary.lowCount++;}
     });
 
     report.codeqlAlerts.forEach(alert => {
       const severity = alert.rule.severity.toLowerCase();
-      if (severity === 'critical' || severity === 'error') report.summary.criticalCount++;
-      else if (severity === 'high' || severity === 'warning') report.summary.highCount++;
-      else report.summary.moderateCount++;
+      if (severity === 'critical' || severity === 'error') {report.summary.criticalCount++;} else if (severity === 'high' || severity === 'warning') {report.summary.highCount++;} else {report.summary.moderateCount++;}
     });
 
     // Secret scanning is always critical

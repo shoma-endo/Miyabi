@@ -97,7 +97,7 @@ export class IntegratedSystem {
         autoSave: true,
       },
       this.goalManager,
-      this.consumptionValidator
+      this.consumptionValidator,
     );
 
     // Initialize Water Spider Agent
@@ -239,12 +239,12 @@ export class IntegratedSystem {
       const iterationRecord = await this.feedbackLoopOrchestrator.executeIteration(
         loop.loopId,
         `session-${iteration}`,
-        metrics
+        metrics,
       );
 
       console.log(`   Score: ${iterationRecord.consumptionReport.overallScore}/100`);
       console.log(
-        `   Goal Achieved: ${iterationRecord.consumptionReport.goalAchieved}`
+        `   Goal Achieved: ${iterationRecord.consumptionReport.goalAchieved}`,
       );
       console.log(`   ${iterationRecord.feedback.summary}`);
       console.log('');
@@ -266,7 +266,7 @@ export class IntegratedSystem {
       console.log(`   Status: ${finalLoop.status}`);
       console.log(`   Iterations: ${finalLoop.iteration}`);
       console.log(
-        `   Final Score: ${finalLoop.iterations[finalLoop.iterations.length - 1]?.consumptionReport.overallScore || 0}/100`
+        `   Final Score: ${finalLoop.iterations[finalLoop.iterations.length - 1]?.consumptionReport.overallScore || 0}/100`,
       );
       console.log('');
     }
@@ -342,7 +342,7 @@ export class IntegratedSystem {
 
     // Simulated progressive improvement (fallback)
     const loop = Array.from(this.activeLoops.values()).find(
-      (l) => l.goalId === goalId
+      (l) => l.goalId === goalId,
     );
     const iteration = loop?.iteration || 0;
 

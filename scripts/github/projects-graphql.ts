@@ -11,7 +11,7 @@ interface ProjectField {
   id: string;
   name: string;
   dataType: string;
-  options?: { id: string; name: string }[];
+  options?: Array<{ id: string; name: string }>;
 }
 
 interface ProjectItem {
@@ -35,7 +35,7 @@ interface ProjectItem {
 export async function getProjectInfo(
   owner: string,
   projectNumber: number,
-  token: string
+  token: string,
 ): Promise<{ projectId: string; fields: ProjectField[] }> {
   const graphqlWithAuth = graphql.defaults({
     headers: { authorization: `token ${token}` },
@@ -84,7 +84,7 @@ export async function getProjectInfo(
 export async function addItemToProject(
   projectId: string,
   contentId: string,
-  token: string
+  token: string,
 ): Promise<string> {
   const graphqlWithAuth = graphql.defaults({
     headers: { authorization: `token ${token}` },
@@ -115,7 +115,7 @@ export async function updateProjectField(
   itemId: string,
   fieldId: string,
   value: string | number,
-  token: string
+  token: string,
 ): Promise<void> {
   const graphqlWithAuth = graphql.defaults({
     headers: { authorization: `token ${token}` },
@@ -160,7 +160,7 @@ export async function updateSingleSelectField(
   itemId: string,
   fieldId: string,
   optionId: string,
-  token: string
+  token: string,
 ): Promise<void> {
   const graphqlWithAuth = graphql.defaults({
     headers: { authorization: `token ${token}` },
@@ -190,7 +190,7 @@ export async function updateSingleSelectField(
 export async function getProjectItems(
   owner: string,
   projectNumber: number,
-  token: string
+  token: string,
 ): Promise<ProjectItem[]> {
   const graphqlWithAuth = graphql.defaults({
     headers: { authorization: `token ${token}` },
@@ -260,7 +260,7 @@ export async function getProjectItems(
 export async function generateWeeklyReport(
   owner: string,
   projectNumber: number,
-  token: string
+  token: string,
 ): Promise<string> {
   const items = await getProjectItems(owner, projectNumber, token);
 

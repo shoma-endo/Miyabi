@@ -39,7 +39,7 @@ async function demo() {
       autoSave: true,
     },
     goalManager,
-    validator
+    validator,
   );
 
   console.log('✅ Components initialized');
@@ -150,7 +150,7 @@ async function demo() {
     const iteration = await orchestrator.executeIteration(
       loop.loopId,
       sessionId,
-      metrics
+      metrics,
     );
 
     console.log(`   📊 Score: ${iteration.consumptionReport.overallScore}/100`);

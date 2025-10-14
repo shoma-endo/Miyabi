@@ -95,7 +95,7 @@ const VOICE_DESCRIPTIONS: Record<string, string> = {
   Charon: 'Deep and authoritative, good for narration',
   Kore: 'Clear and natural, ideal for general purposes',
   Fenrir: 'Strong and dynamic, great for announcements',
-  Aoede: 'Melodic and pleasant, perfect for conversational content'
+  Aoede: 'Melodic and pleasant, perfect for conversational content',
 };
 
 // ============================================================================
@@ -108,7 +108,7 @@ export async function generateSpeech(options: GenerateSpeechOptions): Promise<st
   if (!apiKey) {
     throw new Error(
       'GOOGLE_API_KEY is required. Set it as environment variable or pass via --api-key option.\n' +
-      'Get your API key from: https://aistudio.google.com/apikey'
+      'Get your API key from: https://aistudio.google.com/apikey',
     );
   }
 

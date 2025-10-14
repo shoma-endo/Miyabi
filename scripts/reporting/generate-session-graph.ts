@@ -4,7 +4,7 @@
  * 現在のClaude Codeセッション活動をEntity-Relationグラフとして生成
  */
 
-import {
+import type {
   EntityRelationGraph,
   IssueNode,
   TaskNode,

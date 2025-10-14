@@ -134,7 +134,7 @@ class MCPClientManager {
           capabilities: {
             tools: {},
           },
-        }
+        },
       );
 
       // 接続
@@ -158,7 +158,7 @@ class MCPClientManager {
       this.transports.set(serverName, transport);
 
       spinner.succeed(
-        chalk.green(`✅ 接続成功: ${serverName} (${toolsResponse.tools?.length || 0}ツール)`)
+        chalk.green(`✅ 接続成功: ${serverName} (${toolsResponse.tools?.length || 0}ツール)`),
       );
     } catch (error) {
       spinner.fail(chalk.red(`❌ 接続失敗: ${serverName}`));
@@ -247,7 +247,7 @@ class ClaudeHeadless {
         'ANTHROPIC_API_KEY環境変数が設定されていません。' +
         '\n\n以下のいずれかの方法で設定してください:' +
         '\n1. export ANTHROPIC_API_KEY="your-key"' +
-        '\n2. new ClaudeHeadless("your-key")'
+        '\n2. new ClaudeHeadless("your-key")',
       );
     }
 
@@ -338,7 +338,7 @@ class ClaudeHeadless {
         max_tokens: maxTokens,
         temperature,
         system: systemMessages.length > 0 ? systemMessages : undefined,
-        tools: tools,
+        tools,
         messages: [
           {
             role: 'user',

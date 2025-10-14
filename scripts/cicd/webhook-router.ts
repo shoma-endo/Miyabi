@@ -247,7 +247,7 @@ class WebhookEventRouter {
         if (attempt < RETRY_CONFIG.maxRetries) {
           const delay = Math.min(
             RETRY_CONFIG.initialDelayMs * Math.pow(RETRY_CONFIG.backoffMultiplier, attempt),
-            RETRY_CONFIG.maxDelayMs
+            RETRY_CONFIG.maxDelayMs,
           );
           console.log(`⏳ Retrying in ${delay}ms...`);
           await this.sleep(delay);
@@ -317,7 +317,7 @@ class WebhookEventRouter {
    */
   private parseCommand(body: string): { command: string; args: string[] } | null {
     const match = body.match(/^\/(\w+)(?:\s+(.+))?/);
-    if (!match) return null;
+    if (!match) {return null;}
 
     const [, command, argsString] = match;
     const args = argsString ? argsString.split(/\s+/) : [];

@@ -19,7 +19,7 @@ const rl = readline.createInterface({
 });
 
 async function ask(question: string): Promise<string> {
-  return await rl.question(question);
+  return rl.question(question);
 }
 
 interface Task {
@@ -35,7 +35,7 @@ async function fetchIssue(issueNumber: number): Promise<Task | null> {
   try {
     const issueJson = execSync(
       `gh issue view ${issueNumber} --json number,title,body,labels,assignees,state`,
-      { encoding: 'utf-8' }
+      { encoding: 'utf-8' },
     );
 
     const issue = JSON.parse(issueJson);
@@ -61,7 +61,7 @@ function analyzeTask(task: Task): {
   // ラベルから判定
   const labels = task.labels.map((l) => l.toLowerCase());
 
-  let subagentType = 'general-purpose';
+  const subagentType = 'general-purpose';
   let complexity = 'medium';
   let estimatedTime = 120;
 
@@ -146,7 +146,7 @@ async function main() {
       borderStyle: 'round',
       borderColor: theme.colors.info,
       padding: 1,
-    }
+    },
   );
 
   logger.newline();
@@ -182,7 +182,7 @@ async function main() {
       borderStyle: 'round',
       borderColor: theme.colors.primary,
       padding: 1,
-    }
+    },
   );
 
   logger.newline();
@@ -209,7 +209,7 @@ async function main() {
       borderStyle: 'round',
       borderColor: theme.colors.warning,
       padding: 1,
-    }
+    },
   );
 
   logger.newline();
@@ -227,7 +227,7 @@ async function main() {
       borderStyle: 'bold',
       borderColor: theme.colors.success,
       padding: 1,
-    }
+    },
   );
 
   logger.newline();

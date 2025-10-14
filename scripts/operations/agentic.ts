@@ -19,7 +19,7 @@ const rl = readline.createInterface({
 });
 
 async function ask(question: string): Promise<string> {
-  return await rl.question(question);
+  return rl.question(question);
 }
 
 async function main() {
@@ -36,7 +36,7 @@ async function main() {
       borderStyle: 'round',
       borderColor: theme.colors.success,
       padding: 1,
-    }
+    },
   );
 
   logger.newline();
@@ -94,7 +94,7 @@ async function main() {
       borderStyle: 'round',
       borderColor: theme.colors.info,
       padding: 1,
-    }
+    },
   );
 
   logger.newline();
@@ -120,7 +120,7 @@ async function main() {
       borderStyle: 'round',
       borderColor: theme.colors.agent,
       padding: 1,
-    }
+    },
   );
 
   logger.newline();
@@ -146,7 +146,7 @@ async function main() {
       borderStyle: 'round',
       borderColor: theme.colors.primary,
       padding: 1,
-    }
+    },
   );
 
   logger.newline();
@@ -217,7 +217,7 @@ async function main() {
       borderStyle: 'round',
       borderColor: theme.colors.info,
       padding: 1,
-    }
+    },
   );
 
   logger.newline();
@@ -269,7 +269,7 @@ npx tsx scripts/execute-task.ts --issue <issue-number>
 
     const issueUrl = execSync(
       `gh issue create --title "${taskTitle}" --body "${issueBody.replace(/"/g, '\\"')}"`,
-      { encoding: 'utf-8' }
+      { encoding: 'utf-8' },
     ).trim();
 
     logger.stopSpinnerSuccess(spinner, 'Issue作成完了！');
@@ -289,7 +289,7 @@ npx tsx scripts/execute-task.ts --issue <issue-number>
         borderStyle: 'bold',
         borderColor: theme.colors.success,
         padding: 1,
-      }
+      },
     );
 
     logger.newline();
@@ -303,7 +303,7 @@ npx tsx scripts/execute-task.ts --issue <issue-number>
       logger.newline();
 
       logger.info(
-        'Claude Code Task Toolが自動的にAgentを起動し、作業を開始します。'
+        'Claude Code Task Toolが自動的にAgentを起動し、作業を開始します。',
       );
       logger.muted('これには数分〜数十分かかる場合があります。');
       logger.newline();
@@ -317,7 +317,7 @@ npx tsx scripts/execute-task.ts --issue <issue-number>
           borderStyle: 'round',
           borderColor: theme.colors.primary,
           padding: 1,
-        }
+        },
       );
 
       logger.newline();
@@ -359,7 +359,7 @@ npx tsx scripts/execute-task.ts --issue <issue-number>
       borderColor: theme.colors.success,
       padding: 1,
       align: 'center',
-    }
+    },
   );
 
   logger.newline();

@@ -276,7 +276,7 @@ export class PerformanceMonitor {
     // Clean up old snapshots
     const cutoffTime = Date.now() - this.config.historyRetentionMs;
     this.history.snapshots = this.history.snapshots.filter(
-      s => s.timestamp >= cutoffTime
+      s => s.timestamp >= cutoffTime,
     );
   }
 
@@ -362,7 +362,7 @@ export class PerformanceMonitor {
   private addAlert(alert: PerformanceAlert): void {
     // Don't add duplicate alerts within 5 minutes
     const recentAlert = this.alerts.find(
-      a => a.metric === alert.metric && Date.now() - a.timestamp < 300000
+      a => a.metric === alert.metric && Date.now() - a.timestamp < 300000,
     );
 
     if (!recentAlert) {
@@ -464,7 +464,7 @@ export class PerformanceMonitor {
    */
   private getCPUUsage(): number {
     const cpus = os.cpus();
-    if (cpus.length === 0) return 0;
+    if (cpus.length === 0) {return 0;}
 
     let totalIdle = 0;
     let totalTick = 0;
@@ -476,7 +476,7 @@ export class PerformanceMonitor {
       totalIdle += cpu.times.idle;
     }
 
-    if (totalTick === 0) return 0;
+    if (totalTick === 0) {return 0;}
 
     const idle = totalIdle / cpus.length;
     const total = totalTick / cpus.length;
@@ -489,7 +489,7 @@ export class PerformanceMonitor {
    * Calculate average
    */
   private calculateAverage(values: number[]): number {
-    if (values.length === 0) return 0;
+    if (values.length === 0) {return 0;}
     return values.reduce((sum, v) => sum + v, 0) / values.length;
   }
 
@@ -497,7 +497,7 @@ export class PerformanceMonitor {
    * Calculate median
    */
   private calculateMedian(values: number[]): number {
-    if (values.length === 0) return 0;
+    if (values.length === 0) {return 0;}
     const sorted = [...values].sort((a, b) => a - b);
     const mid = Math.floor(sorted.length / 2);
     return sorted.length % 2 === 0
@@ -509,7 +509,7 @@ export class PerformanceMonitor {
    * Calculate percentile
    */
   private calculatePercentile(values: number[], percentile: number): number {
-    if (values.length === 0) return 0;
+    if (values.length === 0) {return 0;}
     const sorted = [...values].sort((a, b) => a - b);
     const index = Math.ceil((percentile / 100) * sorted.length) - 1;
     return sorted[Math.max(0, index)];
@@ -520,7 +520,7 @@ export class PerformanceMonitor {
    */
   private estimateRemainingTime(): number {
     const { completedTasks, totalTasks, taskDurations } = this.executionState;
-    if (completedTasks === 0 || totalTasks === 0) return 0;
+    if (completedTasks === 0 || totalTasks === 0) {return 0;}
 
     const avgDuration = this.calculateAverage(taskDurations);
     const remainingTasks = totalTasks - completedTasks;
@@ -552,7 +552,7 @@ export class PerformanceMonitor {
     await fs.promises.writeFile(
       outputPath,
       JSON.stringify(report, null, 2),
-      'utf-8'
+      'utf-8',
     );
   }
 

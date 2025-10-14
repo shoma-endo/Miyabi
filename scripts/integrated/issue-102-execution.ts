@@ -40,7 +40,7 @@ async function executeIssue102() {
       autoSave: true,
     },
     goalManager,
-    validator
+    validator,
   );
 
   console.log('✅ Components initialized');
@@ -240,7 +240,7 @@ Task 4.4: E2E Testing
     const iteration = await orchestrator.executeIteration(
       loop.loopId,
       sessionId,
-      metrics
+      metrics,
     );
 
     console.log(`   📊 Score: ${iteration.consumptionReport.overallScore.toFixed(1)}/100`);

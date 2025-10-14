@@ -5,7 +5,8 @@
  */
 
 import { Octokit } from '@octokit/rest';
-import { DocGenerator, FunctionDoc, ClassDoc, InterfaceDoc } from './doc-generator';
+import type { FunctionDoc, ClassDoc, InterfaceDoc } from './doc-generator';
+import { DocGenerator } from './doc-generator';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -35,7 +36,7 @@ export class TrainingMaterialGenerator {
   constructor(
     token: string,
     private owner: string,
-    private repo: string
+    private repo: string,
   ) {
     this.octokit = new Octokit({ auth: token });
     this.docGenerator = new DocGenerator();
@@ -49,7 +50,7 @@ export class TrainingMaterialGenerator {
    */
   async generateFromFile(
     filePath: string,
-    level: 'beginner' | 'intermediate' | 'advanced' = 'intermediate'
+    level: 'beginner' | 'intermediate' | 'advanced' = 'intermediate',
   ): Promise<TrainingMaterial> {
     const docs = await this.docGenerator.extractJSDoc(filePath);
     const fileName = path.basename(filePath, path.extname(filePath));
@@ -71,7 +72,7 @@ export class TrainingMaterialGenerator {
     }
 
     // Generate content for classes
-    const classes = docs.filter(d => 'methods' in d) as ClassDoc[];
+    const classes = docs.filter(d => 'methods' in d);
     if (classes.length > 0) {
       content += `## Classes\n\n`;
       for (const cls of classes) {
@@ -89,7 +90,7 @@ export class TrainingMaterialGenerator {
       level,
       topics,
       content,
-      exercises
+      exercises,
     };
   }
 
@@ -108,11 +109,11 @@ export class TrainingMaterialGenerator {
     content += '```typescript\n';
 
     const params = func.parameters.map(p => {
-      if (p.type === 'string') return `"example"`;
-      if (p.type === 'number') return `42`;
-      if (p.type === 'boolean') return `true`;
-      if (p.type.includes('[]')) return `[]`;
-      if (p.type.includes('{}') || p.type === 'object') return `{}`;
+      if (p.type === 'string') {return `"example"`;}
+      if (p.type === 'number') {return `42`;}
+      if (p.type === 'boolean') {return `true`;}
+      if (p.type.includes('[]')) {return `[]`;}
+      if (p.type.includes('{}') || p.type === 'object') {return `{}`;}
       return `value`;
     }).join(', ');
 
@@ -214,12 +215,12 @@ export class TrainingMaterialGenerator {
    */
   private generateExercises(
     docs: Array<FunctionDoc | ClassDoc | InterfaceDoc>,
-    level: 'beginner' | 'intermediate' | 'advanced'
+    level: 'beginner' | 'intermediate' | 'advanced',
   ): Array<{ question: string; hint?: string; solution?: string }> {
     const exercises = [];
 
     const functions = docs.filter(d => 'parameters' in d && !('methods' in d)) as FunctionDoc[];
-    const classes = docs.filter(d => 'methods' in d) as ClassDoc[];
+    const classes = docs.filter(d => 'methods' in d);
 
     if (level === 'beginner') {
       // Simple usage exercises
@@ -228,7 +229,7 @@ export class TrainingMaterialGenerator {
         exercises.push({
           question: `Call the \`${func.name}\` function with appropriate parameters.`,
           hint: `Check the function signature and parameter types.`,
-          solution: `const result = ${func.isAsync ? 'await ' : ''}${func.name}(/* your parameters */);`
+          solution: `const result = ${func.isAsync ? 'await ' : ''}${func.name}(/* your parameters */);`,
         });
       }
     } else if (level === 'intermediate') {
@@ -236,26 +237,26 @@ export class TrainingMaterialGenerator {
       if (functions.length > 1) {
         exercises.push({
           question: `Combine multiple functions from this module to achieve a specific task.`,
-          hint: `Think about the order of operations and data flow.`
+          hint: `Think about the order of operations and data flow.`,
         });
       }
       if (classes.length > 0) {
         const cls = classes[0];
         exercises.push({
           question: `Create an instance of \`${cls.name}\` and use at least two of its methods.`,
-          hint: `Remember to handle async methods with await if needed.`
+          hint: `Remember to handle async methods with await if needed.`,
         });
       }
     } else if (level === 'advanced') {
       // Advanced integration exercises
       exercises.push({
         question: `Design a system that integrates all the components from this module.`,
-        hint: `Consider error handling, async operations, and modularity.`
+        hint: `Consider error handling, async operations, and modularity.`,
       });
       if (classes.length > 0) {
         exercises.push({
           question: `Extend one of the classes with additional functionality.`,
-          hint: `Use TypeScript's inheritance or composition patterns.`
+          hint: `Use TypeScript's inheritance or composition patterns.`,
         });
       }
     }
@@ -279,7 +280,7 @@ export class TrainingMaterialGenerator {
       const material = await this.generateFromFile(file);
       const outputPath = path.join(
         outputDir,
-        `${path.basename(file, path.extname(file))}-training.md`
+        `${path.basename(file, path.extname(file))}-training.md`,
       );
 
       let markdown = `# ${material.title}\n\n`;
@@ -313,10 +314,10 @@ export class TrainingMaterialGenerator {
    * @param categoryId Discussion category ID
    */
   async publishToDiscussions(material: TrainingMaterial, categoryId: string): Promise<void> {
-    const body = material.content + '\n\n' +
-      (material.exercises?.map((ex, idx) =>
-        `## Exercise ${idx + 1}\n${ex.question}\n${ex.hint ? `**Hint:** ${ex.hint}\n` : ''}`
-      ).join('\n') || '');
+    const body = `${material.content  }\n\n${
+      material.exercises?.map((ex, idx) =>
+        `## Exercise ${idx + 1}\n${ex.question}\n${ex.hint ? `**Hint:** ${ex.hint}\n` : ''}`,
+      ).join('\n') || ''}`;
 
     try {
       // Use GraphQL to create discussion
@@ -339,14 +340,14 @@ export class TrainingMaterialGenerator {
       // Get repository ID
       const repo = await this.octokit.repos.get({
         owner: this.owner,
-        repo: this.repo
+        repo: this.repo,
       });
 
       const result = await this.octokit.graphql(query, {
         repositoryId: repo.data.node_id,
         categoryId,
         title: `📚 ${material.title} [${material.level}]`,
-        body
+        body,
       });
 
       console.log(`✅ Published to discussions:`, (result as any).createDiscussion.discussion.url);

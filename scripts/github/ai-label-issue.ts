@@ -37,7 +37,7 @@ interface LabelSuggestion {
 async function analyzeIssueWithAI(
   title: string,
   body: string,
-  onProgress?: (text: string) => void
+  onProgress?: (text: string) => void,
 ): Promise<LabelSuggestion> {
   const titleLower = title.toLowerCase();
   const bodyLower = (body || '').toLowerCase();
@@ -137,7 +137,7 @@ async function applyLabels(
   owner: string,
   repo: string,
   issueNumber: number,
-  labels: string[]
+  labels: string[],
 ): Promise<void> {
   await octokit.issues.addLabels({
     owner,
@@ -156,7 +156,7 @@ async function addAnalysisComment(
   owner: string,
   repo: string,
   issueNumber: number,
-  suggestion: LabelSuggestion
+  suggestion: LabelSuggestion,
 ): Promise<void> {
   const comment = `## 🤖 AI Analysis Complete
 
@@ -220,7 +220,7 @@ async function main() {
     console.log('🤖 Analyzing with heuristics...');
     const suggestion = await analyzeIssueWithAI(
       issue.title,
-      issue.body || ''
+      issue.body || '',
     );
 
     console.log('\n📊 AI Suggestion:');

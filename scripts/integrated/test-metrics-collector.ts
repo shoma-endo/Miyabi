@@ -102,13 +102,13 @@ async function main() {
 
     if (metrics.typeScriptErrors > 0) {
       recommendations.push(
-        'Check TypeScript errors with `npx tsc --noEmit` and fix type issues'
+        'Check TypeScript errors with `npx tsc --noEmit` and fix type issues',
       );
     }
 
     if (metrics.testCoverage < 80) {
       recommendations.push(
-        'Add more tests to increase coverage to 80% or above'
+        'Add more tests to increase coverage to 80% or above',
       );
     }
 

@@ -73,7 +73,7 @@ async function main() {
       title: 'Agent Status',
       borderStyle: 'round',
       padding: 1,
-    }
+    },
   );
 
   logger.newline();
@@ -85,7 +85,7 @@ async function main() {
       borderStyle: 'double',
       borderColor: theme.colors.success,
       padding: 1,
-    }
+    },
   );
 
   logger.newline();
@@ -110,10 +110,10 @@ async function main() {
   // ===== PROGRESS BARS =====
   logger.section('📊', 'Progress Bars');
 
-  logger.log('Overall Progress: ' + logger.progressBar(75, 100, 40));
-  logger.log('CodeGenAgent:     ' + logger.progressBar(100, 100, 40));
-  logger.log('ReviewAgent:      ' + logger.progressBar(60, 100, 40));
-  logger.log('TestAgent:        ' + logger.progressBar(30, 100, 40));
+  logger.log(`Overall Progress: ${  logger.progressBar(75, 100, 40)}`);
+  logger.log(`CodeGenAgent:     ${  logger.progressBar(100, 100, 40)}`);
+  logger.log(`ReviewAgent:      ${  logger.progressBar(60, 100, 40)}`);
+  logger.log(`TestAgent:        ${  logger.progressBar(30, 100, 40)}`);
 
   logger.newline();
 
@@ -288,7 +288,7 @@ async function main() {
       borderColor: theme.colors.success,
       padding: 1,
       align: 'center',
-    }
+    },
   );
 
   logger.newline();

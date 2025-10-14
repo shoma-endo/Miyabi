@@ -106,10 +106,10 @@ export class GitHubProjectSetup {
    */
   async addCustomField(
     projectId: string,
-    field: CustomFieldConfig
+    field: CustomFieldConfig,
   ): Promise<string> {
     let mutation = '';
-    let variables: any = {
+    const variables: any = {
       projectId,
       name: field.name,
     };
@@ -246,7 +246,7 @@ export class GitHubProjectSetup {
    */
   async setupCompleteProject(
     owner: string,
-    projectTitle: string
+    projectTitle: string,
   ): Promise<{ projectId: string; projectNumber: number }> {
     console.log('🚀 Starting GitHub Project V2 setup...\n');
 

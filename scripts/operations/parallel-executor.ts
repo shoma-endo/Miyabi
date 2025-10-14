@@ -9,8 +9,8 @@
  */
 
 import { CoordinatorAgent } from '@miyabi/coding-agents/coordinator/coordinator-agent';
-import { AgentConfig, Issue, Task } from '@miyabi/coding-agents/types/index';
-import { Octokit } from '@octokit/rest';
+import type { AgentConfig, Issue, Task } from '@miyabi/coding-agents/types/index';
+import type { Octokit } from '@octokit/rest';
 import * as fs from 'fs';
 import * as path from 'path';
 import { getGitHubTokenSync } from './github-token-helper';
@@ -149,13 +149,11 @@ async function fetchIssue(octokit: Octokit, owner: string, repo: string, issueNu
     // Use LRU cache to avoid repeated API calls
     const cacheKey = `issue:${owner}/${repo}/${issueNumber}`;
 
-    const { data } = await withGitHubCache(cacheKey, async () => {
-      return await octokit.issues.get({
-        owner,
-        repo,
-        issue_number: issueNumber,
-      });
-    });
+    const { data } = await withGitHubCache(cacheKey, async () => octokit.issues.get({
+      owner,
+      repo,
+      issue_number: issueNumber,
+    }));
 
     return {
       number: data.number,
@@ -214,7 +212,7 @@ interface ExecutionResult {
 async function executeIssue(
   agent: CoordinatorAgent,
   issue: Issue,
-  dryRun: boolean
+  dryRun: boolean,
 ): Promise<ExecutionResult> {
   console.log(`\n${'='.repeat(80)}`);
   console.log(`🚀 Executing Issue #${issue.number}: ${issue.title}`);
@@ -270,7 +268,7 @@ async function* executeIssuesIncrementally(
   agent: CoordinatorAgent,
   issues: Issue[],
   concurrency: number,
-  dryRun: boolean
+  dryRun: boolean,
 ): AsyncGenerator<ExecutionResult, void, unknown> {
   const executing: Array<{ promise: Promise<ExecutionResult>; id: symbol }> = [];
 
@@ -284,7 +282,7 @@ async function* executeIssuesIncrementally(
       // Wait for the first promise to complete and remove it
       const result = await Promise.race(executing.map(e => e.promise.then(r => ({ result: r, id: e.id }))));
       const idx = executing.findIndex(e => e.id === result.id);
-      if (idx >= 0) executing.splice(idx, 1);
+      if (idx >= 0) {executing.splice(idx, 1);}
       yield result.result; // Yield completed result immediately
     }
   }
@@ -293,7 +291,7 @@ async function* executeIssuesIncrementally(
   while (executing.length > 0) {
     const result = await Promise.race(executing.map(e => e.promise.then(r => ({ result: r, id: e.id }))));
     const idx = executing.findIndex(e => e.id === result.id);
-    if (idx >= 0) executing.splice(idx, 1);
+    if (idx >= 0) {executing.splice(idx, 1);}
     yield result.result;
   }
 }
@@ -306,7 +304,7 @@ async function executeIssuesInParallel(
   agent: CoordinatorAgent,
   issues: Issue[],
   concurrency: number,
-  dryRun: boolean
+  dryRun: boolean,
 ): Promise<ExecutionResult[]> {
   const results: ExecutionResult[] = [];
 
@@ -387,7 +385,7 @@ async function main() {
   // Fetch all issues in parallel (5-10x faster)
   console.log('📥 Fetching issues in parallel...');
   const issuePromises = issueNumbers.map(issueNumber =>
-    fetchIssue(octokit, owner, repo, issueNumber)
+    fetchIssue(octokit, owner, repo, issueNumber),
   );
 
   const fetchedIssues = await Promise.all(issuePromises);

@@ -71,7 +71,7 @@ async function main() {
       enableEscalation: false,
     },
     goalManager,
-    validator
+    validator,
   );
   console.log('✅ InfiniteLoopOrchestrator initialized');
 
@@ -196,7 +196,7 @@ async function main() {
     const iterationResult = await orchestrator.executeIteration(
       loop.loopId,
       `demo-session-${iteration}`,
-      metrics
+      metrics,
     );
 
     console.log('');

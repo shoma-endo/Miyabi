@@ -84,7 +84,7 @@ export class ReviewAgent extends BaseAgent {
       );
 
       // 5. Determine if escalation is needed
-      const escalationInfo = await this.checkEscalation(qualityReport, securityIssues);
+      const escalationInfo = await this.checkEscalation(qualityReport);
 
       const reviewResult: ReviewResult = {
         qualityReport,
@@ -102,7 +102,7 @@ export class ReviewAgent extends BaseAgent {
           'Sev.1-Critical',
           {
             qualityScore: qualityReport.score,
-            criticalIssues: securityIssues.filter(i => i.severity === 'critical').length,
+            criticalIssues: qualityReport.issues.filter(i => i.type === 'security' && i.severity === 'critical').length,
             reason: escalationInfo.reason,
           }
         );
@@ -493,8 +493,7 @@ export class ReviewAgent extends BaseAgent {
    * Check if escalation is required
    */
   private async checkEscalation(
-    qualityReport: QualityReport,
-    securityIssues: QualityIssue[]
+    qualityReport: QualityReport
   ): Promise<{ required: boolean; message: string; reason: string }> {
     // Escalate if critical security issues found
     const criticalSecurityIssues = qualityReport.issues.filter(

@@ -39,7 +39,7 @@ export class PRAgent extends BaseAgent {
     }
 
     // Use singleton GitHub client with connection pooling
-    this.octokit = getGitHubClient(config.githubToken);
+    this.octokit = getGitHubClient(config.githubToken) as Octokit;
 
     this.initializeRepository();
   }

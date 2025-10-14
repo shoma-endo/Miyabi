@@ -31,7 +31,6 @@ import { IssueAnalyzer } from '../utils/issue-analyzer';
 import { DAGManager } from '../utils/dag-manager';
 import { PlansGenerator } from '../utils/plans-generator';
 import { IssueTraceLogger } from '../logging/issue-trace-logger';
-import { TaskToolExecutor } from '../../scripts/operations/task-tool-executor';
 import { WorktreeManager } from '../worktree/worktree-manager';
 import { GitHubClient } from '../utils/github-client';
 import * as path from 'path';
@@ -541,6 +540,10 @@ export class CoordinatorAgent extends BaseAgent {
   ): Promise<ExecutionReport> {
     this.log('🚀 Starting Task Tool parallel execution');
     this.log(`   Using Task Tool executor for ${tasks.length} tasks`);
+
+    // Dynamically import TaskToolExecutor to avoid package boundary issues
+    // @ts-ignore - Dynamic import across package boundary, works at runtime
+    const { TaskToolExecutor } = await import('../../scripts/operations/task-tool-executor');
 
     // Create Task Tool executor
     const executor = new TaskToolExecutor({

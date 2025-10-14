@@ -67,7 +67,7 @@ export const createMockOctokit = () => ({
         repository: {
           projectV2: {
             id: fixtures.mockProjectInfo.projectId,
-            title: fixtures.mockProjectInfo._title,
+            title: fixtures.mockProjectInfo.title,
             number: fixtures.mockProjectInfo.number,
             fields: {
               nodes: fixtures.mockProjectInfo.fields,
@@ -102,7 +102,7 @@ export const mockGitHubScripts = {
  * Mock WebhookEventRouter
  */
 export class MockWebhookEventRouter {
-  async route(payload: any): Promise<void> {
+  async route(_payload: any): Promise<void> {
     // Mock routing logic - just succeed
     return Promise.resolve();
   }
@@ -113,16 +113,16 @@ export class MockWebhookEventRouter {
  */
 export class MockLabelStateMachine {
   constructor(
-    private _token: string,
-    private _owner: string,
-    private _repo: string
+    _token: string,
+    _owner: string,
+    _repo: string
   ) {}
 
   getValidTransitions(): string[] {
     return ['pending', 'analyzing', 'implementing', 'reviewing', 'done'];
   }
 
-  async transition(issueNumber: number, newState: string): Promise<void> {
+  async transition(_issueNumber: number, _newState: string): Promise<void> {
     return Promise.resolve();
   }
 }
@@ -132,12 +132,12 @@ export class MockLabelStateMachine {
  */
 export class MockWorkflowOrchestrator {
   constructor(
-    private _token: string,
-    private _owner: string,
-    private _repo: string
+    _token: string,
+    _owner: string,
+    _repo: string
   ) {}
 
-  async createWorkflow(issueNumber: number, type: string): Promise<any> {
+  async createWorkflow(_issueNumber: number, _type: string): Promise<any> {
     return Promise.resolve(fixtures.mockWorkflow);
   }
 }
@@ -147,16 +147,16 @@ export class MockWorkflowOrchestrator {
  */
 export class MockKnowledgeBaseSync {
   constructor(
-    private _token: string,
-    private _owner: string,
-    private _repo: string
+    _token: string,
+    _owner: string,
+    _repo: string
   ) {}
 
   async initialize(): Promise<void> {
     return Promise.resolve();
   }
 
-  async syncEntry(title: string, content: string): Promise<void> {
+  async syncEntry(_title: string, _content: string): Promise<void> {
     return Promise.resolve();
   }
 }
@@ -166,12 +166,12 @@ export class MockKnowledgeBaseSync {
  */
 export class MockCICDIntegration {
   constructor(
-    private _token: string,
-    private _owner: string,
-    private _repo: string
+    _token: string,
+    _owner: string,
+    _repo: string
   ) {}
 
-  async triggerWorkflow(workflowId: string): Promise<void> {
+  async triggerWorkflow(_workflowId: string): Promise<void> {
     return Promise.resolve();
   }
 }
@@ -181,12 +181,12 @@ export class MockCICDIntegration {
  */
 export class MockSecurityManager {
   constructor(
-    private _token: string,
-    private _owner: string,
-    private _repo: string
+    _token: string,
+    _owner: string,
+    _repo: string
   ) {}
 
-  async scanSecrets(path: string): Promise<any[]> {
+  async scanSecrets(_path: string): Promise<any[]> {
     return Promise.resolve(fixtures.mockSecurityScan.findings);
   }
 }
@@ -214,7 +214,7 @@ export class MockPerformanceOptimizer {
  * Mock ParallelAgentRunner
  */
 export class MockParallelAgentRunner {
-  constructor(private options?: { minWorkers?: number; maxWorkers?: number }) {}
+  constructor(_options?: { minWorkers?: number; maxWorkers?: number }) {}
 
   async run(tasks: any[]): Promise<any[]> {
     return Promise.resolve(tasks.map(() => ({ success: true })));
@@ -225,11 +225,11 @@ export class MockParallelAgentRunner {
  * Mock DocGenerator
  */
 export class MockDocGenerator {
-  async extractJSDoc(filePath: string): Promise<any[]> {
+  async extractJSDoc(_filePath: string): Promise<any[]> {
     return Promise.resolve([fixtures.mockJSDocComment]);
   }
 
-  async generateDocs(files: string[]): Promise<string> {
+  async generateDocs(_files: string[]): Promise<string> {
     return Promise.resolve('# Generated Documentation\n\nTest docs');
   }
 }
@@ -239,9 +239,9 @@ export class MockDocGenerator {
  */
 export class MockTrainingMaterialGenerator {
   constructor(
-    private _token: string,
-    private _owner: string,
-    private _repo: string
+    _token: string,
+    _owner: string,
+    _repo: string
   ) {}
 
   async generateMaterial(topic: string): Promise<string> {

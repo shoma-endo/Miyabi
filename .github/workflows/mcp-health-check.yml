@@ -1,0 +1,242 @@
+name: MCP Servers Health Check
+
+# Issue: #141 - MCP Server統合テスト・ヘルスチェックの実装
+
+on:
+  # Daily schedule at 00:00 UTC
+  schedule:
+    - cron: '0 0 * * *'
+
+  # Manual trigger
+  workflow_dispatch:
+    inputs:
+      verbose:
+        description: 'Verbose output'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+  # Run on PR to main
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.claude/mcp-servers/**'
+      - '.claude/mcp.json'
+      - '.github/workflows/mcp-health-check.yml'
+
+jobs:
+  health-check:
+    name: Health Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Make scripts executable
+        run: |
+          chmod +x .claude/mcp-servers/health-check.sh
+          chmod +x .claude/mcp-servers/check-server.js
+
+      - name: Run health check
+        id: health_check
+        run: |
+          if [ "${{ github.event.inputs.verbose }}" = "true" ]; then
+            bash .claude/mcp-servers/health-check.sh --verbose --json > health-check-result.json
+          else
+            bash .claude/mcp-servers/health-check.sh --json > health-check-result.json
+          fi
+        continue-on-error: true
+
+      - name: Parse health check results
+        id: parse_results
+        run: |
+          TOTAL=$(jq -r '.total' health-check-result.json)
+          PASSED=$(jq -r '.passed' health-check-result.json)
+          FAILED=$(jq -r '.failed' health-check-result.json)
+          DISABLED=$(jq -r '.disabled' health-check-result.json)
+
+          echo "total=$TOTAL" >> $GITHUB_OUTPUT
+          echo "passed=$PASSED" >> $GITHUB_OUTPUT
+          echo "failed=$FAILED" >> $GITHUB_OUTPUT
+          echo "disabled=$DISABLED" >> $GITHUB_OUTPUT
+
+          echo "### 🔍 MCP Servers Health Check Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Total**: $TOTAL" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Passed**: $PASSED" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ **Failed**: $FAILED" >> $GITHUB_STEP_SUMMARY
+          echo "- ⚠️  **Disabled**: $DISABLED" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload health check results
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-health-check-results
+          path: health-check-result.json
+          retention-days: 30
+
+      - name: Check for failures
+        if: steps.parse_results.outputs.failed != '0'
+        run: |
+          echo "❌ ${{ steps.parse_results.outputs.failed }} MCP server(s) failed health check"
+          cat health-check-result.json | jq -r '.servers[] | select(.status == "failed") | "  - \(.server): \(.error)"'
+          exit 1
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('health-check-result.json', 'utf8'));
+
+            const total = results.total;
+            const passed = results.passed;
+            const failed = results.failed;
+            const disabled = results.disabled;
+
+            const successRate = ((passed / (total - disabled)) * 100).toFixed(1);
+            const status = failed === 0 ? '✅' : '❌';
+
+            let comment = `## ${status} MCP Servers Health Check\n\n`;
+            comment += `**Summary:**\n`;
+            comment += `- Total: ${total}\n`;
+            comment += `- ✅ Passed: ${passed}\n`;
+            comment += `- ❌ Failed: ${failed}\n`;
+            comment += `- ⚠️  Disabled: ${disabled}\n`;
+            comment += `- Success Rate: ${successRate}%\n\n`;
+
+            if (failed > 0) {
+              comment += `**Failed Servers:**\n`;
+              results.servers
+                .filter(s => s.status === 'failed')
+                .forEach(s => {
+                  comment += `- \`${s.server}\`: ${s.error || 'Unknown error'}\n`;
+                });
+            }
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              body: comment
+            });
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run integration tests
+        run: npm run test:mcp:integration
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-integration-test-results
+          path: test-results/
+          retention-days: 30
+
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run performance tests
+        run: npm run test:mcp:performance
+
+      - name: Upload performance results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-performance-test-results
+          path: test-results/
+          retention-days: 30
+
+      - name: Generate performance report
+        if: always()
+        run: |
+          echo "### ⚡ MCP Servers Performance Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Performance test results will be available in the artifacts." >> $GITHUB_STEP_SUMMARY
+
+  notify:
+    name: Notify on Failure
+    runs-on: ubuntu-latest
+    needs: [health-check, integration-tests, performance-tests]
+    if: failure() && github.event_name == 'schedule'
+
+    steps:
+      - name: Create GitHub Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '⚠️ MCP Servers Health Check Failed';
+            const body = `# MCP Servers Health Check Failure
+
+            **Workflow Run**: [#${context.runNumber}](${context.payload.repository.html_url}/actions/runs/${context.runId})
+            **Triggered**: Daily scheduled health check
+            **Date**: ${new Date().toISOString()}
+
+            ## Action Required
+
+            One or more MCP servers failed the health check. Please investigate and resolve the issue.
+
+            **Steps to diagnose:**
+            1. Check the [workflow run logs](${context.payload.repository.html_url}/actions/runs/${context.runId})
+            2. Run local health check: \`bash .claude/mcp-servers/health-check.sh --verbose\`
+            3. Check individual server: \`node .claude/mcp-servers/check-server.js <server-name>\`
+            4. Review MCP server logs in \`.claude/mcp-servers/\`
+
+            ---
+
+            🤖 Auto-generated by GitHub Actions`;
+
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              title,
+              body,
+              labels: ['🐛 type:bug', '⚠️ priority:P1-High', '🤖 agent:review', '📥 state:pending']
+            });

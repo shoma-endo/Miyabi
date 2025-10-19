@@ -628,3 +628,26 @@ export {
   type Entity,
   type Relation
 } from './entity-relation-mapping';
+
+// ============================================================================
+// Agent Communication Protocol (Issue #139)
+// ============================================================================
+
+export {
+  MessageType,
+  MessagePriority,
+  isAgentMessage,
+  isMessageResponse,
+  type AgentMessage,
+  type MessageResponse,
+  type TaskAssignmentPayload,
+  type StatusUpdatePayload,
+  type EscalationPayload,
+  type ResultReportPayload,
+  type ErrorReportPayload,
+  type HeartbeatPayload,
+  type CapabilityQueryPayload,
+  type CapabilityResponsePayload,
+  type MessageHandler,
+  type MessageBusConfig,
+} from './communication';

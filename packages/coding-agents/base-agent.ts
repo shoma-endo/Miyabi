@@ -23,9 +23,16 @@ import {
   ToolInvocation,
   IssueState,
 } from './types/index';
+import {
+  AgentMessage,
+  MessageResponse,
+  MessageType,
+  MessagePriority,
+} from './types/communication';
 import { logger, type AgentName } from './ui/index';
 import { PerformanceMonitor } from './monitoring/performance-monitor';
 import { IssueTraceLogger } from './logging/issue-trace-logger';
+import { globalMessageBus } from './utils/message-bus';
 import { writeFileAsync, appendFileAsync } from '@miyabi/shared-utils';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -705,5 +712,101 @@ ${JSON.stringify(invocations, null, 2)}
 
   getConfig(): AgentConfig {
     return this.config;
+  }
+
+  // ============================================================================
+  // Inter-Agent Communication (Issue #139)
+  // ============================================================================
+
+  /**
+   * Send a message to another agent
+   *
+   * @param to - Recipient agent type
+   * @param type - Message type
+   * @param payload - Message payload
+   * @param priority - Message priority (default: MEDIUM)
+   * @returns Promise<MessageResponse>
+   */
+  protected async sendMessage<T = unknown>(
+    to: AgentType,
+    type: MessageType,
+    payload: T,
+    priority: MessagePriority = MessagePriority.MEDIUM
+  ): Promise<MessageResponse> {
+    const message: AgentMessage<T> = globalMessageBus.createMessage(
+      this.agentType,
+      to,
+      type,
+      payload,
+      priority
+    );
+
+    // Log message if trace logger available
+    if (this.traceLogger) {
+      this.traceLogger.recordAgentMessage(message);
+    }
+
+    // Send via message bus
+    const response = await globalMessageBus.send(message);
+
+    logger.system(
+      `Message sent: ${this.agentType} → ${to} [${type}] - ${
+        response.success ? 'success' : 'failed'
+      }`
+    );
+
+    return response;
+  }
+
+  /**
+   * Register this agent to receive messages
+   *
+   * This should be called in the constructor or initialize method
+   */
+  protected registerMessageHandler(): void {
+    globalMessageBus.register(this.agentType, async (message) => {
+      return await this.receiveMessage(message);
+    });
+
+    logger.system(`${this.agentType} registered for messaging`);
+  }
+
+  /**
+   * Receive and process a message
+   *
+   * Override this method to handle incoming messages
+   *
+   * @param message - Incoming message
+   * @returns Promise<MessageResponse>
+   */
+  protected async receiveMessage(
+    message: AgentMessage
+  ): Promise<MessageResponse> {
+    logger.system(
+      `${this.agentType} received message from ${message.from}: ${message.type}`
+    );
+
+    // Log message if trace logger available
+    if (this.traceLogger) {
+      this.traceLogger.recordAgentMessage(message);
+    }
+
+    // Default implementation - subclasses should override
+    return {
+      messageId: message.id,
+      success: true,
+      payload: { acknowledged: true },
+      timestamp: new Date().toISOString(),
+    };
+  }
+
+  /**
+   * Unregister this agent from receiving messages
+   *
+   * This should be called in cleanup/shutdown
+   */
+  protected unregisterMessageHandler(): void {
+    globalMessageBus.unregister(this.agentType);
+    logger.system(`${this.agentType} unregistered from messaging`);
   }
 }

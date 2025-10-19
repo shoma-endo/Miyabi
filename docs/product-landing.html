@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miyabi - 一つのコマンドで全てが完結する自律型開発フレームワーク</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Miyabiは完全自律型AI開発フレームワーク。Issue作成からデプロイまで、一つのコマンドで全てが完結。21個のAgent、GitHub OS統合、Rust実装で50%高速化。">
+    <meta name="keywords" content="Miyabi, AI, 開発フレームワーク, 自律型, Rust, GitHub, Agent, 自動化, DevOps">
+    <meta name="author" content="Miyabi Team">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Miyabi - 完全自律型AI開発フレームワーク">
+    <meta property="og:description" content="一つのコマンドで全てが完結。Issue作成からデプロイまで完全自動化。21個のAgent、GitHub OS統合。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shunsukehayashi.github.io/Miyabi/product-landing.html">
+    <meta property="og:image" content="https://shunsukehayashi.github.io/Miyabi/assets/hero-background-minimal.jpeg">
+    <meta property="og:image:width" content="2848">
+    <meta property="og:image:height" content="1600">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:site_name" content="Miyabi">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Miyabi - 完全自律型AI開発フレームワーク">
+    <meta name="twitter:description" content="一つのコマンドで全てが完結。Issue作成からデプロイまで完全自動化。">
+    <meta name="twitter:image" content="https://shunsukehayashi.github.io/Miyabi/assets/hero-background-minimal.jpeg">
+    <meta name="twitter:image:alt" content="Miyabi - Minimalist technology background with geometric patterns">
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .hero-title {
+            font-weight: 200;
+            font-size: clamp(3rem, 10vw, 120px);
+            letter-spacing: -0.05em;
+            line-height: 0.95;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scroll animation */
+        .scroll-fade {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .scroll-fade.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Micro-interactions - Jony Ive approved */
+        .feature-icon {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+
+        .feature-icon:hover {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        .cta-button {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .architecture-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .architecture-card:hover {
+            background: #fafafa;
+        }
+
+        /* Dark Mode - System Preference */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #111827;
+                color: #f9fafb;
+            }
+
+            .bg-white {
+                background: #111827 !important;
+            }
+
+            .bg-gray-50 {
+                background: #1f2937 !important;
+            }
+
+            .text-gray-900 {
+                color: #f9fafb !important;
+            }
+
+            .text-gray-600 {
+                color: #d1d5db !important;
+            }
+
+            .text-gray-500 {
+                color: #9ca3af !important;
+            }
+
+            .border-gray-200 {
+                border-color: #374151 !important;
+            }
+
+            .bg-gray-300 {
+                background: #4b5563 !important;
+            }
+
+            .architecture-card:hover {
+                background: #1f2937;
+            }
+
+            .cta-button.border {
+                border-color: #f9fafb !important;
+                color: #f9fafb !important;
+            }
+
+            .cta-button.border:hover {
+                background: #f9fafb !important;
+                color: #111827 !important;
+            }
+
+            .cta-button.bg-gray-900 {
+                background: #f9fafb !important;
+                color: #111827 !important;
+            }
+
+            .cta-button.bg-gray-900:hover {
+                background: #e5e7eb !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 antialiased">
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center bg-white py-48 px-5 text-center relative" aria-label="Hero section" style="background-image: linear-gradient(rgba(255,255,255,0.95), rgba(255,255,255,0.95)), url('assets/hero-background-minimal.jpeg'); background-size: cover; background-position: center;">
+        <div class="max-w-6xl mx-auto fade-in">
+            <h1 class="hero-title text-gray-900 mb-6">
+                Miyabi
+            </h1>
+
+            <div class="h-px w-24 bg-gray-300 mx-auto mb-20"></div>
+
+            <p class="text-2xl sm:text-3xl text-gray-600 font-light mb-12 tracking-tight">
+                一つのコマンドで全てが完結する
+            </p>
+
+            <p class="text-xl text-gray-500 font-light max-w-2xl mx-auto leading-relaxed">
+                完全自律型AI開発フレームワーク
+            </p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="bg-gray-50 py-48 px-5 scroll-fade" aria-label="Features section">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-7xl font-semibold tracking-tight text-gray-900 text-center mb-32">
+                Simple. Powerful. Autonomous.
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+                <!-- Feature 1 -->
+                <div class="text-center">
+                    <div class="mb-8 flex justify-center">
+                        <img src="assets/icon-one-command.jpeg" alt="One Command - Single line representing simplicity" class="w-24 h-24 object-contain opacity-90 feature-icon" loading="lazy" />
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-4">One Command</h3>
+                    <p class="text-lg text-gray-600 font-light leading-relaxed">
+                        Issue作成からデプロイまで<br>
+                        全てが自動化
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="text-center">
+                    <div class="mb-8 flex justify-center">
+                        <img src="assets/icon-agents-network.jpeg" alt="21 Agents - Network of autonomous agents" class="w-32 h-24 object-contain opacity-90 feature-icon" loading="lazy" />
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-4">21 Agents</h3>
+                    <p class="text-lg text-gray-600 font-light leading-relaxed">
+                        7つのCoding Agents<br>
+                        14つのBusiness Agents
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="text-center">
+                    <div class="mb-8 flex justify-center">
+                        <img src="assets/icon-github-os.jpeg" alt="GitHub OS - Unified operating system architecture" class="w-32 h-24 object-contain opacity-90 feature-icon" loading="lazy" />
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-4">GitHub OS</h3>
+                    <p class="text-lg text-gray-600 font-light leading-relaxed">
+                        GitHub as Operating System<br>
+                        完全統合アーキテクチャ
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Section -->
+    <section class="bg-white py-48 px-5 scroll-fade" aria-label="Technology section">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="h-px w-full bg-gray-200 mb-32"></div>
+
+            <h2 class="text-6xl font-light tracking-tight text-gray-900 mb-16">
+                Built with Rust
+            </h2>
+
+            <p class="text-xl text-gray-600 font-light mb-32 leading-relaxed max-w-2xl mx-auto">
+                Rust 2021 Editionで実装された高速・安全・並列実行フレームワーク
+            </p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+                <div>
+                    <div class="text-5xl font-extralight text-gray-900 mb-2">50%</div>
+                    <div class="text-sm text-gray-500 font-light">実行時間削減</div>
+                </div>
+                <div>
+                    <div class="text-5xl font-extralight text-gray-900 mb-2">30%</div>
+                    <div class="text-sm text-gray-500 font-light">メモリ削減</div>
+                </div>
+                <div>
+                    <div class="text-5xl font-extralight text-gray-900 mb-2">0</div>
+                    <div class="text-sm text-gray-500 font-light">ランタイムエラー</div>
+                </div>
+                <div>
+                    <div class="text-5xl font-extralight text-gray-900 mb-2">1</div>
+                    <div class="text-sm text-gray-500 font-light">バイナリ配布</div>
+                </div>
+            </div>
+
+            <div class="h-px w-full bg-gray-200 mt-32"></div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="bg-gray-50 py-48 px-5 scroll-fade" aria-label="Architecture section">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-6xl font-semibold tracking-tight text-gray-900 text-center mb-32">
+                Architecture
+            </h2>
+
+            <div class="space-y-1">
+                <!-- Coordinator -->
+                <div class="bg-white border border-gray-200 p-8 architecture-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900">CoordinatorAgent</h3>
+                            <p class="text-sm text-gray-500 font-light mt-1">タスク統括・DAG分解</p>
+                        </div>
+                        <div class="w-12 h-px bg-gray-900"></div>
+                    </div>
+                </div>
+
+                <!-- CodeGen -->
+                <div class="bg-white border border-gray-200 p-8 architecture-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900">CodeGenAgent</h3>
+                            <p class="text-sm text-gray-500 font-light mt-1">AI駆動コード生成</p>
+                        </div>
+                        <div class="w-12 h-px bg-gray-900"></div>
+                    </div>
+                </div>
+
+                <!-- Review -->
+                <div class="bg-white border border-gray-200 p-8 architecture-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900">ReviewAgent</h3>
+                            <p class="text-sm text-gray-500 font-light mt-1">コード品質レビュー</p>
+                        </div>
+                        <div class="w-12 h-px bg-gray-900"></div>
+                    </div>
+                </div>
+
+                <!-- Deployment -->
+                <div class="bg-white border border-gray-200 p-8 architecture-card">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900">DeploymentAgent</h3>
+                            <p class="text-sm text-gray-500 font-light mt-1">CI/CDデプロイ自動化</p>
+                        </div>
+                        <div class="w-12 h-px bg-gray-900"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="bg-white py-48 px-5 text-center scroll-fade" aria-label="Call to action section">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-6xl font-light tracking-tight text-gray-900 mb-16">
+                Get Started
+            </h2>
+
+            <div class="bg-gray-900 text-white p-8 rounded-none font-mono text-left mb-16 max-w-2xl mx-auto">
+                <div class="text-sm">
+                    <div class="text-gray-400"># Install via cargo</div>
+                    <div class="mt-2">cargo install miyabi</div>
+                    <div class="mt-6 text-gray-400"># Initialize project</div>
+                    <div class="mt-2">miyabi init my-project</div>
+                    <div class="mt-6 text-gray-400"># Run agent</div>
+                    <div class="mt-2">miyabi agent run coordinator</div>
+                </div>
+            </div>
+
+            <nav class="flex gap-8 justify-center" aria-label="Primary navigation">
+                <a href="https://github.com/ShunsukeHayashi/miyabi-private"
+                   class="border border-gray-900 text-gray-900 px-12 py-4 text-lg font-medium cta-button hover:bg-gray-900 hover:text-white"
+                   aria-label="Visit Miyabi GitHub repository">
+                    GitHub
+                </a>
+                <a href="https://shunsukehayashi.github.io/Miyabi/"
+                   class="bg-gray-900 text-white px-12 py-4 text-lg font-medium cta-button hover:bg-gray-800"
+                   aria-label="Read Miyabi documentation">
+                    Documentation
+                </a>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 py-24 px-5 border-t border-gray-200" role="contentinfo" aria-label="Footer">
+        <div class="max-w-6xl mx-auto text-center">
+            <p class="text-sm text-gray-500 font-light">
+                © 2025 Miyabi Team. Built with Rust.
+            </p>
+            <div class="h-px w-12 bg-gray-300 mx-auto mt-8"></div>
+        </div>
+    </footer>
+
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Miyabi",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Cross-platform",
+      "description": "完全自律型AI開発フレームワーク。Issue作成からデプロイまで、一つのコマンドで全てが完結。21個のAgent、GitHub OS統合、Rust実装で50%高速化。",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "Miyabi Team"
+      },
+      "programmingLanguage": "Rust",
+      "codeRepository": "https://github.com/ShunsukeHayashi/miyabi-private",
+      "softwareVersion": "1.0.0",
+      "screenshot": "https://shunsukehayashi.github.io/Miyabi/assets/hero-background-minimal.jpeg",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "ratingCount": "1",
+        "reviewCount": "2"
+      }
+    }
+    </script>
+
+    <!-- Scroll Animation Script -->
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Optional: unobserve after animation
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all elements with scroll-fade class
+        document.querySelectorAll('.scroll-fade').forEach(el => observer.observe(el));
+    </script>
+
+</body>
+</html>

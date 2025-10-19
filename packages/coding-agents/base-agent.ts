@@ -33,6 +33,7 @@ import { logger, type AgentName } from './ui/index';
 import { PerformanceMonitor } from './monitoring/performance-monitor';
 import { IssueTraceLogger } from './logging/issue-trace-logger';
 import { globalMessageBus } from './utils/message-bus';
+import { globalMetricsCollector } from '../.claude/monitoring/metrics-collector';
 import { writeFileAsync, appendFileAsync } from '@miyabi/shared-utils';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -100,6 +101,9 @@ export abstract class BaseAgent {
       this.traceLogger.startAgentExecution(this.agentType, task.id);
     }
 
+    // Record agent start to metrics collector
+    globalMetricsCollector.onAgentStart(this.agentType, task.id, task.title);
+
     // Send agent:started event to dashboard
     await this.sendAgentEvent('started', {
       parameters: {
@@ -137,6 +141,26 @@ export abstract class BaseAgent {
         this.traceLogger.endAgentExecution(this.agentType, 'completed', result);
       }
 
+      // End performance tracking
+      const metrics = performanceMonitor.endAgentTracking(this.agentType, task.id);
+      if (metrics) {
+        logger.info(`⚡ Performance: ${metrics.totalDurationMs}ms, ${metrics.toolInvocations.length} tools, ${metrics.bottlenecks.length} bottlenecks`);
+      }
+
+      // Record agent completion to metrics collector
+      const durationMs = Date.now() - this.startTime;
+      globalMetricsCollector.onAgentComplete(this.agentType, task.id, {
+        taskId: task.id,
+        agentType: this.agentType,
+        durationMs,
+        qualityScore: result.metrics?.qualityScore,
+        linesChanged: result.metrics?.linesChanged,
+        testsAdded: result.metrics?.testsAdded,
+        coveragePercent: result.metrics?.coveragePercent,
+        errorsFound: result.metrics?.errorsFound,
+        timestamp: new Date().toISOString(),
+      });
+
       // Send agent:completed event to dashboard
       await this.sendAgentEvent('completed', {
         result: {
@@ -144,12 +168,6 @@ export abstract class BaseAgent {
           ...result,
         },
       });
-
-      // End performance tracking
-      const metrics = performanceMonitor.endAgentTracking(this.agentType, task.id);
-      if (metrics) {
-        logger.info(`⚡ Performance: ${metrics.totalDurationMs}ms, ${metrics.toolInvocations.length} tools, ${metrics.bottlenecks.length} bottlenecks`);
-      }
 
       return result;
     } catch (error) {
@@ -163,13 +181,23 @@ export abstract class BaseAgent {
         );
       }
 
+      // End tracking even on error
+      performanceMonitor.endAgentTracking(this.agentType, task.id);
+
+      // Record agent failure to metrics collector
+      const durationMs = Date.now() - this.startTime;
+      globalMetricsCollector.onAgentFailed(
+        this.agentType,
+        task.id,
+        (error as Error).message,
+        durationMs
+      );
+
       // Send agent:error event to dashboard
       await this.sendAgentEvent('error', {
         error: (error as Error).message,
       });
 
-      // End tracking even on error
-      performanceMonitor.endAgentTracking(this.agentType, task.id);
       return await this.handleError(error as Error);
     }
   }

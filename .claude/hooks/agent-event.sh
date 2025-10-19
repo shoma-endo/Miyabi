@@ -86,11 +86,21 @@ EOF
     ;;
 esac
 
-# Send to dashboard (silently, don't block on failure)
-curl -s -X POST "$ENDPOINT" \
-  -H "Content-Type: application/json" \
-  -d "$PAYLOAD" \
-  >/dev/null 2>&1 || true
+# Send to dashboard using webhook fallback mechanism (Issue #137)
+# This ensures git operations are never blocked if webhook server is offline
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WEBHOOK_FALLBACK="$SCRIPT_DIR/webhook-fallback.js"
+
+if [ -f "$WEBHOOK_FALLBACK" ]; then
+  # Use fallback mechanism (saves to queue if server offline)
+  echo "$PAYLOAD" | node "$WEBHOOK_FALLBACK" send - >/dev/null 2>&1 || true
+else
+  # Fallback to curl (legacy behavior)
+  curl -s -X POST "$ENDPOINT" \
+    -H "Content-Type: application/json" \
+    -d "$PAYLOAD" \
+    >/dev/null 2>&1 || true
+fi
 
 # Log for debugging (optional)
 if [[ "${DEBUG:-}" == "1" ]]; then

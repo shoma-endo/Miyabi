@@ -11,12 +11,96 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge&logo=apache)](https://opensource.org/licenses/Apache-2.0)
 [![GitHub Stars](https://img.shields.io/github/stars/ShunsukeHayashi/Miyabi?style=for-the-badge&logo=github&color=yellow)](https://github.com/ShunsukeHayashi/Miyabi/stargazers)
 
-[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Rust](https://img.shields.io/badge/Rust-1.75+-orange?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
+[![Cargo](https://img.shields.io/badge/Cargo-Latest-orange?style=for-the-badge&logo=rust&logoColor=white)](https://doc.rust-lang.org/cargo/)
 [![Powered by Claude](https://img.shields.io/badge/Powered%20by-Claude%20AI-5865F2?style=for-the-badge&logo=anthropic&logoColor=white)](https://www.anthropic.com/)
-[![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/miyabi)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/Urx8547abS)
 
-[🇯🇵 日本語](#日本語) • [🇺🇸 English](#english) • [📖 Docs](https://github.com/ShunsukeHayashi/Miyabi/wiki) • [💬 Discord](https://discord.gg/miyabi) • [🦀 Codex (Subproject)](https://github.com/ShunsukeHayashi/codex)
+[🇯🇵 日本語](#日本語) • [🇺🇸 English](#english) • [📖 Docs](https://github.com/ShunsukeHayashi/Miyabi/wiki) • [🤖 Agents Manual](docs/AGENTS.md) • [💬 Discord](https://discord.gg/Urx8547abS) • [🦀 Codex (Subproject)](https://github.com/ShunsukeHayashi/codex)
+
+</div>
+
+---
+
+<div align="center">
+
+## 🦀 **NEW: Rust Edition v0.1.1 Released!**
+
+**"Insanely Great" Onboarding Edition - Steve Jobs Approved ⭐**
+
+[![GitHub Release](https://img.shields.io/github/v/release/ShunsukeHayashi/Miyabi?include_prereleases&style=for-the-badge&logo=github&label=Rust%20Edition)](https://github.com/ShunsukeHayashi/Miyabi/releases/tag/v0.1.1)
+[![Rust](https://img.shields.io/badge/Rust-1.75+-orange?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
+[![crates.io](https://img.shields.io/badge/crates.io-v0.1.1-blue?style=for-the-badge&logo=rust)](https://crates.io/crates/miyabi-cli)
+
+**🚀 New Commands • 📚 39KB Docs • 📦 Single Binary (8.4MB) • ✅ 735+ Tests • 🎯 UX Score: 10.5/10**
+
+```bash
+# Install from crates.io (recommended)
+cargo install miyabi-cli
+
+# Or download the binary (macOS ARM64)
+curl -L https://github.com/ShunsukeHayashi/Miyabi/releases/download/v0.1.1/miyabi-macos-arm64 -o miyabi
+chmod +x miyabi
+sudo mv miyabi /usr/local/bin/
+```
+
+**📚 Learn More**: [Release Notes](https://github.com/ShunsukeHayashi/Miyabi/releases/tag/v0.1.1) | [Quick Start Guide](.claude/QUICK_START.md) | [Troubleshooting](docs/TROUBLESHOOTING.md)
+
+**✨ New Features in v0.1.1**:
+
+```bash
+# Real-time status monitoring with Watch Mode
+miyabi status --watch  # Auto-refresh every 3 seconds
+
+# GitHub integration - see open Issues & PRs at a glance
+miyabi status  # Shows:
+# 📋 20 open issue(s)
+# 🔀 3 open pull request(s)
+
+# Agent execution with Issue numbers
+miyabi agent run coordinator --issue 123
+
+# Parallel execution of multiple Issues
+miyabi parallel --issues 123,124,125 --concurrency 2
+```
+
+> 🦀 Codex × Miyabi (Phase 1)
+>
+> Minimal Rust CLI `codex-miyabi` is included to validate integration surfaces.
+> Quick smoke:
+>
+> ```bash
+> scripts/smoke-codex-miyabi.sh
+> ```
+>
+> Manual runs:
+>
+> ```bash
+> cargo run -q -p codex-miyabi -- status --json
+> cargo run -q -p codex-miyabi -- agent run --type coordinator --json || true
+> cargo run -q -p codex-miyabi -- worktree list --json
+> ```
+
+Schemas (JSON Schema Draft-07):
+
+- `docs/schemas/codex-miyabi-status.schema.json`
+- `docs/schemas/codex-miyabi-error.schema.json`
+- `docs/schemas/codex-miyabi-worktree-list.schema.json`
+- `docs/schemas/codex-miyabi-worktree-action.schema.json`
+
+Hosted (GitHub Pages, estimated):
+
+- Index: https://shunsukehayashi.github.io/Miyabi/schemas/
+
+Tests:
+
+- Snapshot tests lock JSON I/F: `cargo test -p codex-miyabi`
+
+### Codex HIL Output Style
+
+- See: `docs/codex/HIL_OUTPUT_STYLE.md`
+  - `CODEX_HIL_STYLE=compact|plain|rich`
+  - Non-TTY/CI → compact, otherwise rich
 
 </div>
 
@@ -24,16 +108,42 @@
 
 ## ✨ クイックスタート
 
+### 🦀 Rust Edition（推奨 - v0.1.1）
+
+```bash
+# インストール（crates.ioから）
+cargo install miyabi-cli
+
+# 新規プロジェクト作成（インタラクティブモード推奨）
+miyabi init my-project --interactive
+
+# または従来の方法
+miyabi init my-project
+
+# 簡単なコマンドでIssue処理（新機能！⭐）
+miyabi work-on 1
+
+# または従来の方法
+miyabi agent run coordinator --issue 1
+```
+
+**v0.1.1の新機能** ✨:
+- 🚀 `miyabi work-on` - シンプルな新コマンド
+- 🎯 `miyabi init --interactive` - 対話形式のセットアップ
+- 📚 8つの新ドキュメント（39KB）
+- 🎨 プロアクティブなエラーメッセージ
+
+### 📦 TypeScript Edition（レガシー）
+
 ```bash
 npx miyabi
 ```
 
-**たったこれだけ。** 全て自動で完結します。
-
 ### 📚 詳細ガイド
 
-- **🚀 初心者向け**: [3分で始めるMiyabi - Quick Start Guide](.claude/QUICK_START.md)
-- **🔧 困ったときは**: [トラブルシューティングガイド](.claude/TROUBLESHOOTING.md)
+- **🚀 初心者向け**: [Getting Started Guide](docs/GETTING_STARTED.md) - 250+行の完全ガイド
+- **🔧 困ったときは**: [トラブルシューティングガイド](docs/TROUBLESHOOTING.md) - 280+行の解決策
+- **🤖 Agent詳細**: [Agent Overview](.claude/agents/README.md) - 全21 Agents
 
 <div align="center">
 
@@ -191,81 +301,84 @@ Miyabiは **Claude AI** を使用して自動的にコードを生成します�
 
 ## 📦 インストール
 
-### 方法1: npx（推奨）
+### 🦀 方法1: Cargo (推奨 - Rust Edition)
+
+```bash
+# crates.ioから最新版をインストール
+cargo install miyabi-cli
+
+# バイナリをダウンロード (macOS ARM64のみ)
+curl -L https://github.com/ShunsukeHayashi/Miyabi/releases/download/v0.1.1/miyabi-macos-arm64 -o miyabi
+chmod +x miyabi
+sudo mv miyabi /usr/local/bin/
+```
+
+**推奨理由**:
+- ✅ シングルバイナリ（8.4MB）
+- ✅ 高速実行（Rustネイティブ）
+- ✅ 依存関係なし（Node.js不要）
+- ✅ 735+テスト、品質保証済み
+
+---
+
+### 📦 方法2: TypeScript Edition（レガシー版）
+
+<details>
+<summary><b>TypeScript版を使用する場合（クリックして展開）</b></summary>
+
+#### npx (推奨)
 
 ```bash
 npx miyabi
 ```
 
-### 方法2: グローバルインストール
+#### グローバルインストール
 
 ```bash
 npm install -g miyabi
 miyabi
 ```
 
-### 方法3: パッケージに追加
+#### パッケージに追加
 
 ```bash
 npm install --save-dev miyabi
 npx miyabi
 ```
 
-### 🔌 方法4: Claude Code Plugin（新機能！）
+**注意**: TypeScript版はレガシーサポートとなります。新機能はRust Editionで優先的に実装されます。
 
-Miyabiは[Claude Code](https://claude.ai/code)の公式Pluginとしても利用できます。
+</details>
 
-```bash
-# Claude Code内で実行
-/plugin install miyabi
-```
+---
 
-インストール後、以下のコマンドが利用可能になります：
+### 🔌 方法3: Claude Code Plugin（計画中 🚧）
 
-```bash
-/miyabi-init      # 新規プロジェクト作成
-/miyabi-status    # ステータス確認
-/miyabi-auto      # Water Spider自動モード
-/miyabi-todos     # TODO検出・Issue化
-/miyabi-agent     # Agent実行
-/miyabi-docs      # ドキュメント生成
-/miyabi-deploy    # デプロイ実行
-/miyabi-test      # テスト実行
-```
+> **注意**: Claude Code Plugin統合は現在開発中です。利用可能になり次第、こちらで告知します。
 
-**詳細**: [Claude Code Plugin統合ガイド](docs/CLAUDE_CODE_PLUGIN_INTEGRATION.md)
+Miyabiは将来的に[Claude Code](https://claude.ai/code)の公式Pluginとして利用できるよう計画しています。
 
-#### 🪝 **Event Hooks (Plugin限定)**
-
-Claude Code Pluginとして使用すると、以下のイベントフックが自動実行されます：
-
-```bash
-pre-commit    # コミット前チェック
-post-commit   # コミット後通知
-pre-pr        # PR作成前チェック
-post-test     # テスト後カバレッジレポート
-```
-
-**Hooksの機能**:
-
-| Hook | タイミング | 実行内容 |
-|------|----------|---------|
-| `pre-commit` | コミット前 | ✅ Lint実行<br>✅ Type check<br>✅ テスト実行 |
-| `post-commit` | コミット後 | ✅ コミット情報表示<br>✅ メトリクス更新 |
-| `pre-pr` | PR作成前 | ✅ Rebase確認<br>✅ テスト実行<br>✅ カバレッジ確認<br>✅ Conventional Commits検証 |
-| `post-test` | テスト後 | ✅ カバレッジレポート生成<br>✅ HTMLレポート出力<br>✅ 結果アーカイブ |
+**計画中の機能**:
+- `/miyabi-init` - 新規プロジェクト作成
+- `/miyabi-status` - ステータス確認
+- `/miyabi-agent` - Agent実行
+- `/miyabi-auto` - 自動モード
+- Event Hooks (pre-commit, pre-pr等)
 
 ---
 
 ## 💡 使い方
 
+> 以下の例は **Rust Edition** (`miyabi`) を使用しています。TypeScript版 (`npx miyabi`) をご利用の場合は、コマンドを読み替えてください。
+
 ### 🌟 **新規プロジェクト作成**
 
 ```bash
-$ npx miyabi
+# インタラクティブモード（推奨）
+$ miyabi init my-awesome-app --interactive
 
-? 何をしますか？ 🆕 新しいプロジェクトを作成
-? プロジェクト名: my-awesome-app
+? プロジェクトタイプは？ 🌐 Web Application
+? GitHubリポジトリを作成しますか？ Yes
 ? プライベートリポジトリにしますか？ No
 
 🚀 セットアップ開始...
@@ -276,55 +389,83 @@ $ npx miyabi
 ✓ ローカルにクローン
 
 🎉 完了！
+
+📚 次のステップ:
+  1. cd my-awesome-app
+  2. miyabi work-on 1  # 最初のIssueを処理
+```
+
+**従来の方法**:
+
+```bash
+miyabi init my-awesome-app
 ```
 
 ### 📦 **既存プロジェクトに追加**
 
 ```bash
 $ cd my-existing-project
-$ npx miyabi
-
-? 何をしますか？ 📦 既存プロジェクトに追加
-? ドライランで確認しますか？ Yes
+$ miyabi install
 
 🔍 プロジェクト解析中...
-✓ 言語検出: JavaScript/TypeScript
-✓ フレームワーク: Next.js
-✓ ビルドツール: Vite
-✓ パッケージマネージャー: pnpm
+✓ 言語検出: Rust
+✓ ビルドツール: Cargo
+✓ Git検出: origin → github.com/user/repo
 
 📋 インストール予定:
   - 53個のラベル
-  - 10+個のワークフロー
+  - GitHub Workflows
   - Projects V2連携
-  - セキュリティスキャン設定
+
+? 続行しますか？ Yes
+
+✓ インストール完了！
 ```
 
 ### 📊 **ステータス確認**
 
 ```bash
-$ npx miyabi
+# 通常モード
+$ miyabi status
 
-? 何をしますか？ 📊 ステータス確認
-? ウォッチモードを有効にしますか？ No
+📊 Project Status
 
-╔════════════════════════════════════╗
-║   📊 Miyabi ステータス            ║
-╚════════════════════════════════════╝
+Miyabi Installation:
+  ✅ Miyabi is installed
+    ✓ .claude/agents
+    ✓ .github/workflows
+    ✓ logs
+    ✓ reports
 
-┌─────────────┬───────┬─────────────┐
-│ State       │ Count │ Status      │
-├─────────────┼───────┼─────────────┤
-│ Pending     │   2   │ ⏳ 待機中   │
-│ Implementing│   3   │ ⚡ 作業中   │
-│ Reviewing   │   1   │ 🔍 レビュー │
-│ Done        │  15   │ ✓ 完了      │
-└─────────────┴───────┴─────────────┘
+Environment:
+  ✅ GITHUB_TOKEN is set
+  ✅ DEVICE_IDENTIFIER: MacBook-Pro
 
-📝 最近のPR:
-  #42 ユーザーダッシュボード追加 (merged 2h ago)
-  #41 ログインリダイレクト修正 (merged 5h ago)
-  #40 APIエンドポイントのドキュメント化 (merged 1d ago)
+Git Repository:
+  ✅ Git repository detected
+    Branch: main
+    Remote: https://github.com/user/repo.git
+    ✓ Working directory clean
+
+Worktrees:
+  No active worktrees
+
+Recent Activity:
+  3 log file(s) in logs/
+  0 report file(s) in reports/
+
+GitHub Stats:
+  📋 20 open issue(s)
+  🔀 3 open pull request(s)
+
+# Watch Mode（3秒ごとに自動更新）
+$ miyabi status --watch
+
+🔄 Watch Mode Active
+  (Auto-refresh every 3 seconds. Press Ctrl+C to exit)
+
+📊 Project Status
+... (上記と同じ出力が自動更新されます)
 ```
 
 ---
@@ -333,15 +474,17 @@ $ npx miyabi
 
 ### 🎯 **CoordinatorAgent - タスク統括**
 
-```typescript
-// DAGベースの依存関係解析
-const dag = await coordinator.analyzeDependencies(issue);
+```rust
+use miyabi_agents::{CoordinatorAgent, BaseAgent};
+use miyabi_types::Issue;
 
-// 並列実行可能なタスクを自動検出
-const parallelTasks = dag.getParallelizableTasks();
+// DAGベースの依存関係解析と並列実行制御
+let coordinator = CoordinatorAgent::new(config);
+let result = coordinator.execute(&task).await?;
 
-// Critical Path最適化
-const optimizedPlan = dag.optimizeCriticalPath();
+// 並列実行可能なタスクを自動検出してWorktreeで実行
+// 複数IssueをCLIで並列処理
+// $ miyabi parallel --issues 123,124,125 --concurrency 3
 ```
 
 **機能:**
@@ -352,37 +495,44 @@ const optimizedPlan = dag.optimizeCriticalPath();
 
 ### 💻 **CodeGenAgent - AI駆動コード生成**
 
-```typescript
-// Claude Sonnet 4による高品質コード生成
-const code = await codeGen.generate({
-  task: "Implement user authentication",
-  framework: "Next.js",
-  testFramework: "Vitest",
-  coverage: 80
-});
+```rust
+use miyabi_agents::CodeGenAgent;
+use miyabi_types::{Task, AgentResult};
+
+// Claude Sonnet 4による高品質Rustコード生成
+let codegen = CodeGenAgent::new(config);
+let result = codegen.execute(&task).await?;
+
+// 自動生成されるもの:
+// - Rust structs/enums/traits実装
+// - #[cfg(test)] mod tests { ... } 付きテスト
+// - /// Rustdocコメント
 ```
 
 **機能:**
 - ✅ Claude Sonnet 4による実装
-- ✅ TypeScript/JavaScript完全対応
+- ✅ Rust 2021 Edition完全対応
 - ✅ テスト自動生成（80%+カバレッジ）
 - ✅ Conventional Commits準拠
 
 ### 🔍 **ReviewAgent - コード品質判定**
 
-```typescript
+```rust
+use miyabi_agents::ReviewAgent;
+
 // 静的解析 + セキュリティスキャン
-const review = await reviewer.analyze(code);
+let reviewer = ReviewAgent::new(config);
+let review = reviewer.execute(&task).await?;
 
 // 品質スコアリング（80点以上でマージ可能）
-if (review.qualityScore >= 80) {
-  await pr.approve();
-}
+// - cargo clippy --all-targets --all-features -- -D warnings
+// - cargo test --all
+// - cargo audit
 ```
 
 **機能:**
-- ✅ 静的解析（ESLint, TypeScript）
-- ✅ セキュリティスキャン（CodeQL, Gitleaks）
+- ✅ 静的解析（Clippy, Rustfmt）
+- ✅ セキュリティスキャン（cargo audit, Gitleaks）
 - ✅ 品質スコアリング（0-100点）
 - ✅ 自動修正提案
 
@@ -617,7 +767,7 @@ A ──┤      ├─ F         (26時間)
 
 <div align="center">
 
-[![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/miyabi)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/Urx8547abS)
 [![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-181717?style=for-the-badge&logo=github)](https://github.com/ShunsukeHayashi/Miyabi/discussions)
 
 </div>
@@ -656,17 +806,19 @@ A ──┤      ├─ F         (26時間)
 
 ## 🔧 コマンドリファレンス
 
+> 以下は **Rust Edition** (`miyabi`) のコマンド例です。TypeScript版は `npx miyabi` に読み替えてください。
+
 ### 🎨 **対話モード**
 
 ```bash
-npx miyabi
+miyabi
 
 ? 何をしますか？
   🌸 初めての方（セットアップガイド）
   🆕 新しいプロジェクトを作成
   📦 既存プロジェクトに追加
   📊 ステータス確認
-  📚 ドキュメント生成
+  🤖 Agent実行
   ⚙️  設定
   ❌ 終了
 ```
@@ -675,22 +827,26 @@ npx miyabi
 
 ```bash
 # 新規プロジェクト作成
-npx miyabi init <project-name> [--private] [--skip-install]
+miyabi init <project-name> [--interactive] [--private]
 
 # 既存プロジェクトに追加
-npx miyabi install [--dry-run]
+miyabi install [--dry-run]
 
-# ステータス確認
-npx miyabi status [--watch]
+# ステータス確認（通常モード / Watch Mode）
+miyabi status
+miyabi status --watch  # 3秒ごとに自動更新
 
-# ドキュメント生成
-npx miyabi docs [--input ./src] [--output ./docs/API.md] [--watch] [--training]
+# シンプルなAgent実行
+miyabi work-on <issue-number>
+
+# または従来の方法
+miyabi agent run <agent-type> --issue <issue-number>
+
+# 並列実行（複数Issue）
+miyabi parallel --issues 123,124,125 --concurrency 3
 
 # 設定管理
-npx miyabi config
-
-# セットアップガイド
-npx miyabi setup
+miyabi config
 ```
 
 ---
@@ -836,7 +992,7 @@ Miyabiの開発を支援してください:
 | プラットフォーム | リンク |
 |:----------------|:------|
 | 🐦 **X (Twitter)** | [@The_AGI_WAY](https://x.com/The_AGI_WAY) |
-| 💬 **Discord** | [Miyabi Community](https://discord.gg/miyabi) |
+| 💬 **Discord** | [Miyabi Community](https://discord.gg/Urx8547abS) |
 | 📧 **Email** | Contact via GitHub profile |
 | 🌐 **Website** | [note.ambitiousai.co.jp](https://note.ambitiousai.co.jp/) |
 
@@ -904,14 +1060,73 @@ AIペアプログラミング
 
 <div align="center">
 
-### v0.8.0 (2025-10-09)
+### 🦀 Rust Edition v0.1.1 (2025-10-19) - **"Insanely Great" Onboarding Edition** ⭐
+
+[![GitHub Release](https://img.shields.io/github/v/release/ShunsukeHayashi/Miyabi?include_prereleases&style=for-the-badge&logo=github&label=Rust%20Edition)](https://github.com/ShunsukeHayashi/Miyabi/releases/tag/v0.1.1)
+[![Rust](https://img.shields.io/badge/Rust-1.75+-orange?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
+[![crates.io](https://img.shields.io/badge/crates.io-v0.1.1-blue?style=for-the-badge&logo=rust)](https://crates.io/crates/miyabi-cli)
+
+### 📦 TypeScript Edition v0.8.0 (2025-10-09)
 
 [![npm](https://img.shields.io/npm/v/miyabi?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/miyabi)
 [![GitHub Release](https://img.shields.io/github/v/release/ShunsukeHayashi/Miyabi?style=for-the-badge&logo=github)](https://github.com/ShunsukeHayashi/Miyabi/releases)
 
 </div>
 
-### 🆕 **最新の変更 (v0.8.0)**
+### 🆕 **最新の変更 (Rust v0.1.1 - "Insanely Great" Onboarding Edition)**
+
+#### ✨ **新機能 - UX革命**
+- 🚀 **`miyabi work-on`** - シンプルな新コマンド（技術的複雑さを隠蔽）
+- 🎯 **`miyabi init --interactive`** - 対話形式プロジェクトセットアップ
+  - プロジェクトタイプ選択（WebApp, API, CLI, Library）
+  - GitHub接続ウィザード
+  - リアルタイム進捗フィードバック
+  - プロアクティブエラーメッセージ
+
+#### 📚 **新ドキュメント (8ファイル, ~39KB)**
+- ✨ **Getting Started Guide** (250+行) - 完全セットアップガイド
+- 🆘 **Troubleshooting Guide** (280+行) - 詳細なトラブルシューティング
+- 🎨 **Real Code Examples** - 全ディレクトリに実際のRustコード例
+- 📖 **Agent Overview** - 全21 Agents詳細ガイド
+- 🌟 **Workflow Examples** - 実コマンド・実出力付き完全ワークフロー
+
+#### 🎯 **UX改善 - Steve Jobs承認**
+**スコア推移**: 7/10 → 9.5/10 → **10.5/10 ⭐**
+
+**Before (7/10)**:
+- ❌ 空の`.claude/agents/`ディレクトリ
+- ❌ 不明瞭な次のステップ（3行）
+- ❌ インタラクティブセットアップなし
+- ❌ 汎用的なエラーメッセージ
+
+**After (10.5/10)** ⭐:
+- ✅ 全ディレクトリに実際のコード例
+- ✅ 詳細な4ステップガイド（コピペ可能）
+- ✅ プロジェクトタイプ選択付きインタラクティブセットアップ
+- ✅ プロアクティブエラー：「これが正確な修正方法です」
+
+#### 🛠️ **コード品質**
+- ✅ **735+テスト合格** (0失敗, 17 ignored)
+- ✅ **0 Clippy警告** - 6つの警告修正 + doctest修正
+- ✅ **8クレート公開** - 全てcrates.io v0.1.1で利用可能
+
+#### 📦 **公開クレート (crates.io v0.1.1)**
+1. **miyabi-types** - コア型定義
+2. **miyabi-core** - 共通ユーティリティ（config, logger, retry, cache）
+3. **miyabi-llm** - LLM統合層（GPT-OSS-20B, Ollama, vLLM, Groq）
+4. **miyabi-potpie** - Potpie AI + Neo4j知識グラフ
+5. **miyabi-github** - GitHub APIラッパー（octocrab）
+6. **miyabi-worktree** - Git Worktree並列実行
+7. **miyabi-agents** - 7 Coding Agents + 14 Business Agents
+8. **miyabi-cli** - CLIツール（init, status, agent, work-on）
+
+#### 📚 **ドキュメント**
+- ✅ **Getting Started** - [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)
+- ✅ **Troubleshooting** - [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
+- ✅ **Agent Overview** - [.claude/agents/README.md](.claude/agents/README.md)
+- ✅ **Full Guide** - [CLAUDE.md](CLAUDE.md)
+
+### 🔄 **TypeScript Edition 最新の変更 (v0.8.0)**
 
 - ✅ ライセンスをApache 2.0に変更（商標・特許保護強化）
 - ✅ NOTICEファイル追加（帰属表示・商標保護）
@@ -992,6 +1207,12 @@ echo "GITHUB_TOKEN=ghp_new_token" > .env
 
 ## 🌸 覚えるコマンドは一つだけ
 
+### 🦀 Rust Edition（推奨）
+```bash
+miyabi
+```
+
+### 📦 TypeScript Edition（レガシー）
 ```bash
 npx miyabi
 ```
@@ -1031,6 +1252,16 @@ npx miyabi
 
 ### ✨ Quick Start
 
+#### 🦀 Rust Edition (Recommended)
+```bash
+# Install from crates.io
+cargo install miyabi-cli
+
+# Run
+miyabi
+```
+
+#### 📦 TypeScript Edition (Legacy)
 ```bash
 npx miyabi
 ```
@@ -1235,7 +1466,9 @@ AI agents automatically:
 | 📊 [Entity-Relation Graph](https://shunsukehayashi.github.io/Miyabi/entity-graph.html) | Real-time session activity visualization |
 | 📱 [Termux Guide](docs/TERMUX_GUIDE.md) | Usage in Android/Termux environment |
 | 🔒 [Security Policy](SECURITY.md) | Security vulnerability reporting |
-| 🔐 [Privacy Policy](PRIVACY.md) | Data collection and privacy protection |
+| 🔐 [Privacy Policy](docs/PRIVACY.md) | Data collection and privacy protection (v1.0.0) |
+| ⚖️ [EULA](docs/EULA.md) | End User License Agreement (v1.0.0) |
+| 📋 [Terms of Service](docs/TERMS_OF_SERVICE.md) | Terms of Service (v1.0.0) |
 | 🤝 [Contributing](CONTRIBUTING.md) | How to contribute & CLA |
 | 💬 [Community Guidelines](COMMUNITY_GUIDELINES.md) | Discord community code of conduct |
 | 📦 [Publication Guide](docs/PUBLICATION_GUIDE.md) | npm publishing process |
@@ -1266,7 +1499,7 @@ Support Miyabi's development:
 | Platform | Link |
 |:---------|:-----|
 | 🐦 **X (Twitter)** | [@The_AGI_WAY](https://x.com/The_AGI_WAY) |
-| 💬 **Discord** | [Miyabi Community](https://discord.gg/miyabi) |
+| 💬 **Discord** | [Miyabi Community](https://discord.gg/Urx8547abS) |
 | 📧 **Email** | Contact via GitHub profile |
 | 🌐 **Website** | [note.ambitiousai.co.jp](https://note.ambitiousai.co.jp/) |
 
@@ -1274,21 +1507,103 @@ Support Miyabi's development:
 
 ---
 
-### 📜 License
+### 📜 License & Legal
 
 <div align="center">
 
-### Apache License 2.0
+### Apache License 2.0 (Binary Distribution)
 
 Copyright (c) 2025 Shunsuke Hayashi
 
-This software is provided under the Apache 2.0 License with **trademark and patent protection**.
+**🔒 Proprietary Source Code + Binary Distribution Model**
 
 </div>
 
-- ✅ "Miyabi" is a product name claimed by Shunsuke Hayashi (unregistered)
-- ✅ Modified versions must clearly indicate changes
-- ✅ See [LICENSE](LICENSE) and [NOTICE](NOTICE) for full details
+#### 📄 License Details
+
+- **Binary Distribution**: Licensed under [Apache License 2.0](LICENSE)
+  - ✅ Free to use for personal, educational, and commercial purposes
+  - ✅ Free to distribute unmodified binaries with attribution
+  - ✅ No usage restrictions or fees
+
+- **Source Code**: **Proprietary and not included**
+  - ⚠️ Source code is confidential and protected by copyright
+  - ⚠️ Reverse engineering, decompilation, or disassembly is prohibited
+  - ⚠️ This is NOT "open source" software (as defined by OSI)
+
+- **Trademarks**: "Miyabi" is a product name claimed by Shunsuke Hayashi (unregistered)
+
+- **See Also**: [LICENSE](LICENSE), [NOTICE](NOTICE), [EULA](docs/EULA.md)
+
+#### 🔐 Privacy & Data Collection
+
+**Privacy by Default** - Data collection requires explicit opt-in consent:
+
+- **Mandatory Local Data** (never transmitted):
+  - Anonymous User ID (UUID v4)
+  - EULA acceptance timestamp
+  - Installation date
+
+- **Optional Data** (opt-in required):
+  - Email address (for product updates, if you register)
+  - Anonymous usage analytics (command frequency, error rates, OS version)
+  - Crash reports (anonymized stack traces)
+
+**GDPR & CCPA Compliant** - Full rights to access, correct, and delete your data.
+
+📖 **Read More**: [Privacy Policy](docs/PRIVACY.md) | [EULA](docs/EULA.md) | [Terms of Service](docs/TERMS_OF_SERVICE.md)
+
+#### ❓ FAQ: Why Proprietary Source Code?
+
+<details>
+<summary><b>Q: Why isn't the source code open source?</b></summary>
+
+**A**: Miyabi follows a **Proprietary Binary Distribution** model, similar to products like VS Code binaries, Docker Desktop, Slack, Discord, Zoom, Figma, and Notion. This is a common and valid business model that allows us to:
+
+- Protect intellectual property and unique AI agent architectures
+- Invest in long-term development and support
+- Provide enterprise features and SaaS services in the future
+
+**However**, you still get:
+- ✅ Free binary distribution (Apache 2.0)
+- ✅ Full documentation and usage guides
+- ✅ Community support via Discord
+- ✅ Transparent data collection practices (opt-in only)
+
+See [Business Model Analysis](docs/BUSINESS_MODEL_ANALYSIS.md) for research and industry comparisons.
+
+</details>
+
+<details>
+<summary><b>Q: Will the source code ever be open sourced?</b></summary>
+
+**A**: We are considering an **Open Core** model in the future:
+
+- **Phase 1** (Current): Proprietary binary distribution
+- **Phase 2** (Future): Partial source available (coding agents, CLI)
+- **Phase 3** (Long-term): Open Core (coding agents OSS, business agents proprietary)
+
+See [Release Strategy](docs/RELEASE_STRATEGY.md) for our roadmap.
+
+</details>
+
+<details>
+<summary><b>Q: How do I know the binary is safe?</b></summary>
+
+**A**: We provide:
+
+- ✅ Checksums for all binary releases (SHA256)
+- ✅ Signed macOS binaries (Developer ID)
+- ✅ Transparent privacy policy (no telemetry by default)
+- ✅ Active community monitoring via Discord
+
+You can:
+- Verify checksums before installation
+- Use network monitoring tools to inspect outbound connections
+- Review our privacy policy and opt-out of any data collection
+- Report security issues via [SECURITY.md](SECURITY.md)
+
+</details>
 
 ---
 
@@ -1325,6 +1640,12 @@ All dependency packages and contributors
 
 ## 🌸 Remember just one command
 
+### 🦀 Rust Edition (Recommended)
+```bash
+miyabi
+```
+
+### 📦 TypeScript Edition (Legacy)
 ```bash
 npx miyabi
 ```

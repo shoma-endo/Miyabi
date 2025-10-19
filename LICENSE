@@ -199,3 +199,32 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+================================================================================
+
+IMPORTANT NOTICE: PROPRIETARY SOURCE CODE
+
+This Apache License 2.0 applies ONLY to the binary distribution of Miyabi CLI.
+
+THE SOURCE CODE IS PROPRIETARY AND NOT INCLUDED IN THIS DISTRIBUTION.
+
+The source code of Miyabi CLI is confidential and protected by copyright,
+trade secret, and other intellectual property laws. You do NOT receive any
+rights to the source code under this License.
+
+You may NOT:
+- Reverse engineer, decompile, or disassemble the binary
+- Attempt to derive the source code from the binary
+- Create derivative works based on reverse-engineered code
+
+For full terms regarding the use of Miyabi CLI, please read:
+- End User License Agreement (EULA): docs/EULA.md
+- Privacy Policy: docs/PRIVACY.md
+- Terms of Service: docs/TERMS_OF_SERVICE.md
+
+Contact:
+- Legal inquiries: legal@miyabi.dev
+- Privacy requests: privacy@miyabi.dev
+- Security issues: security@miyabi.dev
+
+================================================================================

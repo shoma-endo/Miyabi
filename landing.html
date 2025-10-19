@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Miyabi - 一つのコマンドで全てが完結する自律型開発フレームワーク。Issue作成からコード実装、PR作成、デプロイまでを完全自動化。">
+    <meta name="keywords" content="Miyabi, Rust, AI, Autonomous Development, GitHub, CLI, Agent, Automation">
+    <meta property="og:title" content="Miyabi - Beauty in Autonomous Development">
+    <meta property="og:description" content="10-15分でPRが完成。レビューして、マージするだけ。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shunsukehayashi.github.io/Miyabi/landing.html">
+    <title>Miyabi - Beauty in Autonomous Development</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #9B59B6;
+            --primary-dark: #8E44AD;
+            --secondary: #3498DB;
+            --accent: #E91E63;
+            --bg-dark: #0a0a0f;
+            --bg-card: #1a1a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #b8b8c8;
+            --success: #27AE60;
+            --warning: #F39C12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 50%, #2d1b3d 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 2rem;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(155, 89, 182, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(52, 152, 219, 0.15) 0%, transparent 50%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-emoji {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .hero-tagline {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            margin-bottom: 3rem;
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .cta-container {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 8px 24px rgba(155, 89, 182, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(155, 89, 182, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .install-command {
+            background: var(--bg-card);
+            border: 1px solid rgba(155, 89, 182, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 1rem;
+            color: var(--success);
+            display: inline-block;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .install-command code {
+            color: var(--success);
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 4rem 2rem;
+            background: var(--bg-card);
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(155, 89, 182, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(155, 89, 182, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 8px 24px rgba(155, 89, 182, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 6rem 2rem;
+            background: var(--bg-dark);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2.5rem;
+            border: 1px solid rgba(155, 89, 182, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 32px rgba(155, 89, 182, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            margin-top: 1rem;
+        }
+
+        .feature-card li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-card li::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        /* Installation Section */
+        .installation {
+            padding: 6rem 2rem;
+            background: var(--bg-card);
+        }
+
+        .install-steps {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .install-step {
+            background: var(--bg-dark);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .install-step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .install-step h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .code-block {
+            background: #0a0a0f;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            border: 1px solid rgba(155, 89, 182, 0.2);
+        }
+
+        .code-block code {
+            font-family: 'Monaco', 'Courier New', monospace;
+            color: var(--success);
+            font-size: 0.95rem;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 6rem 2rem;
+            background: var(--bg-dark);
+        }
+
+        .pricing-card {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            border: 2px solid var(--primary);
+            box-shadow: 0 16px 48px rgba(155, 89, 182, 0.3);
+        }
+
+        .price {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 2rem 0;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(155, 89, 182, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pricing-features li::before {
+            content: "✓";
+            color: var(--success);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 2rem;
+            background: var(--bg-card);
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(155, 89, 182, 0.4);
+        }
+
+        .copyright {
+            color: var(--text-secondary);
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                min-height: auto;
+                padding: 4rem 1.5rem;
+            }
+
+            .hero-emoji {
+                font-size: 3rem;
+            }
+
+            .cta-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .features-grid,
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .install-command {
+                font-size: 0.85rem;
+                padding: 1rem 1.5rem;
+            }
+        }
+
+        /* Scroll Animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="hero-emoji">🌸</span>
+            <h1>Miyabi</h1>
+            <p class="hero-subtitle">Beauty in Autonomous Development</p>
+            <p class="hero-tagline">10-15分でPRが完成。<br>レビューして、マージするだけ。</p>
+
+            <div class="install-command">
+                <code>$ cargo install miyabi-cli</code>
+            </div>
+
+            <div class="cta-container">
+                <a href="https://github.com/ShunsukeHayashi/Miyabi" class="btn btn-primary" target="_blank">
+                    GitHub で見る ⭐
+                </a>
+                <a href="https://github.com/ShunsukeHayashi/Miyabi/blob/main/docs/GETTING_STARTED.md" class="btn btn-secondary" target="_blank">
+                    Get Started →
+                </a>
+            </div>
+
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                🦀 Rust Edition v0.1.1 | Apache 2.0 License | Powered by Claude AI
+            </p>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-card fade-in">
+                <div class="stat-number">8.4MB</div>
+                <div class="stat-label">Single Binary</div>
+            </div>
+            <div class="stat-card fade-in">
+                <div class="stat-number">735+</div>
+                <div class="stat-label">Tests Passing</div>
+            </div>
+            <div class="stat-card fade-in">
+                <div class="stat-number">72%</div>
+                <div class="stat-label">Efficiency Gain</div>
+            </div>
+            <div class="stat-card fade-in">
+                <div class="stat-number">10.5/10</div>
+                <div class="stat-label">UX Score</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="section-header fade-in">
+            <h2>🚀 主な機能</h2>
+            <p>一つのコマンドで全てが完結する自律型開発フレームワーク</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card fade-in">
+                <span class="feature-icon">🤖</span>
+                <h3>7つの自律AIエージェント</h3>
+                <p>Issue作成からデプロイまで、全工程を自動化する専門AIエージェント。</p>
+                <ul>
+                    <li>CoordinatorAgent - タスク統括</li>
+                    <li>CodeGenAgent - AI駆動コード生成</li>
+                    <li>ReviewAgent - 品質判定</li>
+                    <li>PRAgent - Pull Request作成</li>
+                    <li>DeploymentAgent - 自動デプロイ</li>
+                </ul>
+            </div>
+
+            <div class="feature-card fade-in">
+                <span class="feature-icon">⚡</span>
+                <h3>並列実行で72%効率化</h3>
+                <p>Git Worktreeによる真の並列実行。複数Issueを同時処理。</p>
+                <ul>
+                    <li>DAGベース依存関係解析</li>
+                    <li>Critical Path最適化</li>
+                    <li>リアルタイム進捗トラッキング</li>
+                    <li>独立したWorktree環境</li>
+                </ul>
+            </div>
+
+            <div class="feature-card fade-in">
+                <span class="feature-icon">🔐</span>
+                <h3>品質保証と安全性</h3>
+                <p>735+テスト、83.78%カバレッジ、Rustのメモリ安全性。</p>
+                <ul>
+                    <li>コンパイル時型安全性</li>
+                    <li>静的解析（Clippy）</li>
+                    <li>セキュリティスキャン</li>
+                    <li>品質スコアリング（100点満点）</li>
+                </ul>
+            </div>
+
+            <div class="feature-card fade-in">
+                <span class="feature-icon">🏗️</span>
+                <h3>GitHub OS統合</h3>
+                <p>GitHub as OS - 15のコンポーネントと完全統合。</p>
+                <ul>
+                    <li>Projects V2 - データ永続化</li>
+                    <li>Actions - CI/CD自動化</li>
+                    <li>53ラベル体系</li>
+                    <li>Webhooks - イベントバス</li>
+                </ul>
+            </div>
+
+            <div class="feature-card fade-in">
+                <span class="feature-icon">📚</span>
+                <h3>充実したドキュメント</h3>
+                <p>39KBの包括的ドキュメント、実例豊富なガイド。</p>
+                <ul>
+                    <li>Getting Started Guide（339行）</li>
+                    <li>Troubleshooting Guide（280行）</li>
+                    <li>CLI Usage Examples（460行）</li>
+                    <li>Agent Specifications（21個）</li>
+                </ul>
+            </div>
+
+            <div class="feature-card fade-in">
+                <span class="feature-icon">🎯</span>
+                <h3>優れたUX（10.5/10）</h3>
+                <p>インタラクティブUI、プロアクティブなエラーメッセージ。</p>
+                <ul>
+                    <li>対話形式セットアップ</li>
+                    <li>Watch Mode（3秒自動更新）</li>
+                    <li>シンプルなコマンド体系</li>
+                    <li>明確なエラーガイダンス</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section class="installation">
+        <div class="section-header fade-in">
+            <h2>📦 インストール</h2>
+            <p>3ステップで簡単セットアップ</p>
+        </div>
+
+        <div class="install-steps">
+            <div class="install-step fade-in">
+                <div class="install-step-number">1</div>
+                <h3>インストール</h3>
+                <p>crates.ioから最新版をインストール</p>
+                <div class="code-block">
+                    <code>$ cargo install miyabi-cli</code>
+                </div>
+            </div>
+
+            <div class="install-step fade-in">
+                <div class="install-step-number">2</div>
+                <h3>プロジェクト作成</h3>
+                <p>インタラクティブモードで簡単セットアップ</p>
+                <div class="code-block">
+                    <code>$ miyabi init my-project --interactive</code>
+                </div>
+            </div>
+
+            <div class="install-step fade-in">
+                <div class="install-step-number">3</div>
+                <h3>Agent実行</h3>
+                <p>Issue番号を指定して自動処理開始</p>
+                <div class="code-block">
+                    <code>$ miyabi work-on 1</code>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing">
+        <div class="section-header fade-in">
+            <h2>💰 価格</h2>
+            <p>完全無料・オープンソース</p>
+        </div>
+
+        <div class="pricing-card fade-in">
+            <h3>Free Forever</h3>
+            <div class="price">¥0</div>
+            <ul class="pricing-features">
+                <li>全機能無制限で利用可能</li>
+                <li>Apache 2.0ライセンス</li>
+                <li>Discordコミュニティサポート</li>
+                <li>GitHub Discussions</li>
+                <li>定期アップデート</li>
+                <li>商用利用可能</li>
+            </ul>
+            <a href="https://github.com/ShunsukeHayashi/Miyabi" class="btn btn-primary" target="_blank">
+                今すぐ始める →
+            </a>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>🌸 今すぐMiyabiを始めよう</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+            一つのコマンドで全てが完結する開発体験を
+        </p>
+        <div class="cta-container">
+            <a href="https://github.com/ShunsukeHayashi/Miyabi" class="btn btn-secondary" target="_blank" style="background: white; color: var(--primary);">
+                GitHub で見る ⭐
+            </a>
+            <a href="https://discord.gg/Urx8547abS" class="btn btn-secondary" target="_blank" style="background: white; color: var(--primary);">
+                Discord に参加 💬
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="https://github.com/ShunsukeHayashi/Miyabi" target="_blank">GitHub</a>
+            <a href="https://github.com/ShunsukeHayashi/Miyabi/blob/main/docs/GETTING_STARTED.md" target="_blank">Getting Started</a>
+            <a href="https://github.com/ShunsukeHayashi/Miyabi/wiki" target="_blank">Documentation</a>
+            <a href="https://discord.gg/Urx8547abS" target="_blank">Discord</a>
+            <a href="https://github.com/ShunsukeHayashi/Miyabi/blob/main/SECURITY.md" target="_blank">Security</a>
+            <a href="https://github.com/ShunsukeHayashi/Miyabi/blob/main/LICENSE" target="_blank">License</a>
+        </div>
+
+        <div class="social-links">
+            <a href="https://github.com/ShunsukeHayashi/Miyabi" target="_blank" aria-label="GitHub">⭐</a>
+            <a href="https://discord.gg/Urx8547abS" target="_blank" aria-label="Discord">💬</a>
+            <a href="https://x.com/The_AGI_WAY" target="_blank" aria-label="Twitter">🐦</a>
+        </div>
+
+        <div class="copyright">
+            <p>© 2025 Shunsuke Hayashi. Licensed under Apache 2.0.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+                🤖 Powered by Claude AI • 🦀 Built with Rust • 💖 Made with Love
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scroll Animation Script -->
+    <script>
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

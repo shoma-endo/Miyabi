@@ -1066,7 +1066,7 @@ AIペアプログラミング
 [![Rust](https://img.shields.io/badge/Rust-1.75+-orange?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![crates.io](https://img.shields.io/badge/crates.io-v0.1.1-blue?style=for-the-badge&logo=rust)](https://crates.io/crates/miyabi-cli)
 
-### 📦 TypeScript Edition v0.8.0 (2025-10-09)
+### 📦 TypeScript Edition v0.13.0 (2025-10-09)
 
 [![npm](https://img.shields.io/npm/v/miyabi?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/miyabi)
 [![GitHub Release](https://img.shields.io/github/v/release/ShunsukeHayashi/Miyabi?style=for-the-badge&logo=github)](https://github.com/ShunsukeHayashi/Miyabi/releases)
@@ -1126,7 +1126,7 @@ AIペアプログラミング
 - ✅ **Agent Overview** - [.claude/agents/README.md](.claude/agents/README.md)
 - ✅ **Full Guide** - [CLAUDE.md](CLAUDE.md)
 
-### 🔄 **TypeScript Edition 最新の変更 (v0.8.0)**
+### 🔄 **TypeScript Edition 最新の変更 (v0.13.0)**
 
 - ✅ ライセンスをApache 2.0に変更（商標・特許保護強化）
 - ✅ NOTICEファイル追加（帰属表示・商標保護）

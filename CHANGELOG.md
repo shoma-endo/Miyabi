@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (2025-10-21)
+- 🔧 **Issue #156**: Fixed Miyabi automation not working in external projects
+  - **@miyabi Mention Detection**: Added support for @miyabi mentions in issue comments (previously only /agent)
+  - **Workflow Trigger**: Updated autonomous-agent.yml to detect both `/agent` and `@miyabi` patterns
+  - **Documentation**: Created comprehensive fix guide (MIYABI_AUTOMATION_FIX_GUIDE.md)
+  - **Automated Fix Script**: Added fix-automation-issue-156.sh for easy deployment
+  - **Root Cause**: Workflows must be deployed via GitHub API using `miyabi install`
+  - **Impact**: Now supports natural language mentions (@miyabi) in addition to slash commands
+  - Files changed:
+    - packages/cli/templates/workflows/autonomous-agent.yml (Line 53)
+    - MIYABI_AUTOMATION_FIX_GUIDE.md (227 lines)
+    - scripts/fix-automation-issue-156.sh (183 lines)
+    - ISSUE_156_RESOLUTION.md (comprehensive resolution doc)
+
 ### Added (2025-10-20)
 - ✨ **Watch Mode** for `miyabi status` command - Real-time monitoring with auto-refresh every 3 seconds
 - 📊 **GitHub Stats Integration** - Display open Issues and PRs count in status command

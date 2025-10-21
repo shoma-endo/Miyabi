@@ -1570,7 +1570,7 @@ Copyright (c) 2025 Shunsuke Hayashi
 - ✅ Community support via Discord
 - ✅ Transparent data collection practices (opt-in only)
 
-See [Business Model Analysis](docs/BUSINESS_MODEL_ANALYSIS.md) for research and industry comparisons.
+For detailed business model analysis, please contact us via Discord or GitHub Discussions.
 
 </details>
 

@@ -6,7 +6,7 @@ import time
 from collections import deque
 from contextlib import asynccontextmanager
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 from fastapi import (
     Depends,
@@ -142,6 +142,11 @@ class WebSocketManager:
 sessions_storage: Dict[str, ContextSession] = {}
 websocket_manager = WebSocketManager()
 
+SESSION_TTL_SECONDS = int(os.getenv("CONTEXT_SESSION_TTL", "3600"))
+MAX_SESSIONS = int(os.getenv("CONTEXT_MAX_SESSIONS", "200"))
+MAX_WINDOWS_PER_SESSION = int(os.getenv("CONTEXT_MAX_WINDOWS", "20"))
+MAX_ELEMENTS_PER_WINDOW = int(os.getenv("CONTEXT_MAX_ELEMENTS", "200"))
+
 
 async def _authenticate_api_key(raw_key: Optional[str]) -> str:
     if not API_KEYS:
@@ -189,6 +194,42 @@ def _ensure_list_size(items: List[Any], limit: int, field_name: str) -> None:
             status_code=400,
             detail=f"{field_name} contains too many items (max {limit})",
         )
+
+
+def _session_expired(session: ContextSession, now: datetime) -> bool:
+    if SESSION_TTL_SECONDS <= 0:
+        return False
+    return (now - session.last_accessed).total_seconds() > SESSION_TTL_SECONDS
+
+
+def _evict_expired_sessions() -> None:
+    if not sessions_storage:
+        return
+    now = datetime.now()
+    expired_ids = [sid for sid, session in sessions_storage.items() if _session_expired(session, now)]
+    for sid in expired_ids:
+        sessions_storage.pop(sid, None)
+
+
+def _ensure_session_active(session_id: str) -> ContextSession:
+    _evict_expired_sessions()
+    session = sessions_storage.get(session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    now = datetime.now()
+    session.last_accessed = now
+    return session
+
+
+def _ensure_session_active_by_window(window_id: str) -> Tuple[ContextSession, ContextWindow]:
+    _evict_expired_sessions()
+    now = datetime.now()
+    for session in sessions_storage.values():
+        for window in session.windows:
+            if window.id == window_id:
+                session.last_accessed = now
+                return session, window
+    raise HTTPException(status_code=404, detail="Context window not found")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -307,6 +348,9 @@ async def create_session(name: str = "New Session", description: str = "") -> Di
     """新しいコンテキストセッションを作成"""
     _ensure_reasonable_length(name, 256, "Session name")
     _ensure_reasonable_length(description, MAX_CONTEXT_TEXT_LENGTH, "Session description")
+    _evict_expired_sessions()
+    if len(sessions_storage) >= MAX_SESSIONS:
+        raise HTTPException(status_code=503, detail="Session capacity reached. Try later.")
     session = ContextSession(name=name, description=description)
     sessions_storage[session.id] = session
     
@@ -326,6 +370,7 @@ async def create_session(name: str = "New Session", description: str = "") -> Di
 @app.get("/api/sessions", dependencies=[Depends(enforce_security)])
 async def list_sessions() -> Dict[str, Any]:
     """セッション一覧を取得"""
+    _evict_expired_sessions()
     sessions = []
     for session in sessions_storage.values():
         sessions.append({
@@ -342,11 +387,7 @@ async def list_sessions() -> Dict[str, Any]:
 @app.get("/api/sessions/{session_id}", dependencies=[Depends(enforce_security)])
 async def get_session(session_id: str) -> Dict[str, Any]:
     """特定のセッションを取得"""
-    if session_id not in sessions_storage:
-        raise HTTPException(status_code=404, detail="Session not found")
-    
-    session = sessions_storage[session_id]
-    session.last_accessed = datetime.now()
+    session = _ensure_session_active(session_id)
     
     return {
         "id": session.id,
@@ -374,12 +415,12 @@ async def get_session(session_id: str) -> Dict[str, Any]:
 )
 async def create_context_window(session_id: str, request: ContextWindowRequest) -> Dict[str, Any]:
     """新しいコンテキストウィンドウを作成"""
-    if session_id not in sessions_storage:
-        raise HTTPException(status_code=404, detail="Session not found")
-    
-    session = sessions_storage[session_id]
+    session = _ensure_session_active(session_id)
+    if len(session.windows) >= MAX_WINDOWS_PER_SESSION:
+        raise HTTPException(status_code=400, detail="Window limit reached for this session")
     window = session.create_window(request.max_tokens)
     window.reserved_tokens = request.reserved_tokens
+    session.last_accessed = datetime.now()
     
     await websocket_manager.broadcast({
         "type": "window_created",
@@ -401,12 +442,11 @@ async def create_context_window(session_id: str, request: ContextWindowRequest) 
 )
 async def add_context_element(window_id: str, request: ContextElementRequest) -> Dict[str, Any]:
     """コンテキスト要素を追加"""
-    window = find_window_by_id(window_id)
-    if not window:
-        raise HTTPException(status_code=404, detail="Context window not found")
-
+    session, window = _ensure_session_active_by_window(window_id)
     _ensure_reasonable_length(request.content, MAX_CONTEXT_TEXT_LENGTH, "Context element content")
-
+    if len(window.elements) >= MAX_ELEMENTS_PER_WINDOW:
+        raise HTTPException(status_code=400, detail="Element limit reached for this window")
+    
     element = ContextElement(
         content=request.content,
         type=ContextType(request.type),
@@ -418,6 +458,7 @@ async def add_context_element(window_id: str, request: ContextElementRequest) ->
     
     if not window.add_element(element):
         raise HTTPException(status_code=400, detail="Cannot add element: token limit exceeded")
+    session.last_accessed = datetime.now()
     
     await websocket_manager.broadcast({
         "type": "element_added",
@@ -438,10 +479,7 @@ async def add_context_element(window_id: str, request: ContextElementRequest) ->
 )
 async def get_context_window(window_id: str) -> Dict[str, Any]:
     """コンテキストウィンドウを取得"""
-    window = find_window_by_id(window_id)
-    if not window:
-        raise HTTPException(status_code=404, detail="Context window not found")
-    
+    session, window = _ensure_session_active_by_window(window_id)
     return {
         "id": window.id,
         "max_tokens": window.max_tokens,
@@ -461,10 +499,7 @@ async def get_context_window(window_id: str) -> Dict[str, Any]:
 )
 async def analyze_context(window_id: str) -> Dict[str, Any]:
     """コンテキスト分析を実行"""
-    window = find_window_by_id(window_id)
-    if not window:
-        raise HTTPException(status_code=404, detail="Context window not found")
-    
+    session, window = _ensure_session_active_by_window(window_id)
     try:
         analysis = await context_analyzer.analyze_context_window(window)
         
@@ -474,6 +509,7 @@ async def analyze_context(window_id: str) -> Dict[str, Any]:
             "quality_score": analysis.quality_score
         })
         
+        session.last_accessed = datetime.now()
         return analysis.to_dict()
         
     except Exception as e:
@@ -576,10 +612,7 @@ async def generate_template(purpose: str, examples: List[str] = [], constraints:
 )
 async def optimize_context(window_id: str, request: OptimizationRequest) -> Dict[str, Any]:
     """コンテキスト最適化を実行"""
-    window = find_window_by_id(window_id)
-    if not window:
-        raise HTTPException(status_code=404, detail="Context window not found")
-    
+    session, window = _ensure_session_active_by_window(window_id)
     try:
         task = await context_optimizer.optimize_context_window(
             window, request.goals, request.constraints
@@ -607,10 +640,7 @@ async def optimize_context(window_id: str, request: OptimizationRequest) -> Dict
 )
 async def auto_optimize_context(window_id: str) -> Dict[str, Any]:
     """コンテキストの自動最適化"""
-    window = find_window_by_id(window_id)
-    if not window:
-        raise HTTPException(status_code=404, detail="Context window not found")
-    
+    session, window = _ensure_session_active_by_window(window_id)
     try:
         result = await context_optimizer.auto_optimize_context(window)
         
@@ -620,6 +650,7 @@ async def auto_optimize_context(window_id: str) -> Dict[str, Any]:
             "task_id": result["task_id"]
         })
         
+        session.last_accessed = datetime.now()
         return result
         
     except Exception as e:
@@ -722,6 +753,7 @@ async def websocket_endpoint(websocket: WebSocket):
 @app.get("/api/stats", dependencies=[Depends(enforce_security)])
 async def get_stats() -> Dict[str, Any]:
     """システム統計情報を取得"""
+    _evict_expired_sessions()
     total_sessions = len(sessions_storage)
     total_windows = sum(len(session.windows) for session in sessions_storage.values())
     total_elements = sum(
@@ -748,28 +780,9 @@ async def get_stats() -> Dict[str, Any]:
     }
 
 # ヘルパー関数
-def find_window_by_id(window_id: str) -> Optional[ContextWindow]:
-    """ウィンドウIDからコンテキストウィンドウを検索"""
-    for session in sessions_storage.values():
-        for window in session.windows:
-            if window.id == window_id:
-                return window
-    return None
+
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=9001)
-    _ensure_reasonable_length(request.content, MAX_CONTEXT_TEXT_LENGTH, "Context element content")
-    _ensure_reasonable_length(request.name, 256, "Template name")
-    _ensure_reasonable_length(request.description, MAX_CONTEXT_TEXT_LENGTH, "Template description")
-    _ensure_reasonable_length(request.template, MAX_CONTEXT_TEXT_LENGTH, "Template body")
-    _ensure_reasonable_length(purpose, MAX_CONTEXT_TEXT_LENGTH, "purpose")
-    _ensure_list_size(examples, MAX_MULTIMODAL_ITEMS, "examples")
-    _ensure_list_size(constraints, MAX_MULTIMODAL_ITEMS, "constraints")
-    _ensure_list_size(request.goals, MAX_MULTIMODAL_ITEMS, "goals")
-    _ensure_reasonable_length(request.text_content, MAX_CONTEXT_TEXT_LENGTH, "text_content")
-    _ensure_list_size(request.image_urls, MAX_MULTIMODAL_ITEMS, "image_urls")
-    _ensure_list_size(request.audio_urls, MAX_MULTIMODAL_ITEMS, "audio_urls")
-    _ensure_list_size(request.video_urls, MAX_MULTIMODAL_ITEMS, "video_urls")
-    _ensure_list_size(request.document_urls, MAX_MULTIMODAL_ITEMS, "document_urls")
-    _ensure_list_size(request.documents, MAX_MULTIMODAL_ITEMS, "documents")

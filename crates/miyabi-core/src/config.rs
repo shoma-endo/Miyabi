@@ -1,4 +1,4 @@
-use std::{fs, path::PathBuf};
+use std::{fs, path::{Path, PathBuf}};
 
 use anyhow::{Context, Result};
 use directories::ProjectDirs;
@@ -60,19 +60,27 @@ impl MiyabiConfigManager {
     pub fn init_with_defaults(&self) -> Result<MiyabiConfig> {
         fs::create_dir_all(&self.config_dir)
             .with_context(|| format!("failed to create {:?}", self.config_dir))?;
+        restrict_dir_permissions(&self.config_dir)
+            .with_context(|| format!("failed to restrict permissions for {:?}", self.config_dir))?;
         let config = MiyabiConfig::default();
         let raw = toml::to_string_pretty(&config)?;
         fs::write(&self.config_file, raw)
             .with_context(|| format!("failed to write {:?}", self.config_file))?;
+        restrict_file_permissions(&self.config_file)
+            .with_context(|| format!("failed to restrict permissions for {:?}", self.config_file))?;
         Ok(config)
     }
 
     pub fn save(&self, config: &MiyabiConfig) -> Result<()> {
         fs::create_dir_all(&self.config_dir)
             .with_context(|| format!("failed to create {:?}", self.config_dir))?;
+        restrict_dir_permissions(&self.config_dir)
+            .with_context(|| format!("failed to restrict permissions for {:?}", self.config_dir))?;
         let raw = toml::to_string_pretty(config)?;
         fs::write(&self.config_file, raw)
             .with_context(|| format!("failed to write {:?}", self.config_file))?;
+        restrict_file_permissions(&self.config_file)
+            .with_context(|| format!("failed to restrict permissions for {:?}", self.config_file))?;
         Ok(())
     }
 
@@ -84,6 +92,8 @@ impl MiyabiConfigManager {
         let mut dir = self.config_dir.clone();
         dir.push("logs");
         fs::create_dir_all(&dir)?;
+        restrict_dir_permissions(&dir)
+            .with_context(|| format!("failed to restrict permissions for {:?}", dir))?;
         Ok(dir)
     }
 
@@ -91,6 +101,8 @@ impl MiyabiConfigManager {
         let mut dir = self.config_dir.clone();
         dir.push("reports");
         fs::create_dir_all(&dir)?;
+        restrict_dir_permissions(&dir)
+            .with_context(|| format!("failed to restrict permissions for {:?}", dir))?;
         Ok(dir)
     }
 
@@ -98,4 +110,26 @@ impl MiyabiConfigManager {
         ProjectDirs::from("dev", "Miyabi", "miyabi")
             .context("failed to determine project directories")
     }
+}
+
+fn restrict_dir_permissions(path: &Path) -> Result<()> {
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let perms = fs::Permissions::from_mode(0o700);
+        fs::set_permissions(path, perms)
+            .with_context(|| format!("failed to set permissions on {:?}", path))?;
+    }
+    Ok(())
+}
+
+fn restrict_file_permissions(path: &Path) -> Result<()> {
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let perms = fs::Permissions::from_mode(0o600);
+        fs::set_permissions(path, perms)
+            .with_context(|| format!("failed to set permissions on {:?}", path))?;
+    }
+    Ok(())
 }

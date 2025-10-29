@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use clap::ValueEnum;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -10,7 +11,7 @@ pub struct ProjectMetadata {
     pub device_identifier: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash, ValueEnum)]
 pub enum AgentKind {
     Coordinator,
     CodeGen,

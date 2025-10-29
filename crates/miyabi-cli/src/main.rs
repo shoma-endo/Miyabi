@@ -5,16 +5,26 @@ use clap::{Parser, Subcommand, ValueEnum};
 use colored::Colorize;
 use indicatif::{ProgressBar, ProgressStyle};
 use miyabi_agents::{AgentContext, AgentRegistry};
-use miyabi_core::{log_action, info, MiyabiConfig, MiyabiConfigManager, ProjectPaths, WorkspaceDetector};
+use miyabi_core::{
+    info, log_action, MiyabiConfig, MiyabiConfigManager, ProjectPaths, WorkspaceDetector,
+};
 use miyabi_types::{AgentKind, AgentTask, TaskPriority, WorkItem, WorkItemStatus};
 use uuid::Uuid;
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
     match cli.command {
-        Commands::Init { name, repository, device } => cmd_init(name, repository, device),
+        Commands::Init {
+            name,
+            repository,
+            device,
+        } => cmd_init(name, repository, device),
         Commands::Status => cmd_status(),
-        Commands::WorkOn { issue, title, description } => cmd_work_on(issue, title, description),
+        Commands::WorkOn {
+            issue,
+            title,
+            description,
+        } => cmd_work_on(issue, title, description),
         Commands::Agent { command } => cmd_agent(command),
     }
 }
@@ -73,6 +83,27 @@ enum AgentType {
     Coordinator,
 }
 
+fn build_context_and_registry() -> Result<(AgentContext, AgentRegistry, MiyabiConfigManager)> {
+    let cwd = env::current_dir()?;
+    let root = WorkspaceDetector::detect(&cwd).unwrap_or(cwd);
+    let manager = MiyabiConfigManager::new(&root)?;
+    let config = manager.load_or_init()?;
+
+    let context = AgentContext {
+        environment: [
+            ("project".to_string(), config.project.name.clone()),
+            (
+                "device".to_string(),
+                config.project.device_identifier.clone(),
+            ),
+        ]
+        .into_iter()
+        .collect(),
+    };
+
+    Ok((context, AgentRegistry::new(), manager))
+}
+
 fn cmd_init(name: String, repository: Option<String>, device: Option<String>) -> Result<()> {
     let cwd = env::current_dir().context("failed to determine current directory")?;
     let paths = ProjectPaths::new(cwd.clone());
@@ -90,15 +121,14 @@ fn cmd_init(name: String, repository: Option<String>, device: Option<String>) ->
     let logs_dir = manager.logs_dir()?;
     log_action(
         logs_dir,
-        info("init", Some(format!("Initialized project at {}", cwd.display()))),
+        info(
+            "init",
+            Some(format!("Initialized project at {}", cwd.display())),
+        ),
     )?;
 
     println!("{}", "🎉 初期化が完了しました！".green());
-    println!(
-        "{} {}",
-        "プロジェクトルート:".bold(),
-        cwd.display()
-    );
+    println!("{} {}", "プロジェクトルート:".bold(), cwd.display());
     println!(
         "{} {}",
         "設定ファイル:".bold(),
@@ -150,10 +180,7 @@ fn cmd_status() -> Result<()> {
 }
 
 fn cmd_work_on(issue: Option<u64>, title: String, description: String) -> Result<()> {
-    let cwd = env::current_dir()?;
-    let root = WorkspaceDetector::detect(&cwd).unwrap_or(cwd);
-    let manager = MiyabiConfigManager::new(&root)?;
-    let config = manager.load_or_init()?;
+    let (ctx, registry, manager) = build_context_and_registry()?;
 
     let work_item = WorkItem {
         issue_number: issue,
@@ -178,19 +205,6 @@ fn cmd_work_on(issue: Option<u64>, title: String, description: String) -> Result
     );
     bar.set_message("CoordinatorAgent 実行中…");
     bar.enable_steady_tick(std::time::Duration::from_millis(120));
-
-    let registry = AgentRegistry::new();
-    let ctx = AgentContext {
-        environment: [
-            ("project".to_string(), config.project.name.clone()),
-            (
-                "device".to_string(),
-                config.project.device_identifier.clone(),
-            ),
-        ]
-        .into_iter()
-        .collect(),
-    };
 
     let reports = registry.run_coordinator(&ctx, &work_item)?;
     bar.finish_with_message("CoordinatorAgent 完了");
@@ -228,21 +242,7 @@ fn cmd_agent(command: AgentCommands) -> Result<()> {
             title,
             description,
         } => {
-            let cwd = env::current_dir()?;
-            let root = WorkspaceDetector::detect(&cwd).unwrap_or(cwd);
-            let manager = MiyabiConfigManager::new(&root)?;
-            let config = manager.load_or_init()?;
-            let ctx = AgentContext {
-                environment: [
-                    ("project".to_string(), config.project.name.clone()),
-                    (
-                        "device".to_string(),
-                        config.project.device_identifier.clone(),
-                    ),
-                ]
-                .into_iter()
-                .collect(),
-            };
+            let (ctx, registry, _manager) = build_context_and_registry()?;
             let task = AgentTask {
                 id: Uuid::new_v4(),
                 title: title.clone(),
@@ -252,17 +252,18 @@ fn cmd_agent(command: AgentCommands) -> Result<()> {
                 },
                 priority: TaskPriority::Medium,
             };
-            let registry = AgentRegistry::new();
             match agent {
                 AgentType::Coordinator => {
-                    let reports =
-                        registry.run_coordinator(&ctx, &WorkItem {
+                    let reports = registry.run_coordinator(
+                        &ctx,
+                        &WorkItem {
                             issue_number: None,
                             title,
                             description,
                             status: WorkItemStatus::InProgress,
                             tasks: vec![task.clone()],
-                        })?;
+                        },
+                    )?;
                     println!("{}", "🧠 CoordinatorAgent 実行結果".bold().cyan());
                     for report in reports {
                         println!(

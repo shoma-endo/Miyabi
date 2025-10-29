@@ -1,5 +1,4 @@
 import asyncio
-import json
 import logging
 import os
 import time
@@ -28,8 +27,8 @@ from context_models import (
     ContextWindow, ContextElement, ContextType, ContextSession,
     PromptTemplate, PromptTemplateType, MultimodalContext, RAGContext
 )
-from context_analyzer import ContextAnalyzer, MultimodalAnalyzer, RAGAnalyzer
-from template_manager import TemplateManager, ContextTemplateIntegrator
+from context_analyzer import ContextAnalyzer
+from template_manager import TemplateManager
 from context_optimizer import ContextOptimizer
 
 logging.basicConfig(level=logging.INFO)
@@ -250,7 +249,6 @@ app = FastAPI(
 # コンポーネント初期化
 async def initialize_components():
     global context_analyzer, template_manager, context_optimizer
-    global multimodal_analyzer, rag_analyzer, template_integrator
     
     gemini_api_key = os.getenv("GEMINI_API_KEY")
     if not gemini_api_key:
@@ -259,9 +257,6 @@ async def initialize_components():
     context_analyzer = ContextAnalyzer(gemini_api_key)
     template_manager = TemplateManager(gemini_api_key)
     context_optimizer = ContextOptimizer(gemini_api_key)
-    multimodal_analyzer = MultimodalAnalyzer(gemini_api_key)
-    rag_analyzer = RAGAnalyzer(gemini_api_key)
-    template_integrator = ContextTemplateIntegrator(template_manager)
 
 # ダッシュボード
 @app.get("/", response_class=HTMLResponse, dependencies=[Depends(enforce_security)])

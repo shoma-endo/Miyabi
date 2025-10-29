@@ -138,29 +138,6 @@ class ContextWindow:
                 return True
         return False
     
-    def optimize_for_tokens(self) -> Dict[str, Any]:
-        """トークン制限に合わせた最適化"""
-        optimization_result = {
-            "removed_elements": [],
-            "compressed_elements": [],
-            "tokens_saved": 0
-        }
-        
-        if self.current_tokens <= self.max_tokens - self.reserved_tokens:
-            return optimization_result
-        
-        # 優先度の低い要素から削除
-        sorted_elements = sorted(self.elements, key=lambda x: x.priority)
-        original_tokens = self.current_tokens
-        
-        while self.current_tokens > self.max_tokens - self.reserved_tokens and self.elements:
-            removed = sorted_elements.pop(0)
-            self.elements.remove(removed)
-            optimization_result["removed_elements"].append(removed.id)
-        
-        optimization_result["tokens_saved"] = original_tokens - self.current_tokens
-        return optimization_result
-
 @dataclass
 class ContextAnalysis:
     """コンテキスト分析結果"""

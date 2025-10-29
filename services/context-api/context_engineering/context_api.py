@@ -1,14 +1,28 @@
-import os
+import asyncio
 import json
 import logging
-from typing import Dict, List, Any, Optional
+import os
+import time
+from collections import deque
+from contextlib import asynccontextmanager
 from datetime import datetime
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect, UploadFile, File
-from fastapi.staticfiles import StaticFiles
+from typing import Any, Dict, List, Optional
+
+from fastapi import (
+    Depends,
+    FastAPI,
+    Header,
+    HTTPException,
+    WebSocket,
+    WebSocketDisconnect,
+)
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
-import asyncio
-from contextlib import asynccontextmanager
+from starlette.status import (
+    HTTP_401_UNAUTHORIZED,
+    HTTP_403_FORBIDDEN,
+    HTTP_429_TOO_MANY_REQUESTS,
+)
 
 from context_models import (
     ContextWindow, ContextElement, ContextType, ContextSession,
@@ -20,6 +34,43 @@ from context_optimizer import ContextOptimizer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+API_KEY_HEADER = "X-API-Key"
+RATE_LIMIT_MAX_REQUESTS = int(os.getenv("CONTEXT_API_RATE_LIMIT", "120"))
+RATE_LIMIT_WINDOW_SECONDS = 60
+MAX_CONTEXT_TEXT_LENGTH = int(os.getenv("CONTEXT_MAX_TEXT", "6000"))
+MAX_MULTIMODAL_ITEMS = int(os.getenv("CONTEXT_MAX_MODAL_ITEMS", "10"))
+
+
+class RateLimiter:
+    """Simple per-key sliding window rate limiter."""
+
+    def __init__(self, max_requests: int, window_seconds: int) -> None:
+        self.max_requests = max_requests
+        self.window_seconds = window_seconds
+        self._records: Dict[str, deque[float]] = {}
+        self._lock = asyncio.Lock()
+
+    async def allow(self, key: str) -> bool:
+        now = time.monotonic()
+        async with self._lock:
+            bucket = self._records.setdefault(key, deque())
+            while bucket and now - bucket[0] > self.window_seconds:
+                bucket.popleft()
+            if len(bucket) >= self.max_requests:
+                return False
+            bucket.append(now)
+            return True
+
+
+def _load_api_keys() -> set[str]:
+    raw = os.getenv("CONTEXT_API_KEYS", "")
+    keys = {entry.strip() for entry in raw.split(",") if entry.strip()}
+    return keys
+
+
+API_KEYS = _load_api_keys()
+rate_limiter = RateLimiter(RATE_LIMIT_MAX_REQUESTS, RATE_LIMIT_WINDOW_SECONDS)
 
 # リクエスト・レスポンスモデル
 class ContextElementRequest(BaseModel):
@@ -91,6 +142,54 @@ class WebSocketManager:
 sessions_storage: Dict[str, ContextSession] = {}
 websocket_manager = WebSocketManager()
 
+
+async def _authenticate_api_key(raw_key: Optional[str]) -> str:
+    if not API_KEYS:
+        logger.error("CONTEXT_API_KEYS environment variable is not configured")
+        raise HTTPException(status_code=500, detail="API keys are not configured")
+
+    if not raw_key:
+        raise HTTPException(
+            status_code=HTTP_401_UNAUTHORIZED,
+            detail=f"Missing {API_KEY_HEADER} header",
+        )
+
+    if raw_key not in API_KEYS:
+        raise HTTPException(
+            status_code=HTTP_403_FORBIDDEN,
+            detail="Invalid API key",
+        )
+
+    if not await rate_limiter.allow(raw_key):
+        raise HTTPException(
+            status_code=HTTP_429_TOO_MANY_REQUESTS,
+            detail="Rate limit exceeded",
+        )
+
+    return raw_key
+
+
+async def enforce_security(x_api_key: Optional[str] = Header(default=None)) -> str:
+    """FastAPI dependency to enforce API key auth and rate limiting."""
+
+    return await _authenticate_api_key(x_api_key)
+
+
+def _ensure_reasonable_length(value: str, limit: int, field_name: str) -> None:
+    if len(value) > limit:
+        raise HTTPException(
+            status_code=413,
+            detail=f"{field_name} exceeds maximum length of {limit} characters",
+        )
+
+
+def _ensure_list_size(items: List[Any], limit: int, field_name: str) -> None:
+    if len(items) > limit:
+        raise HTTPException(
+            status_code=400,
+            detail=f"{field_name} contains too many items (max {limit})",
+        )
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # アプリケーション起動時
@@ -124,7 +223,7 @@ async def initialize_components():
     template_integrator = ContextTemplateIntegrator(template_manager)
 
 # ダッシュボード
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, dependencies=[Depends(enforce_security)])
 async def dashboard():
     """Context Engineering ダッシュボード"""
     return HTMLResponse(content="""
@@ -203,9 +302,11 @@ async def dashboard():
     """)
 
 # セッション管理
-@app.post("/api/sessions")
+@app.post("/api/sessions", dependencies=[Depends(enforce_security)])
 async def create_session(name: str = "New Session", description: str = "") -> Dict[str, Any]:
     """新しいコンテキストセッションを作成"""
+    _ensure_reasonable_length(name, 256, "Session name")
+    _ensure_reasonable_length(description, MAX_CONTEXT_TEXT_LENGTH, "Session description")
     session = ContextSession(name=name, description=description)
     sessions_storage[session.id] = session
     
@@ -222,7 +323,7 @@ async def create_session(name: str = "New Session", description: str = "") -> Di
         "created_at": session.created_at.isoformat()
     }
 
-@app.get("/api/sessions")
+@app.get("/api/sessions", dependencies=[Depends(enforce_security)])
 async def list_sessions() -> Dict[str, Any]:
     """セッション一覧を取得"""
     sessions = []
@@ -238,7 +339,7 @@ async def list_sessions() -> Dict[str, Any]:
     
     return {"sessions": sessions}
 
-@app.get("/api/sessions/{session_id}")
+@app.get("/api/sessions/{session_id}", dependencies=[Depends(enforce_security)])
 async def get_session(session_id: str) -> Dict[str, Any]:
     """特定のセッションを取得"""
     if session_id not in sessions_storage:
@@ -267,7 +368,10 @@ async def get_session(session_id: str) -> Dict[str, Any]:
     }
 
 # コンテキストウィンドウ管理
-@app.post("/api/sessions/{session_id}/windows")
+@app.post(
+    "/api/sessions/{session_id}/windows",
+    dependencies=[Depends(enforce_security)],
+)
 async def create_context_window(session_id: str, request: ContextWindowRequest) -> Dict[str, Any]:
     """新しいコンテキストウィンドウを作成"""
     if session_id not in sessions_storage:
@@ -291,13 +395,18 @@ async def create_context_window(session_id: str, request: ContextWindowRequest) 
     }
 
 # コンテキスト要素管理
-@app.post("/api/contexts/{window_id}/elements")
+@app.post(
+    "/api/contexts/{window_id}/elements",
+    dependencies=[Depends(enforce_security)],
+)
 async def add_context_element(window_id: str, request: ContextElementRequest) -> Dict[str, Any]:
     """コンテキスト要素を追加"""
     window = find_window_by_id(window_id)
     if not window:
         raise HTTPException(status_code=404, detail="Context window not found")
-    
+
+    _ensure_reasonable_length(request.content, MAX_CONTEXT_TEXT_LENGTH, "Context element content")
+
     element = ContextElement(
         content=request.content,
         type=ContextType(request.type),
@@ -323,7 +432,10 @@ async def add_context_element(window_id: str, request: ContextElementRequest) ->
         "utilization_ratio": window.utilization_ratio
     }
 
-@app.get("/api/contexts/{window_id}")
+@app.get(
+    "/api/contexts/{window_id}",
+    dependencies=[Depends(enforce_security)],
+)
 async def get_context_window(window_id: str) -> Dict[str, Any]:
     """コンテキストウィンドウを取得"""
     window = find_window_by_id(window_id)
@@ -343,7 +455,10 @@ async def get_context_window(window_id: str) -> Dict[str, Any]:
     }
 
 # コンテキスト分析
-@app.post("/api/contexts/{window_id}/analyze")
+@app.post(
+    "/api/contexts/{window_id}/analyze",
+    dependencies=[Depends(enforce_security)],
+)
 async def analyze_context(window_id: str) -> Dict[str, Any]:
     """コンテキスト分析を実行"""
     window = find_window_by_id(window_id)
@@ -366,9 +481,12 @@ async def analyze_context(window_id: str) -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail=str(e))
 
 # テンプレート管理
-@app.post("/api/templates")
+@app.post("/api/templates", dependencies=[Depends(enforce_security)])
 async def create_template(request: TemplateRequest) -> Dict[str, Any]:
     """新しいテンプレートを作成"""
+    _ensure_reasonable_length(request.name, 256, "Template name")
+    _ensure_reasonable_length(request.description, MAX_CONTEXT_TEXT_LENGTH, "Template description")
+    _ensure_reasonable_length(request.template, MAX_CONTEXT_TEXT_LENGTH, "Template body")
     try:
         template = PromptTemplate(
             name=request.name,
@@ -391,7 +509,7 @@ async def create_template(request: TemplateRequest) -> Dict[str, Any]:
         logger.error(f"Template creation failed: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/templates")
+@app.get("/api/templates", dependencies=[Depends(enforce_security)])
 async def list_templates(category: Optional[str] = None, tags: Optional[str] = None) -> Dict[str, Any]:
     """テンプレート一覧を取得"""
     tag_list = tags.split(",") if tags else None
@@ -414,7 +532,10 @@ async def list_templates(category: Optional[str] = None, tags: Optional[str] = N
         ]
     }
 
-@app.post("/api/templates/{template_id}/render")
+@app.post(
+    "/api/templates/{template_id}/render",
+    dependencies=[Depends(enforce_security)],
+)
 async def render_template(template_id: str, request: TemplateRenderRequest) -> Dict[str, Any]:
     """テンプレートをレンダリング"""
     try:
@@ -428,9 +549,12 @@ async def render_template(template_id: str, request: TemplateRenderRequest) -> D
         logger.error(f"Template rendering failed: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/api/templates/generate")
+@app.post("/api/templates/generate", dependencies=[Depends(enforce_security)])
 async def generate_template(purpose: str, examples: List[str] = [], constraints: List[str] = []) -> Dict[str, Any]:
     """AIでテンプレートを自動生成"""
+    _ensure_reasonable_length(purpose, MAX_CONTEXT_TEXT_LENGTH, "purpose")
+    _ensure_list_size(examples, MAX_MULTIMODAL_ITEMS, "examples")
+    _ensure_list_size(constraints, MAX_MULTIMODAL_ITEMS, "constraints")
     try:
         template = await template_manager.generate_template(purpose, examples, constraints)
         
@@ -446,7 +570,10 @@ async def generate_template(purpose: str, examples: List[str] = [], constraints:
         raise HTTPException(status_code=500, detail=str(e))
 
 # コンテキスト最適化
-@app.post("/api/contexts/{window_id}/optimize")
+@app.post(
+    "/api/contexts/{window_id}/optimize",
+    dependencies=[Depends(enforce_security)],
+)
 async def optimize_context(window_id: str, request: OptimizationRequest) -> Dict[str, Any]:
     """コンテキスト最適化を実行"""
     window = find_window_by_id(window_id)
@@ -474,7 +601,10 @@ async def optimize_context(window_id: str, request: OptimizationRequest) -> Dict
         logger.error(f"Context optimization failed: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/api/contexts/{window_id}/auto-optimize")
+@app.post(
+    "/api/contexts/{window_id}/auto-optimize",
+    dependencies=[Depends(enforce_security)],
+)
 async def auto_optimize_context(window_id: str) -> Dict[str, Any]:
     """コンテキストの自動最適化"""
     window = find_window_by_id(window_id)
@@ -496,7 +626,10 @@ async def auto_optimize_context(window_id: str) -> Dict[str, Any]:
         logger.error(f"Auto optimization failed: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/optimization/{task_id}")
+@app.get(
+    "/api/optimization/{task_id}",
+    dependencies=[Depends(enforce_security)],
+)
 async def get_optimization_task(task_id: str) -> Dict[str, Any]:
     """最適化タスクの状態を取得"""
     task = context_optimizer.get_optimization_task(task_id)
@@ -517,9 +650,14 @@ async def get_optimization_task(task_id: str) -> Dict[str, Any]:
     }
 
 # マルチモーダル機能
-@app.post("/api/multimodal")
+@app.post("/api/multimodal", dependencies=[Depends(enforce_security)])
 async def create_multimodal_context(request: MultimodalContextRequest) -> Dict[str, Any]:
     """マルチモーダルコンテキストを作成"""
+    _ensure_reasonable_length(request.text_content, MAX_CONTEXT_TEXT_LENGTH, "text_content")
+    _ensure_list_size(request.image_urls, MAX_MULTIMODAL_ITEMS, "image_urls")
+    _ensure_list_size(request.audio_urls, MAX_MULTIMODAL_ITEMS, "audio_urls")
+    _ensure_list_size(request.video_urls, MAX_MULTIMODAL_ITEMS, "video_urls")
+    _ensure_list_size(request.document_urls, MAX_MULTIMODAL_ITEMS, "document_urls")
     context = MultimodalContext(
         text_content=request.text_content,
         image_urls=request.image_urls,
@@ -539,9 +677,11 @@ async def create_multimodal_context(request: MultimodalContextRequest) -> Dict[s
     }
 
 # RAG機能
-@app.post("/api/rag")
+@app.post("/api/rag", dependencies=[Depends(enforce_security)])
 async def create_rag_context(request: RAGRequest) -> Dict[str, Any]:
     """RAGコンテキストを作成"""
+    _ensure_list_size(request.documents, MAX_MULTIMODAL_ITEMS, "documents")
+    _ensure_reasonable_length(request.query, MAX_CONTEXT_TEXT_LENGTH, "query")
     rag_context = RAGContext(query=request.query)
     
     # 文書を追加（簡易実装）
@@ -564,6 +704,13 @@ async def create_rag_context(request: RAGRequest) -> Dict[str, Any]:
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     """WebSocket接続エンドポイント"""
+    api_key = websocket.headers.get(API_KEY_HEADER) or websocket.query_params.get("api_key")
+    try:
+        await _authenticate_api_key(api_key)
+    except HTTPException as exc:
+        await websocket.close(code=1008, reason=exc.detail)
+        return
+
     await websocket_manager.connect(websocket)
     try:
         while True:
@@ -572,7 +719,7 @@ async def websocket_endpoint(websocket: WebSocket):
         websocket_manager.disconnect(websocket)
 
 # 統計情報
-@app.get("/api/stats")
+@app.get("/api/stats", dependencies=[Depends(enforce_security)])
 async def get_stats() -> Dict[str, Any]:
     """システム統計情報を取得"""
     total_sessions = len(sessions_storage)
@@ -612,3 +759,17 @@ def find_window_by_id(window_id: str) -> Optional[ContextWindow]:
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=9001)
+    _ensure_reasonable_length(request.content, MAX_CONTEXT_TEXT_LENGTH, "Context element content")
+    _ensure_reasonable_length(request.name, 256, "Template name")
+    _ensure_reasonable_length(request.description, MAX_CONTEXT_TEXT_LENGTH, "Template description")
+    _ensure_reasonable_length(request.template, MAX_CONTEXT_TEXT_LENGTH, "Template body")
+    _ensure_reasonable_length(purpose, MAX_CONTEXT_TEXT_LENGTH, "purpose")
+    _ensure_list_size(examples, MAX_MULTIMODAL_ITEMS, "examples")
+    _ensure_list_size(constraints, MAX_MULTIMODAL_ITEMS, "constraints")
+    _ensure_list_size(request.goals, MAX_MULTIMODAL_ITEMS, "goals")
+    _ensure_reasonable_length(request.text_content, MAX_CONTEXT_TEXT_LENGTH, "text_content")
+    _ensure_list_size(request.image_urls, MAX_MULTIMODAL_ITEMS, "image_urls")
+    _ensure_list_size(request.audio_urls, MAX_MULTIMODAL_ITEMS, "audio_urls")
+    _ensure_list_size(request.video_urls, MAX_MULTIMODAL_ITEMS, "video_urls")
+    _ensure_list_size(request.document_urls, MAX_MULTIMODAL_ITEMS, "document_urls")
+    _ensure_list_size(request.documents, MAX_MULTIMODAL_ITEMS, "documents")

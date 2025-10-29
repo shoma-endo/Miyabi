@@ -1,6 +1,6 @@
-use std::{env, path::PathBuf};
+use std::env;
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 use clap::{Parser, Subcommand, ValueEnum};
 use colored::Colorize;
 use indicatif::{ProgressBar, ProgressStyle};
@@ -196,7 +196,7 @@ fn cmd_work_on(issue: Option<u64>, title: String, description: String) -> Result
     bar.finish_with_message("CoordinatorAgent 完了");
 
     println!("{}", "✅ 実行結果".bold().cyan());
-    for report in reports {
+    for report in &reports {
         println!(
             " - [{}] {}",
             format!("{:?}", report.task.agent).yellow(),

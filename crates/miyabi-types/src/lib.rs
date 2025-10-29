@@ -10,7 +10,7 @@ pub struct ProjectMetadata {
     pub device_identifier: String,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum AgentKind {
     Coordinator,
     CodeGen,

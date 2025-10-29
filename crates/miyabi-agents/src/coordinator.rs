@@ -1,5 +1,5 @@
 use anyhow::Result;
-use miyabi_types::{AgentKind, AgentOutcome, AgentTask, TaskPriority, WorkItem, WorkItemStatus};
+use miyabi_types::{AgentKind, AgentOutcome, AgentTask, TaskPriority, WorkItem};
 
 use crate::{execution::success_outcome, AgentContext, AgentExecutor, ExecutionReport};
 
@@ -82,6 +82,7 @@ impl CoordinatorAgent {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use miyabi_types::WorkItemStatus;
 
     #[test]
     fn coordinator_builds_execution_plan() {

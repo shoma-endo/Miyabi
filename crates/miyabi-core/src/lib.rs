@@ -4,4 +4,4 @@ pub mod logging;
 
 pub use config::{MiyabiConfig, MiyabiConfigManager};
 pub use filesystem::{ProjectPaths, WorkspaceDetector};
-pub use logging::{log_action, LogAction};
+pub use logging::{info, log_action, LogAction};

@@ -62,8 +62,8 @@ npm run generate-image -- "AI自動レストランの様子" --output=./assets/m
 
 **追加された変数:**
 ```bash
-GEMINI_API_KEY=AIzaSyAq3pWcg8WDDAcS_Vsi8dSYJP5tDtqBmnw
-GOOGLE_API_KEY=AIzaSyAq3pWcg8WDDAcS_Vsi8dSYJP5tDtqBmnw
+GEMINI_API_KEY=your_gemini_api_key_here
+GOOGLE_API_KEY=your_google_api_key_here
 ```
 
 **注意:** 両方の変数名を設定することで、異なるツール・ライブラリの互換性を確保しています。

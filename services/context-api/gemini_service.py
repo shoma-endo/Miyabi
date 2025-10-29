@@ -19,6 +19,13 @@ class GeminiService:
         genai.configure(api_key=self.api_key)
         
         # Initialize model with grounding capabilities
+        default_safety = {
+            HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+            HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+        }
+
         self.model = genai.GenerativeModel(
             'gemini-2.0-flash-exp',
             generation_config={
@@ -27,12 +34,7 @@ class GeminiService:
                 "top_k": 40,
                 "max_output_tokens": 8192,
             },
-            safety_settings={
-                HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
-                HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
-                HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
-                HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
-            }
+            safety_settings=default_safety,
         )
         
         logger.info("Gemini service initialized successfully")

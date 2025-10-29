@@ -1,6 +1,9 @@
+import ipaddress
 import logging
 import os
+import socket
 from typing import Dict, List, Optional, Any
+from urllib.parse import urlparse
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query
@@ -87,6 +90,54 @@ def _find_guide_by_title(title: str) -> Optional[Dict[str, str | List[str]]]:
         if guide["title"].lower() == title.lower():
             return guide
     return None
+
+
+def _validate_external_url(raw_url: str) -> str:
+    """Validate that the supplied URL targets an external HTTP(S) endpoint."""
+    try:
+        parsed = urlparse(raw_url)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail="URL is malformed") from exc
+
+    if parsed.scheme not in {"http", "https"}:
+        raise HTTPException(status_code=400, detail="Only http/https URLs are allowed")
+
+    if not parsed.netloc:
+        raise HTTPException(status_code=400, detail="URL netloc is missing")
+
+    hostname = parsed.hostname
+    if not hostname:
+        raise HTTPException(status_code=400, detail="Hostname could not be determined")
+
+    if hostname.endswith((".local", ".lan")):
+        raise HTTPException(status_code=400, detail="Local network hostnames are not allowed")
+
+    if parsed.port and parsed.port not in {80, 443}:
+        raise HTTPException(status_code=400, detail="Only ports 80 and 443 are permitted")
+
+    try:
+        addr_info = socket.getaddrinfo(hostname, None)
+    except socket.gaierror as exc:
+        raise HTTPException(status_code=400, detail="Hostname could not be resolved") from exc
+
+    for family, _, _, _, sockaddr in addr_info:
+        ip_str = sockaddr[0]
+        try:
+            ip_obj = ipaddress.ip_address(ip_str)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid IP address for hostname")
+
+        if any([
+            ip_obj.is_private,
+            ip_obj.is_loopback,
+            ip_obj.is_link_local,
+            ip_obj.is_reserved,
+            ip_obj.is_multicast,
+            ip_obj.is_unspecified,
+        ]):
+            raise HTTPException(status_code=400, detail="URL resolves to a disallowed address range")
+
+    return parsed.geturl()
 
 # --- API Endpoints ---
 
@@ -288,14 +339,17 @@ async def analyze_url_with_gemini(url: str = Query(..., description="URL of the 
         Content analysis including topics, takeaways, and recommendations
     """
     try:
+        safe_url = _validate_external_url(url)
         from gemini_service import get_gemini_service
         gemini = get_gemini_service()
         
-        logger.info(f"Analyzing URL with Gemini: '{url}'")
-        result = await gemini.analyze_guide_url(url)
+        logger.info(f"Analyzing URL with Gemini: '{safe_url}'")
+        result = await gemini.analyze_guide_url(safe_url)
         
         return result
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"URL analysis error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"URL analysis failed: {str(e)}")

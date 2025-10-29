@@ -16,6 +16,9 @@ reports/
 tmp/
 temp/
 *.tmp
+.venv/
+__pycache__/
+*.pyc
 
 # OS / editor files
 .DS_Store

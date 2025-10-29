@@ -6,8 +6,6 @@
 
 **一つのコマンドで全てが完結する自律型開発フレームワーク**
 
-[![npm version](https://img.shields.io/npm/v/miyabi?style=for-the-badge&logo=npm&color=CB3837)](https://www.npmjs.com/package/miyabi)
-[![Downloads](https://img.shields.io/npm/dm/miyabi?style=for-the-badge&logo=npm&color=2C8EBB)](https://www.npmjs.com/package/miyabi)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge&logo=apache)](https://opensource.org/licenses/Apache-2.0)
 [![GitHub Stars](https://img.shields.io/github/stars/ShunsukeHayashi/Miyabi?style=for-the-badge&logo=github&color=yellow)](https://github.com/ShunsukeHayashi/Miyabi/stargazers)
 
@@ -44,7 +42,7 @@ chmod +x miyabi
 sudo mv miyabi /usr/local/bin/
 ```
 
-**📚 Learn More**: [Release Notes](https://github.com/ShunsukeHayashi/Miyabi/releases/tag/v0.1.1) | [Quick Start Guide](.claude/QUICK_START.md) | [Troubleshooting](docs/TROUBLESHOOTING.md)
+**📚 Learn More**: [Release Notes](https://github.com/ShunsukeHayashi/Miyabi/releases/tag/v0.1.1) | [Troubleshooting](docs/TROUBLESHOOTING.md)
 
 **✨ New Features in v0.1.1**:
 
@@ -63,23 +61,6 @@ miyabi agent run coordinator --issue 123
 # Parallel execution of multiple Issues
 miyabi parallel --issues 123,124,125 --concurrency 2
 ```
-
-> 🦀 Codex × Miyabi (Phase 1)
->
-> Minimal Rust CLI `codex-miyabi` is included to validate integration surfaces.
-> Quick smoke:
->
-> ```bash
-> scripts/smoke-codex-miyabi.sh
-> ```
->
-> Manual runs:
->
-> ```bash
-> cargo run -q -p codex-miyabi -- status --json
-> cargo run -q -p codex-miyabi -- agent run --type coordinator --json || true
-> cargo run -q -p codex-miyabi -- worktree list --json
-> ```
 
 Schemas (JSON Schema Draft-07):
 
@@ -133,17 +114,10 @@ miyabi agent run coordinator --issue 1
 - 📚 8つの新ドキュメント（39KB）
 - 🎨 プロアクティブなエラーメッセージ
 
-### 📦 TypeScript Edition（レガシー）
-
-```bash
-npx miyabi
-```
-
 ### 📚 詳細ガイド
 
 - **🚀 初心者向け**: [Getting Started Guide](docs/GETTING_STARTED.md) - 250+行の完全ガイド
 - **🔧 困ったときは**: [トラブルシューティングガイド](docs/TROUBLESHOOTING.md) - 280+行の解決策
-- **🤖 Agent詳細**: [Agent Overview](.claude/agents/README.md) - 全21 Agents
 
 <div align="center">
 
@@ -321,37 +295,6 @@ sudo mv miyabi /usr/local/bin/
 
 ---
 
-### 📦 方法2: TypeScript Edition（レガシー版）
-
-<details>
-<summary><b>TypeScript版を使用する場合（クリックして展開）</b></summary>
-
-#### npx (推奨)
-
-```bash
-npx miyabi
-```
-
-#### グローバルインストール
-
-```bash
-npm install -g miyabi
-miyabi
-```
-
-#### パッケージに追加
-
-```bash
-npm install --save-dev miyabi
-npx miyabi
-```
-
-**注意**: TypeScript版はレガシーサポートとなります。新機能はRust Editionで優先的に実装されます。
-
-</details>
-
----
-
 ### 🔌 方法3: Claude Code Plugin（計画中 🚧）
 
 > **注意**: Claude Code Plugin統合は現在開発中です。利用可能になり次第、こちらで告知します。
@@ -368,8 +311,6 @@ Miyabiは将来的に[Claude Code](https://claude.ai/code)の公式Pluginとし�
 ---
 
 ## 💡 使い方
-
-> 以下の例は **Rust Edition** (`miyabi`) を使用しています。TypeScript版 (`npx miyabi`) をご利用の場合は、コマンドを読み替えてください。
 
 ### 🌟 **新規プロジェクト作成**
 
@@ -432,7 +373,6 @@ $ miyabi status
 
 Miyabi Installation:
   ✅ Miyabi is installed
-    ✓ .claude/agents
     ✓ .github/workflows
     ✓ logs
     ✓ reports
@@ -700,8 +640,7 @@ A ──┤      ├─ F         (26時間)
 
 #### 🔍 **静的解析**
 - ✅ CodeQL（GitHub Advanced Security）
-- ✅ ESLint セキュリティルール
-- ✅ TypeScript strict mode
+- ✅ Rust Clippy / Rustfmt
 - ✅ Dependency vulnerability scan
 
 </td>
@@ -720,7 +659,7 @@ A ──┤      ├─ F         (26時間)
 
 #### 📦 **依存関係**
 - ✅ Dependabot自動PR
-- ✅ npm audit統合
+- ✅ cargo audit 連携
 - ✅ SBOM生成（CycloneDX）
 - ✅ OpenSSF Scorecard
 
@@ -757,9 +696,6 @@ A ──┤      ├─ F         (26時間)
 | 🔐 [プライバシーポリシー](PRIVACY.md) | データ収集とプライバシー保護 |
 | 🤝 [コントリビューション](CONTRIBUTING.md) | プロジェクトへの貢献方法・CLA |
 | 💬 [コミュニティガイドライン](COMMUNITY_GUIDELINES.md) | Discordコミュニティの行動規範 |
-| 📦 [パブリッシュガイド](docs/PUBLICATION_GUIDE.md) | npm公開手順 |
-| 🤖 [Agent開発ガイド](packages/miyabi-agent-sdk/README.md) | カスタムAgent作成 |
-| 🔌 [Claude Code統合](packages/cli/CLAUDE.md) | Claude Code設定 |
 
 </div>
 
@@ -805,8 +741,6 @@ A ──┤      ├─ F         (26時間)
 ---
 
 ## 🔧 コマンドリファレンス
-
-> 以下は **Rust Edition** (`miyabi`) のコマンド例です。TypeScript版は `npx miyabi` に読み替えてください。
 
 ### 🎨 **対話モード**
 
@@ -1066,13 +1000,6 @@ AIペアプログラミング
 [![Rust](https://img.shields.io/badge/Rust-1.75+-orange?style=for-the-badge&logo=rust&logoColor=white)](https://www.rust-lang.org/)
 [![crates.io](https://img.shields.io/badge/crates.io-v0.1.1-blue?style=for-the-badge&logo=rust)](https://crates.io/crates/miyabi-cli)
 
-### 📦 TypeScript Edition v0.13.0 (2025-10-09)
-
-[![npm](https://img.shields.io/npm/v/miyabi?style=for-the-badge&logo=npm)](https://www.npmjs.com/package/miyabi)
-[![GitHub Release](https://img.shields.io/github/v/release/ShunsukeHayashi/Miyabi?style=for-the-badge&logo=github)](https://github.com/ShunsukeHayashi/Miyabi/releases)
-
-</div>
-
 ### 🆕 **最新の変更 (Rust v0.1.1 - "Insanely Great" Onboarding Edition)**
 
 #### ✨ **新機能 - UX革命**
@@ -1087,14 +1014,12 @@ AIペアプログラミング
 - ✨ **Getting Started Guide** (250+行) - 完全セットアップガイド
 - 🆘 **Troubleshooting Guide** (280+行) - 詳細なトラブルシューティング
 - 🎨 **Real Code Examples** - 全ディレクトリに実際のRustコード例
-- 📖 **Agent Overview** - 全21 Agents詳細ガイド
 - 🌟 **Workflow Examples** - 実コマンド・実出力付き完全ワークフロー
 
 #### 🎯 **UX改善 - Steve Jobs承認**
 **スコア推移**: 7/10 → 9.5/10 → **10.5/10 ⭐**
 
 **Before (7/10)**:
-- ❌ 空の`.claude/agents/`ディレクトリ
 - ❌ 不明瞭な次のステップ（3行）
 - ❌ インタラクティブセットアップなし
 - ❌ 汎用的なエラーメッセージ
@@ -1123,19 +1048,7 @@ AIペアプログラミング
 #### 📚 **ドキュメント**
 - ✅ **Getting Started** - [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)
 - ✅ **Troubleshooting** - [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md)
-- ✅ **Agent Overview** - [.claude/agents/README.md](.claude/agents/README.md)
 - ✅ **Full Guide** - [CLAUDE.md](CLAUDE.md)
-
-### 🔄 **TypeScript Edition 最新の変更 (v0.13.0)**
-
-- ✅ ライセンスをApache 2.0に変更（商標・特許保護強化）
-- ✅ NOTICEファイル追加（帰属表示・商標保護）
-- ✅ README英語版セクション追加
-- ✅ GitHubトークンセキュリティ強化（gh CLI優先）
-- ✅ Termux環境完全対応ガイド
-- ✅ Discord MCP Server統合（コミュニティ運営）
-
----
 
 ## 🆘 トラブルシューティング
 
@@ -1160,7 +1073,7 @@ AIペアプログラミング
    ```bash
    echo "GITHUB_TOKEN=ghp_your_token_here" > .env
    ```
-5. もう一度 `npx miyabi` を実行
+5. もう一度 `miyabi` を実行
 
 </details>
 
@@ -1170,14 +1083,8 @@ AIペアプログラミング
 **解決方法**:
 
 ```bash
-# グローバルインストールを削除
-npm uninstall -g miyabi
-
-# npxキャッシュをクリア
-rm -rf ~/.npm/_npx
-
-# 最新版を明示的に指定
-npx miyabi@latest
+# 最新バイナリを再インストール
+cargo install miyabi-cli --force
 ```
 
 </details>
@@ -1210,11 +1117,6 @@ echo "GITHUB_TOKEN=ghp_new_token" > .env
 ### 🦀 Rust Edition（推奨）
 ```bash
 miyabi
-```
-
-### 📦 TypeScript Edition（レガシー）
-```bash
-npx miyabi
 ```
 
 ### **Miyabi** - Beauty in Autonomous Development
@@ -1260,15 +1162,6 @@ cargo install miyabi-cli
 # Run
 miyabi
 ```
-
-#### 📦 TypeScript Edition (Legacy)
-```bash
-npx miyabi
-```
-
-**That's it.** Everything runs automatically.
-
----
 
 ### 🎯 What is Miyabi?
 
@@ -1328,9 +1221,9 @@ See [LICENSE](LICENSE) and [NOTICE](NOTICE) for full details.
 
 #### 📚 **Automatic Documentation Generation**
 
-- ✅ Auto-generated from TypeScript/JavaScript code
-- ✅ JSDoc/TSDoc support
-- ✅ Watch mode (auto-detects file changes)
+- ✅ Auto-generated from Rust crate metadata
+- ✅ `cargo doc` integration
+- ✅ Watch mode (auto-detects repository changes)
 - ✅ Training materials generation
 
 #### 🔐 **Security**
@@ -1346,11 +1239,10 @@ See [LICENSE](LICENSE) and [NOTICE](NOTICE) for full details.
 ### 📦 Installation
 
 ```bash
-# Run directly with npx (recommended)
-npx miyabi
+# Install from crates.io
+cargo install miyabi-cli
 
-# Global installation
-npm install -g miyabi
+# Run
 miyabi
 ```
 
@@ -1405,7 +1297,7 @@ post-test     # Post-test coverage reports
 #### **Step 1: Run the command**
 
 ```bash
-npx miyabi
+miyabi
 ```
 
 #### **Step 2: Select from menu**
@@ -1471,9 +1363,6 @@ AI agents automatically:
 | 📋 [Terms of Service](docs/TERMS_OF_SERVICE.md) | Terms of Service (v1.0.0) |
 | 🤝 [Contributing](CONTRIBUTING.md) | How to contribute & CLA |
 | 💬 [Community Guidelines](COMMUNITY_GUIDELINES.md) | Discord community code of conduct |
-| 📦 [Publication Guide](docs/PUBLICATION_GUIDE.md) | npm publishing process |
-| 🤖 [Agent SDK](packages/miyabi-agent-sdk/README.md) | Custom agent development |
-| 🔌 [Claude Code](packages/cli/CLAUDE.md) | Claude Code integration |
 
 </div>
 
@@ -1643,11 +1532,6 @@ All dependency packages and contributors
 ### 🦀 Rust Edition (Recommended)
 ```bash
 miyabi
-```
-
-### 📦 TypeScript Edition (Legacy)
-```bash
-npx miyabi
 ```
 
 ### **Miyabi** - Beauty in Autonomous Development

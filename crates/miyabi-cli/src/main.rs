@@ -245,31 +245,29 @@ fn cmd_agent(command: AgentCommands) -> Result<()> {
                 agent: agent.clone(),
                 priority: TaskPriority::Medium,
             };
-            match agent {
-                AgentKind::Coordinator => {
-                    let reports = registry.run_coordinator(
-                        &ctx,
-                        &WorkItem {
-                            issue_number: None,
-                            title,
-                            description,
-                            status: WorkItemStatus::InProgress,
-                            tasks: vec![task.clone()],
-                        },
-                    )?;
-                    println!("{}", "🧠 CoordinatorAgent 実行結果".bold().cyan());
-                    for report in reports {
-                        println!(
-                            " - [{}] {}",
-                            format!("{:?}", report.task.agent).yellow(),
-                            report.task.title
-                        );
-                        println!("   {}", report.outcome.summary);
-                    }
-                }
-                other => {
-                    bail!("Agent {:?} is not supported yet", other);
-                }
+            if agent != AgentKind::Coordinator {
+                bail!("Agent {:?} is not supported yet", agent);
+            }
+
+            let reports = registry.run_coordinator(
+                &ctx,
+                &WorkItem {
+                    issue_number: None,
+                    title,
+                    description,
+                    status: WorkItemStatus::InProgress,
+                    tasks: vec![task.clone()],
+                },
+            )?;
+
+            println!("{}", "🧠 CoordinatorAgent 実行結果".bold().cyan());
+            for report in reports {
+                println!(
+                    " - [{}] {}",
+                    format!("{:?}", report.task.agent).yellow(),
+                    report.task.title
+                );
+                println!("   {}", report.outcome.summary);
             }
         }
     }

@@ -1,0 +1,31 @@
+[workspace]
+members = [
+    "crates/miyabi-types",
+    "crates/miyabi-core",
+    "crates/miyabi-agents",
+    "crates/miyabi-cli",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "Apache-2.0"
+authors = ["Miyabi Team"]
+repository = "https://github.com/ShunsukeHayashi/Miyabi"
+homepage = "https://github.com/ShunsukeHayashi/Miyabi"
+description = "Miyabi autonomous development framework (Rust edition)"
+
+[workspace.dependencies]
+anyhow = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+clap = { version = "4.5", features = ["derive"] }
+colored = "2.1"
+directories = "5.0"
+indicatif = "0.17"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+toml = "0.8"
+uuid = { version = "1.8", features = ["v4", "serde"] }
+walkdir = "2.5"
+hostname = "0.3"

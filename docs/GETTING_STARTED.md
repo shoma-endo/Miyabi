@@ -1,338 +1,191 @@
-# Getting Started with Miyabi (5 minutes)
+# Getting Started with Miyabi (Rust Edition)
 
-**Version**: v0.1.1 (Rust Edition)
-**Updated**: 2025-10-20
-
-**Zero configuration. Zero learning curve. Just run one command.**
-
----
-
-## Prerequisites
-
-Before you begin, ensure you have:
-
-- **Rust** (1.70+): `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
-- **Git** (2.30+): For version control
-- **GitHub Account**: With a Personal Access Token
-- **GitHub CLI** (optional but recommended): `brew install gh` (macOS) or see [GitHub CLI](https://cli.github.com/)
-
-### Set Up GitHub Token
-
-```bash
-# Option 1: GitHub CLI (Recommended)
-gh auth login
-
-# Option 2: Manual Environment Variable
-export GITHUB_TOKEN=ghp_your_token_here
-```
-
-**Required Scopes**: `repo`, `workflow`, `read:project`, `write:project`
+**Updated:** 2025-10-29  
+**Setup Time:** ~10 minutes  
+**Applies to:** `miyabi-cli` v0.1.0
 
 ---
 
-## Installation
+## 1. Prerequisites
 
-### 🦀 Rust Edition (Recommended)
+Install the following tools before you begin:
+
+| Tool | Version | macOS/Linux | Windows |
+|------|---------|-------------|---------|
+| Rust toolchain | 1.75+ | `curl https://sh.rustup.rs -sSf \| sh` | Download from [rustup.rs](https://rustup.rs) |
+| Cargo (bundled with Rust) | Latest | Included with rustup | Included with rustup |
+| Git | 2.40+ | `brew install git` / `apt install git` | `winget install Git.Git` |
+
+> 💡 Run `rustup update stable` to ensure your toolchain is up to date.
+
+Optional:
+
+- GitHub CLI (`gh`) for device-free authentication
+- `cargo-binstall` for faster binary installation (`cargo install cargo-binstall`)
+
+---
+
+## 2. Install the CLI
 
 ```bash
 # Install from crates.io
-cargo install miyabi-cli
+cargo install miyabi-cli --bin miyabi
 
-# Verify installation
-miyabi --version
+# Confirm installation
+miyabi --help
 ```
 
-### 📦 TypeScript Edition (Legacy)
-
-```bash
-# Run directly with npx
-npx miyabi
-
-# Or install globally
-npm install -g miyabi
-```
+If you work with multiple versions, add `~/.cargo/bin` to your `PATH`.
 
 ---
 
-## Step 1: Create Project (2 min)
+## 3. Initialize a Project
 
-### Interactive Mode (Recommended)
+### 3.1 Create a fresh repository
 
 ```bash
-# Start interactive setup
-miyabi init my-awesome-app --interactive
-
-? プロジェクトタイプは？
-  > 🌐 Web Application
-    🔌 API Backend
-    🛠️ CLI Tool
-    📚 Library
-
-? GitHubリポジトリを作成しますか？ Yes
-? プライベートリポジトリにしますか？ No
-
-🚀 セットアップ開始...
-✓ GitHubリポジトリ作成
-✓ ラベル設定（53個）
-✓ ワークフロー配置（10+個）
-✓ Projects V2設定
-✓ ローカルにクローン
-
-🎉 完了！
+git clone https://github.com/YOUR_ORG/YOUR_REPO.git
+cd YOUR_REPO
 ```
 
-### Traditional Mode
+### 3.2 Run the initializer
 
 ```bash
-miyabi init my-awesome-app
+miyabi init \
+  --name "My Autonomous Platform" \
+  --repository "YOUR_ORG/YOUR_REPO" \
+  --device "$(hostname)"
 ```
 
 This command:
-1. Creates GitHub repository
-2. Sets up 53 labels (automated state machine)
-3. Deploys 10+ GitHub Actions workflows
-4. Creates Projects V2 for tracking
-5. Clones repository locally
-6. Configures AI Agents
+
+1. Creates `.miyabi/config.toml`
+2. Generates log (`.miyabi/logs/actions.log`) and report directories
+3. Stores metadata (project name, repository, device identifier)
+
+You can edit `.miyabi/config.toml` manually at any time.
 
 ---
 
-## Step 2: Check Project Status (30 sec)
+## 4. Verify the Environment
 
 ```bash
-cd my-awesome-app
-
-# Basic status check
 miyabi status
-
-# Watch mode (auto-refresh every 3 seconds)
-miyabi status --watch
 ```
 
-**Output includes**:
-- ✅ Miyabi installation status
-- ✅ Environment variables (GITHUB_TOKEN)
-- ✅ Git repository info (branch, remote)
-- ✅ Active worktrees
-- ✅ Recent activity (logs, reports)
-- ✅ **GitHub Stats** (Open Issues, Open PRs) 🆕
+You should see output similar to:
+
+```
+📊 Miyabi ステータス
+プロジェクト名: My Autonomous Platform
+リポジトリ: YOUR_ORG/YOUR_REPO
+作成日: 2025-10-29T05:01:23Z
+デバイス: MacBook-Pro
+
+ディレクトリ構成
+ - /path/to/project/.miyabi
+ - /path/to/project/.miyabi/logs
+ - /path/to/project/.miyabi/reports
+```
+
+If `.miyabi/config.toml` is missing, the CLI recreates it with safe defaults.
 
 ---
 
-## Step 3: Create Your First Issue (30 sec)
+## 5. Simulate an Issue Workflow
+
+### 5.1 Run `work-on`
 
 ```bash
-gh issue create --title "Add login page" --body "Email/password authentication"
+miyabi work-on --issue 123 \
+  --title "Implement onboarding banner" \
+  --description "Add a welcome banner displayed after login."
 ```
 
-**Or via GitHub web interface**: [Create Issue](https://github.com)
+What happens:
+
+1. The CLI emits a spinner while the CoordinatorAgent “plans” the work.
+2. A deterministic plan is produced with high-level tasks (analysis, code-gen, test, review).
+3. Results are logged to `.miyabi/logs/actions.log`.
+
+Example output:
+
+```
+🤖 エージェント実行を開始します
+対象: Implement onboarding banner
+Issue: #123
+
+✅ 実行結果
+ - [Issue] Analyze issue context
+   Task queued for specialist agents (simulated)
+ - [CodeGen] Implement solution
+   Task queued for specialist agents (simulated)
+ ...
+```
+
+### 5.2 Inspect logs
+
+```bash
+cat .miyabi/logs/actions.log
+```
+
+Each entry is JSON-lines encoded for easy ingestion into dashboards.
 
 ---
 
-## Step 4: Let Miyabi Work (2 min)
+## 6. Run a Specific Agent
 
-### Simple Method (New! ⭐)
-
-```bash
-# Work on Issue #1
-miyabi work-on 1
-```
-
-### Traditional Method
+Only the CoordinatorAgent is bundled by default in `miyabi-agents`. Execute it directly:
 
 ```bash
-# Run Coordinator Agent on Issue #1
-miyabi agent run coordinator --issue 1
+miyabi agent run coordinator \
+  --title "Check repository health" \
+  --description "Produce a synthetic report for repository readiness."
 ```
 
-**What happens automatically**:
-1. AI automatically labels your Issue
-2. CoordinatorAgent decomposes into tasks
-3. CodeGenAgent implements code
-4. TestAgent writes tests
-5. ReviewAgent reviews quality
-6. PRAgent creates Pull Request
-
-**You literally do nothing else.**
+The command uses the same orchestration pipeline but labels the session explicitly for coordinator-only runs.
 
 ---
 
-## Step 5: Monitor Progress
+## 7. Project Structure
 
-### Watch Mode (Real-time)
+After initialization, the repository will contain:
 
-```bash
-miyabi status --watch
-
-🔄 Watch Mode Active
-  (Auto-refresh every 3 seconds. Press Ctrl+C to exit)
-
-📊 Project Status
-
-Miyabi Installation:
-  ✅ Miyabi is installed
-
-Git Repository:
-  ✅ Git repository detected
-    Branch: main
-    ✓ Working directory clean
-
-Worktrees:
-  3 active worktree(s)
-    1. .worktrees/issue-1-105ba6ff  [feature/issue-1]
-
-GitHub Stats:
-  📋 7 open issue(s)
-  🔀 3 open pull request(s)
 ```
-
-### JSON Output (for scripts)
-
-```bash
-miyabi status --json
-```
-
----
-
-## Step 6: Review and Merge PR
-
-1. **Review PR**: Check the auto-generated Pull Request on GitHub
-2. **Review Code**: Ensure quality meets your standards
-3. **Run Tests**: CI/CD automatically runs tests
-4. **Merge**: If all checks pass, merge the PR
-
-```bash
-gh pr list
-gh pr view 1
-gh pr merge 1
+.miyabi/
+├── config.toml          # Project metadata
+├── logs/
+│   └── actions.log      # JSON-line execution log
+└── reports/             # Reserved for future artifacts
+Cargo.toml               # Workspace definition
+crates/
+├── miyabi-cli/          # CLI binary crate
+├── miyabi-agents/       # Coordinator + execution registry
+├── miyabi-core/         # Config, filesystem helpers, logging utilities
+└── miyabi-types/        # Shared models (tasks, outcomes, metadata)
 ```
 
 ---
 
-## That's It!
+## 8. Next Steps
 
-You now know everything needed to use Miyabi.
-
-**Time spent**: ~5 minutes
-**Code written**: 0 lines (AI did it all)
-**Result**: Production-ready feature with tests
-
----
-
-## Advanced Features (Optional)
-
-### Parallel Execution
-
-Process multiple Issues simultaneously:
-
-```bash
-# Process Issues #1, #2, #3 in parallel
-miyabi parallel --issues 1,2,3 --concurrency 2
-```
-
-### Custom Output Styles
-
-```bash
-# YouTube Live-style output
-miyabi status --output-style youtube
-
-# Minimal output
-miyabi status --output-style minimal
-```
-
-### Agent Types
-
-**Coding Agents (6)**:
-- `coordinator` - Task orchestration & decomposition
-- `codegen` - AI-driven code generation
-- `review` - Code quality review
-- `issue` - Issue analysis & labeling
-- `pr` - Pull Request creation
-- `deployment` - CI/CD deployment
-
-**Business Agents (14)** - Coming in v0.2.0:
-- `ai-entrepreneur` - Business plan generation
-- `market-research` - Market analysis
-- And 12 more...
+- **Extend agents:** Add new implementations in `crates/miyabi-agents` and register them in `AgentRegistry`.
+- **Integrate GitHub:** Store a fine-grained personal access token in `.miyabi/config.toml` under `github_token`.
+- **Automate reports:** Write generators that drop artifacts into `.miyabi/reports` for dashboards.
+- **CI integration:** Add a GitHub Actions workflow that runs `cargo fmt --check`, `cargo clippy`, and `cargo test`.
 
 ---
 
-## FAQ
+## 9. Troubleshooting
 
-**Q: Do I need to learn about agents?**
-A: No. They work automatically.
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `command not found: miyabi` | `$HOME/.cargo/bin` not on PATH | Add `export PATH="$HOME/.cargo/bin:$PATH"` to your shell profile |
+| `failed to read .miyabi/config.toml` | File removed or unreadable | Re-run `miyabi init` or create the file manually |
+| `Coordinator agent not registered` | Binary out of date | Reinstall with `cargo install miyabi-cli --force` |
 
-**Q: Do I need to label Issues?**
-A: No. IssueAgent does it automatically with AI.
-
-**Q: Do I need to assign agents?**
-A: No. CoordinatorAgent does it automatically.
-
-**Q: What if something breaks?**
-A: Agents escalate issues with detailed error messages.
-
-**Q: Which edition should I use?**
-A: Rust Edition (recommended) is faster and has more features. TypeScript Edition is for legacy projects.
-
-**Q: How much does it cost?**
-A: Free and open-source. You only need a GitHub account.
+Need more help? Reach out on Discord or open a GitHub Discussion.
 
 ---
 
-## Troubleshooting
-
-### "GITHUB_TOKEN not found"
-
-```bash
-# Set token manually
-export GITHUB_TOKEN=ghp_your_token_here
-
-# Or use GitHub CLI
-gh auth login
-```
-
-### "Miyabi not found"
-
-```bash
-# Ensure Cargo bin is in PATH
-export PATH="$HOME/.cargo/bin:$PATH"
-
-# Or use full path
-~/.cargo/bin/miyabi
-```
-
-### Agent Execution Fails
-
-```bash
-# Check logs
-cat logs/$(ls -t logs/ | head -1)
-
-# Re-run with verbose output
-miyabi -v agent run coordinator --issue 1
-```
-
-**For more help**: See [Troubleshooting Guide](TROUBLESHOOTING.md)
-
----
-
-## Next Steps
-
-1. **Learn More**: [Full User Guide](MIYABI_CLI_USER_GUIDE.md)
-2. **Explore Agents**: [Agent Overview](../.claude/agents/README.md)
-3. **Join Community**: [Discord Community](https://discord.gg/Urx8547abS)
-4. **Read Architecture**: [System Architecture](../CLAUDE.md)
-
----
-
-**For detailed documentation, see:**
-- [CLI User Guide](MIYABI_CLI_USER_GUIDE.md) - Complete command reference
-- [Troubleshooting](TROUBLESHOOTING.md) - Common issues & solutions
-- [Agent Manual](../.claude/agents/README.md) - All 21 Agents explained
-
-**But honestly, you don't need them. Just create Issues and let Miyabi work.**
-
----
-
-🤖 Powered by Claude AI • 🦀 Built with Rust • 🔒 Apache 2.0 License
-
-**[⬆ Back to README](../README.md)**
+Happy autonomous building! 🦀

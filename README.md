@@ -480,6 +480,22 @@ let review = reviewer.execute(&task).await?;
 
 ## 🏗️ アーキテクチャ
 
+### 📁 リポジトリ構成
+
+```
+Cargo.toml            # ワークスペース定義
+rust-toolchain.toml   # 指定ツールチェーン (Rust 1.75)
+crates/
+├── miyabi-cli/       # CLI バイナリ (clap ベース)
+├── miyabi-agents/    # 組み込みエージェントと実行レジストリ
+├── miyabi-core/      # 設定・ファイルシステム・ログユーティリティ
+└── miyabi-types/     # 共有データ構造 (タスク、成果物、メタデータ)
+.miyabi/              # `miyabi init` 実行後に生成される設定・ログフォルダ
+docs/                 # ガイドとリファレンス
+```
+
+Rust版では Node.js 依存は完全に排除されており、`cargo` コマンドのみでビルド・テストが完結します。
+
 ### 📐 **組織設計原則（Organizational Design Principles）**
 
 Miyabiは明確な組織理論の**5原則**に基づいた自律型システム設計:

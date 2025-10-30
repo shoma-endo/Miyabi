@@ -1,15 +1,15 @@
 import logging
 import re
 import json
-from typing import Dict, List, Any, Optional, Tuple
 from datetime import datetime
+from typing import Dict, Any, Optional
 import google.generativeai as genai
 from collections import Counter
 import statistics
 
 from context_models import (
-    ContextWindow, ContextElement, ContextAnalysis, 
-    ContextQuality, MultimodalContext, RAGContext
+    ContextWindow, ContextAnalysis,
+    ContextQuality
 )
 
 logger = logging.getLogger(__name__)
@@ -90,8 +90,16 @@ class ContextAnalyzer:
         priorities = [elem.priority for elem in window.elements]
         
         # 時系列分析
-        creation_times = [elem.created_at for elem in window.elements]
-        time_span = (max(creation_times) - min(creation_times)).total_seconds() if len(creation_times) > 1 else 0
+        creation_times = []
+        for element in window.elements:
+            timestamp = self._ensure_datetime(element.created_at)
+            if timestamp is not None:
+                creation_times.append(timestamp)
+
+        time_span = 0.0
+        if len(creation_times) > 1:
+            creation_times.sort()
+            time_span = (creation_times[-1] - creation_times[0]).total_seconds()
         
         return {
             "type_diversity": len(type_counts) / max(len(type_counts), 1),
@@ -190,7 +198,7 @@ class ContextAnalyzer:
         """冗長性計算"""
         if len(window.elements) < 2:
             return 0.0
-        
+
         contents = [elem.content.lower() for elem in window.elements]
         
         # 単語レベルでの重複計算
@@ -204,8 +212,28 @@ class ContextAnalyzer:
         
         word_counts = Counter(all_words)
         duplicate_words = sum(count - 1 for count in word_counts.values() if count > 1)
-        
+
         return duplicate_words / len(all_words)
+
+    def _ensure_datetime(self, value: Any) -> Optional[datetime]:
+        """created_atが文字列でもdatetimeに変換する"""
+        if isinstance(value, datetime):
+            return value
+
+        if isinstance(value, str):
+            candidates = [value]
+            if value.endswith("Z"):
+                candidates.append(value[:-1] + "+00:00")
+
+            for candidate in candidates:
+                try:
+                    return datetime.fromisoformat(candidate)
+                except ValueError:
+                    continue
+
+            logger.debug("Failed to parse created_at timestamp: %s", value)
+
+        return None
     
     async def _assess_quality(self, window: ContextWindow, metrics: Dict[str, float]) -> Dict[str, Any]:
         """品質評価"""
@@ -267,200 +295,3 @@ class ContextAnalyzer:
             "strengths": strengths,
             "recommendations": recommendations
         }
-
-class MultimodalAnalyzer:
-    """マルチモーダルコンテキスト分析"""
-    
-    def __init__(self, gemini_api_key: str):
-        genai.configure(api_key=gemini_api_key)
-        self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
-    
-    async def analyze_multimodal_context(self, context: MultimodalContext) -> ContextAnalysis:
-        """マルチモーダルコンテキストの分析"""
-        
-        analysis = ContextAnalysis(
-            context_id=context.id,
-            analysis_type="multimodal"
-        )
-        
-        # 基本メトリクス
-        analysis.metrics.update({
-            "text_token_estimate": len(context.text_content.split()) * 1.3,
-            "image_count": len(context.image_urls),
-            "audio_count": len(context.audio_urls),
-            "video_count": len(context.video_urls),
-            "document_count": len(context.document_urls),
-            "total_token_estimate": context.total_token_estimate,
-            "modality_diversity": self._calculate_modality_diversity(context)
-        })
-        
-        # モダリティ間の整合性分析
-        if context.text_content and context.extracted_content:
-            consistency_score = await self._analyze_cross_modal_consistency(context)
-            analysis.metrics["cross_modal_consistency"] = consistency_score
-        
-        # 推奨事項
-        if len(context.image_urls) > 5:
-            analysis.recommendations.append("画像の数が多すぎます。最も関連性の高いものを選択してください")
-        
-        if context.total_token_estimate > 8000:
-            analysis.recommendations.append("総トークン数が多すぎます。コンテンツを圧縮してください")
-        
-        return analysis
-    
-    def _calculate_modality_diversity(self, context: MultimodalContext) -> float:
-        """モダリティの多様性計算"""
-        modalities = []
-        if context.text_content:
-            modalities.append("text")
-        if context.image_urls:
-            modalities.append("image")
-        if context.audio_urls:
-            modalities.append("audio")
-        if context.video_urls:
-            modalities.append("video")
-        if context.document_urls:
-            modalities.append("document")
-        
-        return len(modalities) / 5.0  # 最大5つのモダリティ
-    
-    async def _analyze_cross_modal_consistency(self, context: MultimodalContext) -> float:
-        """モダリティ間の整合性分析"""
-        try:
-            prompt = f"""
-            以下のマルチモーダルコンテンツの整合性を0-1で評価してください:
-
-            テキスト: {context.text_content[:500]}...
-
-            抽出されたコンテンツ:
-            {json.dumps(context.extracted_content, ensure_ascii=False, indent=2)}
-
-            テキストと他のモダリティから抽出されたコンテンツがどの程度一貫しているか、
-            0（全く一貫していない）から1（完全に一貫している）で評価してください。
-
-            数値のみで回答してください。
-            """
-            
-            response = self.model.generate_content(prompt)
-            score = float(response.text.strip())
-            return max(0.0, min(1.0, score))  # 0-1に正規化
-            
-        except Exception as e:
-            logger.error(f"Cross-modal consistency analysis failed: {str(e)}")
-            return 0.5
-
-class RAGAnalyzer:
-    """RAGコンテキスト分析"""
-    
-    def __init__(self, gemini_api_key: str):
-        genai.configure(api_key=gemini_api_key)
-        self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
-    
-    async def analyze_rag_context(self, rag_context: RAGContext) -> ContextAnalysis:
-        """RAGコンテキストの分析"""
-        
-        analysis = ContextAnalysis(
-            context_id=rag_context.id,
-            analysis_type="rag"
-        )
-        
-        # 基本メトリクス
-        analysis.metrics.update({
-            "retrieved_documents_count": len(rag_context.retrieved_documents),
-            "avg_similarity_score": statistics.mean(rag_context.similarity_scores) if rag_context.similarity_scores else 0,
-            "max_similarity_score": max(rag_context.similarity_scores) if rag_context.similarity_scores else 0,
-            "min_similarity_score": min(rag_context.similarity_scores) if rag_context.similarity_scores else 0,
-            "similarity_variance": statistics.variance(rag_context.similarity_scores) if len(rag_context.similarity_scores) > 1 else 0
-        })
-        
-        # 関連性分析
-        if rag_context.retrieved_documents:
-            relevance_analysis = await self._analyze_retrieval_relevance(rag_context)
-            analysis.metrics.update(relevance_analysis["metrics"])
-            analysis.insights.extend(relevance_analysis["insights"])
-        
-        # 多様性分析
-        diversity_score = self._calculate_retrieval_diversity(rag_context)
-        analysis.metrics["retrieval_diversity"] = diversity_score
-        
-        return analysis
-    
-    async def _analyze_retrieval_relevance(self, rag_context: RAGContext) -> Dict[str, Any]:
-        """検索結果の関連性分析"""
-        try:
-            documents_text = "\n\n".join([
-                f"Document {i+1}: {doc.get('content', str(doc))[:200]}..."
-                for i, doc in enumerate(rag_context.retrieved_documents[:5])
-            ])
-            
-            prompt = f"""
-            検索クエリ: {rag_context.query}
-
-            検索結果:
-            {documents_text}
-
-            以下を分析してください:
-            1. 検索結果がクエリにどの程度関連しているか（0-1）
-            2. 検索結果間の情報の重複度（0-1）
-            3. 検索結果の包括性（0-1）
-
-            JSON形式で回答:
-            {{
-                "metrics": {{
-                    "query_relevance": 0.8,
-                    "result_redundancy": 0.3,
-                    "coverage_completeness": 0.7
-                }},
-                "insights": ["洞察1", "洞察2"]
-            }}
-            """
-            
-            response = self.model.generate_content(prompt)
-            return json.loads(response.text)
-            
-        except Exception as e:
-            logger.error(f"RAG relevance analysis failed: {str(e)}")
-            return {
-                "metrics": {
-                    "query_relevance": 0.5,
-                    "result_redundancy": 0.5,
-                    "coverage_completeness": 0.5
-                },
-                "insights": [f"分析エラー: {str(e)}"]
-            }
-    
-    def _calculate_retrieval_diversity(self, rag_context: RAGContext) -> float:
-        """検索結果の多様性計算"""
-        if len(rag_context.retrieved_documents) < 2:
-            return 0.0
-        
-        # 簡易的な多様性計算（文書間の語彙の重複度から算出）
-        all_words = []
-        doc_word_sets = []
-        
-        for doc in rag_context.retrieved_documents:
-            content = doc.get('content', str(doc))
-            words = set(re.findall(r'\w+', content.lower()))
-            doc_word_sets.append(words)
-            all_words.extend(words)
-        
-        if not all_words:
-            return 0.0
-        
-        # ジャッカード距離の平均を計算
-        similarities = []
-        for i in range(len(doc_word_sets)):
-            for j in range(i + 1, len(doc_word_sets)):
-                intersection = len(doc_word_sets[i] & doc_word_sets[j])
-                union = len(doc_word_sets[i] | doc_word_sets[j])
-                if union > 0:
-                    jaccard_sim = intersection / union
-                    similarities.append(jaccard_sim)
-        
-        if similarities:
-            avg_similarity = statistics.mean(similarities)
-            diversity_score = 1.0 - avg_similarity  # 類似度が低いほど多様性が高い
-        else:
-            diversity_score = 0.0
-        
-        return diversity_score

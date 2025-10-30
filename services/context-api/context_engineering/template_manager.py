@@ -1,12 +1,11 @@
 import logging
 import json
-import re
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional
 from datetime import datetime
 import google.generativeai as genai
 from pathlib import Path
 
-from context_models import PromptTemplate, PromptTemplateType, ContextElement, ContextWindow
+from context_models import PromptTemplate, PromptTemplateType
 
 logger = logging.getLogger(__name__)
 
@@ -392,98 +391,4 @@ class TemplateManager:
             "highest_quality_template": max(templates, key=lambda t: t.quality_score).name if quality_scores else None
         }
 
-class ContextTemplateIntegrator:
-    """コンテキストとテンプレートの統合"""
-    
-    def __init__(self, template_manager: TemplateManager):
-        self.template_manager = template_manager
-    
-    def apply_template_to_context(self, 
-                                context_window: ContextWindow, 
-                                template_id: str, 
-                                variables: Dict[str, Any]) -> ContextWindow:
-        """テンプレートをコンテキストウィンドウに適用"""
-        
-        rendered = self.template_manager.render_template(template_id, variables)
-        if not rendered:
-            raise ValueError(f"Failed to render template {template_id}")
-        
-        # 新しいコンテキスト要素を作成
-        template_element = ContextElement(
-            content=rendered,
-            type=ContextType.SYSTEM,
-            role="template",
-            metadata={
-                "template_id": template_id,
-                "variables": variables,
-                "applied_at": datetime.now().isoformat()
-            },
-            tags=["template", "generated"],
-            priority=8  # テンプレートは高優先度
-        )
-        
-        # コンテキストウィンドウに追加
-        success = context_window.add_element(template_element)
-        if not success:
-            raise ValueError("Failed to add template to context window (token limit exceeded)")
-        
-        context_window.template_id = template_id
-        return context_window
-    
-    def extract_template_from_context(self, context_window: ContextWindow) -> Optional[PromptTemplate]:
-        """コンテキストウィンドウからテンプレートを抽出"""
-        if len(context_window.elements) < 2:
-            return None
-        
-        # 要素の内容を分析してパターンを抽出
-        contents = [elem.content for elem in context_window.elements]
-        
-        # 共通パターンを見つけて変数化
-        # 実装は簡略化
-        template_content = "\n\n".join(contents)
-        
-        # 自動的に変数を検出（数値、固有名詞等を変数化）
-        variables_detected = self._detect_variables(template_content)
-        
-        for var_name, var_values in variables_detected.items():
-            # 最初の値を変数プレースホルダーに置換
-            if var_values:
-                template_content = template_content.replace(var_values[0], f"{{{var_name}}}")
-        
-        template = PromptTemplate(
-            name="Extracted Template",
-            description="コンテキストから抽出されたテンプレート",
-            template=template_content,
-            type=PromptTemplateType.COMPLETION,
-            category="extracted",
-            tags=["extracted", "auto_generated"],
-            created_by="auto_extract"
-        )
-        
-        return template
-    
-    def _detect_variables(self, content: str) -> Dict[str, List[str]]:
-        """コンテンツから変数候補を検出"""
-        variables = {}
-        
-        # 数値パターン
-        numbers = re.findall(r'\b\d+(?:\.\d+)?\b', content)
-        if numbers:
-            variables["number"] = numbers
-        
-        # 日付パターン
-        dates = re.findall(r'\b\d{4}-\d{2}-\d{2}\b|\b\d{1,2}/\d{1,2}/\d{4}\b', content)
-        if dates:
-            variables["date"] = dates
-        
-        # メールアドレス
-        emails = re.findall(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', content)
-        if emails:
-            variables["email"] = emails
-        
-        # URL
-        urls = re.findall(r'https?://[^\s]+', content)
-        if urls:
-            variables["url"] = urls
-        
-        return variables
+

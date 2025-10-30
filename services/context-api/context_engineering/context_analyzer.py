@@ -1,7 +1,8 @@
 import logging
 import re
 import json
-from typing import Dict, Any
+from datetime import datetime
+from typing import Dict, Any, Optional
 import google.generativeai as genai
 from collections import Counter
 import statistics
@@ -89,8 +90,16 @@ class ContextAnalyzer:
         priorities = [elem.priority for elem in window.elements]
         
         # 時系列分析
-        creation_times = [elem.created_at for elem in window.elements]
-        time_span = (max(creation_times) - min(creation_times)).total_seconds() if len(creation_times) > 1 else 0
+        creation_times = []
+        for element in window.elements:
+            timestamp = self._ensure_datetime(element.created_at)
+            if timestamp is not None:
+                creation_times.append(timestamp)
+
+        time_span = 0.0
+        if len(creation_times) > 1:
+            creation_times.sort()
+            time_span = (creation_times[-1] - creation_times[0]).total_seconds()
         
         return {
             "type_diversity": len(type_counts) / max(len(type_counts), 1),
@@ -189,7 +198,7 @@ class ContextAnalyzer:
         """冗長性計算"""
         if len(window.elements) < 2:
             return 0.0
-        
+
         contents = [elem.content.lower() for elem in window.elements]
         
         # 単語レベルでの重複計算
@@ -203,8 +212,28 @@ class ContextAnalyzer:
         
         word_counts = Counter(all_words)
         duplicate_words = sum(count - 1 for count in word_counts.values() if count > 1)
-        
+
         return duplicate_words / len(all_words)
+
+    def _ensure_datetime(self, value: Any) -> Optional[datetime]:
+        """created_atが文字列でもdatetimeに変換する"""
+        if isinstance(value, datetime):
+            return value
+
+        if isinstance(value, str):
+            candidates = [value]
+            if value.endswith("Z"):
+                candidates.append(value[:-1] + "+00:00")
+
+            for candidate in candidates:
+                try:
+                    return datetime.fromisoformat(candidate)
+                except ValueError:
+                    continue
+
+            logger.debug("Failed to parse created_at timestamp: %s", value)
+
+        return None
     
     async def _assess_quality(self, window: ContextWindow, metrics: Dict[str, float]) -> Dict[str, Any]:
         """品質評価"""

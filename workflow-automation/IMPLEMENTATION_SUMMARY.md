@@ -69,8 +69,7 @@ Real-time GPT-4 streaming with Streamlit integration:
 - Error handling and recovery
 
 **Key Classes:**
-- `StreamProcessor`: Base streaming processor
-- `StreamlitStreamProcessor`: Streamlit-specific integrations
+- `StreamProcessor`: Base streaming processor with callback-driven UI hooks
 - `StreamChunk`: Represents a chunk of streamed content
 
 ---

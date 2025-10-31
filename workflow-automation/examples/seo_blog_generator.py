@@ -18,6 +18,7 @@ import asyncio
 import sys
 import os
 from datetime import datetime
+from typing import Optional
 
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -38,6 +39,21 @@ st.set_page_config(
 
 st.title("✍️ SEO Blog Content Generator")
 st.markdown("Generate SEO-optimized blog content with AI-powered competitor analysis")
+
+
+def handle_heading(level: str, text: str, *, markdown: bool = False) -> Optional[str]:
+    """Render headings consistently for Streamlit and Markdown outputs."""
+    prefix = "##" if level == "h2" else "###" if level == "h3" else "####"
+
+    if markdown:
+        return f"\n{prefix} {text}\n\n"
+
+    if level == "h2":
+        st.subheader(text)
+    else:
+        st.markdown(f"{prefix} {text}")
+
+    return None
 
 
 # Sidebar configuration
@@ -297,13 +313,7 @@ if st.button("🚀 Generate Content", type="primary", disabled=not (keyword and 
                     level = heading['level']
                     text = heading['text']
 
-                    # Create heading
-                    if level == 'h2':
-                        st.subheader(text)
-                    elif level == 'h3':
-                        st.markdown(f"### {text}")
-                    else:
-                        st.markdown(f"#### {text}")
+                    handle_heading(level, text)
 
                     # Create content container
                     section_containers[i] = st.empty()
@@ -349,12 +359,9 @@ if st.button("🚀 Generate Content", type="primary", disabled=not (keyword and 
                 level = heading['level']
                 text = heading['text']
 
-                if level == 'h2':
-                    full_article += f"\n## {text}\n\n"
-                elif level == 'h3':
-                    full_article += f"\n### {text}\n\n"
-                else:
-                    full_article += f"\n#### {text}\n\n"
+                heading_markdown = handle_heading(level, text, markdown=True)
+                if heading_markdown:
+                    full_article += heading_markdown
 
                 full_article += f"{section.content}\n\n"
 

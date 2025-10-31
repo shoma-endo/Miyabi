@@ -9,7 +9,7 @@ Supports async streaming with iter_chunked(1024) pattern.
 import asyncio
 import aiohttp
 import json
-from typing import AsyncIterator, Optional, Callable, Dict, Any, List
+from typing import AsyncIterator, Optional, Callable, List, Dict, Any
 from dataclasses import dataclass
 import time
 
@@ -197,130 +197,6 @@ class StreamProcessor:
         tasks = [process_prompt(i, prompt) for i, prompt in enumerate(prompts)]
         results = await asyncio.gather(*tasks)
         return results
-
-
-class StreamlitStreamProcessor(StreamProcessor):
-    """
-    Extended StreamProcessor with Streamlit-specific integrations.
-
-    Provides helpers for displaying streaming content in Streamlit UI.
-    """
-
-    def __init__(self, api_key: str, base_url: str = "https://api.openai.com/v1"):
-        super().__init__(api_key, base_url)
-        self._streamlit_containers: Dict[str, Any] = {}
-
-    def register_streamlit_container(self, key: str, container: Any):
-        """Register a Streamlit container for streaming updates."""
-        self._streamlit_containers[key] = container
-
-    async def stream_to_container(
-        self,
-        container_key: str,
-        prompt: str,
-        model: str = "gpt-4",
-        system_prompt: Optional[str] = None
-    ) -> str:
-        """
-        Stream completion directly to a Streamlit container.
-
-        Args:
-            container_key: Key of registered Streamlit container
-            prompt: User prompt
-            model: Model identifier
-            system_prompt: Optional system prompt
-
-        Returns:
-            Complete generated text
-        """
-        container = self._streamlit_containers.get(container_key)
-        if not container:
-            raise ValueError(f"Container '{container_key}' not registered")
-
-        full_text = ""
-        placeholder = container.empty()
-
-        def update_ui(chunk: StreamChunk):
-            nonlocal full_text
-            if not chunk.is_final:
-                full_text += chunk.content
-                # Update Streamlit UI
-                placeholder.markdown(full_text)
-
-        async for chunk in self.stream_completion(
-            prompt=prompt,
-            model=model,
-            system_prompt=system_prompt,
-            on_chunk=update_ui
-        ):
-            pass  # UI updates happen in callback
-
-        return full_text
-
-    async def stream_multiple_to_containers(
-        self,
-        container_prompts: List[tuple],  # [(container_key, prompt), ...]
-        model: str = "gpt-4",
-        system_prompt: Optional[str] = None
-    ) -> List[str]:
-        """
-        Stream multiple completions to different Streamlit containers in parallel.
-
-        Args:
-            container_prompts: List of (container_key, prompt) tuples
-            model: Model identifier
-            system_prompt: Optional system prompt
-
-        Returns:
-            List of completed texts
-        """
-        tasks = [
-            self.stream_to_container(
-                container_key=container_key,
-                prompt=prompt,
-                model=model,
-                system_prompt=system_prompt
-            )
-            for container_key, prompt in container_prompts
-        ]
-
-        results = await asyncio.gather(*tasks)
-        return results
-
-
-# Helper functions for common streaming patterns
-async def stream_with_progress(
-    processor: StreamProcessor,
-    prompt: str,
-    progress_callback: Callable[[float], None],
-    **kwargs
-) -> str:
-    """
-    Stream completion with progress tracking.
-
-    Args:
-        processor: StreamProcessor instance
-        prompt: User prompt
-        progress_callback: Callback function receiving progress (0.0 to 1.0)
-        **kwargs: Additional arguments for stream_completion
-
-    Returns:
-        Complete generated text
-    """
-    full_text = ""
-    estimated_chunks = kwargs.get('max_tokens', 2000) // 10  # Rough estimate
-
-    chunk_count = 0
-    async for chunk in processor.stream_completion(prompt=prompt, **kwargs):
-        if not chunk.is_final:
-            full_text += chunk.content
-            chunk_count += 1
-            progress = min(chunk_count / estimated_chunks, 0.95)
-            progress_callback(progress)
-        else:
-            progress_callback(1.0)
-
-    return full_text
 
 
 if __name__ == "__main__":

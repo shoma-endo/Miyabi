@@ -106,10 +106,11 @@ fn build_context_and_registry() -> Result<(AgentContext, AgentRegistry, MiyabiCo
 
 fn cmd_init(name: String, repository: Option<String>, device: Option<String>) -> Result<()> {
     let cwd = env::current_dir().context("failed to determine current directory")?;
-    let paths = ProjectPaths::new(cwd.clone());
-    WorkspaceDetector::ensure_structure(&paths)?;
-
     let manager = MiyabiConfigManager::new(&cwd)?;
+
+    // ディレクトリ構造を作成
+    manager.paths().ensure_structure()?;
+
     let mut config = MiyabiConfig::default();
     config.project.name = name;
     config.project.repository = repository;
@@ -118,7 +119,9 @@ fn cmd_init(name: String, repository: Option<String>, device: Option<String>) ->
     }
 
     manager.save(&config)?;
-    let logs_dir = manager.logs_dir()?;
+
+    // 新しいAPI: manager.paths().logs を使用
+    let logs_dir = &manager.paths().logs;
     log_action(
         logs_dir,
         info(
@@ -132,7 +135,7 @@ fn cmd_init(name: String, repository: Option<String>, device: Option<String>) ->
     println!(
         "{} {}",
         "設定ファイル:".bold(),
-        manager.config_dir().join("config.toml").display()
+        manager.paths().config_file().display()
     );
     Ok(())
 }
@@ -219,7 +222,8 @@ fn cmd_work_on(issue: Option<u64>, title: String, description: String) -> Result
         println!("   {}", report.outcome.summary);
     }
 
-    let logs_dir = manager.logs_dir()?;
+    // 新しいAPI: manager.paths().logs を使用
+    let logs_dir = &manager.paths().logs;
     log_action(
         logs_dir,
         info(

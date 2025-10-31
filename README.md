@@ -496,6 +496,245 @@ docs/                 # ガイドとリファレンス
 
 Rust版では Node.js 依存は完全に排除されており、`cargo` コマンドのみでビルド・テストが完結します。
 
+### 🏛️ **システムアーキテクチャ全体図**
+
+#### レイヤー構成
+
+```mermaid
+graph TB
+    subgraph "👤 User Interface Layer"
+        CLI[miyabi CLI<br/>clap-based]
+        Interactive[Interactive Mode<br/>インタラクティブUI]
+    end
+
+    subgraph "🤖 Agent Layer - 7 Autonomous Agents"
+        Coordinator[🎯 CoordinatorAgent<br/>タスク統括・DAG分解]
+        Issue[🏷️ IssueAgent<br/>Issue分析・ラベリング]
+        CodeGen[💻 CodeGenAgent<br/>Claude Sonnet 4コード生成]
+        Review[🔍 ReviewAgent<br/>品質判定・静的解析]
+        PR[📝 PRAgent<br/>PR作成・Conventional Commits]
+        Deploy[🚀 DeploymentAgent<br/>Firebase/Vercelデプロイ]
+        Test[🧪 TestAgent<br/>テスト実行・カバレッジ]
+    end
+
+    subgraph "🔧 Core Layer - Rust Crates"
+        Core[miyabi-core<br/>Config・Logger・Cache]
+        Types[miyabi-types<br/>共有型定義]
+        Agents[miyabi-agents<br/>Agent実装・Registry]
+    end
+
+    subgraph "🐙 GitHub OS Layer"
+        Issues[📋 Issues<br/>タスク管理]
+        PRs[🔀 Pull Requests<br/>コードレビュー]
+        Actions[⚙️ Actions<br/>CI/CD]
+        Projects[📊 Projects V2<br/>データ永続化]
+        Labels[🏷️ 53 Labels<br/>状態管理]
+    end
+
+    subgraph "🌐 External Services"
+        Claude[Claude API<br/>AI処理]
+        Firebase[Firebase<br/>デプロイ先]
+        Git[Git/GitHub<br/>バージョン管理]
+    end
+
+    CLI --> Coordinator
+    Interactive --> Coordinator
+
+    Coordinator --> Issue
+    Coordinator --> CodeGen
+    Coordinator --> Review
+    Coordinator --> Test
+    Coordinator --> PR
+    Coordinator --> Deploy
+
+    Issue --> Core
+    CodeGen --> Core
+    Review --> Core
+    PR --> Core
+    Deploy --> Core
+    Test --> Core
+
+    Core --> Types
+    Agents --> Types
+    Coordinator --> Agents
+
+    Issue --> Issues
+    PR --> PRs
+    Deploy --> Actions
+    Coordinator --> Projects
+    Issue --> Labels
+
+    CodeGen --> Claude
+    Deploy --> Firebase
+    PR --> Git
+    Review --> Git
+
+    style Coordinator fill:#FFD93D
+    style CodeGen fill:#6C5CE7
+    style Review fill:#00D2FF
+    style Core fill:#51CF66
+    style Issues fill:#FF6B6B
+```
+
+#### データフロー: Issue → PR → Deploy
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant User as 👤 ユーザー
+    participant CLI as 🖥️ miyabi CLI
+    participant Coord as 🎯 Coordinator
+    participant IssueA as 🏷️ IssueAgent
+    participant CodeA as 💻 CodeGenAgent
+    participant ReviewA as 🔍 ReviewAgent
+    participant PRA as 📝 PRAgent
+    participant DeployA as 🚀 DeployAgent
+    participant GH as 🐙 GitHub
+
+    User->>CLI: miyabi work-on 270
+    CLI->>Coord: Issue #270 を処理
+    Coord->>GH: Issue詳細取得
+    GH-->>Coord: Issue情報 + Labels
+
+    Coord->>IssueA: Issue分析依頼
+    IssueA->>GH: Labelを自動付与<br/>(type, priority, complexity)
+    IssueA-->>Coord: 分析完了
+
+    Coord->>Coord: DAG構築<br/>Task分解 (3 Tasks)
+
+    Note over Coord,CodeA: 🔄 並列実行開始 (Git Worktree)
+
+    par Task 1 - Worktree #1
+        Coord->>CodeA: Task 1: データモデル実装
+        CodeA->>CodeA: Claude Sonnet 4でコード生成
+        CodeA->>ReviewA: コードレビュー依頼
+        ReviewA->>ReviewA: Clippy + 静的解析
+        ReviewA-->>CodeA: スコア: 85点 (合格)
+        CodeA->>GH: git commit + push
+    and Task 2 - Worktree #2
+        Coord->>CodeA: Task 2: API実装
+        CodeA->>CodeA: Claude Sonnet 4でコード生成
+        CodeA->>ReviewA: コードレビュー依頼
+        ReviewA-->>CodeA: スコア: 90点 (合格)
+        CodeA->>GH: git commit + push
+    and Task 3 - Worktree #3
+        Coord->>CodeA: Task 3: UI実装
+        CodeA->>CodeA: Claude Sonnet 4でコード生成
+        CodeA->>ReviewA: コードレビュー依頼
+        ReviewA-->>CodeA: スコア: 88点 (合格)
+        CodeA->>GH: git commit + push
+    end
+
+    Note over Coord,PRA: ✅ 全Task完了 - PR作成
+
+    Coord->>PRA: PR作成依頼
+    PRA->>GH: Pull Request作成<br/>"feat: Issue #270 - ユーザー認証実装"
+    GH-->>PRA: PR #42 作成完了
+    PRA-->>Coord: PR URL返却
+
+    Coord->>DeployA: デプロイ依頼 (staging)
+    DeployA->>GH: GitHub Actions トリガー
+    GH->>GH: CI/CD実行<br/>(ビルド + テスト)
+    GH-->>DeployA: デプロイ成功
+
+    DeployA-->>Coord: 全プロセス完了
+    Coord-->>CLI: 完了報告
+    CLI-->>User: ✅ PR #42 作成完了！<br/>📊 平均処理時間: 12分
+```
+
+#### Git Worktree並列実行アーキテクチャ
+
+```mermaid
+graph TB
+    subgraph Main["メインリポジトリ (main branch)"]
+        MainRepo[main branch<br/>安定版コード]
+    end
+
+    subgraph Coordinator["🎯 CoordinatorAgent"]
+        DAG[DAG構築<br/>Task依存関係解析]
+        Parallel[並列実行可能<br/>Task検出]
+    end
+
+    subgraph Worktrees["🌿 Git Worktrees - 独立作業空間"]
+        WT1[".worktrees/issue-270<br/>Task 1: データモデル"]
+        WT2[".worktrees/issue-271<br/>Task 2: API実装"]
+        WT3[".worktrees/issue-272<br/>Task 3: UI実装"]
+    end
+
+    subgraph Execution["⚡ 並列実行 (Claude Code)"]
+        Exec1[CodeGenAgent<br/>+ Claude Sonnet 4]
+        Exec2[CodeGenAgent<br/>+ Claude Sonnet 4]
+        Exec3[CodeGenAgent<br/>+ Claude Sonnet 4]
+    end
+
+    subgraph Results["📊 実行結果"]
+        Commit1[git commit<br/>データモデル実装完了]
+        Commit2[git commit<br/>API実装完了]
+        Commit3[git commit<br/>UI実装完了]
+    end
+
+    subgraph Merge["🔀 統合"]
+        MergeMain[main branchへマージ<br/>コンフリクト自動解決]
+        PR[Pull Request作成<br/>PR #42]
+    end
+
+    MainRepo --> DAG
+    DAG --> Parallel
+
+    Parallel -->|Task 1| WT1
+    Parallel -->|Task 2| WT2
+    Parallel -->|Task 3| WT3
+
+    WT1 --> Exec1
+    WT2 --> Exec2
+    WT3 --> Exec3
+
+    Exec1 --> Commit1
+    Exec2 --> Commit2
+    Exec3 --> Commit3
+
+    Commit1 --> MergeMain
+    Commit2 --> MergeMain
+    Commit3 --> MergeMain
+
+    MergeMain --> PR
+    PR --> MainRepo
+
+    style Parallel fill:#FFD93D
+    style WT1 fill:#51CF66
+    style WT2 fill:#51CF66
+    style WT3 fill:#51CF66
+    style Exec1 fill:#6C5CE7
+    style Exec2 fill:#6C5CE7
+    style Exec3 fill:#6C5CE7
+    style PR fill:#00D2FF
+
+    Note1[72%効率化<br/>シーケンシャル: 36時間<br/>並列: 10-15分]
+    Note1 -.-> Parallel
+```
+
+### 🔑 **アーキテクチャのポイント**
+
+| 項目 | 説明 |
+|-----|------|
+| **レイヤー分離** | CLI → Agent → Core → GitHub の明確な責任分離 |
+| **Git Worktree** | 独立した作業空間で並列実行 (72%効率化) |
+| **Claude Sonnet 4統合** | CodeGenAgentがAIコード生成を実行 |
+| **GitHub OS** | Issues/PR/Actions/Projectsを統合OS的に利用 |
+| **53ラベル体系** | 状態管理のコアシステム (次節で詳細) |
+| **品質保証** | ReviewAgentが自動品質判定 (80点以上で合格) |
+
+### 📚 **アーキテクチャ詳細ドキュメント**
+
+| ドキュメント | 説明 |
+|------------|------|
+| [WORKTREE_PROTOCOL.md](docs/WORKTREE_PROTOCOL.md) | Git Worktree並列実行プロトコル (Phase 1-4) |
+| [ENTITY_RELATION_MODEL.md](docs/ENTITY_RELATION_MODEL.md) | Entity-Relationモデル完全版 (1722行) |
+| [LABEL_SYSTEM_GUIDE.md](docs/LABEL_SYSTEM_GUIDE.md) | 53ラベル体系完全ガイド |
+| [AGENT_OPERATIONS_MANUAL.md](docs/AGENT_OPERATIONS_MANUAL.md) | Agent運用マニュアル |
+
+---
+
 ### 📐 **組織設計原則（Organizational Design Principles）**
 
 Miyabiは明確な組織理論の**5原則**に基づいた自律型システム設計:
@@ -587,6 +826,316 @@ DAGによる依存関係明示、状態ラベルで進捗可視化
 | 📈 **その他** | 2 | `good-first-issue`, `help-wanted` |
 
 </div>
+
+---
+
+## 💻 技術スタック
+
+### 🦀 **コア技術**
+
+<table>
+<tr>
+<td width="50%">
+
+#### **言語・フレームワーク**
+- ![Rust](https://img.shields.io/badge/Rust-1.75+-orange?logo=rust&logoColor=white) **Rust 1.75+** - コアシステム実装
+- ![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python&logoColor=white) **Python 3.11+** - Workflow Automation (workflow-automation/)
+- ![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?logo=typescript&logoColor=white) **TypeScript 5.0+** - ビジネスロジック（計画中）
+
+</td>
+<td width="50%">
+
+#### **ビルド・パッケージ管理**
+- ![Cargo](https://img.shields.io/badge/Cargo-Latest-orange?logo=rust) **Cargo** - Rustパッケージマネージャー
+- ![crates.io](https://img.shields.io/badge/crates.io-v0.1.1-blue) **crates.io** - 8クレート公開中
+- **Workspace構成** - Monorepository管理
+
+</td>
+</tr>
+</table>
+
+### 🤖 **AI・LLM統合**
+
+<table>
+<tr>
+<td width="33%" align="center">
+
+#### Claude AI
+![Claude](https://img.shields.io/badge/Claude-Sonnet%204-5865F2?logo=anthropic&logoColor=white)
+
+**Claude Sonnet 4**
+- コード生成
+- タスク分解
+- Issue分析
+
+</td>
+<td width="33%" align="center">
+
+#### LLM抽象化層
+![miyabi-llm](https://img.shields.io/badge/miyabi--llm-v0.1.1-blue)
+
+**miyabi-llm クレート**
+- GPT-OSS-20B対応
+- Ollama対応
+- vLLM対応
+- Groq対応
+
+</td>
+<td width="33%" align="center">
+
+#### 知識グラフ
+![Neo4j](https://img.shields.io/badge/Neo4j-Potpie%20AI-008CC1?logo=neo4j)
+
+**Potpie AI + Neo4j**
+- コード理解
+- 依存関係解析
+- 知識グラフ構築
+
+</td>
+</tr>
+</table>
+
+### 🐙 **GitHub統合**
+
+<table>
+<tr>
+<td width="50%">
+
+#### **GitHub API**
+- ![Octocrab](https://img.shields.io/badge/octocrab-Latest-181717?logo=github) **octocrab** - Rust GitHub API クライアント
+- ![GraphQL](https://img.shields.io/badge/GraphQL-E10098?logo=graphql&logoColor=white) **GitHub GraphQL API** - Projects V2統合
+- ![REST API](https://img.shields.io/badge/REST%20API-181717?logo=github) **GitHub REST API** - Issues/PRs/Labels
+
+</td>
+<td width="50%">
+
+#### **GitHub機能**
+- ✅ Issues - タスク管理
+- ✅ Pull Requests - コードレビュー
+- ✅ Actions - CI/CD実行
+- ✅ Projects V2 - データ永続化
+- ✅ Labels - 53ラベル体系
+- ✅ Webhooks - イベント通知
+
+</td>
+</tr>
+</table>
+
+### 🔧 **開発ツール・ライブラリ**
+
+#### **Rustクレート（主要依存）**
+
+```toml
+# CLI
+clap = "4.5"           # コマンドライン引数パース
+colored = "2.1"        # カラー出力
+indicatif = "0.17"     # プログレスバー
+
+# シリアライゼーション
+serde = "1.0"          # 汎用シリアライズ
+serde_json = "1.0"     # JSON処理
+toml = "0.8"           # TOML設定ファイル
+
+# ユーティリティ
+anyhow = "1.0"         # エラーハンドリング
+thiserror = "1.0"      # カスタムエラー型
+chrono = "0.4"         # 日時処理
+uuid = "1.8"           # UUID生成
+walkdir = "2.5"        # ディレクトリ走査
+directories = "5.0"    # システムディレクトリ取得
+hostname = "0.3"       # ホスト名取得
+```
+
+#### **Python依存（workflow-automation/）**
+
+```python
+# LLM統合
+openai          # GPT-4 API
+anthropic       # Claude API (計画中)
+
+# Web自動化
+aiohttp         # 非同期HTTPクライアント
+beautifulsoup4  # HTMLパース
+selenium        # ブラウザ自動化（計画中）
+
+# データ処理
+pydantic        # データバリデーション
+python-dotenv   # 環境変数管理
+```
+
+### 🔐 **セキュリティ・品質**
+
+<table>
+<tr>
+<td width="50%">
+
+#### **静的解析・Lint**
+- ![Clippy](https://img.shields.io/badge/Clippy-0%20warnings-success?logo=rust) **Clippy** - Rustリンター（警告0）
+- ![Rustfmt](https://img.shields.io/badge/Rustfmt-Enabled-orange?logo=rust) **Rustfmt** - コードフォーマッター
+- ![CodeQL](https://img.shields.io/badge/CodeQL-Enabled-blue?logo=github) **CodeQL** - セキュリティ解析
+
+</td>
+<td width="50%">
+
+#### **テスト・品質保証**
+- **Rust標準テスト** - 735+テスト（成功率100%）
+- **Snapshot Testing** - JSON I/F固定
+- **cargo audit** - 脆弱性スキャン
+- **Gitleaks** - シークレット検出
+
+</td>
+</tr>
+</table>
+
+### 🌐 **デプロイ・インフラ**
+
+<table>
+<tr>
+<td width="33%" align="center">
+
+#### Firebase
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?logo=firebase&logoColor=black)
+
+- Hosting
+- Functions
+- Firestore
+- Authentication
+
+</td>
+<td width="33%" align="center">
+
+#### Vercel
+![Vercel](https://img.shields.io/badge/Vercel-000000?logo=vercel&logoColor=white)
+
+- Next.js デプロイ
+- Edge Functions
+- Preview環境
+- Analytics
+
+</td>
+<td width="33%" align="center">
+
+#### Git Worktree
+![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=white)
+
+- 並列実行基盤
+- 独立作業空間
+- コンフリクト最小化
+- 72%効率化
+
+</td>
+</tr>
+</table>
+
+### 📊 **データ・ストレージ**
+
+| 技術 | 用途 | 説明 |
+|------|------|------|
+| **GitHub Projects V2** | データ永続化 | Issue/Task/Agentの状態管理 |
+| **SQLite** | ローカルキャッシュ | `usage.sqlite` - 使用統計 |
+| **JSON Files** | 設定・ログ | `.miyabi/` - プロジェクト設定 |
+| **Neo4j (Potpie AI)** | 知識グラフ | コード依存関係・Entity-Relation |
+
+### 🔄 **CI/CD・自動化**
+
+<table>
+<tr>
+<td width="50%">
+
+#### **GitHub Actions**
+```yaml
+# 主要ワークフロー（.github/workflows/）
+- autonomous-agent.yml        # Agent自動実行
+- integrated-system-ci.yml    # 統合CI
+- docker-build.yml           # Dockerビルド
+- deploy-pages.yml           # GitHub Pages
+- codeql.yml                 # セキュリティ解析
+```
+
+</td>
+<td width="50%">
+
+#### **自動化機能**
+- ✅ Issue自動ラベリング
+- ✅ PR自動作成
+- ✅ コード品質チェック
+- ✅ 並列テスト実行
+- ✅ 自動デプロイ（staging/production）
+- ✅ Dependabot自動PR
+
+</td>
+</tr>
+</table>
+
+### 🎨 **開発体験**
+
+| ツール | 説明 |
+|--------|------|
+| **rust-toolchain.toml** | Rust 1.75 固定 - チーム全体で統一 |
+| **Cargo Workspace** | 4クレートのモノレポ管理 |
+| **clap** | CLI引数パース（サブコマンド、フラグ） |
+| **colored + indicatif** | 美しいCLI出力・プログレスバー |
+| **anyhow + thiserror** | Rust標準エラーハンドリング |
+
+### 📦 **公開パッケージ（crates.io）**
+
+| クレート | バージョン | 説明 |
+|---------|----------|------|
+| **miyabi-cli** | v0.1.1 | CLIバイナリ（8.4MB） |
+| **miyabi-types** | v0.1.1 | 共有型定義 |
+| **miyabi-core** | v0.1.1 | コアユーティリティ |
+| **miyabi-agents** | v0.1.1 | Agent実装・Registry |
+| **miyabi-llm** | v0.1.1 | LLM統合層 |
+| **miyabi-github** | v0.1.1 | GitHub APIラッパー |
+| **miyabi-worktree** | v0.1.1 | Git Worktree並列実行 |
+| **miyabi-potpie** | v0.1.1 | Potpie AI + Neo4j |
+
+### 🔗 **外部サービス統合**
+
+<table>
+<tr>
+<td align="center" width="25%">
+
+![Claude](https://img.shields.io/badge/Claude-API-5865F2?logo=anthropic)
+
+**Anthropic Claude API**
+- Sonnet 4
+- コード生成
+- タスク分解
+
+</td>
+<td align="center" width="25%">
+
+![GitHub](https://img.shields.io/badge/GitHub-API-181717?logo=github)
+
+**GitHub API**
+- REST API
+- GraphQL API
+- Webhooks
+
+</td>
+<td align="center" width="25%">
+
+![Firebase](https://img.shields.io/badge/Firebase-API-FFCA28?logo=firebase)
+
+**Firebase**
+- Hosting
+- Functions
+- Firestore
+
+</td>
+<td align="center" width="25%">
+
+![Discord](https://img.shields.io/badge/Discord-Community-5865F2?logo=discord)
+
+**Discord Community**
+- サポート
+- フィードバック
+- コラボレーション
+
+</td>
+</tr>
+</table>
 
 ---
 

@@ -8,7 +8,7 @@ Supports async operation and result caching.
 
 import asyncio
 import aiohttp
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Optional, Any, Callable
 from dataclasses import dataclass
 import json
 from urllib.parse import urlencode
@@ -126,24 +126,16 @@ class SerpAgent:
             response.raise_for_status()
             data = await response.json()
 
-            # Parse organic results
-            organic_results = data.get("organic_results", [])
-            results = []
-
-            for i, result in enumerate(organic_results[:self.results_limit], 1):
-                results.append(SearchResult(
-                    position=i,
-                    title=result.get("title", ""),
-                    url=result.get("link", ""),
-                    snippet=result.get("snippet", ""),
-                    domain=result.get("displayed_link", "")
-                ))
-
-            return SerpResponse(
+            return self._build_response(
                 keyword=keyword,
-                total_results=data.get("search_information", {}).get("total_results", 0),
-                results=results,
-                raw_response=data
+                data=data,
+                field_map={
+                    "title": "title",
+                    "url": "link",
+                    "snippet": "snippet",
+                    "domain": "displayed_link",
+                },
+                total_results_getter=lambda payload, organic: payload.get("search_information", {}).get("total_results", 0),
             )
 
     async def _search_scraperapi(
@@ -171,25 +163,62 @@ class SerpAgent:
             response.raise_for_status()
             data = await response.json()
 
-            # Parse results
-            organic_results = data.get("organic_results", [])
-            results = []
-
-            for i, result in enumerate(organic_results[:self.results_limit], 1):
-                results.append(SearchResult(
-                    position=i,
-                    title=result.get("title", ""),
-                    url=result.get("link", ""),
-                    snippet=result.get("snippet", ""),
-                    domain=result.get("domain", "")
-                ))
-
-            return SerpResponse(
+            return self._build_response(
                 keyword=keyword,
-                total_results=len(organic_results),
-                results=results,
-                raw_response=data
+                data=data,
+                field_map={
+                    "title": "title",
+                    "url": "link",
+                    "snippet": "snippet",
+                    "domain": "domain",
+                },
+                total_results_getter=lambda _payload, organic: len(organic),
             )
+
+    def _build_response(
+        self,
+        keyword: str,
+        data: Dict[str, Any],
+        field_map: Dict[str, str],
+        total_results_getter: Callable[[Dict[str, Any], List[Dict[str, Any]]], int],
+    ) -> SerpResponse:
+        """Create a unified response object from provider payloads."""
+
+        organic_results = data.get("organic_results", [])
+        results = self._parse_results(organic_results, field_map)
+
+        return SerpResponse(
+            keyword=keyword,
+            total_results=total_results_getter(data, organic_results),
+            results=results,
+            raw_response=data,
+        )
+
+    def _parse_results(
+        self,
+        organic_results: List[Dict[str, Any]],
+        field_map: Dict[str, str],
+    ) -> List[SearchResult]:
+        """Normalize provider-specific organic results into SearchResult dataclasses."""
+
+        results: List[SearchResult] = []
+        title_key = field_map.get("title", "title")
+        url_key = field_map.get("url", "link")
+        snippet_key = field_map.get("snippet", "snippet")
+        domain_key = field_map.get("domain", "displayed_link")
+
+        for position, result in enumerate(organic_results[: self.results_limit], 1):
+            results.append(
+                SearchResult(
+                    position=position,
+                    title=result.get(title_key, ""),
+                    url=result.get(url_key, ""),
+                    snippet=result.get(snippet_key, ""),
+                    domain=result.get(domain_key, ""),
+                )
+            )
+
+        return results
 
     async def _search_google_custom(
         self,

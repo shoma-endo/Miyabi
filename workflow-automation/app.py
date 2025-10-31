@@ -119,25 +119,44 @@ async def demo_workflow_architecture():
             ]
         }
 
-    async def generate_section_1(ctx):
-        print("    → Generating Section 1: Introduction...")
-        await asyncio.sleep(0.2)
-        return {"content": "Introduction content...", "words": 300}
+    def make_section_generator(log_label, content, words, duration=0.2):
+        async def generator(ctx):
+            print(f"    → Generating {log_label}...")
+            await asyncio.sleep(duration)
+            return {"content": content, "words": words}
 
-    async def generate_section_2(ctx):
-        print("    → Generating Section 2: Benefits...")
-        await asyncio.sleep(0.2)
-        return {"content": "Benefits content...", "words": 500}
+        return generator
 
-    async def generate_section_3(ctx):
-        print("    → Generating Section 3: Implementation...")
-        await asyncio.sleep(0.2)
-        return {"content": "Implementation content...", "words": 700}
-
-    async def generate_section_4(ctx):
-        print("    → Generating Section 4: Conclusion...")
-        await asyncio.sleep(0.2)
-        return {"content": "Conclusion content...", "words": 200}
+    section_definitions = [
+        (
+            "section_1",
+            "Generate Section 1",
+            "Section 1: Introduction",
+            "Introduction content...",
+            300,
+        ),
+        (
+            "section_2",
+            "Generate Section 2",
+            "Section 2: Benefits",
+            "Benefits content...",
+            500,
+        ),
+        (
+            "section_3",
+            "Generate Section 3",
+            "Section 3: Implementation",
+            "Implementation content...",
+            700,
+        ),
+        (
+            "section_4",
+            "Generate Section 4",
+            "Section 4: Conclusion",
+            "Conclusion content...",
+            200,
+        ),
+    ]
 
     # Build workflow
     print("Building workflow...")
@@ -209,38 +228,15 @@ async def demo_workflow_architecture():
     )
 
     # Stage 5: Implementation (Content Generation - Parallel)
-    workflow.add_node(
-        "section_1",
-        "Generate Section 1",
-        WorkflowStage.IMPLEMENTATION,
-        generate_section_1,
-        dependencies=["generate_structure"],
-        parallel_group="content_generation"
-    )
-    workflow.add_node(
-        "section_2",
-        "Generate Section 2",
-        WorkflowStage.IMPLEMENTATION,
-        generate_section_2,
-        dependencies=["generate_structure"],
-        parallel_group="content_generation"
-    )
-    workflow.add_node(
-        "section_3",
-        "Generate Section 3",
-        WorkflowStage.IMPLEMENTATION,
-        generate_section_3,
-        dependencies=["generate_structure"],
-        parallel_group="content_generation"
-    )
-    workflow.add_node(
-        "section_4",
-        "Generate Section 4",
-        WorkflowStage.IMPLEMENTATION,
-        generate_section_4,
-        dependencies=["generate_structure"],
-        parallel_group="content_generation"
-    )
+    for node_id, display_name, log_label, content, words in section_definitions:
+        workflow.add_node(
+            node_id,
+            display_name,
+            WorkflowStage.IMPLEMENTATION,
+            make_section_generator(log_label, content, words),
+            dependencies=["generate_structure"],
+            parallel_group="content_generation"
+        )
 
     # Visualize DAG
     print("\n" + workflow.visualize_dag())

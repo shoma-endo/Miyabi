@@ -1412,6 +1412,130 @@ export MIYABI_PARALLEL_AGENTS=3
 
 ---
 
+## 🛠️ ローカル環境構築
+
+### **前提条件**
+
+- **Python 3.11+**
+- **Git**
+- **GitHub Personal Access Token** (GITHUB_TOKEN)
+
+### **Step 1: リポジトリのクローン**
+
+```bash
+git clone https://github.com/ShunsukeHayashi/Miyabi.git
+cd Miyabi
+```
+
+### **Step 2: Python仮想環境のセットアップ**
+
+```bash
+# 仮想環境を作成
+python3 -m venv venv
+
+# 仮想環境を有効化
+# macOS / Linux
+source venv/bin/activate
+
+# Windows (PowerShell)
+venv\Scripts\Activate.ps1
+
+# Windows (cmd)
+venv\Scripts\activate.bat
+```
+
+### **Step 3: 依存関係のインストール**
+
+```bash
+# pipをアップグレード
+pip install --upgrade pip
+
+# 依存パッケージをインストール
+pip install -r requirements.txt
+```
+
+### **Step 4: 環境変数の設定**
+
+```bash
+# プロジェクトルートに .env ファイルを作成
+cat > .env << 'EOF'
+GITHUB_TOKEN=ghp_your_token_here
+DEVICE_IDENTIFIER=$(hostname)
+EOF
+```
+
+**GitHub Personal Access Tokenの取得方法:**
+1. https://github.com/settings/tokens/new にアクセス
+2. 以下の権限を選択:
+   - `repo` - Full control of private repositories
+   - `workflow` - Update GitHub Action workflows
+   - `read:project`, `write:project` - Access projects
+3. トークンを生成してコピー
+4. 上記の `.env` ファイルに貼り付け
+
+### **Step 5: 開発環境の確認**
+
+```bash
+# 仮想環境が有効か確認
+which python  # venv/bin/python のパスが表示されればOK
+
+# インストールされたパッケージを確認
+pip list
+
+# テストを実行
+pytest tests/
+
+# または Rust版をビルド（オプション）
+cargo build --release
+```
+
+### **Step 6: Miyabiの初期化**
+
+```bash
+# 仮想環境内で実行
+python -m miyabi init my-project --interactive
+```
+
+### **仮想環境の無効化**
+
+```bash
+# 作業終了時
+deactivate
+```
+
+### **トラブルシューティング**
+
+#### 仮想環境が作成されない場合
+
+```bash
+# Python 3.11以上か確認
+python3 --version
+
+# 別の方法で作成
+python3.11 -m venv venv
+```
+
+#### パッケージインストール失敗時
+
+```bash
+# キャッシュをクリアして再試行
+pip install --upgrade pip
+pip install --no-cache-dir -r requirements.txt
+```
+
+#### GitHubトークンエラーが発生する場合
+
+```bash
+# 環境変数が正しく設定されているか確認
+echo $GITHUB_TOKEN  # Unix/macOS/Linux
+echo %GITHUB_TOKEN%  # Windows cmd
+
+# または gh CLI で認証（推奨）
+gh auth login
+```
+
+---
+
 ## 🤝 コントリビューション
 
 Miyabiへのコントリビューションを歓迎します！
